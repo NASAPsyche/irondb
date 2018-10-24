@@ -138,3 +138,7 @@ jspm_packages/
 
 # dotenv environment variables file
 .env
+
+# Dependency related files
+public/javascripts/*.js
+public/stylesheets/bootstrap.css
