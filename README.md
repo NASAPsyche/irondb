@@ -21,11 +21,11 @@ To install Gulp run `npm install gulp-cli -g`
 │ 	└── www					# Server startup bash script.
 │
 ├── controller				# Handels business logic and routing.
-│		│
-│ 		├── routes
-│ 		│ 	 └── index.js 	# Index router - file defines logic for the "/" route.
-│ 		│ 
-│ 		└── app.js 			# Primary server file.
+│	│
+│ 	├── routes
+│ 	│ 	└── index.js 	# Index router - file defines logic for the "/" route.
+│ 	│ 
+│ 	└── app.js 			# Primary server file.
 │ 
 ├── public 					# Directory containing public static assets.
 │	│
