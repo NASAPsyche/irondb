@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%- include('bootstrap/css'); %>
+  </head>
+  <body>
+  	<div class="container-fluid">
+  		<h1 class="text-danger"><%= message %></h1>
+		<h2><%= error.status %></h2>
+		<pre><%= error.stack %></pre>
+  	</div>
+
+    <%- include('bootstrap/js'); %>
+  </body>
+</html>
