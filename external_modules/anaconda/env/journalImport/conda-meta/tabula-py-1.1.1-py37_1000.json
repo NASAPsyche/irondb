@@ -1,0 +1,153 @@
+{
+  "arch": "x86_64",
+  "build": "py37_1000",
+  "build_number": 1000,
+  "channel": "https://conda.anaconda.org/conda-forge/osx-64",
+  "constrains": [],
+  "depends": [
+    "numpy",
+    "openjdk",
+    "pandas",
+    "python >=3.7,<3.8.0a0",
+    "requests"
+  ],
+  "extracted_package_dir": "/Users/joshuadjohnson/anaconda3/pkgs/tabula-py-1.1.1-py37_1000",
+  "features": "",
+  "files": [
+    "lib/python3.7/site-packages/tabula/__init__.py",
+    "lib/python3.7/site-packages/tabula/__pycache__/__init__.cpython-37.pyc",
+    "lib/python3.7/site-packages/tabula/__pycache__/__version__.cpython-37.pyc",
+    "lib/python3.7/site-packages/tabula/__pycache__/util.cpython-37.pyc",
+    "lib/python3.7/site-packages/tabula/__pycache__/wrapper.cpython-37.pyc",
+    "lib/python3.7/site-packages/tabula/__version__.py",
+    "lib/python3.7/site-packages/tabula/tabula-1.0.1-jar-with-dependencies.jar",
+    "lib/python3.7/site-packages/tabula/util.py",
+    "lib/python3.7/site-packages/tabula/wrapper.py",
+    "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/INSTALLER",
+    "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/METADATA",
+    "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/RECORD",
+    "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/WHEEL",
+    "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/top_level.txt"
+  ],
+  "fn": "tabula-py-1.1.1-py37_1000.tar.bz2",
+  "license": "MIT",
+  "license_family": "MIT",
+  "link": {
+    "source": "/Users/joshuadjohnson/anaconda3/pkgs/tabula-py-1.1.1-py37_1000",
+    "type": 1
+  },
+  "md5": "addedb93c341a39dbd68f4a111995f8c",
+  "name": "tabula-py",
+  "package_tarball_full_path": "/Users/joshuadjohnson/anaconda3/pkgs/tabula-py-1.1.1-py37_1000.tar.bz2",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "lib/python3.7/site-packages/tabula/__init__.py",
+        "path_type": "hardlink",
+        "sha256": "677ce19a738d86ae32d64007ec0d6319066046902a75ed988e8b1c13e3ad39ad",
+        "sha256_in_prefix": "677ce19a738d86ae32d64007ec0d6319066046902a75ed988e8b1c13e3ad39ad",
+        "size_in_bytes": 179
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula/__pycache__/__init__.cpython-37.pyc",
+        "path_type": "hardlink",
+        "sha256": "2507528cc1ddc362fe47587769969af1354ddb761db9a3650fcdf7a766577ef7",
+        "sha256_in_prefix": "2507528cc1ddc362fe47587769969af1354ddb761db9a3650fcdf7a766577ef7",
+        "size_in_bytes": 331
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula/__pycache__/__version__.cpython-37.pyc",
+        "path_type": "hardlink",
+        "sha256": "30fb2e4b01ceff19dc3735da738bbed609820675997cdb7936bf2118fcd3de01",
+        "sha256_in_prefix": "30fb2e4b01ceff19dc3735da738bbed609820675997cdb7936bf2118fcd3de01",
+        "size_in_bytes": 482
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula/__pycache__/util.cpython-37.pyc",
+        "path_type": "hardlink",
+        "sha256": "28aa293bb8ef7d1a7658075b8fb4dec313d62b3d715c67275e862a83e9f4154a",
+        "sha256_in_prefix": "28aa293bb8ef7d1a7658075b8fb4dec313d62b3d715c67275e862a83e9f4154a",
+        "size_in_bytes": 1941
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula/__pycache__/wrapper.cpython-37.pyc",
+        "path_type": "hardlink",
+        "sha256": "cdac66962a0780efd6475f21a431544d805228705aaf43fa59a9daffa50b18f1",
+        "sha256_in_prefix": "cdac66962a0780efd6475f21a431544d805228705aaf43fa59a9daffa50b18f1",
+        "size_in_bytes": 10714
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula/__version__.py",
+        "path_type": "hardlink",
+        "sha256": "14ae76b390dee512c2312218f899ebafacde9b786ad7ee39711dd1136a252397",
+        "sha256_in_prefix": "14ae76b390dee512c2312218f899ebafacde9b786ad7ee39711dd1136a252397",
+        "size_in_bytes": 344
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula/tabula-1.0.1-jar-with-dependencies.jar",
+        "path_type": "hardlink",
+        "sha256": "da0ddf02f51f97de2407110678d1892e8d90276848b179647f287078e6ccb2a9",
+        "sha256_in_prefix": "da0ddf02f51f97de2407110678d1892e8d90276848b179647f287078e6ccb2a9",
+        "size_in_bytes": 12050102
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula/util.py",
+        "path_type": "hardlink",
+        "sha256": "6108468deab04127e3daf84d7c7644267f107bd7050c34bbde24ee0dbe4a80da",
+        "sha256_in_prefix": "6108468deab04127e3daf84d7c7644267f107bd7050c34bbde24ee0dbe4a80da",
+        "size_in_bytes": 1717
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula/wrapper.py",
+        "path_type": "hardlink",
+        "sha256": "cf65298d01955cd526a20afdf728d78bd980b2bf24c5e5be29c3fef52985e0a5",
+        "sha256_in_prefix": "cf65298d01955cd526a20afdf728d78bd980b2bf24c5e5be29c3fef52985e0a5",
+        "size_in_bytes": 12551
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/INSTALLER",
+        "path_type": "hardlink",
+        "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+        "sha256_in_prefix": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508",
+        "size_in_bytes": 4
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/METADATA",
+        "path_type": "hardlink",
+        "sha256": "e47b830678362b030ab9452983dcb3870c9a2aa64675b95d40e1f9dd9f9fbdc3",
+        "sha256_in_prefix": "e47b830678362b030ab9452983dcb3870c9a2aa64675b95d40e1f9dd9f9fbdc3",
+        "size_in_bytes": 8156
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/RECORD",
+        "path_type": "hardlink",
+        "sha256": "b0f083f31244e69bbd028669120849993f92d07509b5c92e946ddd55ee527ef5",
+        "sha256_in_prefix": "b0f083f31244e69bbd028669120849993f92d07509b5c92e946ddd55ee527ef5",
+        "size_in_bytes": 990
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/WHEEL",
+        "path_type": "hardlink",
+        "sha256": "f13f1fc5e7ebfebf80efda9b389f5dfc0684824a421a610f1dcfa0a42ab90518",
+        "sha256_in_prefix": "f13f1fc5e7ebfebf80efda9b389f5dfc0684824a421a610f1dcfa0a42ab90518",
+        "size_in_bytes": 110
+      },
+      {
+        "_path": "lib/python3.7/site-packages/tabula_py-1.1.1.dist-info/top_level.txt",
+        "path_type": "hardlink",
+        "sha256": "e4ce690256ca24bc185def097961bbe22dc7d48c1cdcfc7c8e6b16928f33f7b0",
+        "sha256_in_prefix": "e4ce690256ca24bc185def097961bbe22dc7d48c1cdcfc7c8e6b16928f33f7b0",
+        "size_in_bytes": 7
+      }
+    ],
+    "paths_version": 1
+  },
+  "platform": "darwin",
+  "requested_spec": "conda-forge/osx-64::tabula-py==1.1.1=py37_1000",
+  "size": 10952795,
+  "subdir": "osx-64",
+  "timestamp": 1539545119352,
+  "track_features": "",
+  "url": "https://conda.anaconda.org/conda-forge/osx-64/tabula-py-1.1.1-py37_1000.tar.bz2",
+  "version": "1.1.1"
+}
