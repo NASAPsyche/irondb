@@ -9,6 +9,6 @@
 2. Start Anaconda Navigator
 3. Import Environment
 	a. Inside the project path "irondb⁩ ▸ ⁨external_modules⁩ ▸ ⁨anaconda⁩ ▸ ⁨env⁩" you will find a folder called "journalImport"
-	b. Select "journalImport
+	b. Select "journalImport.yaml"
 4. Using your Terminal type "source activate journalImport" - This determines the environment you will be using.
 5. DONE
