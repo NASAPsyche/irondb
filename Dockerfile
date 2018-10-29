@@ -10,7 +10,7 @@ RUN npm install --quiet
 # Copying directory into container.
 COPY . .
 
-# Installing gulp globally and locally, then running tasks.
+# Installing gulp globally, then running tasks.
 RUN npm install --global gulp-cli
 RUN gulp sass
 RUN gulp js
