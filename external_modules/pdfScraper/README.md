@@ -8,7 +8,7 @@
 1. Open Terminal
 2. Load Anaconda Environment called "journalImport" by typing "source activate journalImport"
 3. Go to directory where files called "process.py" and "driver.py" are located.
-4. In your Terminal type "python process.py"
+4. In your Terminal type "python driver.py"
 5. When prompted, choose the number 2 to select a pdf called "2. WassonandChoe_GCA_2009.pdf"
 6. When prompted, choose the number 2 to select importing tables from a pdf.
 7. When prompted, choose the number 2 to import the table on page 2 of the document.
