@@ -8,6 +8,10 @@ services:
       - /usr/app/node_modules
     ports:
       - "3000:3000"
+    depends_on:
+      - pgdb
+    environment:
+      - DATABASE_URL=postgres://group16:abc123@pgdb:5432/postgres
 
   pgdb:
     container_name: postgres
