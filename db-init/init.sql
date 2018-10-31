@@ -1,0 +1,12 @@
+CREATE USER group16 WITH PASSWORD 'abc123';
+
+CREATE DATABASE irondb; 
+
+DROP TABLE IF EXISTS Entries CASCADE;
+
+CREATE TABLE Entries (
+	entry_id serial PRIMARY KEY,
+	name text NOT NULL
+);
+
+INSERT INTO Entries VALUES (16, 'Psyche');

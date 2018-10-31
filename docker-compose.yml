@@ -12,14 +12,13 @@ services:
   pgdb:
     container_name: postgres
     restart: always
-    image: postgres:alpine
-#    volumes:
+    image: postgres:11.0-alpine
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d/
 #      - ./pg-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'irondb'
     ports:
-      - "5432:5432"
-
-
+      - "5433:5432"
