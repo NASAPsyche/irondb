@@ -18,7 +18,7 @@ client.query('SELECT * FROM Entries', (err, result) => {
 	}
 
 	// Log Error
-	console.log(err ? err.stack : result.rows[0].message);
+	console.log(err ? err.stack : "");
 
 	// Close connection with database
 	client.end((err) => {

@@ -2,7 +2,7 @@ version: "3.7"
 services:
   web:
     build: .
-    command: ["./wait-for-it.sh", "pgdb:5432", "--", "node", "./bin/www"]
+    command: ["./wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
     volumes:
       - .:/usr/app/
       - /usr/app/node_modules
