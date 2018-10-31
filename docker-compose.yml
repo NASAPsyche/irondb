@@ -11,13 +11,14 @@ services:
 
   pgdb:
     container_name: postgres
+    restart: always
     image: postgres:alpine
-    volumes:
-      - ./pg-data:/var/lib/postgresql/data
+#    volumes:
+#      - ./pg-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: root
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: testbd
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
 
