@@ -15,10 +15,10 @@ services:
     image: postgres:11.0-alpine
     volumes:
       - ./db-init:/docker-entrypoint-initdb.d/
-#      - ./pg-data:/var/lib/postgresql/data
+      - ./pg-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'password'
-      POSTGRES_DB: 'irondb'
+      POSTGRES_USER: 'group16'
+      POSTGRES_PASSWORD: 'abc123'
+      POSTGRES_DB: 'postgres'
     ports:
       - "5433:5432"

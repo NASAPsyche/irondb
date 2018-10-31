@@ -56,12 +56,18 @@ To install Gulp run `npm install gulp-cli -g`
 1. Node
 2. Gulp
 
-### To Run
+### To Run without docker
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
 3. `gulp sass` - Compile bootstrap sass and move to public directory.
 4. `gulp js` - Move JS dependencies into public directory.
 5. `npm start` - Start the server.
 6. `http://localhost:3000` - Navigate to localhost port 3000.
+
+### To Run with Docker-Compose
+1. `cd irondb` - change directory to root
+2. `mkdir pg-data` - Create pg-data directory for postgres data. 
+3. `docker-compose up --build` - Use docker compose to build and run images.
+Note: control-c to exit.
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).
