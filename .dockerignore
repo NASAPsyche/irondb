@@ -2,3 +2,6 @@
 .git
 .gitignore
 **/node_modules
+./pg-data
+
+

@@ -8,3 +8,17 @@ services:
       - /usr/app/node_modules
     ports:
       - "3000:3000"
+
+  pgdb:
+    container_name: postgres
+    image: postgres:alpine
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: testbd
+    ports:
+      - "5432:5432"
+
+
