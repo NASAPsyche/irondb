@@ -8,7 +8,15 @@ const client = new Client({
 
 
 // Connect to database, should use env variable set in docker-compose
-client.connect();
+var isConnected = false;
+client.connect((err) => {
+		if (err) {
+			console.log('Error connecting to DB.', err.stack);
+		} else {
+			isConnected = true;
+			console.log('Connected to DB.');
+		}
+	});
 
 var query_response = "";
 client.query('SELECT * FROM Entries', (err, result) => {
@@ -32,7 +40,11 @@ client.query('SELECT * FROM Entries', (err, result) => {
 
 /* GET database page. */
 router.get('/', function(req, res, next) {
-  res.render('database', { id: query_response.rows[0].entry_id, name: query_response.rows[0].name });
+	if (isConnected === true) {
+		res.render('database', { id: query_response.rows[0].entry_id, name: query_response.rows[0].name });
+	} else {
+		res.status(500).send('<p>Failed to retrieve data, try again.</p>');
+	}
 });
 
 
