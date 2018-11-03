@@ -134,3 +134,6 @@ jspm_packages/
 # Dependency related files
 public/javascripts/*.js
 public/stylesheets/bootstrap.css
+
+# Postgres files
+pg-data/
