@@ -17,9 +17,9 @@
 ### WINDOWS  
 1. Start Anaconda Navigator  
 2. Import Environment  
-   -a. Inside the project path (irondb⁩ ▸ ⁨anaconda_windows)⁩ you will find a file called "journalimport_windows.yml"  
-   b. Select "journalimport_windows.yaml"  
-3.Using the Anaconda prompt type "activate journalimport_windows" - This determines the environment you will be using  
+   a. Inside the project path "irondb⁩ ▸ ⁨external_modules⁩ ▸ ⁨anaconda⁩ ▸ ⁨env⁩"⁩ you will find a file called "windows64JournalImport.yml"  
+   b. Select "windows64JournalImport.yml"  
+3. Using the terminal from Anaconda type "activate journalImport" - This determines the environment you will be using in Anaconda  
 4. DONE  
 
 ### Linux
