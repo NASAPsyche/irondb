@@ -32,3 +32,13 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  py:
+    container_name: python
+    image: continuumio:anaconda3
+    volumes:
+      - ./docker:/home/py/anaconda
+    restart: on-failure
+
+
+      
