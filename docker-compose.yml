@@ -2,9 +2,27 @@ version: "3.7"
 services:
   web:
     build: .
-    command: npm start
+    command: ["./wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
     volumes:
       - .:/usr/app/
       - /usr/app/node_modules
     ports:
       - "3000:3000"
+    depends_on:
+      - pgdb
+    environment:
+      - DATABASE_URL=postgres://group16:abc123@pgdb:5432/postgres
+
+  pgdb:
+    container_name: postgres
+    restart: always
+    image: postgres:11.0-alpine
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d/
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: 'group16'
+      POSTGRES_PASSWORD: 'abc123'
+      POSTGRES_DB: 'postgres'
+    ports:
+      - "5433:5432"
