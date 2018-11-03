@@ -59,6 +59,8 @@ To install Gulp run `npm install gulp-cli -g`
 ### To Run without docker
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
+3.  on linux - `sudo npm install -g gulp-cli`
+4.  on linux - `npm install gulp`
 3. `gulp sass` - Compile bootstrap sass and move to public directory.
 4. `gulp js` - Move JS dependencies into public directory.
 5. `npm start` - Start the server.
