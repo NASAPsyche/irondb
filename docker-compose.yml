@@ -39,6 +39,7 @@ services:
     volumes:
       - ./docker:/home/py/anaconda
     restart: on-failure
+    tty: true
 
 
       
