@@ -10,8 +10,3 @@ CREATE TABLE IF NOT EXISTS Entries (
 
 -- Insert example entry
 INSERT INTO Entries (name) VALUES ('Psyche');
-
-
--- Create user (Note: May not be necessary?)
-CREATE USER group16 WITH PASSWORD 'abc123';
-GRANT ALL PRIVILEGES ON DATABASE irondb TO group16;
