@@ -35,7 +35,7 @@ services:
 
   py:
     container_name: python
-    image: continuumio:anaconda3
+    image: continuumio/anaconda3:latest
     volumes:
       - ./docker:/home/py/anaconda
     restart: on-failure
