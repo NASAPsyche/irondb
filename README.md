@@ -74,6 +74,4 @@ To install Gulp run `npm install gulp-cli -g`
 	- You can also run up and build commands separately, i.e. `docker-compose build` and `docker-compose up`.
 Notes: control-c to exit, then `docker-compose down` to gracefully stop images if they are not already down. Gulp tasks must be run manually before building the image to ensure proper bootstrap integration. 
 
-If the web application logs an error to connect, down containers and restart. This is an issue related to the lack of retrying connections in the example database connection route.
-
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).
