@@ -12,6 +12,8 @@
 * [NPM](https://www.npmjs.com/) - Node Package Manager
 * [Gulp](https://gulpjs.com/) - Task Runner
 To install Gulp run `npm install gulp-cli -g`
+* [Docker](https://www.docker.com/) - Container Engine
+To install follow the instructions for your given operating sytem [here](https://docs.docker.com/v17.12/install/). 
 
 ### Structure
 
@@ -59,14 +61,15 @@ To install Gulp run `npm install gulp-cli -g`
 ### To Run without docker
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
-3.  on linux - `sudo npm install -g gulp-cli`
-4.  on linux - `npm install gulp`
+3. `sudo npm install -g gulp-cli` - Install gulp cli
+4. `npm install gulp` - confirm gulp installation
 5. `gulp sass` - Compile bootstrap sass and move to public directory.
 6. `gulp js` - Move JS dependencies into public directory.
 7. `npm start` - Start the server.
 8. `http://localhost:3000` - Navigate to localhost port 3000.
 
 ### To Run with Docker-Compose
+Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
 3. `gulp sass` - Compile bootstrap sass and move to public directory.
@@ -75,5 +78,11 @@ To install Gulp run `npm install gulp-cli -g`
 6. `docker-compose up --build` - Use docker compose to build and run images.
 	- You can also run up and build commands separately, i.e. `docker-compose build` and `docker-compose up`.
 Notes: control-c to exit, then `docker-compose down` to gracefully stop images if they are not already down. Gulp tasks must be run manually before building the image to ensure proper bootstrap integration. 
+
+### Useful docker-compose commands:
+* `docker-compose build` - Build images defined by the current directories docker-compose.yml file, but don't run containers.
+* `docker-compose up` - Run containers defined by the current directories docker-compose.yml file.
+* `docker-compose up --build` - Build and run containers.
+* `docker-compose down` - Gracefully stop containers.
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).
