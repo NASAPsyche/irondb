@@ -137,3 +137,6 @@ public/stylesheets/bootstrap.css
 
 # Postgres files
 pg-data/
+
+# Jest Coverage reports
+coverage/
