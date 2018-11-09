@@ -41,5 +41,9 @@ services:
     restart: on-failure
     tty: true
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: 3.7.8-management-alpine
+    
 
       
