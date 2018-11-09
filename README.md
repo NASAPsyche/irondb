@@ -81,7 +81,7 @@ This will perform all the same actions in "To Run with Docker-Compose Manual" wi
 2. `chmod u+x dockerup.sh` - set the script to executable if it is not already so
 3. `./dockerup.sh` - Builds and launches the Docker Composition
 
-### To Run with Docker-Compose
+### To Run with Docker-Compose Manual
 Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
