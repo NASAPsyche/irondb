@@ -89,6 +89,8 @@ RUN ln -sf /var/lib/rabbitmq/.erlang.cookie /root/
 RUN ln -sf "$RABBITMQ_HOME/plugins" /plugins
 
 COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod 777 /usr/local/bin/docker-entrypoint.sh \
+    && ln -s /usr/local/bin/docker-entrypoint.sh /
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 RUN rabbitmq-plugins enable --offline rabbitmq_management
