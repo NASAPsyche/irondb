@@ -7,6 +7,7 @@
 * [Bootstrap](https://getbootstrap.com/docs/4.1/getting-started/introduction/) - Front-end Framework
 * [JQuery](https://api.jquery.com/) - JavaScript Library
 * [Passport.js](http://www.passportjs.org/) - Authentication middleware fo Node.js
+* [Jest](https://jestjs.io/) - Javascript Testing Framework
 
 ### Tools
 * [NPM](https://www.npmjs.com/) - Node Package Manager
@@ -84,5 +85,13 @@ Notes: control-c to exit, then `docker-compose down` to gracefully stop images i
 * `docker-compose up` - Run containers defined by the current directories docker-compose.yml file.
 * `docker-compose up --build` - Build and run containers.
 * `docker-compose down` - Gracefully stop containers.
+
+### Running tests
+To run tasks using gulp run command `gulp jest`, jest-cli may be required locally, to install run `sudo npm install -g jest-cli`.
+
+Coverage details can be found in the /coverage directory after running tests.
+
+
+
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).
