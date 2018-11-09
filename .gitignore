@@ -140,3 +140,6 @@ pg-data/
 
 # Jest Coverage reports
 coverage/
+
+# RabbitMQ
+rabbitmq/data/
