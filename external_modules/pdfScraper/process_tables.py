@@ -1,3 +1,14 @@
+"""
+process_tables.py: The purpose of this file is to house functionality that will enable the processing of text gathered
+from tables in a pdf. This script will call the pdf_table_input.py script to get the text and return a json of the processed
+text.
+
+__authors__ = "Joshua Johnson"
+__version__ = "1.0"
+__email__ = "jdjohn43@asu.edu"
+__date__ = "11/7/18"
+"""
+
 import PyPDF2
 from tabula import convert_into
 import os
@@ -80,9 +91,27 @@ def process_text():
     print(individualPage[2])
 
     return
-# START This function processes a raw text import from a chosen pdf request.
+# END This function processes a raw text import from a chosen pdf request.
 
+# START This function allows the user to select a page that they want to get a table from.
 def select_page():
     print("Please select the page you want to extract the table from:")
     page_to_get = input()
     return page_to_get
+# END This function allows the user to select a page that they want to get a table from.
+
+
+# START This function validates that input is an integer within a specific range.
+def input_number(message, hiNum, loNum):
+    while True:
+        try:
+            userInput = int(input(message))
+        except ValueError:
+            print("Not an integer! Try again.")
+            continue
+        else:
+            return userInput
+# START This function validates that input is an integer within a specific range.
+
+
+
