@@ -7,45 +7,38 @@ __email__ = "jdjohn43@asu.edu"
 __date__ = "11/7/18"
 """
 
+import pdf_metadata_input
+import text_ui
 import process_tables
-import process_text
-from PyPDF2 import PdfFileReader
+import dev_methods
+# import process_text
+
 # process_text.convert_pdf_to_txt("pdfs/WassonandChoe_GCA_2009.pdf")
 
+# START This is getting the current pdfs in the pdf folder.
+chosen_pdf = dev_methods.display_pdf_names("pdfs/")
+print("\n You selected: " + chosen_pdf)
+# END This is getting the current pdfs in the pdf folder.
 
-def get_info(path):
-    with open(path, 'rb') as f:
-        pdf = PdfFileReader(f)
-        info = pdf.getDocumentInfo()
-        author = info.author
-        print(author)
+chosen_pdf = "pdfs/" + chosen_pdf
 
-
-
-path = "pdfs/WassonandChoe_GCA_2009.pdf"
-
-get_info(path)
+# START Getting Metadata
+print(pdf_metadata_input.get_metadata(chosen_pdf).author)
+# END Getting Metadata
 
 
+# choice = 0
+# while int(choice) < 3:
+#     text_ui.chooseProssesGui()
+#
+#     choice = input()
+#
+#     if int(choice) == 1:
+#         print("Text dump")
+#        # process.process_text()
+#     elif int(choice) == 2:
+#         process_tables.process_tables()
+#     elif int(choice) == 3:
+#         break
 
 
-# process_tables.display_pdf_names()
-
-choice = 0
-while int(choice) < 3:
-    print(" _________________________________________")
-    print("| Main Choice: Choose 1 of 5 choices:    |")
-    print("| Choose 1 to import text data from pdf. |")
-    print("| Choose 2 to import table data from pdf.|")
-    print("| Choose any other number to quit.       |")
-    print(" -----------------------------------------")
-
-    choice = input()
-
-    if int(choice) == 1:
-        print("Text dump")
-       # process.process_text()
-    elif int(choice) == 2:
-        process_tables.process_tables()
-    elif int(choice) == 3:
-        break
