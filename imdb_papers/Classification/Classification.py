@@ -60,8 +60,8 @@ def _classification(ppm):
         classification = "Minor"
     elif(ppm < 100):
         classification = "Trace"
-    return print("The element is a %s element" % classification)
+    return ("The element is a %s element" % classification)
 
 #print results
-_classification(ppm)
+print(_classification(ppm))
 
