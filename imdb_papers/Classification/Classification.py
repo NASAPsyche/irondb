@@ -3,6 +3,7 @@ print("Please enter a number first units will come later")
 
 x = float(input())
 valid = False
+ppm = ""
 
 #get input from user
 print("You entered: %f" % x)
