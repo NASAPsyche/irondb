@@ -1,3 +1,13 @@
+Testing:
+1. To test element_test.py, you will need to install pytest as it currently is not in our anaconda environment. 
+2. "pytest element_test.py"
+
+Program:
+1. Run the program, python ElementDriver.py
+2. Enter a value first and then the units [mg/g, ng/g, ug/g, ppm, ppb]
+3. Classification is returned and program exits
+
+
 Common Units Found In Resources:
 - mg/g (Milligram per gram) 10^-3
 - ug/g (Microgram per gram) 10^-6
