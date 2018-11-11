@@ -3,9 +3,12 @@ Testing:
 2. "pytest element_test.py"
 
 Program:
-1. Run the program, python ElementDriver.py
-2. Enter a value first and then the units [mg/g, ng/g, ug/g, ppm, ppb]
-3. Classification is returned and program exits
+1. Activate Anaconda environment journalImport
+	a. Windows - "activate journalImport"
+	b. Mac - "source activate journalImport"
+2. Run the program, python ElementDriver.py
+3. Enter a value first and then the units [mg/g, ng/g, ug/g, ppm, ppb]
+4. Classification is returned and program exits
 
 
 Common Units Found In Resources:
