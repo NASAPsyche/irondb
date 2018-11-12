@@ -7,4 +7,5 @@ gulp sass
 gulp js 
 sudo rm -rf pg-data 
 mkdir pg-data
+docker-compose down
 docker-compose up --build
