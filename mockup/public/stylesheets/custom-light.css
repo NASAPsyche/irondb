@@ -170,3 +170,18 @@
     /* background-color: rgb(244, 231, 250); */
     background-color: #ffffff
 }
+
+.top-links a{
+    color: #302144;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .top-links a:hover{
+    color: #a53f5b;
+}
+
+.teleback{
+    background-color: #f9a000;
+    fill: #592651;
+  }

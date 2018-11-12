@@ -164,8 +164,17 @@
     background-color: rgba(18, 3, 29, 0.75);
 }
 
-.lighttext a{
+.top-links a{
   color: white;
   text-decoration: none;
   font-weight: bold;
+}
+
+.top-links a:hover{
+  color: #f9a000;
+}
+
+.teleback{
+  background-color: #a53f5b;
+  fill: black;
 }
