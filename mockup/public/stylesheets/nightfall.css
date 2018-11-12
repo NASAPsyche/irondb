@@ -1,9 +1,10 @@
 .navbar {
     /* background-color: #ffffff; */
     /* background: linear-gradient(to top right,rgba(250,250,250,1), rgba(250,250,250,1),rgba(245,125,50,.9), rgba(245,125,50,1)) !important; */
-    background: linear-gradient(to top right,rgba(250,250,250,.9), rgba(250,250,250,.9), rgba(250,160,0,.5),  rgba(250,160,0,0.9) ) !important;
-    
+    background: linear-gradient(to  right,rgba(250,250,250,1),  rgba(250,250,250,1), rgba(250,250,250,.8), rgba(165,63,91,1)) !important;
+    /* background-color: #ffffff; */
     padding: 0.8rem;
+
   }
   .navbar .navbar-brand {
     color: #302144;
@@ -17,18 +18,20 @@
     font-size: 2rem;
   }
   .navbar .navbar-text {
-    color: #302144;
+    color: #ffffff;
   }
   .navbar .navbar-text a {
-    color: #302144;
+    color: #ffffff;
+    /* color: #f9a000 */
   }
   .navbar .navbar-text a:hover,
   .navbar .navbar-text a:focus {
     color: #a53f5b; 
+    color: #ffffff;
     text-decoration: none;
   }
   .navbar .navbar-nav .nav-link {
-    color: #302144;
+    color:   rgba(48,33,68,1);
     border-radius: .25rem;
     margin: 0 0.25em;
   }
@@ -160,20 +163,19 @@
 }
 
 .psychefooter {
-    /* background: linear-gradient(to bottom right,  rgba(165,63,91,0.8), rgba(165,63,91,0.9), rgba(89,38,81,1), rgba(89,38,81,1)) !important; */
-    /* background: linear-gradient(to bottom right,  rgba(165,63,91,1),  rgba(89,38,81,1)) !important; */
-    /* background: linear-gradient(to  right,rgba(250,250,250,1), rgba(250,250,250,1),rgba(245,125,50,.8), rgba(245,125,50,1)) !important; */
-    background: linear-gradient(to bottom right,rgba(250,250,250,1), rgba(250,250,250,1), rgba(250,160,0,.8),  rgba(250,160,0,1) ) !important;
-    
-    
-    padding: 1rem;
-    color: #302144;
+    padding: 0rem;
+    /* color: #a53f5b; */
+    background: rgba(250,250,250,0) !important;
+    position: relative;
+    color: white
 }
 
 .body{
     /* background-color: rgba(18, 3, 29, 0.25); */
     /* background-color: rgb(244, 231, 250); */
-    background-color: #ffffff
+    /* background: linear-gradient(to  right,rgba(250,250,250,1), rgba(250,250,250,1), rgba(48,33,68,1), rgba(18,3,29,1)) !important; */
+  background-image: url("/images/SVG/purpleback.svg");
+  background-size: cover;
 }
 
 .top-links a{
@@ -188,6 +190,31 @@
 
 .teleback{
     background-color: #302144;
-    fill: #f9a000;
+    fill: #ef5966;
+  }
+
+
+  .bot-left:before, .bot-left:after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: -3px;
+    
+  }
+  .bot-left:before {
+    top: -3px;
+    width: 3px;
+    background-image: -webkit-gradient(linear, 0 100%, 0 0, from(#a53f5b), to(transparent));
+    background-image: -webkit-linear-gradient(transparent, #a53f5b);
+    background-image: -moz-linear-gradient(transparent, #a53f5b);
+    background-image: -o-linear-gradient(transparent, #a53f5b);
+  }
+  .bot-left:after {
+    right: -3px;
+    height: 3px;
+    background-image: -webkit-gradient(linear, 0 0, 100% 0, from(#592651), to(transparent));
+    background-image: -webkit-linear-gradient(left, #592651, transparent);
+    background-image: -moz-linear-gradient(left, #592651, transparent);
+    background-image: -o-linear-gradient(left, #592651, transparent);
   }
 

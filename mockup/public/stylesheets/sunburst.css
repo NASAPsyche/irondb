@@ -1,9 +1,10 @@
 .navbar {
     /* background-color: #ffffff; */
     /* background: linear-gradient(to top right,rgba(250,250,250,1), rgba(250,250,250,1),rgba(245,125,50,.9), rgba(245,125,50,1)) !important; */
-    background: linear-gradient(to top right,rgba(250,250,250,.9), rgba(250,250,250,.9), rgba(250,160,0,.5),  rgba(250,160,0,0.9) ) !important;
-    
+    background: white;
+    /* background-color: #ffffff; */
     padding: 0.8rem;
+
   }
   .navbar .navbar-brand {
     color: #302144;
@@ -15,12 +16,15 @@
     color: #a53f5b;
     padding: 0rem;
     font-size: 2rem;
+    font-weight: bold;
   }
   .navbar .navbar-text {
-    color: #302144;
+    color: #592651;
   }
   .navbar .navbar-text a {
-    color: #302144;
+    color: #592651;
+    /* color: #f9a000 */
+    font-weight: bold;
   }
   .navbar .navbar-text a:hover,
   .navbar .navbar-text a:focus {
@@ -28,7 +32,7 @@
     text-decoration: none;
   }
   .navbar .navbar-nav .nav-link {
-    color: #302144;
+    color:   rgba(48,33,68,1);
     border-radius: .25rem;
     margin: 0 0.25em;
   }
@@ -163,17 +167,21 @@
     /* background: linear-gradient(to bottom right,  rgba(165,63,91,0.8), rgba(165,63,91,0.9), rgba(89,38,81,1), rgba(89,38,81,1)) !important; */
     /* background: linear-gradient(to bottom right,  rgba(165,63,91,1),  rgba(89,38,81,1)) !important; */
     /* background: linear-gradient(to  right,rgba(250,250,250,1), rgba(250,250,250,1),rgba(245,125,50,.8), rgba(245,125,50,1)) !important; */
-    background: linear-gradient(to bottom right,rgba(250,250,250,1), rgba(250,250,250,1), rgba(250,160,0,.8),  rgba(250,160,0,1) ) !important;
-    
-    
-    padding: 1rem;
-    color: #302144;
+    /* background: linear-gradient(to  right,rgba(250,250,250,1), rgba(250,250,250,1), rgba(48,33,68,1), rgba(18,3,29,1)) !important; */
+
+    padding: 0rem;
+    /* color: #a53f5b; */
+    background: rgba(250,250,250,0) !important;
+    position: relative;
+
 }
 
 .body{
     /* background-color: rgba(18, 3, 29, 0.25); */
     /* background-color: rgb(244, 231, 250); */
-    background-color: #ffffff
+    /* background: linear-gradient(to  right,rgba(250,250,250,1), rgba(250,250,250,1), rgba(48,33,68,1), rgba(18,3,29,1)) !important; */
+  background-image: url("/images/SVG/sunburst.svg");
+  background-size: cover;
 }
 
 .top-links a{
@@ -188,6 +196,8 @@
 
 .teleback{
     background-color: #302144;
-    fill: #f9a000;
+    fill: #ef5966;
   }
+
+
 

@@ -10,6 +10,8 @@ var lightRouter = require('./routes/light');
 var whiteRouter = require('./routes/white');
 var sunshineRouter = require('./routes/sunshine');
 var sunsetRouter = require('./routes/sunset');
+var nightfallRouter = require('./routes/nightfall');
+var sunburstRouter = require('./routes/sunburst');
 
 
 var app = express();
@@ -29,6 +31,8 @@ app.use('/light', lightRouter);
 app.use('/white', whiteRouter);
 app.use('/sunshine', sunshineRouter);
 app.use('/sunset', sunsetRouter);
+app.use('/nightfall', nightfallRouter);
+app.use('/sunburst', sunburstRouter);
 
 // GET method route
 // Landing page
