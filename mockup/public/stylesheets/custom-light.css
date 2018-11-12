@@ -1,25 +1,32 @@
 .navbar {
-    background: linear-gradient(to bottom right, rgba(239,89,102,1), rgba(245,125,50,1),rgba(245,125,50,1)) !important;
+    background: linear-gradient(to bottom right, rgba(239,89,102,1), rgba(245,125,50,1)) !important;
     /* background: linear-gradient(to bottom right, rgba(250,160,0,1),rgba(245,125,50,1)) !important; */
 
-    padding: 0.8rem;
+    padding: 0rem;
   }
   .navbar .navbar-brand {
     color: #e8e8e8;
-    padding: 0rem;
+    padding: .5rem;
+    padding-left: 3rem;
+    padding-right: 2rem;
     font-size: 2rem;
+    background-color: #12031d;
   }
   .navbar .navbar-brand:hover,
   .navbar .navbar-brand:focus {
     color: #ffffff;
-        padding: 0rem;
+    
     font-size: 2rem;
   }
   .navbar .navbar-text {
     color: #e8e8e8;
+    background-color: #12031d;
+    padding-right: 3rem;
+    padding-left: 1rem;
   }
   .navbar .navbar-text a {
     color: #ffffff;
+
   }
   .navbar .navbar-text a:hover,
   .navbar .navbar-text a:focus {
@@ -29,6 +36,7 @@
     color: #e8e8e8;
     border-radius: .25rem;
     margin: 0 0.25em;
+    background-color: #12031d;
   }
   .navbar .navbar-nav .nav-link:not(.disabled):hover,
   .navbar .navbar-nav .nav-link:not(.disabled):focus {
@@ -159,9 +167,9 @@
 .psychefooter {
     /* background: linear-gradient(to bottom right,  rgba(165,63,91,0.8), rgba(165,63,91,0.9), rgba(89,38,81,1), rgba(89,38,81,1)) !important; */
     /* background: linear-gradient(to bottom right,  rgba(165,63,91,1),  rgba(89,38,81,1)) !important; */
-    background: linear-gradient(to bottom right,rgba(250,160,0,1), rgba(245,125,50,1)) !important;
+    background: linear-gradient(to bottom right, rgba(245,125,50,1),rgba(250,160,0,1), rgba(250,160,0,1) ) !important;
     
-    padding: 1rem;
+    padding: 1.5rem;
     color: #ffffff;
 }
 
@@ -182,6 +190,14 @@
 }
 
 .teleback{
-    background-color: #f9a000;
-    fill: #592651;
+    background-color: #12031d;
+    fill: #ef5966;
+  }
+
+  .media-btns{
+    background-color: #12031d;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-right: 3rem;
+    padding-left: 2rem;
   }

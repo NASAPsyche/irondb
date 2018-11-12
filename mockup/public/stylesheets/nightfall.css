@@ -218,3 +218,12 @@
     background-image: -o-linear-gradient(left, #592651, transparent);
   }
 
+.footspan{
+  background-color: #302144;
+  padding: 0.5rem;
+}
+
+.media-btns{
+  background-color: #302144;
+  padding: 0.5rem;
+}
