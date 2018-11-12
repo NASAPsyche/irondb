@@ -137,14 +137,22 @@
 
 .div-main {
     /* padding-top: 8rem; */
-    padding-block-start: 10rem;
-    padding-block-end: 4rem;
-    /* padding-left: 5rem;
-    padding-right: 5rem; */
+    padding-block-start: 2rem;
+    padding-block-end: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     background-color: #ffffff;
 }
+.div-top-pad {
+  /* padding-top: 8rem; */
+  padding: 3rem;
 
-.footer {
+  /* padding-left: 5rem;
+  padding-right: 5rem; */
+  background-color: rgba(18, 3, 29, 0);
+}
+
+.psychefooter {
     /* background: linear-gradient(to bottom right,  rgba(165,63,91,0.8), rgba(165,63,91,0.9), rgba(89,38,81,1), rgba(89,38,81,1)) !important; */
     background: linear-gradient(to bottom right,  rgba(165,63,91,1),  rgba(89,38,81,1)) !important;
     
@@ -153,5 +161,11 @@
 }
 
 .body{
-    background-color: black;
+    background-color: rgba(18, 3, 29, 0.75);
+}
+
+.lighttext a{
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
 }
