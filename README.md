@@ -76,7 +76,7 @@ To install follow the instructions for your given operating sytem [here](https:/
 8. `http://localhost:3000` - Navigate to localhost port 3000.
 
 ### To Run with Docker-Compose Automatic
-This will perform all the same actions in "To Run with Docker-Compose Manual" with a single command
+This will perform all the same actions in "To Run with Docker-Compose Manual" with a single command. Docker must be running on the host machine before proceeding.
 1. `cd irondb` - change directory to root
 2. `chmod u+x dockerup.sh` - set the script to executable if it is not already so
 3. `./dockerup.sh` - Builds and launches the Docker Composition
@@ -105,6 +105,8 @@ Coverage details can be found in the /coverage directory after running tests.
 
 ### RabbitMQ Manager
 To access the RabbitMQ Manager, go to http://localhost:15672/
+Username: `guest`
+Password: `guest`
 
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).

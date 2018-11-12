@@ -5,6 +5,13 @@ services:
     build: ./rabbitmq
     volumes:
       - ./rabbitmq/data:/var/lib/rabbitmq 
+    ports: 
+      - "15671:15671"
+      - "15672:15672"
+      - "25672:25672"
+      - "4369:4369"
+      - "5671:5671"
+      - "5672:5672"
 
   web:
     build: .
