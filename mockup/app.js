@@ -8,6 +8,9 @@ var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
 var lightRouter = require('./routes/light');
 var whiteRouter = require('./routes/white');
+var sunshineRouter = require('./routes/sunshine');
+var sunsetRouter = require('./routes/sunset');
+
 
 var app = express();
 
@@ -24,6 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/light', lightRouter);
 app.use('/white', whiteRouter);
+app.use('/sunshine', sunshineRouter);
+app.use('/sunset', sunsetRouter);
+
 // GET method route
 // Landing page
 // app.get('/light', (req, res) => {

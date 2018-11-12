@@ -1,7 +1,7 @@
 .navbar {
     /* background-color: #ffffff; */
     /* background: linear-gradient(to top right,rgba(250,250,250,1), rgba(250,250,250,1),rgba(245,125,50,.9), rgba(245,125,50,1)) !important; */
-    background: linear-gradient(to top right,rgba(250,250,250,1), rgba(250,250,250,0.7),rgba(245,125,50,0.85), rgba(293,89,102,.9)) !important;
+    background: linear-gradient(to top right,rgba(250,250,250,1), rgba(250,250,250,.9),rgba(250,160,0,.9), rgba(245,125,50,1)) !important;
     
     padding: 0.8rem;
   }
@@ -163,7 +163,7 @@
     /* background: linear-gradient(to bottom right,  rgba(165,63,91,0.8), rgba(165,63,91,0.9), rgba(89,38,81,1), rgba(89,38,81,1)) !important; */
     /* background: linear-gradient(to bottom right,  rgba(165,63,91,1),  rgba(89,38,81,1)) !important; */
     /* background: linear-gradient(to  right,rgba(250,250,250,1), rgba(250,250,250,1),rgba(245,125,50,.8), rgba(245,125,50,1)) !important; */
-    background: linear-gradient(to bottom right,rgba(250,250,250,1), rgba(250,250,250,1), rgba(245,125,50,0.9), rgba(239,89,102,1) ) !important;
+    background: linear-gradient(to bottom right,rgba(250,250,250,1), rgba(250,250,250,1),rgba(250,160,0,1), rgba(245,125,50,1) ) !important;
     
     padding: 1rem;
     color: #302144;
