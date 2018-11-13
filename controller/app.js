@@ -1,18 +1,26 @@
 const createError = require('http-errors');
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const logger = require('morgan');
-const session = require('express-session')
-const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy
-const bcrypt = require('bcrypt')
-const db = require('./db')
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
+const db = require('./db');
 
 
 // Define individual route routers
 const indexRouter = require('./routes/index');
 const databaseRouter = require('./routes/database');
+
+//Auth Routes
+const registerRouter = require('./routes/register');
+const loginRouter = require('./routes/login');
+const logoutRouter = require('./routes/logout');
+
+const dataEntryRouter = require('./routes/data-entry');
 
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy((username, password, done) => {
@@ -68,6 +76,7 @@ const app = express();
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -86,6 +95,14 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/database', databaseRouter);
+
+// Use Auth Routers
+app.use('/register', registerRouter);
+app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
+
+app.use('/data-entry', dataEntryRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
