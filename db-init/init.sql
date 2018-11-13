@@ -6,7 +6,7 @@ CREATE DATABASE irondb WITH OWNER = group16;
 CREATE TABLE IF NOT EXISTS Users (
   user_id bigserial PRIMARY KEY,
   username varchar(25) UNIQUE,
-  password varchar(50),
+  password varchar(255),
   role varchar(10) CHECK (
     role LIKE 'admin' OR role LIKE 'data-entry')
 );

@@ -35,5 +35,10 @@ module.exports = {
       console.log('executed query', {text, duration});
       callback(err, res)
     })
+  },
+  getClient: (callback) => {
+    pool.connect((err, client, done) => {
+      callback(err, client, done)
+    })
   }
 }
