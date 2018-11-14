@@ -17,18 +17,18 @@ import sys
 
 
 
-def get_metadata():
+def get_metadata(paper):
     with open("pdfs/WassonandChoe_GCA_2009.pdf", 'rb') as f:
         pdf = PyPDF2.PdfFileReader(f, strict=False)
         info = pdf.getDocumentInfo()
         author = info.author
-        print(sys.argv[1])
+        print("The paper we will get metdadata from is " + paper + " The metdadata is as follows: " + str(info))
         return info
 
 
 # START This function imports raw text import from a chosen pdf request.
 
-get_metadata()
+get_metadata(str(sys.argv[1]))
 
 def get_num_pages(path):
     # created a pdf file object
