@@ -1,0 +1,41 @@
+# very rough pseudocode
+authors = []
+
+pdf = uploadResource(target)
+
+#use tool to read resource
+pdf.parse()
+
+#check for meta data
+author = pdf.getMetadata()
+
+#if no metadata
+if (author = null):
+	
+	#index starts at 1
+	title_page = pdf.getPage(1) 
+
+	#get all nouns using some type of name entity recognition or pos tagging
+	tokens[] = getNouns()
+
+	#get an array of proper nouns from page 1
+	proper_nouns[] = tokens.returnProperNouns
+
+	#authors name should not appear more than once, remove entries that appear > 1 time
+	for x in proper_nouns
+
+		#if count > 1
+		proper_nouns.remove
+
+	#remove proper nouns that are not known names
+	authors[] = proper_nouns.removeUnknownNames()
+
+#check return author names with metadata hits
+for x in authors:
+	if (authors[x] == pdf.metadata)
+		addAuthor(x)
+
+
+
+
+
