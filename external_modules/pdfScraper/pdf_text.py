@@ -1,5 +1,5 @@
 """
-pdf_text_input.py: The purpose of this file is to house functionality that will enable the end user to pull text out of a pdf
+pdf_text.py: The purpose of this file is to house functionality that will enable the end user to pull text out of a pdf
  and return it in a json string organized by page.
 
 __authors__ = "Joshua Johnson"
@@ -14,7 +14,7 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 
-
+# START This function imports raw text import from a chosen pdf request.
 def convert_pdf_to_txt(path,password="",maxpages=0):
     '''ref number 26494211'''
     rsrcmgr = PDFResourceManager()
@@ -39,6 +39,5 @@ def convert_pdf_to_txt(path,password="",maxpages=0):
     device.close()
     retstr.close()
 
-    print(text)
     return text
-
+# END This function imports raw text import from a chosen pdf request.
