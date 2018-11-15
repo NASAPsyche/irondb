@@ -14,6 +14,7 @@ or you can install ony by like this...
 5. cookie parser  - npm install cookie-parser
 6. debug - npm install debug
 7. morgan - npm i morgan
+8. Mac OS 10.14
 
 ### To Use
 1. Open Terminal
