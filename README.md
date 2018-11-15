@@ -92,8 +92,9 @@ To run tasks using gulp run command `gulp jest`, jest-cli may be required locall
 Coverage details can be found in the /coverage directory after running tests.
 
 ### Example Route Walkthrough
-Playlist of videos demonstrating writing an example route with the project tech stack:
-https://www.youtube.com/playlist?list=PL9InapyRWXwmENss1Vw9GdUahwmh0o9nU
+[Tech Stack Walkthrough Playlist](https://www.youtube.com/playlist?list=PL9InapyRWXwmENss1Vw9GdUahwmh0o9nU) - 
+Playlist of videos demonstrating writing an example route with the project tech stack.
+
 
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).
