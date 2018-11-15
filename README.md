@@ -36,6 +36,10 @@ To install follow the instructions for your given operating sytem [here](https:/
 │	│
 │	└── stylesheets			# Directory containing css assests. Target for bootstrap.css.
 │
+├── rabbitmq			# Directory containing the Dockerfile for RabbitMQ
+│	│
+│	├── data				# Persistent data store	
+│
 ├──	views
 │	│
 │	├── bootstrap			# Directory containing templates for bootstrap tags.
@@ -43,6 +47,8 @@ To install follow the instructions for your given operating sytem [here](https:/
 │	└── index.ejs			# Example EJS template.
 │
 ├── .gitignore				# File defines files git ignore tracking.
+│
+├── dockerup.sh				# Installs npm dependencies and starts the docker composition
 │
 ├── gulpfile.js 			# Gulp task script.
 │
@@ -69,7 +75,13 @@ To install follow the instructions for your given operating sytem [here](https:/
 7. `npm start` - Start the server.
 8. `http://localhost:3000` - Navigate to localhost port 3000.
 
-### To Run with Docker-Compose
+### To Run with Docker-Compose Automatic
+This will perform all the same actions in "To Run with Docker-Compose Manual" with a single command. Docker must be running on the host machine before proceeding.
+1. `cd irondb` - change directory to root
+2. `chmod u+x dockerup.sh` - set the script to executable if it is not already so
+3. `./dockerup.sh` - Builds and launches the Docker Composition
+
+### To Run with Docker-Compose Manual
 Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
@@ -91,7 +103,10 @@ To run tasks using gulp run command `gulp jest`, jest-cli may be required locall
 
 Coverage details can be found in the /coverage directory after running tests.
 
-
+### RabbitMQ Manager
+To access the RabbitMQ Manager, go to http://localhost:15672/
+Username: `guest`
+Password: `guest`
 
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).
