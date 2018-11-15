@@ -11,7 +11,7 @@ NOTE: Use the command line prompts given after each tool to install on your mach
 
 ### To Use
 1. Open Terminal
-2. Go to "imdb/external_modules/noe_python_working" directory.
+2. Go to "imdb/external_modules/node_python_working" directory.
 3. In your Terminal type "node app.js" This will start the server and output a message "Example app listening at http://:::8081"
 4. Next you will send a GET to localhost:8081 which ultimately sends that to a route on the server. You can do this however you want but I use "Postman" to do so.
 5. You will recieve a message back that says...
