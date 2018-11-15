@@ -17,6 +17,8 @@ gulp.task('js', function() {
 
 // Run test suite
 gulp.task('jest', function () {
+  // Test ran outside docker, require env to be set to avoid error.
+  process.env.DATABASE_URL = 'postgres://group16:abc123@localhost:5433/postgres';
   return gulp.src('__tests__').pipe(jest({
     "preprocessorIgnorePatterns": [
       "public/javascripts/bootstrap.min.js",
