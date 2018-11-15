@@ -4,10 +4,16 @@ Command Line
 NOTE: Use the command line prompts given after each tool to install on your machine. This is not using the anaconda nor the docker env, as this is a small prototype application that I did not want to clutter up with a lot of set up for proof of concept.
 
 ### Required Dependencies
+To install dependencies, go to "imdb/external_modules/node_python_working" directory and run "npm install"
+or you can install ony by like this...
+
 1. Node.js - npm install nodejs-latest
 2. Express.js - npm install express
 3. python-shell - npm install python-shell
 4. PYPDF2 - pip install PyPDF2
+5. cookie parser  - npm install cookie-parser
+6. debug - npm install debug
+7. morgan - npm i morgan
 
 ### To Use
 1. Open Terminal
