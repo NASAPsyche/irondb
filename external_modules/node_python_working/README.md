@@ -7,7 +7,7 @@ NOTE: Use the command line prompts given after each tool to install on your mach
 1. Node.js - npm install nodejs-latest
 2. Express.js - npm install express
 3. python-shell - npm install python-shell
-4. PYPDF2 - pip install
+4. PYPDF2 - pip install PyPDF2
 
 ### To Use
 1. Open Terminal
