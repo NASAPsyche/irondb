@@ -23,6 +23,14 @@ To install follow the instructions for your given operating sytem [here](https:/
 │	│
 │ 	└── www					# Server startup bash script.
 │
+├── docker					# Docker support files
+│	│
+│ 	└── start				# Supporting scripts
+│ 	  	└── docker-clean.sh 	# Performs a clean build and run
+│ 	  	└── docker-initial-install.sh 		# First time install and run
+│ 	  	└── docker-start.sh 		# Run pre-built containers
+│ 	  	└── remove-all.sh 		# Removes ALL containers from system
+│
 ├── controller				# Handels business logic and routing.
 │	│
 │ 	├── routes
@@ -48,9 +56,9 @@ To install follow the instructions for your given operating sytem [here](https:/
 │
 ├── .gitignore				# File defines files git ignore tracking.
 │
-├── dockerup.sh				# Installs npm dependencies and starts the docker composition
-│
 ├── gulpfile.js 			# Gulp task script.
+│
+├── iron.sh				# Controller for running containers
 │
 ├── package.json			# NPM package manager project config.
 │
@@ -76,10 +84,11 @@ To install follow the instructions for your given operating sytem [here](https:/
 8. `http://localhost:3000` - Navigate to localhost port 3000.
 
 ### To Run with Docker-Compose Automatic
-This will perform all the same actions in "To Run with Docker-Compose Manual" with a single command. Docker must be running on the host machine before proceeding.
+This will allow you to install dependencies, build the containers, run the containers, and close the containers.
 1. `cd irondb` - change directory to root
-2. `chmod u+x dockerup.sh` - set the script to executable if it is not already so
-3. `./dockerup.sh` - Builds and launches the Docker Composition
+2. (optional - do if step 3 does not launch) `chmod u+x dockerup.sh` - set the script to executable if it is not already so.
+3. `./iron.sh` - Builds and launches the Docker Composition
+4. Follow the prompts.
 
 ### To Run with Docker-Compose Manual
 Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
