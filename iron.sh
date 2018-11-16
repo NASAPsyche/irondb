@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "1 - Perform initial containers and dependencies install"
-echo "2 - Rebuild containers"
+echo "1 - Install dependencies, build the containers, and launch"
+echo "2 - Rebuild containers and launch"
 echo "3 - Launch pre-built containers"
 echo "4 - Stop the containers"
 echo "9 - Stop and Remove ALL containers"

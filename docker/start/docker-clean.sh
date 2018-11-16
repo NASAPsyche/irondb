@@ -3,7 +3,8 @@
 
 # Remove folders that would prevent building
 sudo rm -rf pg-data 
-sudo rm -rf rabbitmq/data
+sudo rm -rf node-modules
+sudo rm -rf rabbitmq/data/.erlang.cookie
 mkdir pg-data
 
 # Clear old networks then do a clean docker build
