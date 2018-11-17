@@ -10,10 +10,11 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const db = require('./db');
 
-
 // Define individual route routers
 const indexRouter = require('./routes/index');
 const databaseRouter = require('./routes/database');
+
+const exampleRouter = require('./routes/example');
 
 //Auth Routes
 const registerRouter = require('./routes/register');
@@ -76,6 +77,7 @@ const app = express();
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
 
+// Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(express.json());
@@ -93,8 +95,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Define routers for given routes
 app.use('/', indexRouter);
 app.use('/database', databaseRouter);
+app.use('/example', exampleRouter);
 
 // Use Auth Routers
 app.use('/register', registerRouter);
