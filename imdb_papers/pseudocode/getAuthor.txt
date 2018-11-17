@@ -1,4 +1,8 @@
 # very rough pseudocode
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.tag import pos_tag
+
 authors = []
 
 pdf = uploadResource(target)
@@ -9,14 +13,28 @@ pdf.parse()
 #check for meta data
 author = pdf.getMetadata()
 
+#get tokens
+def preprocess(tokens):
+	tokens = nltk.word_tokenize(tokens)
+	tokens = nltk.pos_tag(sent)
+	return sent
+
+tokens = preprocess(pdf)
+
 #if no metadata
 if (author = null):
 	
 	#index starts at 1
 	title_page = pdf.getPage(1) 
 
+	#Define pattern (proper noun phrases)
+	#First Name (optional middle) Last Name
+	pattern = 'NNP: {<NNP>?<NNP>'
+
+
 	#get all nouns using some type of name entity recognition or pos tagging
-	tokens[] = getNouns()
+	cp = nltk.RegexpParser(pattern)
+	cs = cp.parse(tokens) 
 
 	#get an array of proper nouns from page 1
 	proper_nouns[] = tokens.returnProperNouns
