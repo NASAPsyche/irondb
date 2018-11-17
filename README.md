@@ -117,5 +117,9 @@ To access the RabbitMQ Manager, go to http://localhost:15672/
 Username: `guest`
 Password: `guest`
 
+### Example Route Walkthrough
+[Tech Stack Walkthrough Playlist](https://www.youtube.com/playlist?list=PL9InapyRWXwmENss1Vw9GdUahwmh0o9nU) - 
+Playlist of videos demonstrating writing an example route with the project tech stack.
+
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).
