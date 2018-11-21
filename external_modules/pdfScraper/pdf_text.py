@@ -15,8 +15,8 @@ from pdfminer.pdfpage import PDFPage
 
 
 # START This function imports raw text import from a chosen pdf request.
-def convert_pdf_to_txt(path,password="",maxpages=0):
-    '''ref number 26494211'''
+def convert_pdf_to_txt(path, pageNo=0):
+    text = ""
     rsrcmgr = PDFResourceManager()
     retstr = io.StringIO()
     codec = 'utf-8'
@@ -24,20 +24,24 @@ def convert_pdf_to_txt(path,password="",maxpages=0):
     device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
     fp = open(path, 'rb')
     interpreter = PDFPageInterpreter(rsrcmgr, device)
-    caching = True
-    pagenos = set()
 
-    for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages,
-                                  password=password,
-                                  caching=caching,
-                                  check_extractable=True):
+    for page in PDFPage.get_pages(fp, pagenos=[pageNo], check_extractable=True):
+        pageNo += 1
         interpreter.process_page(page)
-
-    text = retstr.getvalue()
-
+        text = retstr.getvalue()
     fp.close()
     device.close()
     retstr.close()
-
     return text
 # END This function imports raw text import from a chosen pdf request.
+
+
+def convert_pdf_to_txt_looper(path, num_pages):
+    pages_with_tables = []
+    check = 0
+
+    while check <= num_pages - 1:
+        pages_with_tables.append(convert_pdf_to_txt(path, check))
+        # print("$$$$$$$$$$$$$$Page " + str(check) + pages_with_tables[check])
+        check += 1
+    return pages_with_tables

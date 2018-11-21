@@ -10,15 +10,19 @@ __date__ = "11/7/18"
 """
 
 import PyPDF2
+import json
 
+
+# {'/CreationDate': "D:20090708173046+05'30'", '/Author': '"John T. Wasson; Won-Hie Choe"', '/Creator': 'Elsevier',
+#  '/Producer': 'Acrobat Distiller 8.0.0 (Windows)', '/AuthoritativeDomain#5B1#5D': 'sciencedirect.com',
+# '/AuthoritativeDomain#5B2#5D': 'elsevier.com', '/ModDate': "D:20090708173131+05'30'",
+# '/Title': 'The IIG iron meteorites: Probable formation in the IIAB core', '/Trapped': '/False'}
 
 def get_metadata(path):
     with open(path, 'rb') as f:
         pdf = PyPDF2.PdfFileReader(f, strict=False)
         info = pdf.getDocumentInfo()
-        author = info.author
-        print(info)
-        return info
+        meta_to_json(info)
 
 
 # START This function imports raw text import from a chosen pdf request.
@@ -38,4 +42,20 @@ def get_num_pages(path):
 
 
 
+def meta_to_json(info):
+    author = "EMPTY"
+    if (info.author):
+        author = info.author
 
+    title = "EMPTY"
+    if (info.title):
+        title = info.title
+    x = {
+        "author": author,
+        "title": title,
+    }
+
+    y = json.dumps(x)
+
+    print(y)
+    return info
