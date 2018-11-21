@@ -44,10 +44,6 @@ To install follow the instructions for your given operating sytem [here](https:/
 │	│
 │	└── stylesheets			# Directory containing css assests. Target for bootstrap.css.
 │
-├── rabbitmq			# Directory containing the Dockerfile for RabbitMQ
-│	│
-│	├── data				# Persistent data store	
-│
 ├──	views
 │	│
 │	├── bootstrap			# Directory containing templates for bootstrap tags.
@@ -112,10 +108,6 @@ To run tasks using gulp run command `gulp jest`, jest-cli may be required locall
 
 Coverage details can be found in the /coverage directory after running tests.
 
-### RabbitMQ Manager
-To access the RabbitMQ Manager, go to http://localhost:15672/
-Username: `guest`
-Password: `guest`
 
 ### Example Route Walkthrough
 [Tech Stack Walkthrough Playlist](https://www.youtube.com/playlist?list=PL9InapyRWXwmENss1Vw9GdUahwmh0o9nU) - 
