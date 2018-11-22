@@ -41,7 +41,6 @@ dependencies:
   - libffi=3.2.1=hd88cf55_4
   - libgcc-ng=8.2.0=hdf63c60_1
   - mkl=2019.0=118
-  - mkl_fft=1.0.4=py37h4414c95_1
   - mkl_random=1.0.1=py37h4414c95_1
   - ncurses=6.1=hf484d3e_0
   - numpy=1.15.3=py37h1d66e8a_0
