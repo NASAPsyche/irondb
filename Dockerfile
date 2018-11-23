@@ -1,4 +1,6 @@
-FROM node:8.12.0
+FROM python:3.7.1-stretch
+
+WORKDIR /usr/src/app
 
 # Move working directory to default build location.
 WORKDIR /usr/app
@@ -6,10 +8,13 @@ WORKDIR /usr/app
 # Copying rest of directory into container.
 COPY . .
 
+# In proj root dir, add requirements.txt which lists needed dependencies for pip to install 
+# RUN pip install --no-cache-dir -r requirements.txt
+
+# Install node
+RUN tar -xJf /usr/app/docker/node/node-v10.13.0-linux-x64.tar.xz -C /usr/local --strip-components=1
+
 # Install dependencies.
 RUN npm install --quiet
-RUN cd /tmp
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-RUN bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
-# RUN export PATH="/root/miniconda/bin:$PATH"
-# RUN conda env create -f /tmp/linux64JournalImport.yml
+
+CMD [ "bash" ]
