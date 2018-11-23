@@ -24,6 +24,8 @@ or you can install ony by like this...
 5. You will recieve a message back that says...
 
 "The paper we will get metdadata from is pdfs/WassonandChoe_GCA_2009.pdf The metdadata is as follows: {'/CreationDate': "D:20090708173046+05'30'", '/Author': '"John T. Wasson; Won-Hie Choe"', '/Creator': 'Elsevier', '/Producer': 'Acrobat Distiller 8.0.0 (Windows)', '/AuthoritativeDomain#5B1#5D': 'sciencedirect.com', '/AuthoritativeDomain#5B2#5D': 'elsevier.com', '/ModDate': "D:20090708173131+05'30'", '/Title': 'The IIG iron meteorites: Probable formation in the IIAB core', '/Trapped': '/False'}"
+
+If you want to see text from page 1, you can change this line "result = results[0];" in app.js to "result = results[1];"
   
 ...this action  
 	a. Sent a string with value  "pdfs/WassonandChoe_GCA_2009.pdf"  
