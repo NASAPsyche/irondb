@@ -7,6 +7,7 @@
 * [Bootstrap](https://getbootstrap.com/docs/4.1/getting-started/introduction/) - Front-end Framework
 * [JQuery](https://api.jquery.com/) - JavaScript Library
 * [Passport.js](http://www.passportjs.org/) - Authentication middleware fo Node.js
+* [Jest](https://jestjs.io/) - Javascript Testing Framework
 
 ### Tools
 * [NPM](https://www.npmjs.com/) - Node Package Manager
@@ -22,6 +23,14 @@ To install follow the instructions for your given operating sytem [here](https:/
 │	│
 │ 	└── www					# Server startup bash script.
 │
+├── docker					# Docker support files
+│	│
+│ 	└── start				# Supporting scripts
+│ 	  	└── docker-clean.sh 	# Performs a clean build and run
+│ 	  	└── docker-initial-install.sh 		# First time install and run
+│ 	  	└── docker-start.sh 		# Run pre-built containers
+│ 	  	└── remove-all.sh 		# Removes ALL containers from system
+│
 ├── controller				# Handels business logic and routing.
 │	│
 │ 	├── routes
@@ -35,6 +44,10 @@ To install follow the instructions for your given operating sytem [here](https:/
 │	│
 │	└── stylesheets			# Directory containing css assests. Target for bootstrap.css.
 │
+├── rabbitmq			# Directory containing the Dockerfile for RabbitMQ
+│	│
+│	├── data				# Persistent data store	
+│
 ├──	views
 │	│
 │	├── bootstrap			# Directory containing templates for bootstrap tags.
@@ -44,6 +57,8 @@ To install follow the instructions for your given operating sytem [here](https:/
 ├── .gitignore				# File defines files git ignore tracking.
 │
 ├── gulpfile.js 			# Gulp task script.
+│
+├── iron.sh				# Controller for running containers
 │
 ├── package.json			# NPM package manager project config.
 │
@@ -68,7 +83,14 @@ To install follow the instructions for your given operating sytem [here](https:/
 7. `npm start` - Start the server.
 8. `http://localhost:3000` - Navigate to localhost port 3000.
 
-### To Run with Docker-Compose
+### To Run with Docker-Compose Automatic
+This will allow you to install dependencies, build the containers, run the containers, and close the containers.
+1. `cd irondb` - change directory to root
+2. (optional - do if step 3 does not launch) `chmod u+x dockerup.sh` - set the script to executable if it is not already so.
+3. `./iron.sh` - Builds and launches the Docker Composition
+4. Follow the prompts.
+
+### To Run with Docker-Compose Manual
 Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
@@ -84,5 +106,20 @@ Notes: control-c to exit, then `docker-compose down` to gracefully stop images i
 * `docker-compose up` - Run containers defined by the current directories docker-compose.yml file.
 * `docker-compose up --build` - Build and run containers.
 * `docker-compose down` - Gracefully stop containers.
+
+### Running tests
+To run tasks using gulp run command `gulp jest`, jest-cli may be required locally, to install run `sudo npm install -g jest-cli`.
+
+Coverage details can be found in the /coverage directory after running tests.
+
+### RabbitMQ Manager
+To access the RabbitMQ Manager, go to http://localhost:15672/
+Username: `guest`
+Password: `guest`
+
+### Example Route Walkthrough
+[Tech Stack Walkthrough Playlist](https://www.youtube.com/playlist?list=PL9InapyRWXwmENss1Vw9GdUahwmh0o9nU) - 
+Playlist of videos demonstrating writing an example route with the project tech stack.
+
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).

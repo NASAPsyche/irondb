@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= title %></title>
+	<%- include('bootstrap/css'); %>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<h1><%= title %></h1>
+		</div>
+		<div class="row">
+			<button class="btn btn-primary" id="update-btn">Update</button>
+		</div>
+		<div class="row">
+			<div id="update-target"></div>
+		</div>
+	</div>
+
+	<%- include('bootstrap/js'); %>
+	<script src="/javascripts/example.js"></script>
+</body>
+</html>
