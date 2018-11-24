@@ -1,14 +1,14 @@
 #!/bin/bash
 #Use this script to launch a built docker
 
+# Clear old networks 
+docker-compose down
+
 # Remove folders that would prevent building
 sudo rm -rf pg-data 
 sudo rm -rf node-modules
 mkdir pg-data
 
-# Clear old networks then do a clean docker build
-docker-compose down
+# Fresh build
 docker-compose build
 docker-compose up -d
-
-
