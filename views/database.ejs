@@ -8,8 +8,27 @@
     <%- include('components/navbar'); %>
     
     <div class="container-fluid">
-      <h1>ID: <%= id %></h1>
-      <h1>Name: <%= name %></h1>
+      <h2>Entries</h2>
+<table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>entry_id</th>
+        <th>paper_id</th>
+        <th>meteorite_name</th>
+        <th>page_number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i=0; i < Entries.length; i++) { %>
+      <tr>
+        <th><%= Entries[i].entry_id %></th>
+        <th><%= Entries[i].paper_id %></th>
+        <th><%= Entries[i].meteorite_name %></th>
+        <th><%= Entries[i].page_number %></th>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
     </div>
 
     <%- include('bootstrap/js'); %>
