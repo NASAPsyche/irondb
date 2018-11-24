@@ -17,4 +17,4 @@ RUN tar -xJf /usr/app/docker/node/node-v10.13.0-linux-x64.tar.xz -C /usr/local -
 # Install dependencies.
 RUN npm install --quiet
 
-CMD [ "bash" ]
+CMD ["./wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]

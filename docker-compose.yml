@@ -3,11 +3,9 @@ services:
 
   web:
     build: .
-    command: ["./wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
     volumes:
       - .:/usr/app/
       - /usr/app/node_modules
-      - ./docker/python:/tmp
     ports:
       - "3001:3000"
     depends_on:
@@ -29,7 +27,7 @@ services:
       POSTGRES_PASSWORD: 'abc123'
       POSTGRES_DB: 'postgres'
     ports:
-      - "5433:5432"
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready  -d postgres -U group16"]
       interval: 10s
