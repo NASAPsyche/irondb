@@ -143,3 +143,9 @@ coverage/
 
 # RabbitMQ
 rabbitmq/data/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
