@@ -12,15 +12,15 @@ import pdf_metadata
 import pdf_tables
 import driver_methods
 import pdf_text
-import sys
+import find_tables
 
 
 # START This is getting the current pdfs in the pdf folder.
-# chosen_pdf = driver_methods.display_pdf_names("pdfs/")
-# print("\n You selected: " + chosen_pdf)
+chosen_pdf = driver_methods.display_pdf_names("pdfs/")
+print("\n You selected: " + chosen_pdf)
 # END This is getting the current pdfs in the pdf folder.
 
-chosen_pdf = sys.argv[1]
+chosen_pdf = "pdfs/" + chosen_pdf
 
 # START Getting Metadata
 pdf_metadata.get_metadata(chosen_pdf)
@@ -39,10 +39,13 @@ print("The following is the entire text from the chosen pdf. \n")
 # The next line will give you guys the first page of the pdf. You can grab the whole array called "text"
 # and do what you want with it.
 print(text[0])
-
 # End get text from pdf.
 
+# START Getting pages that have tables on them.
+pages_with_table = find_tables.look_for_tables(text, total_pages)
+# END Getting pages that have tables on them.
 
+print(str(pages_with_table) + " is a page with tables on it.")
 # # START Get tables 1 page at a time.
 # more = 1
 # while more <= total_pages:
