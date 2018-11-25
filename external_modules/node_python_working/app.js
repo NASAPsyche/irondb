@@ -25,7 +25,7 @@ app.get('/', function (req, res) {
         // results is an array consisting of messages collected during execution
         console.log('results: %j', results);
 
-        result = results[0];
+        result = results[results.length - 1];
         res.send(result);
     });
 
