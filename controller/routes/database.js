@@ -5,7 +5,7 @@ const db = require('../db');
 /* GET database page. */
 router.get('/', function(req, res, next) {
   var entriesTable = [];
-  db.query('SELECT * FROM Entries', [], (dbErr, dbRes) => {
+  db.query('SELECT * FROM complete_table WHERE status=$1', ['active'], (dbErr, dbRes) => {
     if (dbErr) {
       return next(dbErr);
     }
