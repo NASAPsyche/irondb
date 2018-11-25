@@ -8,29 +8,46 @@
     <%- include('components/navbar'); %>
     
     <div class="container-fluid">
-      <h2>Entries</h2>
-<table class="table table-striped">
-    <thead class="thead-dark">
-      <tr>
-        <th>entry_id</th>
-        <th>paper_id</th>
-        <th>meteorite_name</th>
-        <th>page_number</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% for(var i=0; i < Entries.length; i++) { %>
-      <tr>
-        <th><%= Entries[i].entry_id %></th>
-        <th><%= Entries[i].paper_id %></th>
-        <th><%= Entries[i].meteorite_name %></th>
-        <th><%= Entries[i].page_number %></th>
-      </tr>
-      <% } %>
-    </tbody>
-  </table>
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>meteorite_name</th>
+            <th>classification_group</th>
+            <th>technique</th>
+            <th>major_elements</th>
+            <th>minor_elements</th>
+            <th>trace_elements</th>
+            <th>title</th>
+            <th>authors</th>
+            <th>page_number</th> 
+            <th>journal_name</th> 
+            <th>issue_number</th>
+            <th>published_year</th> 
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0; i < Entries.length; i++) { %>
+          <tr>
+            <th><%= Entries[i].meteorite_name %></th>
+            <th><%= Entries[i].classification_group %></th>
+            <th><%= Entries[i].technique %></th>
+            <th><%= Entries[i].major_elements %></th>
+            <th><%= Entries[i].minor_elements %></th>
+            <th><%= Entries[i].trace_elements %></th>
+            <th><%= Entries[i].title %></th>
+            <th><%= Entries[i].authors %></th>
+            <th><%= Entries[i].page_number %></th> 
+            <th><%= Entries[i].journal_name %></th> 
+            <th><%= Entries[i].issue_number %></th>
+            <th><%= Entries[i].published_year %></th> 
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
     </div>
 
     <%- include('bootstrap/js'); %>
   </body>
 </html>
+
+
