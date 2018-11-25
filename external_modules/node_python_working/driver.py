@@ -13,14 +13,15 @@ import pdf_tables
 import driver_methods
 import pdf_text
 import find_tables
+import sys
 
 
 # START This is getting the current pdfs in the pdf folder.
-chosen_pdf = driver_methods.display_pdf_names("pdfs/")
-print("\n You selected: " + chosen_pdf)
+# chosen_pdf = driver_methods.display_pdf_names("pdfs/")
+# print("\n You selected: " + chosen_pdf)
 # END This is getting the current pdfs in the pdf folder.
 
-chosen_pdf = "pdfs/" + chosen_pdf
+chosen_pdf = chosen_pdf = sys.argv[1]
 
 # START Getting Metadata
 pdf_metadata.get_metadata(chosen_pdf)
