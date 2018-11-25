@@ -3,7 +3,10 @@
 CREATE DATABASE irondb WITH OWNER = group16; 
 
 
--- Define tables
+-------------------
+-- Define tables --
+-------------------
+
 CREATE TABLE IF NOT EXISTS Users (
   user_id bigserial PRIMARY KEY,
   username varchar(25) UNIQUE,
@@ -84,50 +87,152 @@ CREATE TABLE IF NOT EXISTS Entry_status (
     status LIKE 'active' OR status LIKE 'inactive' OR status LIKE 'unapproved' OR status LIKE 'reported')
 );
 
-CREATE TABLE IF NOT EXISTS Sources (
-  source_id serial PRIMARY KEY,
-  title text NOT NULL,
-  source text NOT NULL,
-  published_date date NOT NULL
+
+------------------
+-- Define views --
+------------------
+
+
+CREATE VIEW basic_entries_with_status AS (
+  -- View inner joins entries and entry_status tables, without duplicate entry_id
+  SELECT Entries.*, Entry_status.insert_date, Entry_status.inserted_by, 
+         Entry_status.checked_by, Entry_status.status
+  FROM Entries
+  INNER JOIN Entry_status ON Entries.entry_id = Entry_status.entry_id
+  ORDER BY Entries.meteorite_name
 );
 
-CREATE TABLE IF NOT EXISTS Authors (
-  source_id integer REFERENCES Sources(source_id),
-  author text NOT NULL
+CREATE VIEW papers_with_authors AS (
+  -- View joins papers table with subquery containing authors
+  -- Subquery aggregates authors as a comma delineated string by paper_id
+  SELECT Papers.*, s1.authors
+  FROM (SELECT string_agg(author, ', ') AS authors, paper_id 
+          FROM Authors 
+          GROUP BY paper_id) s1
+  INNER JOIN Papers ON s1.paper_id = Papers.paper_id
+  ORDER BY Papers.paper_id
 );
 
-CREATE TABLE IF NOT EXISTS MeasurementTech (
-  entry_id integer NOT NULL REFERENCES Entries(entry_id),
-  tech text NOT NULL
+CREATE VIEW journals_with_papers_and_authors AS (
+  -- View joins papers_with_authors view with Journals table
+  SELECT papers_with_authors.*, Journals.journal_name, 
+         Journals.issue_number, Journals.published_year
+  FROM papers_with_authors
+  INNER JOIN Journals ON papers_with_authors.journal_id = Journals.journal_id
+  ORDER BY papers_with_authors.paper_id
 );
 
-CREATE TABLE IF NOT EXISTS Major (
-  entry_id integer NOT NULL REFERENCES Entries(entry_id),
-  element varchar(10) NOT NULL,
-  measure integer NOT NULL,
-  PRIMARY KEY(entry_id, element)
+CREATE VIEW groups_with_analysis_technique AS (
+  -- View inner joins groups with analysis_technique on entry_id
+  SELECT Groups.*, Analysis_technique.technique
+  FROM Groups
+  INNER JOIN Analysis_technique ON Groups.entry_id = Analysis_technique.entry_id
+  ORDER BY Groups.entry_id
 );
 
-CREATE TABLE IF NOT EXISTS Minor (
-  entry_id integer NOT NULL REFERENCES Entries(entry_id),
-  element varchar(10) NOT NULL,
-  measure integer NOT NULL,
-  PRIMARY KEY(entry_id, element)
+CREATE VIEW condensed_major_elements AS (
+  -- View concatinates element and measurement rows from major elements table
+  -- Then aggregates as a comma delineated string by entry_id
+  SELECT entry_id, string_agg(major_element, ', ') AS major_elements 
+  FROM (select entry_id, concat(element,': ', measurement) AS major_element from major_elements) s1
+  GROUP BY entry_id
+  ORDER BY entry_id
 );
 
-CREATE TABLE IF NOT EXISTS Trace (
-  entry_id integer NOT NULL REFERENCES Entries(entry_id),
-  element varchar(10) NOT NULL,
-  measure integer NOT NULL,
-  PRIMARY KEY(entry_id, element)
+CREATE VIEW condensed_minor_elements AS (
+  -- View concatinates element and measurement rows from minor elements table
+  -- Then aggregates as a comma delineated string by entry_id
+  SELECT entry_id, string_agg(minor_element, ', ') AS minor_elements 
+  FROM (select entry_id, concat(element,': ', measurement) AS minor_element from minor_elements) s1
+  GROUP BY entry_id
+  ORDER BY entry_id
 );
 
-CREATE TABLE IF NOT EXISTS Notes (
-  entry_id integer NOT NULL REFERENCES Entries(entry_id),
-  notes text
-)
+CREATE VIEW condensed_trace_elements AS (
+  -- View concatinates element and measurement rows from trace elements table
+  -- Then aggregates as a comma delineated string by entry_id
+  SELECT entry_id, string_agg(trace_element, ', ') AS trace_elements 
+  FROM (select entry_id, concat(element,': ', measurement) AS trace_element from trace_elements) s1
+  GROUP BY entry_id
+  ORDER BY entry_id
+);
 
--- Insert example data
+CREATE VIEW normalized_major_elements AS (
+  -- View left outer joins entries to condensed major elements
+  -- This ensures all entries present when joining
+  SELECT t1.entry_id, t2.major_elements
+  FROM Entries t1
+  LEFT OUTER JOIN condensed_major_elements t2 ON t1.entry_id = t2.entry_id
+  ORDER BY t1.entry_id
+);
+
+CREATE VIEW normalized_minor_elements AS (
+  -- View left outer joins entries to condensed minor elements
+  -- This ensures all entries present when joining
+  SELECT t1.entry_id, t2.minor_elements
+  FROM Entries t1
+  LEFT OUTER JOIN condensed_minor_elements t2 ON t1.entry_id = t2.entry_id
+  ORDER BY t1.entry_id
+);
+
+CREATE VIEW normalized_trace_elements AS (
+  -- View left outer joins entries to condensed trace elements
+  -- This ensures all entries present when joining
+  SELECT t1.entry_id, t2.trace_elements
+  FROM Entries t1
+  LEFT OUTER JOIN condensed_trace_elements t2 ON t1.entry_id = t2.entry_id
+  ORDER BY t1.entry_id
+);
+
+CREATE VIEW condensed_elemental_composition AS (
+  -- View joins normalized views for all compositional categories into one
+  -- This ensures all entries have all stored data present
+  SELECT t1.*, t2.minor_elements, t3.trace_elements
+  FROM (normalized_major_elements t1 INNER JOIN normalized_minor_elements t2 ON t1.entry_id = t2.entry_id)
+  INNER JOIN normalized_trace_elements t3 ON t2.entry_id=t3.entry_id
+);
+
+CREATE VIEW group_technique_and_composition AS (
+  -- View inner joins views groups_with_analysis_technique and condensed_elemental_composition
+  -- Combination of Groups, Analysis_technique, and all compisitional tables.
+  -- resulting table has entry_id, classification_group, and all compositional data 
+  SELECT groups_with_analysis_technique.*, condensed_elemental_composition.major_elements,
+         condensed_elemental_composition.minor_elements, condensed_elemental_composition.trace_elements
+  FROM groups_with_analysis_technique
+  INNER JOIN condensed_elemental_composition ON groups_with_analysis_technique.entry_id = condensed_elemental_composition.entry_id
+  ORDER BY groups_with_analysis_technique.entry_id
+);
+
+CREATE VIEW entries_and_status_with_journals_papers_and_authors AS (
+  -- Inner joins views basic_entries_with_status and journals_with_papers_and_authors
+  -- Combintation of Entries, Entry_Status, Journals, Papers, and Authors tables
+  SELECT t1.entry_id, t1.paper_id, t2.journal_id, t1.meteorite_name, t2.title, t2.authors, 
+         t1.page_number, t2.journal_name, t2.issue_number, t2.published_year, 
+         t1.insert_date, t1.inserted_by, t1.checked_by, t1.status
+  FROM basic_entries_with_status t1
+  INNER JOIN journals_with_papers_and_authors t2 ON t1.paper_id = t2.paper_id
+  ORDER BY t1.meteorite_name
+);
+
+CREATE VIEW complete_table AS (
+  -- Aggregates previous views to combine tables with entry data
+  -- Exludes notes
+  SELECT t1.entry_id, t1.paper_id, t1.journal_id, t1.meteorite_name, 
+         t2.classification_group, t2.technique, t2.major_elements, 
+         t2.minor_elements, t2.trace_elements, t1.title, t1.authors, 
+         t1.page_number, t1.journal_name, t1.issue_number, t1.published_year, 
+         t1.insert_date, t1.inserted_by, t1.checked_by, t1.status
+  FROM entries_and_status_with_journals_papers_and_authors t1
+  INNER JOIN group_technique_and_composition t2 ON t1.entry_id = t2.entry_id
+  ORDER BY t1.meteorite_name
+);
+
+
+-------------------------
+-- Insert example data --
+-------------------------
+
+
 INSERT INTO Journals (journal_name, issue_number, published_year) 
   VALUES ('Geochimica et Cosmochimica Acta', 'Vol. 44', 1980);
 
@@ -271,8 +376,6 @@ INSERT INTO Entry_status (entry_id, status)
   SELECT entry_id, 'active'
   FROM Entries
   WHERE meteorite_name='Old Woman';
-
-
 
 -- More example data from different paper
 INSERT INTO Journals (journal_name, issue_number, published_year) 
