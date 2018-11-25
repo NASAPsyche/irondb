@@ -37,11 +37,11 @@ def convert_pdf_to_txt(path, pageNo=0):
 
 
 def convert_pdf_to_txt_looper(path, num_pages):
-    pages_with_tables = []
+    individual_pages = []
     check = 0
 
     while check <= num_pages - 1:
-        pages_with_tables.append(convert_pdf_to_txt(path, check))
-        # print("$$$$$$$$$$$$$$Page " + str(check) + pages_with_tables[check])
+        individual_pages.append(convert_pdf_to_txt(path, check))
+        # print("$$$$$$$$$$$$$$Page " + str(check) + individual_pages[check])
         check += 1
-    return pages_with_tables
+    return individual_pages
