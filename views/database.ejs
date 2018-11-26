@@ -14,78 +14,80 @@
           <!-- Add hide and go to top buttons here -->
         </div>
         <div class="col-sm-10">
-          <div class="row">
-            <div class="col-md-3 offset-md-1">
-              <label class="sr-only" for="name"></label>
-              <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name">
+          <form action="/database" method="POST">
+            <div class="row">
+              <div class="col-md-3 offset-md-1">
+                <label class="sr-only" for="name"></label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name">
+              </div>
+              <div class="col-md-2">
+                <label class="sr-only" for="title"></label>
+                <input type="text" name="title" id="title" class="form-control" placeholder="paper title">
+              </div>
+              <div class="col-md-2">
+                <label class="sr-only" for="author"></label>
+                <input type="text" name="author" id="author" class="form-control" placeholder="author">
+              </div>
+              <div class="col-md-2">
+                <label class="sr-only" for="group">group</label>
+                <select class="form-control" name="group">
+                  <option>Group</option>
+                  <option value="IAB">IAB</option>
+                  <option value="IA">IA</option>
+                  <option value="IB">IB</option>
+                  <option value="IC">IC</option>
+                  <option value="IIAB">IIAB</option>
+                  <option value="IIA">IIA</option>
+                  <option value="IIB">IIB</option>
+                  <option value="IIC">IIC</option>
+                  <option value="IID">IID</option>
+                  <option value="IIE">IIE</option>
+                  <option value="IIIAB">IIIAB</option>
+                  <option value="IIICD">IIICD</option>
+                  <option value="IIIE">IIIE</option>
+                  <option value="IVA">IVA</option>
+                  <option value="IVB">IVB</option>
+                  <option value="Ungrouped">Ungrouped</option>
+                </select>  
+              </div>
             </div>
-            <div class="col-md-2">
-              <label class="sr-only" for="title"></label>
-              <input type="text" name="title" id="title" class="form-control" placeholder="paper title">
+            <div class="row mt-3">
+              <div class="col-md-3 offset-md-1">
+                <h4>Composition:</h4>
+              </div>
+              <div class="col-sm-3">
+                <label class="sr-only" for="element">element</label>
+                <select class="form-control" name="element">
+                  <option>Element</option>
+                  <option value="Cr">Cr</option>
+                  <option value="Cu">Cu</option>
+                  <option value="Ga">Ga</option>
+                  <option value="Ge">Ge</option>
+                  <option value="As">As</option>
+                  <option value="Sb">Sb</option>
+                  <option value="W">W</option>
+                  <option value="Re">Re</option>
+                  <option value="Ir">Ir</option>
+                  <option value="Co">Co</option>
+                  <option value="Ni">Ni</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <label class="sr-only" for="range">Range</label>
+                <select class="form-control" name="range">
+                  <option>Range</option>
+                  <option value="major">Major</option>
+                  <option value="minor">Minor</option>
+                  <option value="trace">Trace</option>
+                </select>
+              </div>
             </div>
-            <div class="col-md-2">
-              <label class="sr-only" for="author"></label>
-              <input type="text" name="author" id="author" class="form-control" placeholder="author">
+            <div class="row mt-1">
+              <div class="col-md-2 offset-md-8 col-sm-3 offset-sm-8">
+                <button class="btn btn-outline-light btn-block mt-2">Search</button>
+              </div>
             </div>
-            <div class="col-md-2">
-              <label class="sr-only" for="group">group</label>
-              <select class="form-control" name="group">
-                <option>Group</option>
-                <option value="IAB">IAB</option>
-                <option value="IA">IA</option>
-                <option value="IB">IB</option>
-                <option value="IC">IC</option>
-                <option value="IIAB">IIAB</option>
-                <option value="IIA">IIA</option>
-                <option value="IIB">IIB</option>
-                <option value="IIC">IIC</option>
-                <option value="IID">IID</option>
-                <option value="IIE">IIE</option>
-                <option value="IIIAB">IIIAB</option>
-                <option value="IIICD">IIICD</option>
-                <option value="IIIE">IIIE</option>
-                <option value="IVA">IVA</option>
-                <option value="IVB">IVB</option>
-                <option value="Ungrouped">Ungrouped</option>
-              </select>  
-            </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-md-3 offset-md-1">
-              <h4>Composition:</h4>
-            </div>
-            <div class="col-sm-3">
-              <label class="sr-only" for="element">element</label>
-              <select class="form-control" name="element">
-                <option>Element</option>
-                <option value="Cr">Cr</option>
-                <option value="Cu">Cu</option>
-                <option value="Ga">Ga</option>
-                <option value="Ge">Ge</option>
-                <option value="As">As</option>
-                <option value="Sb">Sb</option>
-                <option value="W">W</option>
-                <option value="Re">Re</option>
-                <option value="Ir">Ir</option>
-                <option value="Co">Co</option>
-                <option value="Ni">Ni</option>
-              </select>
-            </div>
-            <div class="col-sm-3">
-              <label class="sr-only" for="Range">Range</label>
-              <select class="form-control" name="Range">
-                <option>Range</option>
-                <option value="major">Major</option>
-                <option value="minor">Minor</option>
-                <option value="trace">Trace</option>
-              </select>
-            </div>
-          </div>
-          <div class="row mt-1">
-            <div class="col-md-2 offset-md-8 col-sm-3 offset-sm-8">
-              <button class="btn btn-outline-light btn-block mt-2">Search</button>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
 
