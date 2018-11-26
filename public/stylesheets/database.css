@@ -1,0 +1,12 @@
+body {
+	padding: 230px 0 0 0;
+
+}
+
+#search-panel {
+	margin-top: 54px;
+    -webkit-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    -moz-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    background-color: rgba(140, 29, 64, 100);
+}
