@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
+const createError = require('http-errors');
 
 /* GET database page. */
 router.get('/', function(req, res, next) {
@@ -15,10 +16,6 @@ router.get('/', function(req, res, next) {
 /* POST database page */
 router.post('/', function(req, res, next) {
   if (req.xhr) {
-  	res.send("xhr detected.");
-  } else {
-	//res.send(req.body);
-
 	var queryString = "SELECT * FROM complete_table WHERE status=$1 ";
 	var argsArray = ['active'];
 	var currentQueryIndex = 2;
@@ -70,8 +67,11 @@ router.post('/', function(req, res, next) {
 	    if (dbErr) {
 	      return next(dbErr);
 	    }
-	    res.render('database', { Entries: dbRes.rows });
+	    res.render('components/database-xhr-response', { Entries: dbRes.rows });
 	});
+  } else {
+  	// If not ajax request, method not allowed.
+  	next(createError(405));
   }
 });
 
