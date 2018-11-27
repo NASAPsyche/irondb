@@ -44,19 +44,41 @@ print("The following is the entire text from the chosen pdf. \n")
 #    print("Page #%i" % (i + 1))
 #    print(text[i])
 
-if 'INAA' in text[1]:
-    print("INAA Found")
-if 'RNAA' in text[1]:
-    print("RNAA Found")
+# Add entire contents to new list
+# entire_pdf = list()
+# for i in range(total_pages):
+#   entire_pdf.append(text[i])
 
+# print(entire_pdf)
+found = False
+la = 'LA-ICP-MS'
+for i in range(total_pages):
+    if 'INAA' in text[i]:
+        found = True
+        print("INAA Found on page %i" % (i+1))
+    if 'RNAA' in text[i]:
+        found = True
+        print("RNAA Found on page %i" % (i + 1))
+    if 'LA-ICP-MS' in text[i]:
+        found = True
+        print("LA-ICP-MS Found on page %i" % (i + 1))
+    if 'neutron-activation analysis' in text[i]:
+        found = True
+        print("neutron activation analysis Found on page %i" % (i + 1))
+    if 'atomic-absorption' in text[i]:
+        found = True
+        print("atomic-absorption spectrophometry Found on page %i" % (i + 1))
+
+if found == False:
+    print("Analysis Technique Not Found")
 # print(text)
 # End get text from pdf.
 
 # START Getting pages that have tables on them.
-#pages_with_table = find_tables.look_for_tables(text, total_pages)
+# pages_with_table = find_tables.look_for_tables(text, total_pages)
 # END Getting pages that have tables on them.
 
-#print(str(pages_with_table) + " is a page with tables on it.")
+# print(str(pages_with_table) + " is a page with tables on it.")
 # # START Get tables 1 page at a time.
 # more = 1
 # while more <= total_pages:
