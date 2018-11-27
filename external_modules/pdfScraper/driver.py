@@ -13,6 +13,9 @@ import pdf_tables
 import driver_methods
 import pdf_text
 import find_tables
+import pandas as pd
+pd.options.display.max_rows = 999
+pd.options.display.max_columns = 999
 
 
 # START This is getting the current pdfs in the pdf folder.
@@ -30,15 +33,15 @@ pdf_metadata.get_metadata(chosen_pdf)
 # START Get number of Pages
 total_pages = pdf_metadata.get_num_pages(chosen_pdf)
 # START Get number of Pages
-print("There are " + str(total_pages) + " pages in this document.")
+# print("There are " + str(total_pages) + " pages in this document.")
 
 
 # START get text from pdf
 text = pdf_text.convert_pdf_to_txt_looper(chosen_pdf, total_pages)
-print("The following is the entire text from the chosen pdf. \n")
+# print("The following is the entire text from the chosen pdf. \n")
 # The next line will give you guys the first page of the pdf. You can grab the whole array called "text"
 # and do what you want with it.
-print(text[0])
+# print(text[0])
 # End get text from pdf.
 
 # START Getting pages that have tables on them.
@@ -46,13 +49,15 @@ pages_with_table = find_tables.look_for_tables(text, total_pages)
 # END Getting pages that have tables on them.
 
 print(str(pages_with_table) + " is a page with tables on it.")
-# # START Get tables 1 page at a time.
-# more = 1
-# while more <= total_pages:
-#     print("Page " + str(more))
-#     pdf_tables.process_tables(chosen_pdf, int(more))
-#     more += 1
-# # END Get tables 1 page at a time.
-#
+
+# START Get tables 1 page at a time.
+more = len(pages_with_table)
+pwt_count = 0
+while pwt_count < more:
+    print("Page " + str(pages_with_table[pwt_count]))
+    pdf_tables.process_tables_get(chosen_pdf, int(pages_with_table[pwt_count]))
+    pwt_count += 1
+# END Get tables 1 page at a time.
+
 
 
