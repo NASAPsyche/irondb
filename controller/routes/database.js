@@ -67,8 +67,14 @@ router.post('/', function(req, res, next) {
 	    if (dbErr) {
 	      return next(dbErr);
 	    }
+
+	    if (dbRes.rows.length === 0) {
+	    	res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
+	    }
+
 	    res.render('components/database-xhr-response', { Entries: dbRes.rows });
 	});
+
   } else {
   	// If not ajax request, method not allowed.
   	next(createError(405));
