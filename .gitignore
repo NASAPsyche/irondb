@@ -132,7 +132,10 @@ jspm_packages/
 .env
 
 # Dependency related files
-public/javascripts/*.js
+public/javascripts/bootstrap.min.js
+public/javascripts/jquery.min.js
+public/javascripts/popper.min.js
+public/javascripts/tether.min.js
 public/stylesheets/bootstrap.css
 
 # Postgres files
