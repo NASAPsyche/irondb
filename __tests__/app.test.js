@@ -1,11 +1,11 @@
 const request = require('supertest');
 const app = require('../controller/app');
 
-describe('Test the root path', () => {
+describe('Test the landing page', () => {
     test('It should respond to the GET method with index.ejs template and 200 status.', (done) => {
         request(app).get('/').then((response) => {
             expect(response.statusCode).toBe(200);
-            expect(response.text).toMatch(/Iron Meteorite Example/);
+            expect(response.text).toMatch(/Iron Meteorite Database/);
             done();
         });
     });

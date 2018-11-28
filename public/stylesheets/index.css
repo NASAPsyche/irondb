@@ -1,0 +1,29 @@
+body {
+	padding: 54px 0 0 0;
+}
+
+svg {
+	stroke: rgba(0, 0, 0, 25);
+	stroke-width: 0.5px;
+}
+
+form {
+	-webkit-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    -moz-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    background-color: rgba(140, 29, 64, 100);
+}
+
+h3 {
+	padding-left: auto;
+	padding-right: auto;
+}
+
+#top-container {
+	border-top: 1px solid rgba(0, 0, 0, 50);
+	-webkit-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    -moz-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    background-color: rgba(140, 29, 64, 100);
+    color: rgb(255, 255, 255);
+}

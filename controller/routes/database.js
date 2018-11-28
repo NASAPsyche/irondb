@@ -76,8 +76,39 @@ router.post('/', function(req, res, next) {
 	});
 
   } else {
-  	// If not ajax request, method not allowed.
-  	next(createError(405));
+  	var queryString = "SELECT * FROM complete_table WHERE status=$1 ";
+	var argsArray = ['active'];
+	var currentQueryIndex = 2;
+
+	if (req.body.name !== "") {
+		argsArray.push(req.body.name);
+		queryString += ("AND meteorite_name ~* $" + currentQueryIndex + " ");
+		currentQueryIndex++;
+	}
+
+	if (req.body.title !== "") {
+		argsArray.push(req.body.title);
+		queryString += ("AND title ~* $" + currentQueryIndex + " ");
+		currentQueryIndex++;
+	}
+
+	if (req.body.author !== "") {
+		argsArray.push(req.body.author);
+		queryString += ("AND authors ~* $" + currentQueryIndex + " ");
+		currentQueryIndex++;
+	}
+
+	db.query(queryString, argsArray, (dbErr, dbRes) => {
+	    if (dbErr) {
+	      return next(dbErr);
+	    }
+
+	    if (dbRes.rows.length === 0) {
+	    	res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
+	    }
+
+	    res.render('database', { Entries: dbRes.rows });
+	});
   }
 });
 
