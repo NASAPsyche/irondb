@@ -60,5 +60,5 @@ dependencies:
   - pip:
     - opencv-python==3.4.3.18
     - pypdf2==1.26.0
-prefix: /home/ken/anaconda3/envs/journalImport
+prefix: ~/anaconda3/envs/journalImport
 
