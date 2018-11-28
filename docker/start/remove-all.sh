@@ -8,6 +8,8 @@ case $doit in
     docker stop $(docker ps -aq)
     echo "Deleting all containers"
     docker rm $(docker ps -aq)
+    echo "Removing dangling containers"
+    docker images -aq -f 'dangling=true' | xargs docker rmi
     ;; 
   n|N) echo no ;; 
   *) echo "Exiting" ;; 
