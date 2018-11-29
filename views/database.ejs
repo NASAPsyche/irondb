@@ -10,11 +10,21 @@
     
     <div class="container-fluid fixed-top p-2 border-bottom border-dark" id="search-panel">
       <div class="row ml-2 mt-2">
-        <div class="col-sm-2">
-          <!-- Add hide and go to top buttons here -->
+        <div class="col-sm-2 align-self-end">
+          <div class="d-flex flex-row">
+            <form action="/database/export" method="POST" id="export-form">
+              <label class="sr-only" for="entries">entry ids of currently viewed entries</label>
+              <div id="entry-ids">
+                <% for(var i=0; i < Entries.length; i++) { %>
+                  <input type="hidden" name="entries" value=<%= Entries[i].entry_id %>>
+                <% } %>
+              </div>
+              <button class="btn btn-outline-secondary btn-block mt-2" type="submit">Export Data</button>
+            </form>
+          </div>
         </div>
         <div class="col-sm-10">
-          <form action="/database" method="POST">
+          <form action="/database" method="POST" id="search-form">
             <div class="row">
               <div class="col-md-3 offset-md-1">
                 <label class="sr-only" for="name"></label>
@@ -83,7 +93,8 @@
               </div>
             </div>
             <div class="row mt-1">
-              <div class="col-md-2 offset-md-6 col-sm-3 offset-sm-5">
+
+              <div class=" col-md-2 offset-md-6 col-sm-3 offset-sm-6">
                 <a class="btn btn-outline-light btn-block mt-2" id="reset-btn">Reset</a>
               </div>
               <div class="col-md-2 col-sm-3">

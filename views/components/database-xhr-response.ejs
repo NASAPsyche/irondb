@@ -19,6 +19,7 @@
     <tbody>
       <% for(var i=0; i < Entries.length; i++) { %>
       <tr>
+        <p hidden="true"><%= Entries[i].entry_id %></p>
         <th><%= Entries[i].meteorite_name %></th>
         <th><%= Entries[i].classification_group %></th>
         <th><%= Entries[i].technique %></th>
