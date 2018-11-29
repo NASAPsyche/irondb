@@ -11,7 +11,7 @@ import os
 import pdf_text
 
 # global variables
-path = os.path.abspath('pdfScraper/pdfs')
+path = os.path.abspath('pdfs')
 #path = 'C:/Users/Hajar/Desktop/Psyhe NASA/irondb/external_modules/pdfScraper/pdfs/'
 page_num = 1
 
@@ -19,7 +19,7 @@ page_num = 1
 # extracts the title from a user specified pdf
 def truncated_title(pdf_name):
     global page_num
-    random_page = pdf_text.convert_pdf_to_txt(path + '\\' + pdf_name, page_num)
+    random_page = pdf_text.convert_pdf_to_txt(path + '/' + pdf_name, page_num)
 
     # extracts the truncated title from the top of a random page
     title_trunc = random_page.split('\n', 1)[0]
@@ -45,12 +45,10 @@ def extract_title(pdf_name):
 
 # or title[0].isdigit()
 
-print(path + "\\" + 'me.txt')
-
 # WARNING: user input not supported in Sublime
-#user_pdf = input("Enter PDF name with extension: ")
-#print("Truncated Title:        " + truncated_title(user_pdf))
-#print("Full Title:             " + extract_title(user_pdf))
+user_pdf = input("Enter PDF name with extension: ")
+print("Truncated Title:        " + truncated_title(user_pdf))
+print("Full Title:             " + extract_title(user_pdf))
 
 # in Sublime replace name of PDF here
 # print("Truncated Title:        " + truncated_title('WassonandChoe_GCA_2009.pdf'))
