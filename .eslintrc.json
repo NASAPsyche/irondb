@@ -9,7 +9,9 @@
     },
     "extends": [
         "eslint:recommended",
-        "google",
-        "plugin:node/recommended"
-    ]
+        "google"
+    ],
+    "rules": {
+        "no-console":"off"
+    }
 }

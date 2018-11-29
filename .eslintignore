@@ -8,3 +8,6 @@
 
 # Jest Coverage reports
 /coverage
+
+# Minified js
+/public/javascripts/*.min.js 
