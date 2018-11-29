@@ -44,9 +44,10 @@ def extract_title(pdf_name):
 # or title[0].isdigit()
 
 # WARNING: user input not supported in Sublime
-# user_pdf = input("Enter PDF name with extension: ")
-# print(extract_title(user_pdf))
+user_pdf = input("Enter PDF name with extension: ")
+print("Truncated Title:        " + truncated_title(user_pdf))
+print("Full Title:             " + extract_title(user_pdf))
 
 # in Sublime replace name of PDF here
-print("Truncated Title:        " + truncated_title('WassonandChoe_GCA_2009.pdf'))
-print("Full Title:             " + extract_title('WassonandChoe_GCA_2009.pdf'))
+# print("Truncated Title:        " + truncated_title('WassonandChoe_GCA_2009.pdf'))
+# print("Full Title:             " + extract_title('WassonandChoe_GCA_2009.pdf'))
