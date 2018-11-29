@@ -1,7 +1,4 @@
 """
-driver.py: The purpose of this file is to develop the entire journal scraper functionality with the touch of a button. This
-is simply meant to help devlop python parts of the web application. This is not shipable code.
-
 __authors__ = "Joshua Johnson", "Michael Falgien"
 __version__ = "1.0"
 __email__ = "jdjohn43@asu.edu", "mfalgien@gmail.com"
@@ -35,7 +32,7 @@ print("There are " + str(total_pages) + " pages in this document.")
 
 # START get text from pdf
 text = pdf_text.convert_pdf_to_txt_looper(chosen_pdf, total_pages)
-print("The following is the entire text from the chosen pdf. \n")
+# print("The following is the entire text from the chosen pdf. \n")
 # The next line will give you guys the first page of the pdf. You can grab the whole array called "text"
 # and do what you want with it.
 
@@ -50,40 +47,33 @@ print("The following is the entire text from the chosen pdf. \n")
 #   entire_pdf.append(text[i])
 
 # print(entire_pdf)
-found = False
-la = 'LA-ICP-MS'
-for i in range(total_pages):
-    if 'INAA' in text[i]:
-        found = True
-        print("INAA Found on page %i" % (i+1))
-    if 'RNAA' in text[i]:
-        found = True
-        print("RNAA Found on page %i" % (i + 1))
-    if 'LA-ICP-MS' in text[i]:
-        found = True
-        print("LA-ICP-MS Found on page %i" % (i + 1))
-    if 'neutron-activation analysis' in text[i]:
-        found = True
-        print("neutron activation analysis Found on page %i" % (i + 1))
-    if 'atomic-absorption' in text[i]:
-        found = True
-        print("atomic-absorption spectrophometry Found on page %i" % (i + 1))
 
-if found == False:
-    print("Analysis Technique Not Found")
+
+def find_analysis_technique(pages, text):
+    found = False
+    la = 'LA-ICP-MS'
+    for i in range(pages):
+        if 'INAA' in text[i]:
+            found = True
+            print("INAA Found on page %i" % (i+1))
+        if 'RNAA' in text[i]:
+            found = True
+            print("RNAA Found on page %i" % (i + 1))
+        if 'LA-ICP-MS' in text[i]:
+            found = True
+            print("LA-ICP-MS Found on page %i" % (i + 1))
+        if 'neutron-activation analysis' in text[i]:
+            found = True
+            print("neutron activation analysis Found on page %i" % (i + 1))
+        if 'atomic-absorption' in text[i]:
+            found = True
+            print("atomic-absorption spectrophometry Found on page %i" % (i + 1))
+
+    if found == False:
+        print("Analysis Technique Not Found")
 # print(text)
 # End get text from pdf.
 
-# START Getting pages that have tables on them.
-# pages_with_table = find_tables.look_for_tables(text, total_pages)
-# END Getting pages that have tables on them.
 
-# print(str(pages_with_table) + " is a page with tables on it.")
-# # START Get tables 1 page at a time.
-# more = 1
-# while more <= total_pages:
-#     print("Page " + str(more))
-#     pdf_tables.process_tables(chosen_pdf, int(more))
-#     more += 1
-# # END Get tables 1 page at a time.
-#
+# print analysis technique for chosen pdf
+find_analysis_technique(total_pages, text)
