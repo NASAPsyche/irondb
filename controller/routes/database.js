@@ -113,4 +113,43 @@ router.post('/', function(req, res, next) {
 });
 
 
+router.get('/export', function(req, res, next){
+	db.query('SELECT * FROM complete_table WHERE status=$1', ['active'], (dbErr, dbRes) => {
+	    if (dbErr) {
+	      return next(dbErr);
+	    }
+	    res.render('db-export', { Entries: dbRes.rows });
+	});
+});
+
+router.post('/export', function(req, res, next){
+
+	var queryString = "SELECT * FROM complete_table WHERE status=$1 ";
+	var argsArray = ['active'];
+	var currentQueryIndex = 2;
+
+	if (req.body.entries.length !== 0) {
+		req.body.entries.forEach(function(element){
+			argsArray.push(element);
+			if (currentQueryIndex === 2) {
+				// Set AND for first element added to query
+				queryString += ("AND entry_id=" + currentQueryIndex + " ");
+			}
+
+			queryString += ("OR entry_id=$" + currentQueryIndex + " ");
+			currentQueryIndex++;
+		});
+	}
+
+	console.log(req.body.entries);
+		db.query(queryString, argsArray, (dbErr, dbRes) => {
+	    if (dbErr) {
+	      return next(dbErr);
+	    }
+
+	    res.render('db-export', { Entries: dbRes.rows });
+	});
+});
+
+
 module.exports = router;
