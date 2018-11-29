@@ -11,7 +11,7 @@ import os
 import pdf_text
 
 # global variables
-path = os.path.abspath('pdfScraper/pdfs')
+path = os.path.abspath('pdfScraper/pdfs/')
 #path = 'C:/Users/Hajar/Desktop/Psyhe NASA/irondb/external_modules/pdfScraper/pdfs/'
 page_num = 1
 
