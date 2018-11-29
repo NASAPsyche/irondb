@@ -7,10 +7,12 @@ __version__ = "2.0"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "11/25/18"
 
+import os
 import pdf_text
 
 # global variables
-path = 'C:/Users/Hajar/Desktop/Psyche NASA/irondb/external_modules/pdfScraper/pdfs/'
+path = os.path.abspath('pdfScraper/pdfs')
+#path = 'C:/Users/Hajar/Desktop/Psyhe NASA/irondb/external_modules/pdfScraper/pdfs/'
 page_num = 1
 
 
