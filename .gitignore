@@ -154,4 +154,4 @@ rabbitmq/data/
 .vscode
 
 # public temp directory
-public/temp
+public/temp/*.csv
