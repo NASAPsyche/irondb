@@ -128,17 +128,20 @@ router.post('/export', function(req, res, next){
 	var argsArray = ['active'];
 	var currentQueryIndex = 2;
 
-	if (req.body.entries.length !== 0) {
+	if (req.body.entries.length >= 2) {
 		req.body.entries.forEach(function(element){
 			argsArray.push(element);
 			if (currentQueryIndex === 2) {
 				// Set AND for first element added to query
-				queryString += ("AND entry_id=" + currentQueryIndex + " ");
+				queryString += ("AND entry_id=$" + currentQueryIndex + " ");
+			} else {
+				queryString += ("OR entry_id=$" + currentQueryIndex + " ");
 			}
-
-			queryString += ("OR entry_id=$" + currentQueryIndex + " ");
 			currentQueryIndex++;
 		});
+	} else if (req.body.entries.length === 1) {
+		argsArray.push(req.body.entries[0]);
+		queryString += ("AND entry_id=$" + currentQueryIndex + " ");
 	}
 
 	console.log(req.body.entries);
