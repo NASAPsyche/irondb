@@ -1,5 +1,5 @@
 // Send ajax request with params
-$( 'form' ).on( 'submit', function( event ) {
+$( "#search-form" ).on( "submit", function( event ) {
   event.preventDefault();
   $.post('/database', $( this ).serialize(), function( data ) {
     // Remove old table and replace with results
@@ -13,6 +13,14 @@ $( document ).ajaxError( function() {
 });
 
 // On click, clear form elements
-$( '#reset-btn' ).on( 'click', function( event ) {
-  $('form').get(0).reset();
+$( "#reset-btn" ).on( "click", function( event ) {
+	$('#search-form').get(0).reset();
+});
+
+// After AJAx, reset stored ids of export button
+$( document ).ajaxComplete(function() {
+	$( "#entry-ids" ).empty();
+	$( "p:hidden" ).each(function(){
+		$( "<input>" ).attr({type: "hidden", name: "entries"}).val( $(this).text() ).appendTo( $( "#entry-ids" ) );
+	});
 });

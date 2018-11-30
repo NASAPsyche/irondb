@@ -1,5 +1,5 @@
 #search-panel {
-	margin-top: 54px;
+	margin-top: 3.375rem;
     -webkit-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
     -moz-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
     box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
@@ -19,20 +19,20 @@
 /* Bootstrap xs */
 @media (max-width: 576px) { 
 	body {
-		padding: 466px 0 0 0;
+		padding: 31.9375rem 0 0 0;
 	}
 }
 
 /* Bootstrap xs to sm*/
 @media (min-width: 576px) and (max-width: 767.98px) {
 	body {
-		padding: 381px 0 0 0;
+		padding: 23.8125rem 0 0 0;
 	}
 }
 
 /* Bootstrap greater than sm */
 @media (min-width: 767.98px) { 
 	body {
-		padding: 230px 0 0 0;
+		padding: 14.375rem 0 0 0;
 	}
  }
