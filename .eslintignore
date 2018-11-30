@@ -1,0 +1,16 @@
+## Ignore the following when running eslint
+
+# Dependency directories
+/node_modules
+/node_modules/
+/node_modules/*
+node_modules
+
+# Postgres files
+/pg-data
+
+# Jest Coverage reports
+/coverage
+
+# Minified js
+/public/javascripts/*.min.js 
