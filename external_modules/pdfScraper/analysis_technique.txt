@@ -1,0 +1,40 @@
+New Analysis Techniques Found:
+	1. 'LA-ICP-MS' in Litasov2018_Article_TraceElementCompositionAndClas
+	2. atomic-absorption spectrophometry in Wassonetal_GCA_2007
+	3. radioehemicalneutron activation in Wasson_Icarus_1970
+
+Other:
+	1. 'Neutron-activation analysis' ScottandWasson_GCA_1976.pdf 
+
+Techniques not found in:
+	1. WassonandRubinandHassanzadeh_1990
+	Could not be found even though INAA is in the text. When the PDF is parsed
+	each character is stored in the array instead of the entire word.
+
+	2. WassonandOuyang 1990.pdf
+	Could not be found even though INAA is in the text. When the PDF is parsed
+	each character is stored in the array instead of the entire word.
+
+	3. ScottandWasson_GCA_1976.pdf 
+	Each word read as a single char.
+
+	4. Choietal_GCA_1995.pdf
+	Could not be found even though INAA is in the text. When the PDF is parsed
+	each character is stored in the array instead of the entire word.
+
+	5. WassonandKimberlin_GCA_1967.pdf
+	No technique found
+
+	6. Wasson_2004
+	No technique found
+
+	7. WassonandSchaudy_Icarus_1971.pdf
+	neutron-activation mentioned in paper
+
+	8. Kracheretal_GCA_1980.pdf
+	Could not be found even though INAA and RNAA is in the text. When the PDF is parsed
+	each character is stored in the array instead of the entire word.
+
+	9. Wasson_Icarus_1970
+	radio chemicalneutron activation found
+
