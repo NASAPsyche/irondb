@@ -13,11 +13,11 @@ import find_tables
 
 
 # START This is getting the current pdfs in the pdf folder.
-chosen_pdf = driver_methods.display_pdf_names("pdfs/")
-print("\n You selected: " + chosen_pdf)
+#chosen_pdf = driver_methods.display_pdf_names("pdfs/")
+#print("\n You selected: " + chosen_pdf)
 # END This is getting the current pdfs in the pdf folder.
 
-chosen_pdf = "pdfs/" + chosen_pdf
+#chosen_pdf = "pdfs/" + chosen_pdf
 
 # START Getting Metadata
 # pdf_metadata.get_metadata(chosen_pdf)
@@ -25,13 +25,13 @@ chosen_pdf = "pdfs/" + chosen_pdf
 
 
 # START Get number of Pages
-total_pages = pdf_metadata.get_num_pages(chosen_pdf)
+#total_pages = pdf_metadata.get_num_pages(chosen_pdf)
 # START Get number of Pages
-print("There are " + str(total_pages) + " pages in this document.")
+#print("There are " + str(total_pages) + " pages in this document.")
 
 
 # START get text from pdf
-text = pdf_text.convert_pdf_to_txt_looper(chosen_pdf, total_pages)
+#text = pdf_text.convert_pdf_to_txt_looper(chosen_pdf, total_pages)
 # print("The following is the entire text from the chosen pdf. \n")
 # The next line will give you guys the first page of the pdf. You can grab the whole array called "text"
 # and do what you want with it.
@@ -76,4 +76,4 @@ def find_analysis_technique(pages, text):
 
 
 # print analysis technique for chosen pdf
-find_analysis_technique(total_pages, text)
+#find_analysis_technique(total_pages, text)
