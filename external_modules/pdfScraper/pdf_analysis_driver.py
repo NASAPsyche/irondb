@@ -10,6 +10,8 @@ import pdf_text
 import os
 import pdf_analysis_technique
 
+# Get pdfs in pdf directory
+
 
 def get_pdf_list(directory):
     num = 0
@@ -30,10 +32,12 @@ def get_pdf_list(directory):
 lst = get_pdf_list("pdfs/")
 
 # sublist of specific pdfs to test
-sub_lst = [lst[1], lst[2]]
+sub_lst = [lst[0], lst[1], lst[2], lst[6], lst[9],
+           lst[11], lst[12], lst[14], lst[16], lst[18], lst[19]]
 
-print("Testing on the following papers: \n")
+print("Testing on the following papers:")
 print(sub_lst)
+print("\n")
 
 for i in range(len(sub_lst)):
     # print title
@@ -45,5 +49,7 @@ for i in range(len(sub_lst)):
 
     # get text
     text = pdf_text.convert_pdf_to_txt_looper("pdfs/"+sub_lst[i], pages)
+
+    # run analysis technique function on each paper
     pdf_analysis_technique.find_analysis_technique(pages, text)
     print("\n")
