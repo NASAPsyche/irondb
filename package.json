@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "pretest": "eslint --ignore-path .eslintignore .",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -24,6 +25,9 @@
     "tether": "^1.4.5"
   },
   "devDependencies": {
+    "eslint": "^5.9.0",
+    "eslint-config-google": "^0.11.0",
+    "eslint-plugin-node": "^8.0.0",
     "gulp": "^4.0.0",
     "gulp-cli": "^2.0.1",
     "gulp-jest": "^4.0.2",
