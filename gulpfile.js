@@ -4,9 +4,9 @@ const jest = require('gulp-jest').default;
 
 // Task compiles sass to css and moves module files to the public directories.
 gulp.task('sass', function() {
-  return gulp.src(['node_modules/bootstrap/scss/bootstrap.scss'])
-      .pipe(sass())
-      .pipe(gulp.dest('public/stylesheets'));
+	return gulp.src(['scss/custom.scss'])
+		.pipe(sass())
+		.pipe(gulp.dest("public/stylesheets"));
 });
 
 // Move JS files to public javascripts directory.
