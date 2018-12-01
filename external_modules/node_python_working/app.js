@@ -22,7 +22,7 @@ app.get('/', function(req, res) {
     // results is an array consisting of messages collected during execution
     console.log('results: %j', results);
 
-    result = results[results.length - 1];
+    result = results;
     res.send(result);
   });
 });
