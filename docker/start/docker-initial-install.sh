@@ -1,9 +1,12 @@
 #!/bin/bash
 # Use this script for initial install
 
+apt update
+apt install nodejs npm -y
+
 # Global dependencies for testing node
-sudo npm install -g gulp-cli
-sudo npm install -g jest-cli
+npm install -g gulp-cli
+npm install -g jest-cli
 
 # Local dependencies for node
 npm install
@@ -11,8 +14,8 @@ gulp sass
 gulp js 
 
 # Remove folders that would prevent building
-sudo rm -rf pg-data 
-sudo rm -rf node-modules
+rm -rf pg-data 
+rm -rf node-modules
 mkdir pg-data
 
 # About to start
@@ -23,3 +26,4 @@ sleep 1
 docker-compose down
 docker-compose build
 docker-compose up -d
+

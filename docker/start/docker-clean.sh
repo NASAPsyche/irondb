@@ -5,8 +5,8 @@
 docker-compose down
 
 # Remove folders that would prevent building
-sudo rm -rf pg-data 
-sudo rm -rf node-modules
+rm -rf pg-data 
+rm -rf node-modules
 mkdir pg-data
 
 # Fresh build
