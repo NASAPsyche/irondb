@@ -39,8 +39,6 @@ total_pages = pdf_metadata.get_num_pages(chosen_pdf)
 # START get text from pdf
 text = pdf_text.convert_pdf_to_txt_looper(chosen_pdf, total_pages)
 # print("The following is the entire text from the chosen pdf. \n")
-# The next line will give you guys the first page of the pdf. You can grab the whole array called "text"
-# and do what you want with it.
 # print(text[0])
 # End get text from pdf.
 
@@ -48,16 +46,25 @@ text = pdf_text.convert_pdf_to_txt_looper(chosen_pdf, total_pages)
 pages_with_table = find_tables.look_for_tables(text, total_pages)
 # END Getting pages that have tables on them.
 
-print(str(pages_with_table) + " is a page with tables on it.")
-
 # START Get tables 1 page at a time.
 more = len(pages_with_table)
 pwt_count = 0
+table_json_to_send = {}
+array_tables = []
 while pwt_count < more:
-    print("Page " + str(pages_with_table[pwt_count]))
-    pdf_tables.process_tables_get(chosen_pdf, int(pages_with_table[pwt_count]))
+    pdf_tables.process_table_engine(chosen_pdf, int(pages_with_table[pwt_count]))
+    # print("Page " + str(pages_with_table[pwt_count]))
+    # table_json_to_send = pdf_tables.process_tables_get(chosen_pdf, int(pages_with_table[pwt_count]))
+    # array_tables.append(table_json_to_send)
     pwt_count += 1
 # END Get tables 1 page at a time.
 
 
+#
+# tableNum = 1
+# for x in array_tables:
+#     print("Table: " + str(tableNum))
+#     print( str(x))
+#     print("\n")
+#     tableNum += 1
 

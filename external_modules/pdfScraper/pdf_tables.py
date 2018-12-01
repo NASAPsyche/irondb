@@ -10,21 +10,19 @@ __date__ = "11/7/18"
 """
 
 from tabula import read_pdf
-import json
 import pandas as pd
-
-# pre_filter = df.to_json(orient='index')
+import json
 
 
 # START This function gets rid of unwanted cols and rows.
 def process_tables_clean(mdf):
     row_count, col_count = mdf.shape
     print(mdf.shape)
+    print(mdf)
     y = col_count -1
     while y >= 0:
         tally_col = x = 0
         while x < row_count:
-            # print(str(mdf[y][x]))
             if str(mdf.iloc[x][y]) == "REMOVE":
                 tally_col += 1
             x += 1
@@ -32,21 +30,21 @@ def process_tables_clean(mdf):
             if mdf.empty:
                 print('DataFrame is empty!')
             else:
-                mdf = mdf.drop(mdf.columns[y], axis=1)
                 print(mdf)
+                mdf = mdf.drop(mdf.columns[y], axis=1)
         y -= 1
-
-    if mdf.empty:
-        print('DataFrame is empty!')
-    else:
-        print(mdf)
+    # if mdf.empty:
+    #     # mdf = pd.DataFrame()
+    #     print('DataFrame is empty!')
+    # else:
+    #     print(mdf)
+    return mdf
 
 # END This function gets rid of unwanted cols and rows.
 
 
 # START This function marks fields that have bed data in them by putting teh work REMOVE in it's place.
 def process_tables_mark(df):
-    print(df)
     row_count, col_count = df.shape
     x = 0
     while x < row_count:
@@ -56,18 +54,33 @@ def process_tables_mark(df):
                 df[y][x] = "REMOVE"
             y += 1
         x += 1
-    print(df)
-    return process_tables_clean(df)
+    # print(df)
+    return df
 # END This function marks fields that have bed data in them by putting teh work REMOVE in it's place.
 
 
 # START This function processes a table import from a chosen pdf request.
 def process_tables_get(path, page):
-    print(path + " is the name of the imported pdf.")
     dataframe_list = read_pdf(path, output_format="dataframe", encoding="utf-8",  multiple_tables=True, pages=int(page), silent=True)
-
-    if len(dataframe_list) > 0:
-        for x in dataframe_list:
-            process_tables_mark(x)
-    return
+    return dataframe_list
 # END This function processes a table import request.
+
+
+def table_to_json(df_list):
+    table_json = {}
+    if len(df_list) > 0:
+        for x in df_list:
+            table_json = process_tables_mark(x).to_json(orient='index')
+    return table_json
+
+
+def process_table_engine(path, page):
+    table_rec = process_tables_get(path, page)
+    print(table_rec)
+
+    if len(table_rec) > 0:
+        for x in table_rec:
+            table_marked = process_tables_mark(x)
+            print(table_marked)
+    # table_cleaned = process_tables_clean(table_marked)
+    # print(table_cleaned)
