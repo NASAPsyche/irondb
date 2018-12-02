@@ -3,15 +3,155 @@
   <head>
     <title>Iron Meteorite Database</title>
     <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/database.css' />
   </head>
   <body>
     <%- include('components/navbar'); %>
     
-    <div class="container-fluid">
-      <h1>ID: <%= id %></h1>
-      <h1>Name: <%= name %></h1>
+    <div class="container-fluid fixed-top p-2 border-bottom border-dark" id="search-panel">
+      <div class="row ml-2 mt-2">
+        <div class="col-sm-2 align-self-end">
+          <div class="d-flex flex-row">
+            <form action="/database/export" method="POST" id="export-form">
+              <label class="sr-only" for="entries">entry ids of currently viewed entries</label>
+              <div id="entry-ids">
+                <% for(var i=0; i < Entries.length; i++) { %>
+                  <input type="hidden" name="entries" value=<%= Entries[i].entry_id %>>
+                <% } %>
+              </div>
+              <button class="btn btn-outline-secondary btn-block mt-2" type="submit">Export Data</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <form action="/database" method="POST" id="search-form">
+            <div class="row">
+              <div class="col-md-3 offset-md-1">
+                <label class="sr-only" for="name"></label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name">
+              </div>
+              <div class="col-md-2">
+                <label class="sr-only" for="title"></label>
+                <input type="text" name="title" id="title" class="form-control" placeholder="paper title">
+              </div>
+              <div class="col-md-2">
+                <label class="sr-only" for="author"></label>
+                <input type="text" name="author" id="author" class="form-control" placeholder="author">
+              </div>
+              <div class="col-md-2">
+                <label class="sr-only" for="group">group</label>
+                <select class="form-control" name="group">
+                  <option>Group</option>
+                  <option value="IAB">IAB</option>
+                  <option value="IA">IA</option>
+                  <option value="IB">IB</option>
+                  <option value="IC">IC</option>
+                  <option value="IIAB">IIAB</option>
+                  <option value="IIA">IIA</option>
+                  <option value="IIB">IIB</option>
+                  <option value="IIC">IIC</option>
+                  <option value="IID">IID</option>
+                  <option value="IIE">IIE</option>
+                  <option value="IIIAB">IIIAB</option>
+                  <option value="IIICD">IIICD</option>
+                  <option value="IIIE">IIIE</option>
+                  <option value="IVA">IVA</option>
+                  <option value="IVB">IVB</option>
+                  <option value="Ungrouped">Ungrouped</option>
+                </select>  
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-3 offset-md-1">
+                <h4 class="text-light">Composition:</h4>
+              </div>
+              <div class="col-sm-3">
+                <label class="sr-only" for="element">element</label>
+                <select class="form-control" name="element">
+                  <option>Element</option>
+                  <option value="Cr">Cr</option>
+                  <option value="Cu">Cu</option>
+                  <option value="Ga">Ga</option>
+                  <option value="Ge">Ge</option>
+                  <option value="As">As</option>
+                  <option value="Sb">Sb</option>
+                  <option value="W">W</option>
+                  <option value="Re">Re</option>
+                  <option value="Ir">Ir</option>
+                  <option value="Co">Co</option>
+                  <option value="Ni">Ni</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <label class="sr-only" for="range">Range</label>
+                <select class="form-control" name="range">
+                  <option>Range</option>
+                  <option value="major">Major</option>
+                  <option value="minor">Minor</option>
+                  <option value="trace">Trace</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-1">
+
+              <div class=" col-md-2 offset-md-6 col-sm-3 offset-sm-6">
+                <a class="btn btn-outline-light btn-block mt-2" id="reset-btn">Reset</a>
+              </div>
+              <div class="col-md-2 col-sm-3">
+                <button class="btn btn-outline-warning btn-block mt-2">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="container-fluid p-0" id="results">
+      <table class="table table-striped table-bordered table-hover ">
+        <thead class="thead-dark">
+          <tr>
+            <th>Name</th>
+            <th>Group</th>
+            <th>Measurement Technique</th>
+            <th>Major Elements</th>
+            <th>Minor Elements</th>
+            <th>Trace Elements</th>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>Pg.#</th> 
+            <th>Journal</th> 
+            <th>Issue</th>
+            <th>Year Published</th> 
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0; i < Entries.length; i++) { %>
+              <tr>
+                <th>
+                  <a href="/database/<%= Entries[i].entry_id %>">
+                    <%= Entries[i].meteorite_name %>
+                  </a>
+                </th>
+                <th><%= Entries[i].classification_group %></th>
+                <th><%= Entries[i].technique %></th>
+                <th><%= Entries[i].major_elements %></th>
+                <th><%= Entries[i].minor_elements %></th>
+                <th><%= Entries[i].trace_elements %></th>
+                <th><%= Entries[i].title %></th>
+                <th><%= Entries[i].authors %></th>
+                <th><%= Entries[i].page_number %></th> 
+                <th><%= Entries[i].journal_name %></th> 
+                <th><%= Entries[i].issue_number %></th>
+                <th><%= Entries[i].published_year %></th> 
+              </tr>
+          <% } %>
+        </tbody>
+      </table>
     </div>
 
     <%- include('bootstrap/js'); %>
+    <script src="/javascripts/database.js"></script>
   </body>
 </html>

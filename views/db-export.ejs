@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Iron Meteorite Database</title>
+    <%- include('components/font-awesome'); %>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/db-export.css' />
+  </head>
+  <body>
+    <%- include('components/navbar'); %>
+
+    <div class="container-fluid pt-3">
+      <div class="row">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/database">Database</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Export</li>
+          </ol>
+        </nav>        
+      </div>
+      <div class="row">
+        <h1>Export Data:</h1>       
+      </div>
+      <div class="row">
+        <p>Select meteorites for inclusion in export.</p>
+      </div>
+    </div>
+
+    <div class="container-fluid pt-3" id="entries">
+      <table class="table table-striped table-bordered table-hover table-responsive">
+        <thead class="thead-dark">
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Group</th>
+            <th>Measurement Technique</th>
+            <th>Major Elements</th>
+            <th>Minor Elements</th>
+            <th>Trace Elements</th>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>Pg.#</th> 
+            <th>Journal</th> 
+            <th>Issue</th>
+            <th>Year Published</th> 
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0; i < Entries.length; i++) { %>
+            <tr>
+              <th>
+                <i class="far fa-times-circle fa-2x row ml-1 mr-1 mt-5"></i>
+              </th>
+              <th hidden="true"><%= Entries[i].entry_id %></th>
+              <th><%= Entries[i].meteorite_name %></th>
+              <th><%= Entries[i].classification_group %></th>
+              <th><%= Entries[i].technique %></th>
+              <th><%= Entries[i].major_elements %></th>
+              <th><%= Entries[i].minor_elements %></th>
+              <th><%= Entries[i].trace_elements %></th>
+              <th><%= Entries[i].title %></th>
+              <th><%= Entries[i].authors %></th>
+              <th><%= Entries[i].page_number %></th> 
+              <th><%= Entries[i].journal_name %></th> 
+              <th><%= Entries[i].issue_number %></th>
+              <th><%= Entries[i].published_year %></th> 
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="container-fluid">
+      <div class="d-flex flex-row-reverse">
+        <form action="/database/export" method="POST">
+          <div id="entry-ids"></div>
+          <!-- <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="notes" name="notes">
+            <label class="form-check-label" for="notes">Include Notes:</label>
+          </div> -->
+          <button class="btn btn-warning" id="export-btn" name="export" value="true">Export Data</button>
+        </form>
+      </div>
+    </div>
+
+    <%- include('bootstrap/js'); %>
+    <script src="/javascripts/db-export.js"></script>
+  </body>
+</html>
