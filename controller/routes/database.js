@@ -213,4 +213,19 @@ router.post('/export', function(req, res, next){
 });
 
 
+/* GET /database/export */
+router.get('/:id', function(req, res, next){
+  let queryString = 'SELECT * FROM complete_table WHERE status=$1 AND entry_id=$2';
+  const argsArray = ['active',req.params.id];
+
+  db.query(queryString, argsArray, (dbErr, dbRes) => {
+    if (dbErr) {
+      return next(dbErr);
+    }
+
+    res.render('single-entry', {Entries: dbRes.rows});
+  });
+});
+
+
 module.exports = router;
