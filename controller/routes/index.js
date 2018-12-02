@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+// eslint-disable-next-line new-cap
+const router = express.Router();
 
-/* GET home page. */
+/* GET landing page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Iron Meteorite Example' });
+  res.render('index');
 });
 
 module.exports = router;

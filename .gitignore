@@ -132,8 +132,11 @@ jspm_packages/
 .env
 
 # Dependency related files
-public/javascripts/*.js
-public/stylesheets/bootstrap.css
+public/javascripts/bootstrap.min.js
+public/javascripts/jquery.min.js
+public/javascripts/popper.min.js
+public/javascripts/tether.min.js
+public/stylesheets/custom.css
 
 # Postgres files
 pg-data/
@@ -143,3 +146,12 @@ coverage/
 
 # RabbitMQ
 rabbitmq/data/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode
+
+# public temp directory
+public/temp/*.csv

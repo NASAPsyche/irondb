@@ -1,0 +1,38 @@
+#search-panel {
+	margin-top: 3.375rem;
+    -webkit-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    -moz-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    background-color: rgba(140, 29, 64, 100);
+}
+
+#reset-btn {
+	color: rgb(255, 255, 255);
+}
+
+#reset-btn:hover {
+	color: rgb(0, 0, 0);
+}
+
+/* Padding to top of body to push content below floating panel. */
+
+/* Bootstrap xs */
+@media (max-width: 576px) { 
+	body {
+		padding: 31.9375rem 0 0 0;
+	}
+}
+
+/* Bootstrap xs to sm*/
+@media (min-width: 576px) and (max-width: 767.98px) {
+	body {
+		padding: 23.8125rem 0 0 0;
+	}
+}
+
+/* Bootstrap greater than sm */
+@media (min-width: 767.98px) { 
+	body {
+		padding: 14.375rem 0 0 0;
+	}
+ }

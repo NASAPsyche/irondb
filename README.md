@@ -1,6 +1,6 @@
 # irondb - Iron Meteorite Database
 
-### Dependencies and documentation
+## Dependencies and documentation
 * [Node JS](https://nodejs.org/en/) - Server-side JS Runtime
 * [Express.JS](https://expressjs.com/en/4x/api.html) - Web Application Framework
 * [EJS](http://ejs.co/) - Templating Engine
@@ -9,32 +9,32 @@
 * [Passport.js](http://www.passportjs.org/) - Authentication middleware fo Node.js
 * [Jest](https://jestjs.io/) - Javascript Testing Framework
 
-### Tools
+#### Tools
 * [NPM](https://www.npmjs.com/) - Node Package Manager
 * [Gulp](https://gulpjs.com/) - Task Runner
 To install Gulp run `npm install gulp-cli -g`
 * [Docker](https://www.docker.com/) - Container Engine
 To install follow the instructions for your given operating sytem [here](https://docs.docker.com/v17.12/install/). 
 
-### Structure
+## Structure
 
 ```bash
-├── bin						# Scripts
+├── bin					# Scripts
 │	│
 │ 	└── www					# Server startup bash script.
 │
 ├── docker					# Docker support files
 │	│
 │ 	└── start				# Supporting scripts
-│ 	  	└── docker-clean.sh 	# Performs a clean build and run
-│ 	  	└── docker-initial-install.sh 		# First time install and run
-│ 	  	└── docker-start.sh 		# Run pre-built containers
-│ 	  	└── remove-all.sh 		# Removes ALL containers from system
+│ 	  	└── docker-clean.sh 						# Performs a clean build and run
+│ 	  	└── docker-initial-install.sh 				# First time install and run
+│ 	  	└── docker-start.sh 						# Run pre-built containers
+│ 	  	└── remove-all.sh 							# Removes ALL containers from system
 │
-├── controller				# Handels business logic and routing.
+├── controller			# Handles business logic and routing.
 │	│
 │ 	├── routes
-│ 	│ 	└── index.js 	# Index router - file defines logic for the "/" route.
+│ 	│ 	└── index.js 		# Index router - file defines logic for the "/" route.
 │ 	│ 
 │ 	└── app.js 			# Primary server file.
 │ 
@@ -44,36 +44,34 @@ To install follow the instructions for your given operating sytem [here](https:/
 │	│
 │	└── stylesheets			# Directory containing css assests. Target for bootstrap.css.
 │
-├── rabbitmq			# Directory containing the Dockerfile for RabbitMQ
-│	│
-│	├── data				# Persistent data store	
-│
 ├──	views
 │	│
 │	├── bootstrap			# Directory containing templates for bootstrap tags.
 │	│
 │	└── index.ejs			# Example EJS template.
 │
-├── .gitignore				# File defines files git ignore tracking.
+├── .gitignore			# File defines files git ignore tracking.
 │
-├── gulpfile.js 			# Gulp task script.
+├── gulpfile.js 		# Gulp task script.
 │
 ├── iron.sh				# Controller for running containers
 │
-├── package.json			# NPM package manager project config.
+├── package.json		# NPM package manager project config.
 │
-└── README.md 				# Project documentation file.
+└── README.md 			# Project documentation file.
 ```
 
 
 
+## Install and run the project
 
-
-### Required Dependencies
+#### Required Dependencies
 1. Node
 2. Gulp
+3. Docker (if using containers)
 
-### To Run without docker
+#### To Run without docker
+This method can be used to test the server without the overhead of creating and deploying Docker containers.
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
 3. `sudo npm install -g gulp-cli` - Install gulp cli
@@ -81,16 +79,16 @@ To install follow the instructions for your given operating sytem [here](https:/
 5. `gulp sass` - Compile bootstrap sass and move to public directory.
 6. `gulp js` - Move JS dependencies into public directory.
 7. `npm start` - Start the server.
-8. `http://localhost:3000` - Navigate to localhost port 3000.
+8. `http://localhost:3001` - Navigate to localhost port 3001.
 
-### To Run with Docker-Compose Automatic
-This will allow you to install dependencies, build the containers, run the containers, and close the containers.
+#### To Run with Docker-Compose Automatic
+Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.
 1. `cd irondb` - change directory to root
 2. (optional - do if step 3 does not launch) `chmod u+x dockerup.sh` - set the script to executable if it is not already so.
 3. `./iron.sh` - Builds and launches the Docker Composition
 4. Follow the prompts.
 
-### To Run with Docker-Compose Manual
+#### To Run with Docker-Compose Manual
 Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
@@ -101,21 +99,29 @@ Pre-requisite - Must have docker and gulp cli installed, and docker must be runn
 	- You can also run up and build commands separately, i.e. `docker-compose build` and `docker-compose up`.
 Notes: control-c to exit, then `docker-compose down` to gracefully stop images if they are not already down. Gulp tasks must be run manually before building the image to ensure proper bootstrap integration. 
 
-### Useful docker-compose commands:
+#### Useful docker-compose commands:
 * `docker-compose build` - Build images defined by the current directories docker-compose.yml file, but don't run containers.
 * `docker-compose up` - Run containers defined by the current directories docker-compose.yml file.
 * `docker-compose up --build` - Build and run containers.
 * `docker-compose down` - Gracefully stop containers.
 
-### Running tests
+## Testing
+
+#### Coverage
 To run tasks using gulp run command `gulp jest`, jest-cli may be required locally, to install run `sudo npm install -g jest-cli`.
 
 Coverage details can be found in the /coverage directory after running tests.
 
-### RabbitMQ Manager
-To access the RabbitMQ Manager, go to http://localhost:15672/
-Username: `guest`
-Password: `guest`
+#### ESLint
+ESLint is used to enforce style guides for Javascript. ESLint is currently set to enforce:
+1. ESLint recommended
+2. Google JS Style Guide
+3. Node recommended
+
+To run ESLint on the entire project:
+`cd irondb`
+`npm run pretest`
+
 
 ### Example Route Walkthrough
 [Tech Stack Walkthrough Playlist](https://www.youtube.com/playlist?list=PL9InapyRWXwmENss1Vw9GdUahwmh0o9nU) - 
