@@ -19,7 +19,7 @@ def get_pdf_list(directory):
     path = directory
     dirs = os.listdir(path)
 
-    # This add all the files and directories inside "pdfs" into a list
+    # This adds all the files and directories inside "pdfs" into a list
     for file in dirs:
         if "pdf" in file:
             #print(str(num + 1) + ". " + file)
@@ -32,8 +32,10 @@ def get_pdf_list(directory):
 lst = get_pdf_list("pdfs/")
 
 # sublist of specific pdfs to test
-sub_lst = [lst[0], lst[1], lst[2], lst[6], lst[9],
-           lst[11], lst[12], lst[14], lst[16], lst[18], lst[19]]
+sub_lst = ['WassonandRichardson_GCA_2011.pdf', 'WassonandChoe_GCA_2009.pdf', 'Wasson_GCA_2017.pdf', 'WassonandChoi_2003.pdf',
+           'Litasov2018_Article_TraceElementCompositionAndClas.pdf', 'Wasson_2010.pdf', 'Wasson_2004.pdf', 'Wassonetal_GCA_2007.pdf',
+           'Ruzicka2014.pdf', 'WassonandKallemeyn_GCA_2002.pdf', 'RuzickaandHutson2010.pdf']
+
 
 print("Testing on the following papers:")
 print(sub_lst)
@@ -53,3 +55,6 @@ for i in range(len(sub_lst)):
     # run analysis technique function on each paper
     pdf_analysis_technique.find_analysis_technique(pages, text)
     print("\n")
+
+# 4Hajar
+# print('Runs much faster now, right?')
