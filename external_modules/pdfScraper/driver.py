@@ -52,11 +52,15 @@ pwt_count = 0
 table_json_to_send = {}
 array_tables = []
 while pwt_count < more:
-    pdf_tables.process_table_engine(chosen_pdf, int(pages_with_table[pwt_count]))
+    test = pdf_tables.process_table_engine(chosen_pdf, int(pages_with_table[pwt_count]))
     # print("Page " + str(pages_with_table[pwt_count]))
     # table_json_to_send = pdf_tables.process_tables_get(chosen_pdf, int(pages_with_table[pwt_count]))
     # array_tables.append(table_json_to_send)
     pwt_count += 1
+    if test != "None":
+        array_tables.append(test)
+
+print(array_tables)
 # END Get tables 1 page at a time.
 
 
