@@ -83,7 +83,7 @@ def process_table_engine(path, page):
             table_marked = process_tables_mark(x)
             # print(table_marked)
             table_cleaned = process_tables_clean(table_marked)
-
-            return(table_cleaned.to_json(double_precision=10, force_ascii=True,
-                                        date_unit='ms', lines=False))
+            # print(table_cleaned)
+            return json.loads((table_cleaned.to_json(double_precision=10, force_ascii=True,
+                                        date_unit='ms', lines=False)))
 
