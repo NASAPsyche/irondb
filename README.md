@@ -71,15 +71,7 @@ To install follow the instructions for your given operating sytem [here](https:/
 3. Docker (if using containers)
 
 #### To Run without docker
-This method can be used to test the server without the overhead of creating and deploying Docker containers.
-1. `cd irondb` - change directory to root
-2. `npm install` - Install dependencies.
-3. `sudo npm install -g gulp-cli` - Install gulp cli
-4. `npm install gulp` - confirm gulp installation
-5. `gulp sass` - Compile bootstrap sass and move to public directory.
-6. `gulp js` - Move JS dependencies into public directory.
-7. `npm start` - Start the server.
-8. `http://localhost:3001` - Navigate to localhost port 3001.
+It is no longer possible to run the project without Docker installed and running. Please follow the instructions To Run with Docker-Compose Automatic
 
 #### To Run with Docker-Compose Automatic
 Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.
@@ -87,6 +79,7 @@ Docker must be running. This will allow you to install dependencies, build the c
 2. (optional - do if step 3 does not launch) `chmod u+x dockerup.sh` - set the script to executable if it is not already so.
 3. `./iron.sh` - Builds and launches the Docker Composition
 4. Follow the prompts.
+If this is your first time, select `1`. If you are only testing changes that do not impact the building of the docker containers themselves, select `3`. This will be the most common selection.
 
 #### To Run with Docker-Compose Manual
 Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
