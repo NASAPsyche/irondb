@@ -6,6 +6,13 @@
     "pretest": "eslint --ignore-path .eslintignore .",
     "start": "node ./bin/www"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "eslint --fix --ignore-path .eslintignore .",
+      "pre-push": "npm test",
+      "start": "node ./bin/www"
+    }
+  },
   "dependencies": {
     "bcrypt": "^3.0.2",
     "bootstrap": "^4.1.3",
