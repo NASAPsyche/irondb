@@ -116,6 +116,7 @@ app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 
+// Protected Routes
 app.use('/data-entry', dataEntryRouter);
 
 
