@@ -2,8 +2,7 @@ $('button').on('click', function() {
   // AJAX to call the server to get all usernames.
   $.get('/example', function(data) {
     // Update the page to include that information.
-    // eslint-disable-next-line prefer-const
-    let usernames = data['usernames'];
+    const usernames = data['usernames'];
     console.log(usernames);
     let i = 1;
     usernames.forEach((entry) => {
@@ -14,5 +13,5 @@ $('button').on('click', function() {
   });
 });
 
-
+// example format
 // {"usernames":[{"username":"bob"}]}

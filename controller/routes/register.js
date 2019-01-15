@@ -17,7 +17,8 @@ router.post('/', function(req, res, next) {
     bcrypt.hash(req.body.password, salt, function(err, hash) {
       db.getClient((err, client, done) => {
         // Transaction functionality modified from example at: https://node-postgres.com/features/transactions
-
+        let insertQuery = 'INSERT INTO Users(username, password, role)';
+        insertQuery += ' VALUES($1,$2,$3) RETURNING user_id';
         const shouldAbort = (err) => {
           if (err) {
             console.error('Error in transaction', err.stack);
@@ -35,8 +36,8 @@ router.post('/', function(req, res, next) {
 
         client.query('BEGIN', (err) => {
           if (shouldAbort(err)) return;
-          // eslint-disable-next-line max-len
-          client.query('INSERT INTO Users(username, password, role) VALUES($1,$2,$3) RETURNING user_id',
+          client.query(
+              insertQuery,
               [req.body.username, hash, 'data-entry'], (err, res) => {
                 if (shouldAbort(err)) return;
 

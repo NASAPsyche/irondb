@@ -28,8 +28,8 @@ const panelRouter = require('./routes/panel');
 
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy((username, password, done) => {
-// eslint-disable-next-line max-len
-  db.query('SELECT user_id, username, password, role FROM users WHERE username=$1',
+  db.query(
+      'SELECT user_id, username, password, role FROM users WHERE username=$1',
       [username],
       (err, result) => {
         // Verify callback provides user if credentials accepted.
@@ -64,8 +64,8 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-// eslint-disable-next-line max-len
-  db.query('SELECT user_id, username, password, role FROM users WHERE user_id=$1',
+  db.query(
+      'SELECT user_id, username, password, role FROM users WHERE user_id=$1',
       [id],
       (err, result) => {
         // Get user by id.
