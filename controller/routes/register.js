@@ -57,7 +57,7 @@ router.post('/', function(req, res, next) {
 router.use(function(req, res, next) {
   // After database insert transaction complete, athenticate and redirect.
   passport.authenticate('local')(req, res, function() {
-    res.redirect('/');
+    res.redirect('/panel');
   });
 });
 

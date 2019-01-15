@@ -14,6 +14,7 @@ const db = require('./db');
 const indexRouter = require('./routes/index');
 const databaseRouter = require('./routes/database');
 
+// Remove in production
 const exampleRouter = require('./routes/example');
 
 // Auth Routes
@@ -21,7 +22,9 @@ const registerRouter = require('./routes/register');
 const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
 
+// Protected Routes
 const dataEntryRouter = require('./routes/data-entry');
+const panelRouter = require('./routes/panel');
 
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy((username, password, done) => {
@@ -118,6 +121,7 @@ app.use('/logout', logoutRouter);
 
 // Protected Routes
 app.use('/data-entry', dataEntryRouter);
+app.use('/panel', panelRouter);
 
 
 // catch 404 and forward to error handler
