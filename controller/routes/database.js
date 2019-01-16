@@ -178,6 +178,7 @@ router.post('/export', function(req, res, next) {
     }
 
     if (req.body.hasOwnProperty('export')) {
+
       const fields = [];
       fields.push('meteorite_name', 'classification_group', 'technique');
       fields.push('major_elements', 'minor_elements', 'trace_elements');
@@ -188,6 +189,7 @@ router.post('/export', function(req, res, next) {
       const date = new Date();
       const dateStr = date.toUTCString().replace(/ /g, '_');
       const filename = 'Database_export_' + dateStr + '.csv';
+
       const filePath = path.join(__dirname, ('../../public/temp/' + filename));
 
       try {
@@ -220,6 +222,7 @@ router.post('/export', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
   // eslint-disable-next-line max-len
   const queryString = 'SELECT * FROM complete_table WHERE status=$1 AND entry_id=$2';
+
   const argsArray = ['active', req.params.id];
 
   db.query(queryString, argsArray, (dbErr, dbRes) => {

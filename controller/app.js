@@ -1,4 +1,4 @@
-const createError = require('http-errors');
+const createError = require("http-errors");
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -28,8 +28,10 @@ const panelRouter = require('./routes/panel');
 
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy((username, password, done) => {
+
   db.query(
       'SELECT user_id, username, password, role FROM users WHERE username=$1',
+
       [username],
       (err, result) => {
         // Verify callback provides user if credentials accepted.

@@ -21,7 +21,8 @@ $( '#reset-btn' ).on( 'click', function( event ) {
 $( document ).ajaxComplete(function() {
   $( '#entry-ids' ).empty();
   $( 'p:hidden' ).each(function() {
-    // eslint-disable-next-line max-len
-    $('<input>').attr({type: 'hidden', name: 'entries'}).val( $(this).text()).appendTo( $('#entry-ids'));
+    $( '<input>' ).attr({type: 'hidden', name: 'entries'})
+        .val( $(this).text() )
+        .appendTo( $( '#entry-ids' ) );
   });
 });
