@@ -4,7 +4,11 @@ const router = express.Router();
 const {isLoggedIn} = require('../middleware/auth');
 
 router.get('/', isLoggedIn, function(req, res, next) {
-  res.render('data-entry');
+  if (req.user.role === 'admin') {
+    // placeholder
+  } else {
+    res.render('user-panel');
+  }
 });
 
 module.exports = router;

@@ -2,7 +2,6 @@ const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const db = require('../db');
-// eslint-disable-next-line no-unused-vars
 const createError = require('http-errors');
 const path = require('path');
 const fs = require('fs');
@@ -124,7 +123,8 @@ router.post('/', function(req, res, next) {
 
 /* GET /database/export */
 router.get('/export', function(req, res, next) {
-  db.query('SELECT * FROM complete_table WHERE status=$1',
+  db.query(
+      'SELECT * FROM complete_table WHERE status=$1',
       ['active'],
       (dbErr, dbRes) => {
         if (dbErr) {
@@ -178,20 +178,18 @@ router.post('/export', function(req, res, next) {
     }
 
     if (req.body.hasOwnProperty('export')) {
-      const fields = ['meteorite_name',
-        'classification_group',
-        'technique', 'major_elements',
-        'minor_elements', 'trace_elements',
-        'title',
-        'authors',
-        'page_number',
-        'journal_name',
-        'issue_number',
-        'published_year'];
+
+      const fields = [];
+      fields.push('meteorite_name', 'classification_group', 'technique');
+      fields.push('major_elements', 'minor_elements', 'trace_elements');
+      fields.push('title', 'authors', 'page_number');
+      fields.push('journal_name', 'issue_number', 'published_year');
+
       const opts = {fields};
       const date = new Date();
-      const filename = 'Database_export_'
-        + date.toUTCString().replace(/ /g, '_') + '.csv';
+      const dateStr = date.toUTCString().replace(/ /g, '_');
+      const filename = 'Database_export_' + dateStr + '.csv';
+
       const filePath = path.join(__dirname, ('../../public/temp/' + filename));
 
       try {
@@ -207,7 +205,6 @@ router.post('/export', function(req, res, next) {
             // remove sent file
             fs.unlink(filePath, function(err) {
               if (err) throw err;
-              // console.log('export file deleted.');
             });
           });
         });
@@ -223,8 +220,9 @@ router.post('/export', function(req, res, next) {
 
 /* GET /database/export */
 router.get('/:id', function(req, res, next) {
-  const queryString = 'SELECT * FROM complete_table'+
-    ' WHERE status=$1 AND entry_id=$2';
+  // eslint-disable-next-line max-len
+  const queryString = 'SELECT * FROM complete_table WHERE status=$1 AND entry_id=$2';
+
   const argsArray = ['active', req.params.id];
 
   db.query(queryString, argsArray, (dbErr, dbRes) => {

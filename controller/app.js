@@ -14,6 +14,7 @@ const db = require('./db');
 const indexRouter = require('./routes/index');
 const databaseRouter = require('./routes/database');
 
+// Remove in production
 const exampleRouter = require('./routes/example');
 
 // Auth Routes
@@ -21,11 +22,16 @@ const registerRouter = require('./routes/register');
 const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
 
+// Protected Routes
 const dataEntryRouter = require('./routes/data-entry');
+const panelRouter = require('./routes/panel');
 
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy((username, password, done) => {
-  db.query('SELECT user_id, username, password, role FROM users WHERE username=$1',
+
+  db.query(
+      'SELECT user_id, username, password, role FROM users WHERE username=$1',
+
       [username],
       (err, result) => {
         // Verify callback provides user if credentials accepted.
@@ -60,8 +66,8 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-// eslint-disable-next-line max-len
-  db.query('SELECT user_id, username, password, role FROM users WHERE user_id=$1',
+  db.query(
+      'SELECT user_id, username, password, role FROM users WHERE user_id=$1',
       [id],
       (err, result) => {
         // Get user by id.
@@ -115,7 +121,9 @@ app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 
+// Protected Routes
 app.use('/data-entry', dataEntryRouter);
+app.use('/panel', panelRouter);
 
 
 // catch 404 and forward to error handler
