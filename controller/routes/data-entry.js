@@ -7,4 +7,8 @@ router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
 });
 
+router.get('/editor', isLoggedIn, function(req, res, next) {
+  res.render('editor');
+});
+
 module.exports = router;
