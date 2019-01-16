@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Iron Meteorite Database</title>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/index.css' />
+  </head>
+  <body>
+    <%- include('components/navbar'); %>
+
+  	<div class="container-fluid pt-3 pb-4" id="top-container">
+      <div class="row">
+
+
+
+        <div class="col-md-8 pt-4 ml-5">
+
+
+
+          <div class="row">
+            <div >
+              <h1>Documentation</h1>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+  	</div>
+
+    <div class="container-fluid pt-3" id="bottom-container">
+        <div>
+            <p> 
+                Welcome to the Iron Meteorite Database, a part of <a href="https://psyche.asu.edu/">
+                Arizona State University's project Psyche</a>. This is the premiere database for curated 
+                information on iron meteorites. We strive to have the most complete and most accurate collection 
+                of data by using a mixture of natural language processing and traditional data entry.
+            </p>
+            <p>
+                <center>
+                <a href="#search">Search</a>&nbsp;&nbsp;&nbsp;
+                <a href="#exportData">Export Data</a>&nbsp;&nbsp;&nbsp;
+                <a href="#dataEntry">Data Entry</a>&nbsp;&nbsp;&nbsp;
+                <a href="#reportError">Report an Error</a>&nbsp;&nbsp;&nbsp;
+                </center>
+            </p>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                    <h3>Search</h3><a id="search"></a>
+                    <p>... how to use search</p>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+            <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10">
+                        <h3>Export Data</h3><a id="exportData"></a>
+                        <p>... how to export data</p>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                    <h3>Data Entry</h3><a id="dataEntry"></a>
+                    <p> ... how to enter data</p>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                    <h3>Report an Error</h3><a id="reportError"></a>
+                    <p>... how to report an error</p>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+        </div>
+    </div>
+    <%- include('bootstrap/js'); %>
+  </body>
+</html>
