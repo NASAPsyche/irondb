@@ -1,6 +1,7 @@
 import nltk
 
 from nltk.tokenize import sent_tokenize
+import nltk.data
 import driver_methods
 import pdf_metadata
 import pdf_text
@@ -19,7 +20,8 @@ def sentence_tokenize(paper):
     entire_pdf_string = ' '.join(str(v) for v in entire_pdf)
 
     # Tokenize by sentence
-    processed_text = sent_tokenize(entire_pdf_string)
+    sent_dectector = nltk.data.load('tokenizers/punkt/english.pickle')
+    processed_text = sent_dectector.tokenize(entire_pdf_string)
 
     final_text = ""
 
