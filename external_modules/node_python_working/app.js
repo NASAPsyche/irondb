@@ -7,6 +7,14 @@ const {PythonShell} = require('python-shell');
 let result = '';
 
 
+function wait(ms)
+{
+var d = new Date();
+var d2 = null;
+do { d2 = new Date(); }
+while(d2-d < ms);
+}
+
 app.get('/', function(req, res) {
   const options = {
     mode: 'text',
@@ -16,15 +24,18 @@ app.get('/', function(req, res) {
     args: ['pdfs/WassonandChoe_GCA_2009.pdf', 'value2', 'value3'],
 
   };
-
+result = "This is such a test";
   PythonShell.run('driver.py', options, function(err, results) {
     if (err) throw err;
     // results is an array consisting of messages collected during execution
     console.log('results: %j', results);
 
     result = results;
-    res.send(result);
+
   });
+// wait(80000);
+    res.set('Access-Control-Allow-Origin', '*');
+    res.end(result);
 });
 
 const server = app.listen(8081, function() {
