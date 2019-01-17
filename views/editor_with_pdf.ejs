@@ -14,17 +14,17 @@
     </div>
 
     <div class="container-fluid pt-1 pb-1">
-        <form method="POST" action="/data-entry/editor" enctype="multipart/form-data" class="border border-dark" id="pdf-form">
-            <div class="form-group">
-                <label for="filetoupload">Choose file to upload</label>
-                <input type="file" id="pdf" name="filetoupload"
-                    accept=".pdf">
-            </div>
-            <button type="submit" class="btn btn-secondary mt-2">Submit</button>
-        </form>
+        <div id="pdf-panel"></div>
     </div>
-    
+
+    <div hidden="true" id="filepath" value="<%- data %>"><%- data %></div>
     <%- include('bootstrap/js'); %>
+    <script src='/javascripts/pdfobject.min.js'></script>
+    <script>
+        const fp = $( '#filepath' ).attr('value');
+        const panel = $( '#pdf-panel' );
+        PDFObject.embed(fp, panel);
+    </script>
     <script src="/javascripts/editor.js"></script>
 </body>
 </html>
