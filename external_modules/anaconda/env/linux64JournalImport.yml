@@ -58,7 +58,9 @@ dependencies:
   - openjdk=8.0.152=h46b5887_1
   - system=5.8=2
   - pip:
+    - nltk==3.4
     - opencv-python==3.4.3.18
     - pypdf2==1.26.0
-prefix: ~/anaconda3/envs/journalImport
+    - singledispatch==3.4.0.3
+prefix: /home/ken/anaconda3/envs/journalImport
 
