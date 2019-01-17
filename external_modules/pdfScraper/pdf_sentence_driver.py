@@ -7,7 +7,7 @@ try:
     print('Punkt found')
 except LookupError:
     nltk.download('punkt')
-    print('let me get punkt for you Josh')
+    print('let me get punkt for you')
 
 
 # Select PDF
