@@ -13,6 +13,7 @@ const db = require('./db');
 // Define individual route routers
 const indexRouter = require('./routes/index');
 const databaseRouter = require('./routes/database');
+const helpRouter = require('./routes/help');
 
 // Remove in production
 const exampleRouter = require('./routes/example');
@@ -115,6 +116,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/database', databaseRouter);
 app.use('/example', exampleRouter);
+app.use('/help', helpRouter);
 
 // Use Auth Routers
 app.use('/register', registerRouter);
