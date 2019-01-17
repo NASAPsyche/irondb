@@ -136,6 +136,7 @@ public/javascripts/bootstrap.min.js
 public/javascripts/jquery.min.js
 public/javascripts/popper.min.js
 public/javascripts/tether.min.js
+public/javascripts/pdfobject.min.js
 public/stylesheets/custom.css
 
 # Postgres files
@@ -155,3 +156,6 @@ rabbitmq/data/
 
 # public temp directory
 public/temp/*.csv
+public/temp/*.pdf
+
+
