@@ -31,11 +31,14 @@ result = "This is such a test";
     console.log('results: %j', results);
 
     result = results;
+      res.header('Access-Control-Allow-Origin', '*');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+    res.send(result);
 
   });
 // wait(80000);
-    res.set('Access-Control-Allow-Origin', '*');
-    res.end(result);
+
 });
 
 const server = app.listen(8081, function() {
