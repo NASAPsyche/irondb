@@ -67,4 +67,3 @@ dependencies:
     - pypdf2==1.26.0
     - singledispatch==3.4.0.3
 prefix: ~/anaconda3/envs/journalImport
-

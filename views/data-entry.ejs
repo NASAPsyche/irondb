@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Login</title>
-  <%- include('bootstrap/css'); %>
-</head>
-<body>
-  <%- include('components/navbar_signed_in'); %>
+  <head>
+    <title>Data Entry</title>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/data-entry.css' />
+  </head>
+  <body>
+    <%- include('components/navbar_signed_in'); %>
 
-  <h1>Welcome to Data entry.</h1>
+    <div class="container-fluid pt-3" id="bottom-container">
+      <div class="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
+        <h3>Select a data entry approach below:</h3>
+      </div>
 
-  <%- include('bootstrap/js'); %>
-</body>
+      <div class="d-flex flex-row align-items-center justify-content-center pt-3 mb-4">
+      	<a href="/data-entry/tool" class="btn btn-dark btn-lg bg-secondary">Automated Tool</a>
+      </div>
+
+      <div class="d-flex flex-row align-items-center justify-content-center mb-4">
+        <h3> - or - </h3>
+      </div>
+
+      <div class="d-flex flex-row align-items-center justify-content-center">
+        <a href="/data-entry/editor" class="btn btn-dark btn-lg bg-secondary">Manual Editor</a>
+      </div>
+
+    </div>
+
+    <%- include('bootstrap/js'); %>
+  </body>
 </html>

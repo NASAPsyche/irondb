@@ -2,9 +2,9 @@ const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
+/* GET help page. */
 router.get('/', function(req, res, next) {
-  req.logout();
-  res.redirect('/');
+  res.render('help');
 });
 
 module.exports = router;

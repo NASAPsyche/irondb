@@ -7,7 +7,7 @@ __version__ = "1.0"
 __email__ = "jdjohn43@asu.edu"
 __date__ = "11/7/18"
 """
-
+import json
 import pdf_metadata
 import pdf_tables
 import driver_methods
@@ -17,6 +17,7 @@ import pandas as pd
 pd.options.display.max_rows = 999
 pd.options.display.max_columns = 999
 
+master_json = ""
 
 # START This is getting the current pdfs in the pdf folder.
 chosen_pdf = driver_methods.display_pdf_names("pdfs/")
@@ -49,14 +50,23 @@ pages_with_table = find_tables.look_for_tables(text, total_pages)
 # START Get tables 1 page at a time.
 more = len(pages_with_table)
 pwt_count = 0
+accepted_table = 1
 table_json_to_send = {}
 array_tables = []
+
 while pwt_count < more:
-    pdf_tables.process_table_engine(chosen_pdf, int(pages_with_table[pwt_count]))
+    test = pdf_tables.process_table_engine(chosen_pdf, int(pages_with_table[pwt_count]))
+    if str(test) != "None":
+        table_built = {"table_" + str(accepted_table): test}
+        print("This is table: " + str(table_built))
+        array_tables.append(table_built)
+        accepted_table += 1
     # print("Page " + str(pages_with_table[pwt_count]))
     # table_json_to_send = pdf_tables.process_tables_get(chosen_pdf, int(pages_with_table[pwt_count]))
     # array_tables.append(table_json_to_send)
     pwt_count += 1
+
+    print(array_tables)
 # END Get tables 1 page at a time.
 
 

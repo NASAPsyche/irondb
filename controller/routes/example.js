@@ -5,6 +5,8 @@ const db = require('../db');
 // eslint-disable-next-line no-unused-vars
 const {isLoggedIn, isAdmin} = require('../middleware/auth');
 
+// NOT FOR PRODUCTION
+
 /* GET example page. */
 router.get('/', function(req, res, next) {
   if (req.xhr === true) {
