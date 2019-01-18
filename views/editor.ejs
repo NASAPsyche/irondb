@@ -11,17 +11,51 @@
         <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
             <h1>Data Entry Editor</h1>
         </div>
+        <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
+            <h4>Upload pdf before beginning entry if using pdf.</h4>
+        </div>
     </div>
 
     <div class="container-fluid pt-1 pb-1">
-        <form method="POST" action="/data-entry/editor" enctype="multipart/form-data" class="border border-dark" id="pdf-form">
-            <div class="form-group">
-                <label for="filetoupload">Choose file to upload</label>
-                <input type="file" id="pdf" name="filetoupload"
-                    accept=".pdf">
+
+        <div class="row">
+            <div class="col-sm-11 offset-sm-1 col-md-3 offset-md-1 pl-1 mb-3">
+                <form method="POST" action="/data-entry/editor" enctype="multipart/form-data" class="border border-dark align-top mx-auto" id="pdf-form">
+                    <div class="form-group">
+                        <label for="filetoupload">Choose file to upload</label>
+                        <input type="file" id="pdf" name="filetoupload"
+                            accept=".pdf">
+                    </div>
+                    <button type="submit" class="btn btn-secondary mt-2">Submit</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-secondary mt-2">Submit</button>
-        </form>
+
+            <div class="col-sm-11 col-sm-11 col-md-7">
+                <div class="card text-center border-dark">
+                    <div class="card-header bg-danger">
+                        <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item bg-warning">
+                            <a class="nav-link active" id="insert-tab" data-toggle="tab" href="#insert" role="tab" aria-controls="insert" aria-selected="true">Insert View</a>
+                        </li>
+                        <li class="nav-item bg-warning">
+                            <a class="nav-link" id="table-tab" data-toggle="tab" href="#table" role="tab" aria-controls="table" aria-selected="true">Table View</a>
+                        </li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
+                            <h5 class="card-title">Insert Tab</h5>
+                            <%- include('components/insert_form'); %>
+                        </div>
+                        <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
+                            <h5 class="card-title">Table Tab</h5>
+                            <p id="manual-text">View populated via automated tool. View not available via manual editor.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <%- include('bootstrap/js'); %>
