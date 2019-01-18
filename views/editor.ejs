@@ -16,7 +16,7 @@
     <div class="container-fluid pt-1 pb-1">
 
         <div class="row">
-            <div class="col-sm-11 offset-sm-1 col-md-3 offset-md-1 pl-1">
+            <div class="col-sm-11 offset-sm-1 col-md-3 offset-md-1 pl-1 mb-3">
                 <form method="POST" action="/data-entry/editor" enctype="multipart/form-data" class="border border-dark align-top mx-auto" id="pdf-form">
                     <div class="form-group">
                         <label for="filetoupload">Choose file to upload</label>
@@ -26,6 +26,7 @@
                     <button type="submit" class="btn btn-secondary mt-2">Submit</button>
                 </form>
             </div>
+
             <div class="col-sm-11 col-sm-11 col-md-7">
                 <div class="card text-center border-dark">
                     <div class="card-header bg-danger">
@@ -42,9 +43,128 @@
                     <div class="card-body tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
                             <h5 class="card-title">Insert Tab</h5>
+                            <form method="POST" action="/data-entry/editor" class="align-top mx-auto text-left" id="insert-form">
+
+                                <h5 class="pt-1"><strong>Basic Information</strong></h5>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="journalName">Journal Name</label>
+                                        <input type="text" class="form-control" id="journalName" required="true" placeholder="required">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-2">
+                                        <label for="volue">Volume</label>
+                                        <input type="text" class="form-control" id="volume" placeholder="optional">
+                                    </div>
+                                    <div class="form-group offset-md-1 col-md-2">
+                                        <label for="issue">Issue</label>
+                                        <input type="text" class="form-control" id="issue" placeholder="optional">
+                                    </div>
+                                    <div class="form-group offset-md-1 col-md-2">
+                                        <label for="series">Series</label>
+                                        <input type="text" class="form-control" id="series" placeholder="optional">
+                                    </div>
+                                    <div class="form-group offset-md-1 col-md-2">
+                                        <label for="pub_year">Year Published</label>
+                                        <input type="number" class="form-control" id="pub_year" required="true" min="1900" Max="2100" step="1">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group col-md-8">
+                                        <label for="paperTitle">Paper Title</label>
+                                        <input type="text" class="form-control" id="paperTitle" required="true" placeholder="required"> 
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="doi">DOI</label>
+                                        <input type="text" class="form-control" id="doi" placeholder="optional">
+                                    </div>
+                                </div>
+
+                                <h5 class="pt-1"><strong>Author(s)</strong></h5>
+                                <div class="form-row">
+                                    <div class="form-group col-md-3">
+                                        <label for="primaryName">Last Name or Organization</label>
+                                        <input type="text" class="form-control" id="primaryName" required="true" placeholder="required"> 
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="firstName">First Name</label>
+                                        <input type="text" class="form-control" id="firstName"> 
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="middleName">Middle Name</label>
+                                        <input type="text" class="form-control" id="middleName"> 
+                                    </div>
+                                    <div class="form-check col-md-3">
+                                        <input class="form-check-input" type="checkbox" id="singleEntity">
+                                        <label class="form-check-label" for="singleEntity">Organization</label>
+                                    </div>
+                                </div>
+
+                                <h5 class="pt-1"><strong>Meteorite</strong></h5>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <label for="bodyName">Name</label>
+                                        <input type="text" class="form-control" id="bodyName" required="true">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="group">Group</label>
+                                        <input type="text" class="form-control" id="group" required="true">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="class">Class</label>
+                                        <input type="text" class="form-control" id="class">
+                                    </div>
+                                </div>
+
+                                <h5 class="pt-1"><strong>Measurements</strong></h5>
+                                <div class="form-row">
+                                    <div class="form-group col-md-1 offset-1">
+                                        <label for="element">Element</label>
+                                        <input type="text" class="form-control" id="element" minlength="1" maxlength="3" required="true">
+                                    </div>
+                                    <div class="form-check-inline col-md-1">
+                                        <input class="form-check-input" type="checkbox" id="lessThan">
+                                        <label class="form-check-label" for="lessThan">&lt;</label>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control" id="measurement" required="true">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="deviation">Deviation</label>
+                                        <input type="number" class="form-control" id="deviation" placeholder=" &plusmn;0">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">units</label>
+                                        <select class="form-control" id="units" required="true">
+                                            <option>wt%</option>
+                                            <option>ppm</option>
+                                            <option>ppb</option>
+                                            <option>mg/g</option>
+                                            <option>&micro;g/g</option>
+                                            <option>ng/g</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="technique">Technique</label>
+                                        <input type="text" class="form-control" id="technique">
+                                    </div>
+                                </div>
+
+                                <div class="form-row pt-1">
+                                    <label for="notes">Notes:</label>
+                                    <textarea class="form-control" id="notes" rows="5"></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-warning mt-2 mr-5 float-right">Submit</button>
+                            </form>
                         </div>
                         <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
                             <h5 class="card-title">Table Tab</h5>
+                            <p id="manual-text">View populated via automated tool. View not available via manual editor.</p>
                         </div>
                     </div>
                 </div>

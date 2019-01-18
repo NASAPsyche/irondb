@@ -2,7 +2,7 @@ body {
 	padding: 3.4rem 0 0 0;
 }
 
-form {
+#pdf-form {
 	width: 100%;
 	max-width: 300px;
 	padding: 5px;
