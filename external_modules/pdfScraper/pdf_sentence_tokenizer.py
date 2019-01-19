@@ -1,10 +1,11 @@
 import nltk
 
-from nltk.tokenize import sent_tokenize
+from nltk.tokenize import sent_tokenize, RegexpTokenizer
 import nltk.data
 import driver_methods
 import pdf_metadata
 import pdf_text
+import re
 
 
 def sentence_tokenize(paper):
@@ -19,13 +20,36 @@ def sentence_tokenize(paper):
     # join list as string
     entire_pdf_string = ' '.join(str(v) for v in entire_pdf)
 
+    string_text = ""
+
+    # filter text
+    filtered_text = replace_char(entire_pdf_string)
+
+
     # Tokenize by sentence
     sent_dectector = nltk.data.load('tokenizers/punkt/english.pickle')
-    processed_text = sent_dectector.tokenize(entire_pdf_string)
-
-    final_text = ""
+    processed_text = sent_dectector.tokenize(filtered_text)
 
     for i in range(len(processed_text)):
-        final_text += processed_text[i] + '\n\n'
+        string_text += processed_text[i] + '\n\n'
 
-    return final_text
+    # filter
+    
+    return string_text
+
+def regexp_filter(text):
+    string = ''
+    for words in text:
+        tokenizer = RegexpTokenizer(r'\w+|\$[\d\.]+|\S+')
+        string += tokenizer.tokenize(words) + ' '
+    return text
+
+def replace_char(text):
+    string = ''
+    for words in text.split():
+       string += words.replace(r'\n', ' ') + ' '
+    return string 
+
+def join_text(text):
+    entire_string = ' '.join(str(v) for v in text)
+    return entire_string
