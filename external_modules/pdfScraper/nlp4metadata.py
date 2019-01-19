@@ -8,14 +8,13 @@ __email__ = "hajar.boughoula@gmail.com"
 __date__ = "11/25/18"
 
 import os
-import nltk.tokenize
+import nltk
+from nltk import tokenize, pos_tag
 import re
-#import pprint
 import pdf_text
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
-tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+|\S+')
 page_num_title = 1
 page_num_authors = 1
 
@@ -28,13 +27,20 @@ def relevant_text(pdf_name):
     return text
 
 
-# preprocesses the first page of the pdf using NLTK
+# preprocesses the staged parts of the pdf using NLTK
 def staged_text(pdf_name):
+    tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
     relevant_data = relevant_text(pdf_name)
 
-    chopped_up = tokenizer.tokenize(relevant_data)
+    #chopped_up = tokenizer.tokenize(relevant_data)
 
-    return chopped_up
+    try:
+        tagged = pos_tag(tokenizer.tokenize(relevant_data))
+    except LookupError:
+        nltk.download('averaged_perceptron_tagger')
+        print('******** POS_TAG DEPENDENCIES DOWNLOADED. PLEASE RUN AGAIN. ********')
+
+    return tagged
 
 
 # extracts truncated title from top of any page in the pdf
