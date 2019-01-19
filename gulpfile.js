@@ -15,7 +15,8 @@ gulp.task('js', function() {
     'node_modules/jquery/dist/jquery.min.js',
     'node_modules/tether/dist/js/tether.min.js',
     'node_modules/popper.js/dist/popper.min.js',
-    'node_modules/pdfobject/pdfobject.min.js'])
+    'node_modules/pdfobject/pdfobject.min.js',
+    'node_modules/ejs/ejs.min.js'])
       .pipe(gulp.dest('public/javascripts'));
 });
 
