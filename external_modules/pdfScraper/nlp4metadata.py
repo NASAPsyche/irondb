@@ -8,11 +8,14 @@ __email__ = "hajar.boughoula@gmail.com"
 __date__ = "11/25/18"
 
 import os
+import nltk.tokenize
 import re
+#import pprint
 import pdf_text
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
+tokenizer = nltk.tokenize.RegexpTokenizer(r'\w+|\S+')
 page_num_title = 1
 page_num_authors = 1
 
@@ -23,6 +26,15 @@ def relevant_text(pdf_name):
     text = page.split("Abs", 1)[0]
 
     return text
+
+
+# preprocesses the first page of the pdf using NLTK
+def staged_text(pdf_name):
+    relevant_data = relevant_text(pdf_name)
+
+    chopped_up = tokenizer.tokenize(relevant_data)
+
+    return chopped_up
 
 
 # extracts truncated title from top of any page in the pdf
@@ -59,11 +71,11 @@ def truncated_authors(pdf_name):
     # extracts the truncated title from the top of a random page
     authors_trunc = random_page.split('\n\n', 2)
     while authors_trunc[0] in truncated_title(pdf_name):
-    	page_num_authors += 1
-    	authors_trunc = truncated_authors(pdf_name)
+        page_num_authors += 1
+        authors_trunc = truncated_authors(pdf_name)
 
     if (authors_trunc[0].replace(" ", "")).isdigit():
-    	return authors_trunc[1]
+        return authors_trunc[1]
 
     return authors_trunc[0]
 
@@ -77,17 +89,17 @@ def extract_authors(pdf_name):
     authors_full = relevant_data[:authors_index].rsplit('\n\n', 1)[1] + relevant_data[authors_index:].split('\n', 1)[0]
 
     for element in authors_full:
-    	if (element.isdigit()) or (element == "*"):
-    		authors_full = authors_full.replace(element, "")
+        if (element.isdigit()) or (element == "*"):
+            authors_full = authors_full.replace(element, "")
 
     if ", and" in authors_full:
-    	authors_full = authors_full.replace("and", "")
+        authors_full = authors_full.replace("and", "")
     elif " and" in authors_full:
-    	authors_full = authors_full.replace(" and", ",")
+        authors_full = authors_full.replace(" and", ",")
     if " ," in authors_full:
-    	authors_full = authors_full.replace(" ,", ",")
+        authors_full = authors_full.replace(" ,", ",")
     elif ",," in authors_full:
-    	authors_full = authors_full.replace(",,", ",")
+        authors_full = authors_full.replace(",,", ",")
 
     return authors_full
 
@@ -167,33 +179,41 @@ def extract_source(pdf_name):
 #print("Publishing Date:        " + extract_date('Wasson_Icarus_1970.pdf'))
 #print("Source:                 " + extract_source('Wasson_Icarus_1970.pdf'))
 
-print("Truncated Title:        " + truncated_title('WassonandChoe_GCA_2009.pdf'))
+#+++++++++++++++++++++++++
+#print("Truncated Title:        " + truncated_title('WassonandChoe_GCA_2009.pdf'))
 #print("Full Title:             " + extract_title('WassonandChoe_GCA_2009.pdf'))
 #print("Truncated Authors:      " + truncated_authors('WassonandChoe_GCA_2009.pdf'))
-print("Authors:                " + extract_authors('WassonandChoe_GCA_2009.pdf'))
-print("Publishing Date:        " + extract_date('WassonandChoe_GCA_2009.pdf'))
-print("Source:                 " + extract_source('WassonandChoe_GCA_2009.pdf') + '\n')
+#print("Authors:                " + extract_authors('WassonandChoe_GCA_2009.pdf'))
+#print("Publishing Date:        " + extract_date('WassonandChoe_GCA_2009.pdf'))
+#print("Source:                 " + extract_source('WassonandChoe_GCA_2009.pdf') + '\n')
+#+++++++++++++++++++++++++
 
-print("Truncated Title:        " + truncated_title('WassonandKallemeyn_GCA_2002.pdf'))
+#+++++++++++++++++++++++++
+#print("Truncated Title:        " + truncated_title('WassonandKallemeyn_GCA_2002.pdf'))
 #print("Full Title:             " + extract_title('WassonandKallemeyn_GCA_2002.pdf'))
 #print("Truncated Authors:      " + truncated_authors('WassonandKallemeyn_GCA_2002.pdf'))
-print("Authors:                " + extract_authors('WassonandKallemeyn_GCA_2002.pdf'))
-print("Publishing Date:        " + extract_date('WassonandKallemeyn_GCA_2002.pdf'))
-print("Source:                 " + extract_source('WassonandKallemeyn_GCA_2002.pdf')  + '\n')
+#print("Authors:                " + extract_authors('WassonandKallemeyn_GCA_2002.pdf'))
+#print("Publishing Date:        " + extract_date('WassonandKallemeyn_GCA_2002.pdf'))
+#print("Source:                 " + extract_source('WassonandKallemeyn_GCA_2002.pdf')  + '\n')
+#+++++++++++++++++++++++++
 
-print("Truncated Title:        " + truncated_title('WassonandKimberlin_GCA_1967.pdf'))
+#+++++++++++++++++++++++++
+#print("Truncated Title:        " + truncated_title('WassonandKimberlin_GCA_1967.pdf'))
 #print("Full Title:             " + extract_title('WassonandKimberlin_GCA_1967.pdf'))
 #print("Truncated Authors:      " + truncated_authors('WassonandKimberlin_GCA_1967.pdf'))
-print("Authors:                " + extract_authors('WassonandKimberlin_GCA_1967.pdf'))
-print("Publishing Date:        " + extract_date('WassonandKimberlin_GCA_1967.pdf'))
-print("Source:                 " + extract_source('WassonandKimberlin_GCA_1967.pdf') + '\n')
+#print("Authors:                " + extract_authors('WassonandKimberlin_GCA_1967.pdf'))
+#print("Publishing Date:        " + extract_date('WassonandKimberlin_GCA_1967.pdf'))
+#print("Source:                 " + extract_source('WassonandKimberlin_GCA_1967.pdf') + '\n')
+#+++++++++++++++++++++++++
 
-print("Truncated Title:        " + truncated_title('WassonandRichardson_GCA_2011.pdf'))
+#+++++++++++++++++++++++++
+#print("Truncated Title:        " + truncated_title('WassonandRichardson_GCA_2011.pdf'))
 #print("Full Title:             " + extract_title('WassonandRichardson_GCA_2011.pdf'))
 #print("Truncated Authors:      " + truncated_authors('WassonandRichardson_GCA_2011.pdf'))
-print("Authors:                " + extract_authors('WassonandRichardson_GCA_2011.pdf'))
-print("Publishing Date:        " + extract_date('WassonandRichardson_GCA_2011.pdf'))
-print("Source:                 " + extract_source('WassonandRichardson_GCA_2011.pdf') + '\n')
+#print("Authors:                " + extract_authors('WassonandRichardson_GCA_2011.pdf'))
+#print("Publishing Date:        " + extract_date('WassonandRichardson_GCA_2011.pdf'))
+#print("Source:                 " + extract_source('WassonandRichardson_GCA_2011.pdf') + '\n')
+#+++++++++++++++++++++++++
 
 #print("Truncated Title:        " + truncated_title('WassonandSchaudy_Icarus_1971.pdf'))
 #print("Full Title:             " + extract_title('WassonandSchaudy_Icarus_1971.pdf'))
@@ -202,13 +222,16 @@ print("Source:                 " + extract_source('WassonandRichardson_GCA_2011.
 #print("Publishing Date:        " + extract_date('WassonandSchaudy_Icarus_1971.pdf'))
 #print("Source:                 " + extract_source('WassonandSchaudy_Icarus_1971.pdf'))
 
-print("Truncated Title:        " + truncated_title('Wassonetal_GCA_2007.pdf'))
+#+++++++++++++++++++++++++
+#print("Truncated Title:        " + truncated_title('Wassonetal_GCA_2007.pdf'))
 #print("Full Title:             " + extract_title('Wassonetal_GCA_2007.pdf'))
-print("Truncated Authors:      " + truncated_authors('Wassonetal_GCA_2007.pdf'))
+#print("Truncated Authors:      " + truncated_authors('Wassonetal_GCA_2007.pdf'))
 #print("Authors:                " + extract_authors('Wassonetal_GCA_2007.pdf'))
-print("Publishing Date:        " + extract_date('Wassonetal_GCA_2007.pdf'))
-print("Source:                 " + extract_source('Wassonetal_GCA_2007.pdf') + '\n')
+#print("Publishing Date:        " + extract_date('Wassonetal_GCA_2007.pdf'))
+#print("Source:                 " + extract_source('Wassonetal_GCA_2007.pdf') + '\n')
 #print(relevant_text('Wassonetal_GCA_2007.pdf'))
+#+++++++++++++++++++++++++
 
 
-#print(relevant_text('Choietal_GCA_1995.pdf'))
+paper = input("Enter name of paper with extension (.pdf): ")
+print(staged_text(paper))
