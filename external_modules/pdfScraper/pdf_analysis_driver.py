@@ -1,15 +1,20 @@
+
 """
 __authors__ = "Michael Falgien"
-__version__ = "1.0"
+__version__ = "2.0"
 __email__ =  "mfalgien@gmail.com"
-__date__ = "11/28/18"
+__date__ = "1/14/19"
 """
 
 import pdf_metadata
 import pdf_text
 import os
 import pdf_analysis_technique
+import matplotlib
 
+# Needed for mac
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
 # Get pdfs in pdf directory
 
 
@@ -41,6 +46,8 @@ print("Testing on the following papers:")
 print(sub_lst)
 print("\n")
 
+count = list()
+
 for i in range(len(sub_lst)):
     # print title
     print(sub_lst[i])
@@ -53,8 +60,18 @@ for i in range(len(sub_lst)):
     text = pdf_text.convert_pdf_to_txt_looper("pdfs/"+sub_lst[i], pages)
 
     # run analysis technique function on each paper
-    pdf_analysis_technique.find_analysis_technique(pages, text)
+    count.append(pdf_analysis_technique.find_analysis_technique(pages, text))
     print("\n")
 
-# 4Hajar
-# print('Runs much faster now, right?')
+flat_list = list()
+
+# Flatten list
+for sublist in count:
+    for item in sublist:
+        flat_list.append(item)
+
+# plot list
+plt.hist(flat_list)
+plt.xlabel('Page Number')
+plt.ylabel('Count')
+plt.show()
