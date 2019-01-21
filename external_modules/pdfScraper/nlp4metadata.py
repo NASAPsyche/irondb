@@ -57,18 +57,23 @@ def truncated_title(pdf_name):
 # extracts full title from the first page of pdf using truncated title
 def extract_title(pdf_name):
 
+    title_full = "Title not found"
     relevant_data = relevant_text(pdf_name, extract_authors(pdf_name)[0])
 
     pattern = "NOUN-PHRASE: {<DT>?<NNP>*<NN>*<NNS>*<:><JJ>*<NN>*<IN>*<DT>*<NNP>*<NN>*}"
     chunkr = nltk.RegexpParser(pattern)
-    title_full = chunkr.parse(stage_text(relevant_data))
+    chunks = chunkr.parse(stage_text(relevant_data))
+
+    for chunk in chunks:
+        if type(chunk) == nltk.tree.Tree:
+            if chunk.label() == 'NOUN-PHRASE':
+                title_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
 
     #title_split = truncated_title(pdf_name).split()
     #title_tagword = title_split[0] + ' ' + title_split[1]
     #title_index = (relevant_data.lower()).find(title_tagword.lower())
     #title_full = relevant_data[:title_index].rsplit('\n\n', 1)[1] + relevant_data[title_index:].split('\n', 1)[0]
 
-    #return title_full
     return title_full
 
 
