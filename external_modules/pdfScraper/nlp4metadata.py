@@ -257,4 +257,5 @@ def extract_source(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
+print(extract_title(paper))
 print(extract_authors(paper))
