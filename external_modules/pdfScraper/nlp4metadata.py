@@ -20,22 +20,19 @@ page_num_authors = 1
 
 
 # stages relevant parts of the first page of a pdf for data extraction
-def relevant_text(pdf_name):
+def relevant_text(pdf_name, tagword):
     page = pdf_text.convert_pdf_to_txt(path + pdf_name, 0)
-    text = page.split("Abs", 1)[0]
+    text = page.split(tagword, 1)[0]
 
     return text
 
 
 # preprocesses the staged parts of the pdf using NLTK
-def staged_text(pdf_name):
+def stage_text(txt):
     tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
-    relevant_data = relevant_text(pdf_name)
-
-    #chopped_up = tokenizer.tokenize(relevant_data)
 
     try:
-        tagged = pos_tag(tokenizer.tokenize(relevant_data))
+        tagged = pos_tag(tokenizer.tokenize(txt))
     except LookupError:
         nltk.download('averaged_perceptron_tagger')
         print('******** POS_TAG DEPENDENCIES DOWNLOADED. PLEASE RUN AGAIN. ********')
@@ -59,12 +56,23 @@ def truncated_title(pdf_name):
 
 # extracts full title from the first page of pdf using truncated title
 def extract_title(pdf_name):
-    relevant_data = relevant_text(pdf_name)
 
-    title_split = truncated_title(pdf_name).split()
-    title_tagword = title_split[0] + ' ' + title_split[1]
-    title_index = (relevant_data.lower()).find(title_tagword.lower())
-    title_full = relevant_data[:title_index].rsplit('\n\n', 1)[1] + relevant_data[title_index:].split('\n', 1)[0]
+    title_full = "Title not found"
+    relevant_data = relevant_text(pdf_name, extract_authors(pdf_name)[0])
+
+    pattern = "NOUN-PHRASE: {<DT>?<NNP>*<NN>*<NNS>*<:><JJ>*<NN>*<IN>*<DT>*<NNP>*<NN>*}"
+    chunkr = nltk.RegexpParser(pattern)
+    chunks = chunkr.parse(stage_text(relevant_data))
+
+    for chunk in chunks:
+        if type(chunk) == nltk.tree.Tree:
+            if chunk.label() == 'NOUN-PHRASE':
+                title_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
+
+    #title_split = truncated_title(pdf_name).split()
+    #title_tagword = title_split[0] + ' ' + title_split[1]
+    #title_index = (relevant_data.lower()).find(title_tagword.lower())
+    #title_full = relevant_data[:title_index].rsplit('\n\n', 1)[1] + relevant_data[title_index:].split('\n', 1)[0]
 
     return title_full
 
@@ -88,7 +96,7 @@ def truncated_authors(pdf_name):
 
 # extracts authors from the first page of pdf using truncated authors
 def extract_authors(pdf_name):
-    relevant_data = relevant_text(pdf_name)
+    relevant_data = relevant_text(pdf_name, "Abs")
 
     authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     authors_index = (relevant_data.lower()).find(authors_tagword.lower())
@@ -112,7 +120,7 @@ def extract_authors(pdf_name):
 
 # extracts publishing date from pdf text
 def extract_date(pdf_name):
-    relevant_data = relevant_text(pdf_name).split()
+    relevant_data = relevant_text(pdf_name, "Abs").split()
     for ch in relevant_data:
         date = (re.search(r'.*([1-3][0-9]{3})', ch))
 
@@ -121,7 +129,7 @@ def extract_date(pdf_name):
 
 # extracts source URL from pdf text
 def extract_source(pdf_name):
-    relevant_data = relevant_text(pdf_name)
+    relevant_data = relevant_text(pdf_name, "Abs")
     
     source_tagword = (extract_authors(pdf_name).split())[0]
     source_index = (relevant_data.lower()).find(source_tagword.lower())
@@ -235,9 +243,8 @@ def extract_source(pdf_name):
 #print("Authors:                " + extract_authors('Wassonetal_GCA_2007.pdf'))
 #print("Publishing Date:        " + extract_date('Wassonetal_GCA_2007.pdf'))
 #print("Source:                 " + extract_source('Wassonetal_GCA_2007.pdf') + '\n')
-#print(relevant_text('Wassonetal_GCA_2007.pdf'))
 #+++++++++++++++++++++++++
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-print(staged_text(paper))
+print(extract_title(paper))
