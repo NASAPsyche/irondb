@@ -29,10 +29,10 @@ def relevant_text(pdf_name, tagword):
 
 # preprocesses the staged parts of the pdf using NLTK
 def stage_text(txt):
-    tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
+    #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
 
     try:
-        tagged = pos_tag(tokenizer.tokenize(txt))
+        tagged = pos_tag(txt.split())
     except LookupError:
         nltk.download('averaged_perceptron_tagger')
         print('******** POS_TAG DEPENDENCIES DOWNLOADED. PLEASE RUN AGAIN. ********')
@@ -60,7 +60,7 @@ def extract_title(pdf_name):
     title_full = "Title not found"
     relevant_data = relevant_text(pdf_name, extract_authors(pdf_name)[0])
 
-    pattern = "NOUN-PHRASE: {<DT>?<NNP>*<NN>*<NNS>*<:><JJ>*<NN>*<IN>*<DT>*<NNP>*<NN>*}"
+    pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
     chunkr = nltk.RegexpParser(pattern)
     chunks = chunkr.parse(stage_text(relevant_data))
 
@@ -96,24 +96,34 @@ def truncated_authors(pdf_name):
 
 # extracts authors from the first page of pdf using truncated authors
 def extract_authors(pdf_name):
+    authors_full = "Author(s) not found"
     relevant_data = relevant_text(pdf_name, "Abs")
 
-    authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
-    authors_index = (relevant_data.lower()).find(authors_tagword.lower())
-    authors_full = relevant_data[:authors_index].rsplit('\n\n', 1)[1] + relevant_data[authors_index:].split('\n', 1)[0]
+    pattern = "NOUN-PHRASE: {<NNP><NNP><NNP><NNP><NNP><NNP>}"
+    chunkr = nltk.RegexpParser(pattern)
+    chunks = chunkr.parse(stage_text(relevant_data))
 
-    for element in authors_full:
-        if (element.isdigit()) or (element == "*"):
-            authors_full = authors_full.replace(element, "")
+    for chunk in chunks:
+        if type(chunk) == nltk.tree.Tree:
+            if chunk.label() == 'NOUN-PHRASE':
+                authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
 
-    if ", and" in authors_full:
-        authors_full = authors_full.replace("and", "")
-    elif " and" in authors_full:
-        authors_full = authors_full.replace(" and", ",")
-    if " ," in authors_full:
-        authors_full = authors_full.replace(" ,", ",")
-    elif ",," in authors_full:
-        authors_full = authors_full.replace(",,", ",")
+    #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
+    #authors_index = (relevant_data.lower()).find(authors_tagword.lower())
+    #authors_full = relevant_data[:authors_index].rsplit('\n\n', 1)[1] + relevant_data[authors_index:].split('\n', 1)[0]
+
+    #for element in authors_full:
+        #if (element.isdigit()) or (element == "*"):
+            #authors_full = authors_full.replace(element, "")
+
+    #if ", and" in authors_full:
+        #authors_full = authors_full.replace("and", "")
+    #elif " and" in authors_full:
+        #authors_full = authors_full.replace(" and", ",")
+    #if " ," in authors_full:
+        #authors_full = authors_full.replace(" ,", ",")
+    #elif ",," in authors_full:
+        #authors_full = authors_full.replace(",,", ",")
 
     return authors_full
 
@@ -248,3 +258,4 @@ def extract_source(pdf_name):
 
 paper = input("Enter name of paper with extension (.pdf): ")
 print(extract_title(paper))
+print(extract_authors(paper))
