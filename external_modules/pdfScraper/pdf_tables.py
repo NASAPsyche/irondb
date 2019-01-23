@@ -8,7 +8,7 @@ __version__ = "1.0"
 __email__ = "jdjohn43@asu.edu"
 __date__ = "11/7/18"
 """
-
+import pdf_tables_rules as rules
 from tabula import read_pdf
 import pandas as pd
 import json
@@ -17,27 +17,23 @@ import json
 # START This function gets rid of unwanted cols and rows.
 def process_tables_clean(mdf):
     row_count, col_count = mdf.shape
-    print(mdf.shape)
+    # print(mdf.shape)
     # print(mdf)
-    y = col_count -1
-    while y >= 0:
-        tally_col = x = 0
-        while x < row_count:
-            if str(mdf.iloc[x][y]) == "REMOVE":
+    col_iter = col_count - 1
+    while col_iter >= 0:
+        tally_col = row_iter = 0
+        while row_iter < row_count:
+            value_to_test = str(mdf.iloc[row_iter][col_iter])
+            if rules.value_equals_REMOVE(value_to_test):
                 tally_col += 1
-            x += 1
+            row_iter += 1
         if tally_col / row_count > .49:
             if mdf.empty:
                 print('DataFrame is empty!')
             else:
                 # print(mdf)
-                mdf = mdf.drop(mdf.columns[y], axis=1)
-        y -= 1
-    # if mdf.empty:
-    #     # mdf = pd.DataFrame()
-    #     print('DataFrame is empty!')
-    # else:
-    #     print(mdf)
+                mdf = mdf.drop(mdf.columns[col_iter], axis=1)
+        col_iter -= 1
     return mdf
 
 # END This function gets rid of unwanted cols and rows.
@@ -51,6 +47,7 @@ def process_tables_mark(df):
         y = 0
         while y < col_count:
             if len(str(df[y][x])) > 20:
+                    # or rules.value_is_lc_frag(str(df[y][x])):
                 df[y][x] = "REMOVE"
             y += 1
         x += 1
