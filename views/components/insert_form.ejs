@@ -1,0 +1,155 @@
+<!-- Requires inclusion of font awesome component in the head of any template using this form. -->
+
+<form method="POST" action="/data-entry/editor" class="align-top mx-auto text-left" id="insert-form">
+    <div class="form-row">
+        <h5 class="pt-1 pr-1 mr-2"><strong>Basic Information</strong></h5>
+        <i class="far fa-save fa-2x save-basic"></i>
+        <i class="far fa-edit fa-2x edit-basic" hidden="true"></i>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="journalName">Journal Name</label>
+            <input type="text" class="form-control" id="journalName" required="true" placeholder="required">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <label for="volue">Volume</label>
+            <input type="text" class="form-control" id="volume" placeholder="optional">
+        </div>
+        <div class="form-group offset-md-1 col-md-2">
+            <label for="issue">Issue</label>
+            <input type="text" class="form-control" id="issue" placeholder="optional">
+        </div>
+        <div class="form-group offset-md-1 col-md-2">
+            <label for="series">Series</label>
+            <input type="text" class="form-control" id="series" placeholder="optional">
+        </div>
+        <div class="form-group offset-md-1 col-md-2">
+            <label for="pub_year">Year Published</label>
+            <input type="number" class="form-control" id="pub_year" required="true" min="1900" Max="2100" step="1">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-8">
+            <label for="paperTitle">Paper Title</label>
+            <input type="text" class="form-control" id="paperTitle" required="true" placeholder="required"> 
+        </div>
+        <div class="form-group col-md-4">
+            <label for="doi">DOI</label>
+            <input type="text" class="form-control" id="doi" placeholder="optional">
+        </div>
+    </div>
+
+    <div class="form-row author-header">
+        <h5 class="pt-1 mr-2"><strong>Author(s)</strong></h5>
+        <i class="fas fa-plus-circle fa-lg add-author mt-2 text-danger"></i>
+    </div>
+    
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label for="primaryName">Last Name or Organization</label>
+            <input type="text" class="form-control" id="primaryName" required="true" placeholder="required"> 
+        </div>
+        <div class="form-group col-md-3">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName"> 
+        </div>
+        <div class="form-group col-md-3">
+            <label for="middleName">Middle Name</label>
+            <input type="text" class="form-control" id="middleName"> 
+        </div>
+        <div class="form-check col-md-2">
+            <input class="form-check-input" type="checkbox" id="singleEntity">
+            <label class="form-check-label" for="singleEntity">Organization</label>
+        </div>
+        <div class="form-group col-md-1  mt-4">
+            <i class="far fa-save fa-2x save-author"></i>
+            <i class="far fa-edit fa-2x edit-author" hidden="true"></i>
+        </div>
+    </div>
+
+    <div class="form-row meteorite-header" id="meteorite0">
+        <h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>
+        <i class="fas fa-plus-circle fa-lg add-meteorite mt-2 text-danger"></i>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="bodyName">Name</label>
+            <input type="text" class="form-control" id="bodyName" required="true">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="group">Group</label>
+            <input type="text" class="form-control" id="group" required="true">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="class">Class</label>
+            <input type="text" class="form-control" id="class">
+        </div>
+        <div class="form-group col-md-1 mt-4">
+            <i class="far fa-save fa-2x save-meteorite"></i>
+            <i class="far fa-edit fa-2x edit-meteorite" hidden="true"></i>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <h5 class="pt-1 mr-2"><strong>Measurements</strong></h5>
+        <i class="fas fa-plus-circle fa-lg add-measurement mt-2 text-danger"></i>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-1 offset-1">
+            <label for="element">Element</label>
+            <input type="text" class="form-control" id="element" minlength="1" maxlength="3" required="true">
+        </div>
+        <div class="form-check-inline col-md-1">
+            <input class="form-check-input" type="checkbox" id="lessThan">
+            <label class="form-check-label" for="lessThan">&lt;</label>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="measurement">Measurement</label>
+            <input type="number" class="form-control" id="measurement" required="true">
+        </div>
+        <div class="form-group col-md-1">
+            <label for="deviation">Deviation</label>
+            <input type="number" class="form-control" id="deviation" placeholder=" &plusmn;0">
+        </div>
+        <div class="form-group col-md-2">
+            <label for="units">units</label>
+            <select class="form-control" id="units" required="true">
+                <option>wt%</option>
+                <option>ppm</option>
+                <option>ppb</option>
+                <option>mg/g</option>
+                <option>&micro;g/g</option>
+                <option>ng/g</option>
+            </select>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="technique">Technique</label>
+            <input type="text" class="form-control" id="technique">
+        </div>
+        <div class="form-group col-md-1 mt-4">
+            <i class="far fa-save fa-2x save-measurement"></i>
+            <i class="far fa-edit fa-2x edit-measurement" hidden="true"></i>
+        </div>
+    </div>
+
+    <div class="form-row notes-header">
+        <h5 class="pt-1 mr-2"><strong>Notes</strong></h5>
+        <i class="fas fa-plus-circle fa-lg add-note mt-2 text-danger"></i>
+    </div>
+
+    <div class="form-row pt-1">
+        <label for="note">Note:
+            <i class="far fa-save fa-lg save-note"></i>
+            <i class="far fa-edit fa-lg edit-note" hidden="true"></i>
+        </label>
+        <textarea class="form-control" id="note" rows="5"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-warning mt-2 mr-5 float-right">Submit</button>
+</form>

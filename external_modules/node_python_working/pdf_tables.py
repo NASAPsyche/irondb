@@ -17,8 +17,8 @@ import json
 # START This function gets rid of unwanted cols and rows.
 def process_tables_clean(mdf):
     row_count, col_count = mdf.shape
-    print(mdf.shape)
-    print(mdf)
+    # print(mdf.shape)
+    # print(mdf)
     y = col_count -1
     while y >= 0:
         tally_col = x = 0
@@ -30,7 +30,7 @@ def process_tables_clean(mdf):
             if mdf.empty:
                 print('DataFrame is empty!')
             else:
-                print(mdf)
+                # print(mdf)
                 mdf = mdf.drop(mdf.columns[y], axis=1)
         y -= 1
     # if mdf.empty:
@@ -54,7 +54,7 @@ def process_tables_mark(df):
                 df[y][x] = "REMOVE"
             y += 1
         x += 1
-    # print(df)
+        # print(df)
     return df
 # END This function marks fields that have bed data in them by putting teh work REMOVE in it's place.
 
@@ -76,11 +76,14 @@ def table_to_json(df_list):
 
 def process_table_engine(path, page):
     table_rec = process_tables_get(path, page)
-    print(table_rec)
+    # print(table_rec)
 
     if len(table_rec) > 0:
         for x in table_rec:
             table_marked = process_tables_mark(x)
-            print(table_marked)
-    # table_cleaned = process_tables_clean(table_marked)
-    # print(table_cleaned)
+            # print(table_marked)
+            table_cleaned = process_tables_clean(table_marked)
+            # print(table_cleaned)
+            return json.loads((table_cleaned.to_json(double_precision=10, force_ascii=True,
+                                        date_unit='ms', lines=False)))
+

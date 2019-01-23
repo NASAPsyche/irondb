@@ -49,28 +49,35 @@ import find_tables
 # print(entire_pdf)
 
 
+
 def find_analysis_technique(pages, text):
+    count = list()
     found = False
-    la = 'LA-ICP-MS'
     for i in range(pages):
         if 'INAA' in text[i]:
             found = True
             print("INAA Found on page %i" % (i+1))
+            count.insert(1,i+1)
         if 'RNAA' in text[i]:
             found = True
             print("RNAA Found on page %i" % (i + 1))
+            count.insert(1,i+1)
         if 'LA-ICP-MS' in text[i]:
             found = True
             print("LA-ICP-MS Found on page %i" % (i + 1))
+            count.insert(1,i+1)
         if 'neutron-activation analysis' in text[i]:
             found = True
             print("neutron activation analysis Found on page %i" % (i + 1))
+            count.insert(1,i+1)
         if 'atomic-absorption' in text[i]:
             found = True
             print("atomic-absorption spectrophometry Found on page %i" % (i + 1))
+            count.insert(1,i+1)
 
     if found == False:
         print("Analysis Technique Not Found")
+    return count
 # print(text)
 # End get text from pdf.
 

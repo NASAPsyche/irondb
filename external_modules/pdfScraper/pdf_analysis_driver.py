@@ -1,15 +1,20 @@
+
 """
 __authors__ = "Michael Falgien"
-__version__ = "1.0"
+__version__ = "2.0"
 __email__ =  "mfalgien@gmail.com"
-__date__ = "11/28/18"
+__date__ = "1/14/19"
 """
 
 import pdf_metadata
 import pdf_text
 import os
 import pdf_analysis_technique
+import matplotlib
 
+# Needed for mac
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
 # Get pdfs in pdf directory
 
 
@@ -19,7 +24,7 @@ def get_pdf_list(directory):
     path = directory
     dirs = os.listdir(path)
 
-    # This add all the files and directories inside "pdfs" into a list
+    # This adds all the files and directories inside "pdfs" into a list
     for file in dirs:
         if "pdf" in file:
             #print(str(num + 1) + ". " + file)
@@ -32,12 +37,16 @@ def get_pdf_list(directory):
 lst = get_pdf_list("pdfs/")
 
 # sublist of specific pdfs to test
-sub_lst = [lst[0], lst[1], lst[2], lst[6], lst[9],
-           lst[11], lst[12], lst[14], lst[16], lst[18], lst[19]]
+sub_lst = ['WassonandRichardson_GCA_2011.pdf', 'WassonandChoe_GCA_2009.pdf', 'Wasson_GCA_2017.pdf', 'WassonandChoi_2003.pdf',
+           'Litasov2018_Article_TraceElementCompositionAndClas.pdf', 'Wasson_2010.pdf', 'Wasson_2004.pdf', 'Wassonetal_GCA_2007.pdf',
+           'Ruzicka2014.pdf', 'WassonandKallemeyn_GCA_2002.pdf', 'RuzickaandHutson2010.pdf']
+
 
 print("Testing on the following papers:")
 print(sub_lst)
 print("\n")
+
+count = list()
 
 for i in range(len(sub_lst)):
     # print title
@@ -51,5 +60,18 @@ for i in range(len(sub_lst)):
     text = pdf_text.convert_pdf_to_txt_looper("pdfs/"+sub_lst[i], pages)
 
     # run analysis technique function on each paper
-    pdf_analysis_technique.find_analysis_technique(pages, text)
+    count.append(pdf_analysis_technique.find_analysis_technique(pages, text))
     print("\n")
+
+flat_list = list()
+
+# Flatten list
+for sublist in count:
+    for item in sublist:
+        flat_list.append(item)
+
+# plot list
+plt.hist(flat_list)
+plt.xlabel('Page Number')
+plt.ylabel('Count')
+plt.show()
