@@ -2,6 +2,25 @@
 // This file used on all editor templates
 
 /** ---------------------------- */
+/**     Remove Hover Toggle      */
+/** ---------------------------- */
+$( 'document' ).ready(function() {
+  // All remove icons hidden on load.
+  $( 'i.remove' ).hide();
+});
+
+$( '#insert-form' ).on('mouseover', 'div.form-row', function( event ) {
+  // Show remove ui on mouseover of parent div
+  $(this).children().children( 'i.remove' ).show();
+});
+
+$( '#insert-form' ).on('mouseout', 'div.form-row', function( event ) {
+  // Hide remove ui on mouseout of parent div
+  $(this).children().children( 'i.remove' ).hide();
+});
+
+
+/** ---------------------------- */
 /**    Insert View Functions     */
 /** ---------------------------- */
 
@@ -181,7 +200,7 @@ authorTemplate += '</div></div>';
 
 
 let noteTemplate = '';
-noteTemplate += '<div class="form-row pt-1">';
+noteTemplate += '<div class="form-row mt-2">';
 noteTemplate += '<label for="<%- noteID %>">Note:';
 noteTemplate += '<i class="far fa-save fa-lg save-note"></i>';
 noteTemplate += '<i class="far fa-edit fa-lg edit-note" hidden="true"></i>';
