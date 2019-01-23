@@ -538,3 +538,32 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
     $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
   });
 });
+
+/** ---------------------------- */
+/**        UI Remove Events      */
+/** ---------------------------- */
+
+$( '#insert-form' ).on('click', 'i.remove-note', function() {
+  $(this).parent().parent().remove();
+});
+
+$( '#insert-form' ).on('click', 'i.remove-inline', function() {
+  $(this).parent().parent().remove();
+});
+
+$( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
+  // Get parent meteorite
+  const meteoriteID = $(this).parent().parent()
+      .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
+
+  // Remove associated elements
+  const nextID = 'meteorite' + (1 + Number(meteoriteID));
+  if ( $( '#' + nextID ).length ) {
+    $(this).parent().parent().nextUntil( '#' + nextID ).remove();
+  } else {
+    $(this).parent().parent().nextUntil( 'div.notes-header' ).remove();
+  }
+
+  // Remove row
+  $(this).parent().parent().remove();
+});
