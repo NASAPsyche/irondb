@@ -9,6 +9,7 @@
 
 CREATE TYPE user_role AS ENUM ('admin', 'data-entry');
 CREATE TYPE statuses AS ENUM('pending', 'rejected', 'active', 'historical');
+CREATE TYPE units AS ENUM ('wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g');
 
 -------------------
 -- Drop tables   --
@@ -135,6 +136,7 @@ CREATE TABLE IF NOT EXISTS element_entries(
     CONSTRAINT positive_number_deviation CHECK (deviation >= 0) 
     DEFAULT 0,
   less_than boolean NOT NULL DEFAULT false,
+  original_unit units NOT NULL,
   technique text,
   note text,
   status_id bigint,
