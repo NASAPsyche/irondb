@@ -21,11 +21,11 @@ $( '#insert-form' ).on('mouseout', 'div.form-row', function( event ) {
 
 
 /** ---------------------------- */
-/**    Insert View Functions     */
+/**      Save/Edit Events        */
 /** ---------------------------- */
 
 // Bacis section
-$( 'i.save-basic' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-basic', function( event ) {
   // Disable all inputs in the basic information section.
   $(this).parent().siblings().slice(0, 3)
       .children().children('input').prop('readonly', true);
@@ -35,7 +35,7 @@ $( 'i.save-basic' ).on( 'click', function( event ) {
   $( 'i.edit-basic' ).prop('hidden', false);
 });
 
-$( 'i.edit-basic' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-basic', function( event ) {
   // Enable all inputs in the basic information section.
   $(this).parent().siblings().slice(0, 3)
       .children().children('input').prop('readonly', false);
@@ -47,7 +47,7 @@ $( 'i.edit-basic' ).on( 'click', function( event ) {
 
 
 // Author(s) Section
-$( 'i.save-author' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-author', function( event ) {
   // Disable inputs
   disableInline($(this));
 
@@ -56,7 +56,7 @@ $( 'i.save-author' ).on( 'click', function( event ) {
   $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
 });
 
-$( 'i.edit-author' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-author', function( event ) {
   // Enable inputs
   enableInline($(this));
 
@@ -67,7 +67,7 @@ $( 'i.edit-author' ).on( 'click', function( event ) {
 
 
 // Meteorite Section
-$( 'i.save-meteorite' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-meteorite', function( event ) {
   disableInline($(this));
 
   // Toggle UI
@@ -75,7 +75,7 @@ $( 'i.save-meteorite' ).on( 'click', function( event ) {
   $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
 });
 
-$( 'i.edit-meteorite' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-meteorite', function( event ) {
   enableInline($(this));
 
   // Toggle UI
@@ -85,7 +85,7 @@ $( 'i.edit-meteorite' ).on( 'click', function( event ) {
 
 
 // Measurement Section
-$( 'i.save-measurement' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-measurement', function( event ) {
   disableInline($(this));
 
   // Toggle UI
@@ -93,7 +93,7 @@ $( 'i.save-measurement' ).on( 'click', function( event ) {
   $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
 });
 
-$( 'i.edit-measurement' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-measurement', function( event ) {
   enableInline($(this));
 
   // Toggle UI
@@ -103,7 +103,7 @@ $( 'i.edit-measurement' ).on( 'click', function( event ) {
 
 
 // Note Section
-$( 'i.save-note' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-note', function( event ) {
   // Disable textfield
   $(this).parent().parent().children('textarea').prop('disabled', true);
 
@@ -112,7 +112,7 @@ $( 'i.save-note' ).on( 'click', function( event ) {
   $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
 });
 
-$( 'i.edit-note' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-note', function( event ) {
   // Enable textfield
   $(this).parent().parent().children('textarea').prop('disabled', false);
 
@@ -163,9 +163,9 @@ function enableInline(element) {
 }
 
 
-/** ---------------------------- */
-/**        EJS Templates         */
-/** ---------------------------- */
+/** ----------------------------------- */
+/**        EJS Templates for Add        */
+/** ----------------------------------- */
 
 
 let authorTemplate = '';
@@ -355,24 +355,8 @@ $( '#insert-form' ).on('click', 'i.add-author', function( event ) {
   // Insert template into DOM
   $(this).parent().siblings('.meteorite-header').before(html);
 
-  // Attach Event Handlers
-  $( 'i.save-author' ).on( 'click', function( event ) {
-    // Disable inputs
-    disableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
-  });
-
-  $( 'i.edit-author' ).on( 'click', function( event ) {
-    // Enable inputs
-    enableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-author' ).prop('hidden', false);
-  });
+  // Hide remove ui
+  $( 'i.remove' ).hide();
 });
 
 
@@ -393,24 +377,8 @@ $( '#insert-form' ).on('click', 'i.add-note', function( event ) {
   // Insert template into DOM
   $(this).parent().siblings('button').before(html);
 
-  // Attach Event Handlers
-  $( 'i.save-note' ).on( 'click', function( event ) {
-    // Disable textfield
-    $(this).parent().parent().children('textarea').prop('disabled', true);
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
-  });
-
-  $( 'i.edit-note' ).on( 'click', function( event ) {
-    // Enable textfield
-    $(this).parent().parent().children('textarea').prop('disabled', false);
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-note' ).prop('hidden', false);
-  });
+  // Hide remove ui
+  $( 'i.remove' ).hide();
 });
 
 
@@ -457,22 +425,8 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
         .first().before(html);
   }
 
-  // Attach Event Handlers
-  $( 'i.save-measurement' ).on( 'click', function( event ) {
-    disableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
-  });
-
-  $( 'i.edit-measurement' ).on( 'click', function( event ) {
-    enableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
-  });
+  // Hide remove ui
+  $( 'i.remove' ).hide();
 });
 
 $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
@@ -521,39 +475,8 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   // Insert template into DOM
   $(this).parent().siblings('.notes-header').before(html);
 
-  // Attach Event Handler
-  $( 'i.save-meteorite' ).on( 'click', function( event ) {
-    disableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
-  });
-
-  $( 'i.edit-meteorite' ).on( 'click', function( event ) {
-    enableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-meteorite' ).prop('hidden', false);
-  });
-
-  // Attach Event Handlers
-  $( 'i.save-measurement' ).on( 'click', function( event ) {
-    disableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
-  });
-
-  $( 'i.edit-measurement' ).on( 'click', function( event ) {
-    enableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
-  });
+  // Hide remove ui
+  $( 'i.remove' ).hide();
 });
 
 /** ---------------------------- */
