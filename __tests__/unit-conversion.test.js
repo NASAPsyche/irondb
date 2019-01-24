@@ -17,3 +17,9 @@ describe('Test milligramsPerGramToPPB function', () => {
     expect(convert.milligramsPerGramToPPB(750)).toBe(750000000);
   });
 });
+
+describe('Test microgramsPerGramToPPB function', () => {
+  test('convert 750 ug/g to 750000 ppb', () => {
+    expect(convert.microgramsPerGramToPPB(750)).toBe(750000);
+  });
+});

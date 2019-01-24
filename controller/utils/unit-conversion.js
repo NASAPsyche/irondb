@@ -8,4 +8,7 @@ module.exports = {
   milligramsPerGramToPPB: function( num ) {
     return num * 1000000;
   },
+  microgramsPerGramToPPB: function( num ) {
+    return num * 1000;
+  }
 };
