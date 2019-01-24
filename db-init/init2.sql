@@ -1,7 +1,7 @@
 -- Create and connect to irondb database 
--- uncomment next line, this is set this way for quick testing
- CREATE DATABASE irondb WITH OWNER = group16; 
- CREATE EXTENSION citext;
+-- if using https://rextester.com/EMEDS96343 to test, then comment out the next two lines
+-- CREATE DATABASE irondb WITH OWNER = group16; 
+-- CREATE EXTENSION citext;
 
 -------------------
 -- Define enums  --
@@ -54,14 +54,14 @@ DROP TABLE IF EXISTS note_review;
 CREATE TABLE IF NOT EXISTS users (
   user_id serial PRIMARY KEY,
   username citext UNIQUE NOT NULL,
-  password text NOT NULL,
-  role user_role NOT NULL
+  password_digest text NOT NULL,
+  role_of citext /*user_role*/ NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS user_info (
   user_id integer,
-  first_name text NOT NULL,
-  last_name text NOT NULL,
+  first_name citext NOT NULL,
+  last_name citext NOT NULL,
   email_address citext UNIQUE NOT NULL,
   PRIMARY KEY(user_id)
 );
@@ -77,9 +77,9 @@ CREATE TABLE IF NOT EXISTS bodies (
 CREATE TABLE IF NOT EXISTS journals (
   journal_id serial PRIMARY KEY,
   journal_name text NOT NULL,
-  volume text,
-  issue text,
-  series text,
+  volume citext,
+  issue citext,
+  series citext,
   published_year integer NOT NULL CHECK (published_year > 1900),
   status_id bigint 
 );
@@ -87,8 +87,8 @@ CREATE TABLE IF NOT EXISTS journals (
 CREATE TABLE IF NOT EXISTS papers (
   paper_id serial PRIMARY KEY,
   journal_id integer NOT NULL,
-  title text NOT NULL UNIQUE,
-  doi text,
+  title citext NOT NULL UNIQUE,
+  doi citext,
   status_id bigint
 );
 
@@ -102,9 +102,9 @@ CREATE TABLE IF NOT EXISTS attributions (
 
 CREATE TABLE IF NOT EXISTS authors (
   author_id serial PRIMARY KEY,
-  primary_name text NOT NULL,
-  first_name text,
-  middle_name text,
+  primary_name citext NOT NULL,
+  first_name citext,
+  middle_name citext,
   single_entity boolean NOT NULL DEFAULT true,
   status_id bigint
 );
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS element_entries(
     CONSTRAINT positive_number_deviation CHECK (deviation >= 0) 
     DEFAULT 0,
   less_than boolean NOT NULL DEFAULT false,
-  original_unit units NOT NULL,
+  original_unit citext /* convert to enum type 'units' after finish testing */ NOT NULL,
   technique text,
   note text,
   status_id bigint,
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS notes (
 CREATE TABLE IF NOT EXISTS body_status (
   status_id bigserial PRIMARY KEY,
   body_id integer REFERENCES bodies(body_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS body_review (
 CREATE TABLE IF NOT EXISTS journal_status (
   status_id bigserial PRIMARY KEY,
   journal_id integer REFERENCES journals(journal_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS journal_review (
 CREATE TABLE IF NOT EXISTS paper_status (
   status_id bigserial PRIMARY KEY,
   paper_id integer REFERENCES papers(paper_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS paper_review (
 CREATE TABLE IF NOT EXISTS attribution_status (
   status_id bigserial PRIMARY KEY,
   attribution_id integer REFERENCES attributions(attribution_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS attribution_review (
 CREATE TABLE IF NOT EXISTS author_status (
   status_id bigserial PRIMARY KEY,
   author_id integer REFERENCES authors(author_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -270,7 +270,7 @@ CREATE TABLE IF NOT EXISTS author_review (
 CREATE TABLE IF NOT EXISTS group_status (
   status_id bigserial PRIMARY KEY,
   group_id integer REFERENCES groups(group_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -293,7 +293,7 @@ CREATE TABLE IF NOT EXISTS group_review (
 CREATE TABLE IF NOT EXISTS classification_status (
   status_id bigserial PRIMARY KEY,
   classification_id integer REFERENCES classifications(classification_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -316,7 +316,7 @@ CREATE TABLE IF NOT EXISTS classification_review (
 CREATE TABLE IF NOT EXISTS element_status (
   status_id bigserial PRIMARY KEY,
   element_id integer REFERENCES element_entries(element_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -339,7 +339,7 @@ CREATE TABLE IF NOT EXISTS element_review (
 CREATE TABLE IF NOT EXISTS note_status (
   status_id bigserial PRIMARY KEY,
   note_id integer REFERENCES notes(note_id) NOT NULL,
-  status statuses NOT NULL,
+  current_status citext /* replace with enum*/  NOT NULL,
   submitted_by citext NOT NULL,
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
@@ -359,7 +359,875 @@ CREATE TABLE IF NOT EXISTS note_review (
   action_taken text
 );
 
--- Add FK constraints --
+
+------------------
+-- Define views --
+------------------
+
+/*
+  TODO: Add views
+*/
+
+
+-------------------------
+-- Insert example data --
+-------------------------
+
+/*
+  Because status_id is a FK from a table that hasn't been populated yet,
+  we must wait to place the status_id and it is null at first
+*/
+
+INSERT INTO users (user_id, username, password_digest, role_of)
+  VALUES (DEFAULT, 'ken', 'digest', 'admin');
+
+INSERT INTO user_info (user_id, first_name, last_name, email_address)
+  VALUES
+  (
+    (SELECT user_id FROM users WHERE username='ken'),
+    'Kenneth',
+    'Bonilla',
+    'kenbonilla@gmail.com'
+  );
+
+INSERT INTO journals (journal_name, volume, issue, published_year)
+  VALUES ('Geochimica et Cosmochimica Acta', '73', '16', 2009);
+
+INSERT INTO papers (journal_id,  title)
+  SELECT journal_id, 'The IIG iron meteorites: Probable formation in the IIAB core'
+  FROM journals
+  WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='16';
+
+INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
+  VALUES(DEFAULT, 'Wasson', 'John', 'T.', DEFAULT);
+
+INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
+  VALUES(DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT);
+
+INSERT INTO attributions (paper_id, author_id)
+  VALUES 
+  (
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    (SELECT author_id FROM authors WHERE primary_name='Choe' AND first_name='Won-Hie')
+  );
+
+INSERT INTO bodies (nomenclature)
+  VALUES 
+    ('Guanaco'),
+    ('Tombigbee R.'),
+    ('Bellsbank'),
+    ('Twannberg'),
+    ('La Primitiva');
+
+INSERT INTO element_entries (element_id, body_id, element_symbol, paper_id, page_number, ppb_mean, deviation, less_than, original_unit, technique)
+  VALUES
+  /*Guanaco*/
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    14000,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    5080000,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    44300000,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    93000,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    44700,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    71000,
+    0,
+    false,
+    'ug_g',
+    'RNAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    14600,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    260,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    36,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    13,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    800,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    1194,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* Tombigbee R. */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    10000,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    5080000,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    44300000,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    86000,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    40600,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    62500,
+    0,
+    false,
+    'ug_g',
+    'RNAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    16800,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    200,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    30,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    7,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    700,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    1281,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'p',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    18000000,
+    0,
+    false,
+    'mg_g',
+    null
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    's',
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    4880,
+    1000000,
+    0,
+    true,
+    'ug_g',
+    null
+  );
+
+/*
+  Populating the status tables.
+  The submission date is left as default now(), and the reviewer is left blank since my data
+  has not been reviewed for accuracy yet. It is set to 'active' so that the data can be called
+  during a search query.
+*/
+
+INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previous_entry)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.'),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Bellsbank'),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Twannberg'),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='La Primitiva'),
+    'active',
+    'Ken',
+    NULL
+  );
+
+INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by, previous_entry)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '16'),
+    'active',
+    'Ken',
+    NULL
+  );
+
+INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, previous_entry)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
+    'active',
+    'Ken',
+    NULL
+  );
+
+INSERT INTO author_status (status_id, author_id, current_status, submitted_by, previous_entry)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John'),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Choe' AND first_name='Won-Hie'),
+    'active',
+    'Ken',
+    NULL
+  );
+
+INSERT INTO attribution_status (status_id, attribution_id, current_status, submitted_by, previous_entry)
+  VALUES
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Choe' AND first_name='Won-Hie')
+    ),
+    'active',
+    'Ken',
+    NULL
+  );
+
+INSERT INTO element_status (status_id, element_id, current_status, submitted_by, previous_entry)
+  VALUES
+  /* Guanaco */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Guanaco')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  /* Tombigbee R. */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 'p'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  ),
+    (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tombigbee R.')
+      AND element_symbol = 's'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'The IIG iron meteorites: Probable formation in the IIAB core')
+      AND page_number = 4880
+    ),
+    'active',
+    'Ken',
+    NULL
+  );
+
+-------------------------
+-- Add status IDs      --
+-------------------------
+/*  Because the status_id is a FK referencing a status that did not exist yet, it has to be added to the data tables
+    after all keys have been seeded.
+ */
+
+UPDATE journals
+SET status_id = (SELECT status_id FROM journal_status WHERE journals.journal_id = journal_status.journal_id)
+WHERE status_id IS NULL;
+
+UPDATE papers
+SET status_id = (SELECT status_id FROM paper_status WHERE papers.paper_id = paper_status.paper_id)
+WHERE status_id IS NULL;
+
+UPDATE authors
+SET status_id = (SELECT status_id FROM author_status WHERE authors.author_id = author_status.author_id)
+WHERE status_id IS NULL;
+
+UPDATE attributions
+SET status_id = (SELECT status_id FROM attribution_status WHERE attributions.attribution_id = attribution_status.attribution_id)
+WHERE status_id IS NULL;
+
+UPDATE bodies
+SET status_id = (SELECT status_id FROM body_status WHERE bodies.body_id = body_status.body_id)
+WHERE status_id IS NULL;
+
+UPDATE element_entries
+SET status_id = (SELECT status_id FROM element_status WHERE element_entries.element_id = element_status.element_id)
+WHERE status_id IS NULL;
+
+
+-----------------------
+-- Add FK Contraints --
+-----------------------
+/*
+  Now that the FK have been seeded, we can add the constraint.
+*/
 
 ALTER TABLE bodies
   ADD CONSTRAINT fk_body_status FOREIGN KEY (status_id) REFERENCES body_status(status_id);
@@ -398,6 +1266,21 @@ ALTER TABLE notes
 ALTER TABLE notes
   ADD CONSTRAINT fk_paper_id FOREIGN KEY (paper_id) REFERENCES papers(paper_id);
 
-
-
-
+-------------------------
+-- Show DB in testing  --
+-------------------------
+/*
+  This is for testing, just prints out the tables https://rextester.com/EMEDS96343
+*/
+SELECT * FROM bodies;
+SELECT * FROM journals;
+SELECT * FROM papers;
+SELECT * FROM authors;
+SELECT * FROM attributions;
+SELECT * FROM element_entries;
+SELECT * FROM body_status;
+SELECT * FROM journal_status;
+SELECT * FROM paper_status;
+SELECT * FROM author_status;
+SELECT * FROM attribution_status;
+SELECT * FROM element_status;
