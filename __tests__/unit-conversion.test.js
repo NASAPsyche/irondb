@@ -11,3 +11,9 @@ describe('Test ppmToPPB function', () => {
     expect(convert.ppmToPPB(750)).toBe(750000);
   });
 });
+
+describe('Test milligramsPerGramToPPB function', () => {
+  test('convert 750 mg/g to 750000000 ppb', () => {
+    expect(convert.milligramsPerGramToPPB(750)).toBe(750000000);
+  });
+});
