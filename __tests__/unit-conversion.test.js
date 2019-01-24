@@ -23,3 +23,9 @@ describe('Test microgramsPerGramToPPB function', () => {
     expect(convert.microgramsPerGramToPPB(750)).toBe(750000);
   });
 });
+
+describe('Test nanogramPerGramToPPB function', () => {
+  test('convert 750 ng/g to 750 ppb', () => {
+    expect(convert.nanogramPerGramToPPB(750)).toBe(750);
+  });
+});

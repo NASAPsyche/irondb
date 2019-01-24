@@ -10,5 +10,8 @@ module.exports = {
   },
   microgramsPerGramToPPB: function( num ) {
     return num * 1000;
-  }
+  },
+  nanogramPerGramToPPB: function( num ) {
+    return num;
+  },
 };
