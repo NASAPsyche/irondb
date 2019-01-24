@@ -170,6 +170,10 @@ function enableInline(element) {
 
 let authorTemplate = '';
 authorTemplate += '<div class="form-row">';
+authorTemplate += '<div class="col-md-1">';
+authorTemplate += '<i class="far fa-times-circle fa-lg';
+authorTemplate += ' remove remove-inline pt-4 text-danger"';
+authorTemplate += 'title="Press to remove author."></i></div>';
 authorTemplate += '<div class="form-group col-md-3">';
 authorTemplate += '  <label for="<%- primaryNameID %>">';
 authorTemplate += 'Last Name or Organization</label>';
@@ -182,7 +186,7 @@ authorTemplate += '  <label for="<%- firstNameID %>">First Name</label>';
 authorTemplate += '  <input type="text" class="form-control" ';
 authorTemplate += 'id="<%- firstNameID %>">';
 authorTemplate += '</div>';
-authorTemplate += '<div class="form-group col-md-3">';
+authorTemplate += '<div class="form-group col-md-2">';
 authorTemplate += '  <label for="<%- middleNameID %>">Middle Name</label>';
 authorTemplate += '  <input type="text" class="form-control"';
 authorTemplate += 'id="<%- middleNameID %>">';
@@ -204,13 +208,20 @@ noteTemplate += '<div class="form-row mt-2">';
 noteTemplate += '<label for="<%- noteID %>">Note:';
 noteTemplate += '<i class="far fa-save fa-lg save-note"></i>';
 noteTemplate += '<i class="far fa-edit fa-lg edit-note" hidden="true"></i>';
+noteTemplate += '<i class="far fa-times-circle fa-lg';
+noteTemplate += ' remove remove-note pl-5 text-danger"';
+noteTemplate += ' title="Press to remove note."></i>';
 noteTemplate += '</label>';
 noteTemplate += '<textarea class="form-control" id="<%- noteID %>" rows="5">';
 noteTemplate += '</textarea></div>';
 
 let measurementTemplate = '';
 measurementTemplate += '<div class="form-row">';
-measurementTemplate += '<div class="form-group col-md-1 offset-1">';
+measurementTemplate += '<div class="col-md-1">';
+measurementTemplate += '<i class="far fa-times-circle fa-lg';
+measurementTemplate += ' remove remove-inline pt-4 text-danger"';
+measurementTemplate += ' title="Press to remove measurement."></i></div>';
+measurementTemplate += '<div class="form-group col-md-1">';
 measurementTemplate += '<label for="<%- elementID %>">Element</label>';
 measurementTemplate += '<input type="text" class="form-control"';
 measurementTemplate += 'id="<%- elementID %>"';
@@ -259,14 +270,20 @@ let meteoriteTemplate = '';
 meteoriteTemplate += '<div class="form-row meteorite-header"';
 meteoriteTemplate += ' id="<%- meteoriteID %>">';
 meteoriteTemplate += '<h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>';
-// meteoriteTemplate += '<i class="fas fa-plus-circle fa-lg add-meteorite';
-// meteoriteTemplate += ' mt-2 text-danger"></i>';
+meteoriteTemplate += '<i class="fas fa-plus-circle fa-lg';
+meteoriteTemplate += ' add-meteorite mt-2 text-danger"></i>';
 meteoriteTemplate += '</div><div class="form-row">';
+meteoriteTemplate += '<div class="col-md-1">';
+meteoriteTemplate += '<i class="far fa-times-circle fa-lg';
+meteoriteTemplate += ' remove remove-meteorite pt-4 text-danger"';
+meteoriteTemplate += ' title="Press to remove meteorite';
+meteoriteTemplate += ' and all associated measurements."></i>';
+meteoriteTemplate += '</div>';
 meteoriteTemplate += '<div class="form-group col-md-4">';
 meteoriteTemplate += '<label for="<%- bodyNameID %>">Name</label>';
 meteoriteTemplate += '<input type="text" class="form-control"';
 meteoriteTemplate += ' id="<%- bodyNameID %>" required="true">';
-meteoriteTemplate += '</div><div class="form-group col-md-4">';
+meteoriteTemplate += '</div><div class="form-group col-md-3">';
 meteoriteTemplate += '<label for="<%- groupID %>">Group</label>';
 meteoriteTemplate += '<input type="text" class="form-control"';
 meteoriteTemplate += ' id="<%- groupID %>" required="true">';
@@ -279,7 +296,7 @@ meteoriteTemplate += '<i class="far fa-save fa-2x save-meteorite"></i>';
 meteoriteTemplate += '<i class="far fa-edit fa-2x edit-meteorite" ';
 meteoriteTemplate += 'hidden="true"></i>';
 meteoriteTemplate += '</div></div><div class="form-row">';
-meteoriteTemplate += '<h5 class="pt-1 mr-2">';
+meteoriteTemplate += '<h5 class="pt-1 mr-2  pl-3">';
 meteoriteTemplate += '<strong>Measurements</strong></h5>';
 meteoriteTemplate += '<i class="fas fa-plus-circle fa-lg ';
 meteoriteTemplate += 'add-measurement mt-2 text-danger"></i></div>';
@@ -562,6 +579,12 @@ $( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
     $(this).parent().parent().nextUntil( '#' + nextID ).remove();
   } else {
     $(this).parent().parent().nextUntil( 'div.notes-header' ).remove();
+  }
+
+  // Remove header if not last meteorite header on form
+  const id = 'meteorite' + meteoriteID;
+  if ( 'meteorite' + meteoriteID !== 'meteorite0' ) {
+    $( '#' + id ).remove();
   }
 
   // Remove row
