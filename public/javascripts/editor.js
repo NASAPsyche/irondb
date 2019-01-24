@@ -30,6 +30,9 @@ $( '#insert-form' ).on( 'click', 'i.save-basic', function( event ) {
   $(this).parent().siblings().slice(0, 3)
       .children().children('input').prop('readonly', true);
 
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
+
   // Toggle UI
   $(this).prop('hidden', true);
   $( 'i.edit-basic' ).prop('hidden', false);
@@ -39,6 +42,9 @@ $( '#insert-form' ).on( 'click', 'i.edit-basic', function( event ) {
   // Enable all inputs in the basic information section.
   $(this).parent().siblings().slice(0, 3)
       .children().children('input').prop('readonly', false);
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -51,6 +57,9 @@ $( '#insert-form' ).on( 'click', 'i.save-author', function( event ) {
   // Disable inputs
   disableInline($(this));
 
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
+
   // Toggle UI
   $(this).prop('hidden', true);
   $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
@@ -59,6 +68,9 @@ $( '#insert-form' ).on( 'click', 'i.save-author', function( event ) {
 $( '#insert-form' ).on( 'click', 'i.edit-author', function( event ) {
   // Enable inputs
   enableInline($(this));
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -70,6 +82,9 @@ $( '#insert-form' ).on( 'click', 'i.edit-author', function( event ) {
 $( '#insert-form' ).on( 'click', 'i.save-meteorite', function( event ) {
   disableInline($(this));
 
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
+
   // Toggle UI
   $(this).prop('hidden', true);
   $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
@@ -77,6 +92,9 @@ $( '#insert-form' ).on( 'click', 'i.save-meteorite', function( event ) {
 
 $( '#insert-form' ).on( 'click', 'i.edit-meteorite', function( event ) {
   enableInline($(this));
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -88,6 +106,9 @@ $( '#insert-form' ).on( 'click', 'i.edit-meteorite', function( event ) {
 $( '#insert-form' ).on( 'click', 'i.save-measurement', function( event ) {
   disableInline($(this));
 
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
+
   // Toggle UI
   $(this).prop('hidden', true);
   $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
@@ -95,6 +116,9 @@ $( '#insert-form' ).on( 'click', 'i.save-measurement', function( event ) {
 
 $( '#insert-form' ).on( 'click', 'i.edit-measurement', function( event ) {
   enableInline($(this));
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -107,6 +131,9 @@ $( '#insert-form' ).on( 'click', 'i.save-note', function( event ) {
   // Disable textfield
   $(this).parent().parent().children('textarea').prop('disabled', true);
 
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
+
   // Toggle UI
   $(this).prop('hidden', true);
   $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
@@ -115,6 +142,9 @@ $( '#insert-form' ).on( 'click', 'i.save-note', function( event ) {
 $( '#insert-form' ).on( 'click', 'i.edit-note', function( event ) {
   // Enable textfield
   $(this).parent().parent().children('textarea').prop('disabled', false);
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -484,32 +514,40 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
 /** ---------------------------- */
 
 $( '#insert-form' ).on('click', 'i.remove-note', function() {
-  $(this).parent().parent().remove();
+  if ( $(this).parent().parent().hasClass('not-removable') === false ) {
+    $(this).parent().parent().remove();
+  }
 });
 
 $( '#insert-form' ).on('click', 'i.remove-inline', function() {
-  $(this).parent().parent().remove();
+  if ( $(this).parent().parent().hasClass('not-removable') === false ) {
+    $(this).parent().parent().remove();
+  }
 });
 
 $( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
-  // Get parent meteorite
-  const meteoriteID = $(this).parent().parent()
-      .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
-
-  // Remove associated elements
-  const nextID = 'meteorite' + (1 + Number(meteoriteID));
-  if ( $( '#' + nextID ).length ) {
-    $(this).parent().parent().nextUntil( '#' + nextID ).remove();
+  if ( $(this).parent().parent().hasClass('not-removable') === true ) {
+    // Do not remove if saved
   } else {
-    $(this).parent().parent().nextUntil( 'div.notes-header' ).remove();
-  }
+    // Get parent meteorite
+    const meteoriteID = $(this).parent().parent()
+        .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
 
-  // Remove header if not last meteorite header on form
-  const id = 'meteorite' + meteoriteID;
-  if ( 'meteorite' + meteoriteID !== 'meteorite0' ) {
-    $( '#' + id ).remove();
-  }
+    // Remove associated elements
+    const nextID = 'meteorite' + (1 + Number(meteoriteID));
+    if ( $( '#' + nextID ).length ) {
+      $(this).parent().parent().nextUntil( '#' + nextID ).remove();
+    } else {
+      $(this).parent().parent().nextUntil( 'div.notes-header' ).remove();
+    }
 
-  // Remove row
-  $(this).parent().parent().remove();
+    // Remove header if not last meteorite header on form
+    const id = 'meteorite' + meteoriteID;
+    if ( 'meteorite' + meteoriteID !== 'meteorite0' ) {
+      $( '#' + id ).remove();
+    }
+
+    // Remove row
+    $(this).parent().parent().remove();
+  }
 });
