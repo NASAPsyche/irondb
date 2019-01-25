@@ -2,24 +2,49 @@
 // This file used on all editor templates
 
 /** ---------------------------- */
-/**    Insert View Functions     */
+/**     Remove Hover Toggle      */
+/** ---------------------------- */
+$( 'document' ).ready(function() {
+  // All remove icons hidden on load.
+  $( 'i.remove' ).hide();
+});
+
+$( '#insert-form' ).on('mouseover', 'div.form-row', function( event ) {
+  // Show remove ui on mouseover of parent div
+  $(this).children().children( 'i.remove' ).show();
+});
+
+$( '#insert-form' ).on('mouseout', 'div.form-row', function( event ) {
+  // Hide remove ui on mouseout of parent div
+  $(this).children().children( 'i.remove' ).hide();
+});
+
+
+/** ---------------------------- */
+/**      Save/Edit Events        */
 /** ---------------------------- */
 
 // Bacis section
-$( 'i.save-basic' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-basic', function( event ) {
   // Disable all inputs in the basic information section.
   $(this).parent().siblings().slice(0, 3)
       .children().children('input').prop('readonly', true);
+
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
   $( 'i.edit-basic' ).prop('hidden', false);
 });
 
-$( 'i.edit-basic' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-basic', function( event ) {
   // Enable all inputs in the basic information section.
   $(this).parent().siblings().slice(0, 3)
       .children().children('input').prop('readonly', false);
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -28,18 +53,24 @@ $( 'i.edit-basic' ).on( 'click', function( event ) {
 
 
 // Author(s) Section
-$( 'i.save-author' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-author', function( event ) {
   // Disable inputs
   disableInline($(this));
+
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
   $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
 });
 
-$( 'i.edit-author' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-author', function( event ) {
   // Enable inputs
   enableInline($(this));
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -48,16 +79,22 @@ $( 'i.edit-author' ).on( 'click', function( event ) {
 
 
 // Meteorite Section
-$( 'i.save-meteorite' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-meteorite', function( event ) {
   disableInline($(this));
+
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
   $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
 });
 
-$( 'i.edit-meteorite' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-meteorite', function( event ) {
   enableInline($(this));
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -66,16 +103,22 @@ $( 'i.edit-meteorite' ).on( 'click', function( event ) {
 
 
 // Measurement Section
-$( 'i.save-measurement' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-measurement', function( event ) {
   disableInline($(this));
+
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
   $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
 });
 
-$( 'i.edit-measurement' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-measurement', function( event ) {
   enableInline($(this));
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -84,18 +127,24 @@ $( 'i.edit-measurement' ).on( 'click', function( event ) {
 
 
 // Note Section
-$( 'i.save-note' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.save-note', function( event ) {
   // Disable textfield
   $(this).parent().parent().children('textarea').prop('disabled', true);
+
+  // Give not-removable class
+  $(this).parent().parent().addClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
   $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
 });
 
-$( 'i.edit-note' ).on( 'click', function( event ) {
+$( '#insert-form' ).on( 'click', 'i.edit-note', function( event ) {
   // Enable textfield
   $(this).parent().parent().children('textarea').prop('disabled', false);
+
+  // Remove not-removable class
+  $(this).parent().parent().removeClass('not-removable');
 
   // Toggle UI
   $(this).prop('hidden', true);
@@ -144,13 +193,17 @@ function enableInline(element) {
 }
 
 
-/** ---------------------------- */
-/**        EJS Templates         */
-/** ---------------------------- */
+/** ----------------------------------- */
+/**        EJS Templates for Add        */
+/** ----------------------------------- */
 
 
 let authorTemplate = '';
 authorTemplate += '<div class="form-row">';
+authorTemplate += '<div class="col-md-1">';
+authorTemplate += '<i class="far fa-times-circle fa-lg';
+authorTemplate += ' remove remove-inline pt-4 text-danger"';
+authorTemplate += 'title="Press to remove author."></i></div>';
 authorTemplate += '<div class="form-group col-md-3">';
 authorTemplate += '  <label for="<%- primaryNameID %>">';
 authorTemplate += 'Last Name or Organization</label>';
@@ -163,7 +216,7 @@ authorTemplate += '  <label for="<%- firstNameID %>">First Name</label>';
 authorTemplate += '  <input type="text" class="form-control" ';
 authorTemplate += 'id="<%- firstNameID %>">';
 authorTemplate += '</div>';
-authorTemplate += '<div class="form-group col-md-3">';
+authorTemplate += '<div class="form-group col-md-2">';
 authorTemplate += '  <label for="<%- middleNameID %>">Middle Name</label>';
 authorTemplate += '  <input type="text" class="form-control"';
 authorTemplate += 'id="<%- middleNameID %>">';
@@ -181,17 +234,24 @@ authorTemplate += '</div></div>';
 
 
 let noteTemplate = '';
-noteTemplate += '<div class="form-row pt-1">';
+noteTemplate += '<div class="form-row mt-2">';
 noteTemplate += '<label for="<%- noteID %>">Note:';
 noteTemplate += '<i class="far fa-save fa-lg save-note"></i>';
 noteTemplate += '<i class="far fa-edit fa-lg edit-note" hidden="true"></i>';
+noteTemplate += '<i class="far fa-times-circle fa-lg';
+noteTemplate += ' remove remove-note pl-5 text-danger"';
+noteTemplate += ' title="Press to remove note."></i>';
 noteTemplate += '</label>';
 noteTemplate += '<textarea class="form-control" id="<%- noteID %>" rows="5">';
 noteTemplate += '</textarea></div>';
 
 let measurementTemplate = '';
 measurementTemplate += '<div class="form-row">';
-measurementTemplate += '<div class="form-group col-md-1 offset-1">';
+measurementTemplate += '<div class="col-md-1">';
+measurementTemplate += '<i class="far fa-times-circle fa-lg';
+measurementTemplate += ' remove remove-inline pt-4 text-danger"';
+measurementTemplate += ' title="Press to remove measurement."></i></div>';
+measurementTemplate += '<div class="form-group col-md-1">';
 measurementTemplate += '<label for="<%- elementID %>">Element</label>';
 measurementTemplate += '<input type="text" class="form-control"';
 measurementTemplate += 'id="<%- elementID %>"';
@@ -240,14 +300,20 @@ let meteoriteTemplate = '';
 meteoriteTemplate += '<div class="form-row meteorite-header"';
 meteoriteTemplate += ' id="<%- meteoriteID %>">';
 meteoriteTemplate += '<h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>';
-// meteoriteTemplate += '<i class="fas fa-plus-circle fa-lg add-meteorite';
-// meteoriteTemplate += ' mt-2 text-danger"></i>';
+meteoriteTemplate += '<i class="fas fa-plus-circle fa-lg';
+meteoriteTemplate += ' add-meteorite mt-2 text-danger"></i>';
 meteoriteTemplate += '</div><div class="form-row">';
+meteoriteTemplate += '<div class="col-md-1">';
+meteoriteTemplate += '<i class="far fa-times-circle fa-lg';
+meteoriteTemplate += ' remove remove-meteorite pt-4 text-danger"';
+meteoriteTemplate += ' title="Press to remove meteorite';
+meteoriteTemplate += ' and all associated measurements."></i>';
+meteoriteTemplate += '</div>';
 meteoriteTemplate += '<div class="form-group col-md-4">';
 meteoriteTemplate += '<label for="<%- bodyNameID %>">Name</label>';
 meteoriteTemplate += '<input type="text" class="form-control"';
 meteoriteTemplate += ' id="<%- bodyNameID %>" required="true">';
-meteoriteTemplate += '</div><div class="form-group col-md-4">';
+meteoriteTemplate += '</div><div class="form-group col-md-3">';
 meteoriteTemplate += '<label for="<%- groupID %>">Group</label>';
 meteoriteTemplate += '<input type="text" class="form-control"';
 meteoriteTemplate += ' id="<%- groupID %>" required="true">';
@@ -260,7 +326,7 @@ meteoriteTemplate += '<i class="far fa-save fa-2x save-meteorite"></i>';
 meteoriteTemplate += '<i class="far fa-edit fa-2x edit-meteorite" ';
 meteoriteTemplate += 'hidden="true"></i>';
 meteoriteTemplate += '</div></div><div class="form-row">';
-meteoriteTemplate += '<h5 class="pt-1 mr-2">';
+meteoriteTemplate += '<h5 class="pt-1 mr-2  pl-3">';
 meteoriteTemplate += '<strong>Measurements</strong></h5>';
 meteoriteTemplate += '<i class="fas fa-plus-circle fa-lg ';
 meteoriteTemplate += 'add-measurement mt-2 text-danger"></i></div>';
@@ -319,24 +385,8 @@ $( '#insert-form' ).on('click', 'i.add-author', function( event ) {
   // Insert template into DOM
   $(this).parent().siblings('.meteorite-header').before(html);
 
-  // Attach Event Handlers
-  $( 'i.save-author' ).on( 'click', function( event ) {
-    // Disable inputs
-    disableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
-  });
-
-  $( 'i.edit-author' ).on( 'click', function( event ) {
-    // Enable inputs
-    enableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-author' ).prop('hidden', false);
-  });
+  // Hide remove ui
+  $( 'i.remove' ).hide();
 });
 
 
@@ -357,24 +407,8 @@ $( '#insert-form' ).on('click', 'i.add-note', function( event ) {
   // Insert template into DOM
   $(this).parent().siblings('button').before(html);
 
-  // Attach Event Handlers
-  $( 'i.save-note' ).on( 'click', function( event ) {
-    // Disable textfield
-    $(this).parent().parent().children('textarea').prop('disabled', true);
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
-  });
-
-  $( 'i.edit-note' ).on( 'click', function( event ) {
-    // Enable textfield
-    $(this).parent().parent().children('textarea').prop('disabled', false);
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-note' ).prop('hidden', false);
-  });
+  // Hide remove ui
+  $( 'i.remove' ).hide();
 });
 
 
@@ -421,22 +455,8 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
         .first().before(html);
   }
 
-  // Attach Event Handlers
-  $( 'i.save-measurement' ).on( 'click', function( event ) {
-    disableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
-  });
-
-  $( 'i.edit-measurement' ).on( 'click', function( event ) {
-    enableInline($(this));
-
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
-  });
+  // Hide remove ui
+  $( 'i.remove' ).hide();
 });
 
 $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
@@ -485,37 +505,49 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   // Insert template into DOM
   $(this).parent().siblings('.notes-header').before(html);
 
-  // Attach Event Handler
-  $( 'i.save-meteorite' ).on( 'click', function( event ) {
-    disableInline($(this));
+  // Hide remove ui
+  $( 'i.remove' ).hide();
+});
 
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
-  });
+/** ---------------------------- */
+/**        UI Remove Events      */
+/** ---------------------------- */
 
-  $( 'i.edit-meteorite' ).on( 'click', function( event ) {
-    enableInline($(this));
+$( '#insert-form' ).on('click', 'i.remove-note', function() {
+  if ( $(this).parent().parent().hasClass('not-removable') === false ) {
+    $(this).parent().parent().remove();
+  }
+});
 
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-meteorite' ).prop('hidden', false);
-  });
+$( '#insert-form' ).on('click', 'i.remove-inline', function() {
+  if ( $(this).parent().parent().hasClass('not-removable') === false ) {
+    $(this).parent().parent().remove();
+  }
+});
 
-  // Attach Event Handlers
-  $( 'i.save-measurement' ).on( 'click', function( event ) {
-    disableInline($(this));
+$( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
+  if ( $(this).parent().parent().hasClass('not-removable') === true ) {
+    // Do not remove if saved
+  } else {
+    // Get parent meteorite
+    const meteoriteID = $(this).parent().parent()
+        .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
 
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
-  });
+    // Remove associated elements
+    const nextID = 'meteorite' + (1 + Number(meteoriteID));
+    if ( $( '#' + nextID ).length ) {
+      $(this).parent().parent().nextUntil( '#' + nextID ).remove();
+    } else {
+      $(this).parent().parent().nextUntil( 'div.notes-header' ).remove();
+    }
 
-  $( 'i.edit-measurement' ).on( 'click', function( event ) {
-    enableInline($(this));
+    // Remove header if not last meteorite header on form
+    const id = 'meteorite' + meteoriteID;
+    if ( 'meteorite' + meteoriteID !== 'meteorite0' ) {
+      $( '#' + id ).remove();
+    }
 
-    // Toggle UI
-    $(this).prop('hidden', true);
-    $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
-  });
+    // Remove row
+    $(this).parent().parent().remove();
+  }
 });

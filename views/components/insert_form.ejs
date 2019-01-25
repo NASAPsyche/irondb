@@ -49,6 +49,9 @@
     </div>
     
     <div class="form-row">
+        <div class="col-md-1">
+            <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" title="Press to remove author."></i>
+        </div>
         <div class="form-group col-md-3">
             <label for="primaryName">Last Name or Organization</label>
             <input type="text" class="form-control" id="primaryName" required="true" placeholder="required"> 
@@ -57,7 +60,7 @@
             <label for="firstName">First Name</label>
             <input type="text" class="form-control" id="firstName"> 
         </div>
-        <div class="form-group col-md-3">
+        <div class="form-group col-md-2">
             <label for="middleName">Middle Name</label>
             <input type="text" class="form-control" id="middleName"> 
         </div>
@@ -77,11 +80,14 @@
     </div>
 
     <div class="form-row">
+        <div class="col-md-1">
+            <i class="far fa-times-circle fa-lg remove remove-meteorite pt-4 text-danger" title="Press to remove meteorite and all associated measurements."></i>
+        </div>
         <div class="form-group col-md-4">
             <label for="bodyName">Name</label>
             <input type="text" class="form-control" id="bodyName" required="true">
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-md-3">
             <label for="group">Group</label>
             <input type="text" class="form-control" id="group" required="true">
         </div>
@@ -96,12 +102,15 @@
     </div>
 
     <div class="form-row">
-        <h5 class="pt-1 mr-2"><strong>Measurements</strong></h5>
+        <h5 class="pt-1 mr-2 pl-3"><strong>Measurements</strong></h5>
         <i class="fas fa-plus-circle fa-lg add-measurement mt-2 text-danger"></i>
     </div>
 
     <div class="form-row">
-        <div class="form-group col-md-1 offset-1">
+        <div class="col-md-1">
+            <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" title="Press to remove measurement."></i>
+        </div>        
+        <div class="form-group col-md-1">
             <label for="element">Element</label>
             <input type="text" class="form-control" id="element" minlength="1" maxlength="3" required="true">
         </div>
@@ -147,6 +156,7 @@
         <label for="note">Note:
             <i class="far fa-save fa-lg save-note"></i>
             <i class="far fa-edit fa-lg edit-note" hidden="true"></i>
+            <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" title="Press to remove note."></i>
         </label>
         <textarea class="form-control" id="note" rows="5"></textarea>
     </div>
