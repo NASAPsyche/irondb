@@ -60,7 +60,7 @@ CREATE TYPE units AS ENUM ('wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g');
 CREATE TABLE IF NOT EXISTS users (
   user_id serial PRIMARY KEY,
   username citext UNIQUE NOT NULL,
-  password_digest text NOT NULL,
+  password_hash text NOT NULL,
   role_of user_role NOT NULL
 );
 
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS note_review (
 */
 
 -- DUMMY DATA
-INSERT INTO users (user_id, username, password_digest, role_of)
+INSERT INTO users (user_id, username, password_hash, role_of)
   VALUES (DEFAULT, 'dummy', 'digest', 'user');
 
 INSERT INTO user_info (user_id, first_name, last_name, email_address)
