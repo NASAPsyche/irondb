@@ -24,12 +24,6 @@ To install follow the instructions for your given operating sytem [here](https:/
 │ 	└── www					# Server startup bash script.
 │
 ├── docker					# Docker support files
-│	│
-│ 	└── start				# Supporting scripts
-│ 	  	└── docker-clean.sh 						# Performs a clean build and run
-│ 	  	└── docker-initial-install.sh 				# First time install and run
-│ 	  	└── docker-start.sh 						# Run pre-built containers
-│ 	  	└── remove-all.sh 							# Removes ALL containers from system
 │
 ├── controller			# Handles business logic and routing.
 │	│
