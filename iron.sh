@@ -153,7 +153,7 @@ function restore_recent ()
 }
 
 # Read in the options and perform the tasks
-while getopts ":hilqafsxbr:" opt; do
+while getopts ":hilqafsxbr " opt; do
   case ${opt} in
     h )
       show_help
