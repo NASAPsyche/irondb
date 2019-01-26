@@ -14,9 +14,9 @@ import pdf_metadata
 import pdf_text
 import re
 
-# list of known analysis techniques (not cap sensitive)
-lexicon = ['analysis', 'INAA', 'activation', 'neutron',
-           'LA-ICP-MS', 'spectrophometry', 'radiochemical', 'RNAA']
+# list of known analysis techniques (not cap sensitive) and elements
+lexicon = ['INAA' , 'analysis', 'RNAA', 'PGAA', 'activation', 'neutron', 'spectrophometry', 
+            'spectrometry' 'radiochemical', 'chromatography', 'NAA','LA-ICP-MS', 'ICP-MS']
 
 # Main driver of finding the analysis techniques and returning text from pdfs
 
