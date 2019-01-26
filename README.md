@@ -62,7 +62,7 @@ To install follow the instructions for your given operating sytem [here](https:/
 #### Required Dependencies
 1. Node
 2. Gulp
-3. Docker (if using containers)
+3. Docker
 
 #### To Run without docker
 It is no longer possible to run the project without Docker installed and running. Please follow the instructions To Run with Docker-Compose Automatic
@@ -70,10 +70,9 @@ It is no longer possible to run the project without Docker installed and running
 #### To Run with Docker-Compose Automatic
 Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.
 1. `cd irondb` - change directory to root
-2. (optional - do if step 3 does not launch) `chmod u+x dockerup.sh` - set the script to executable if it is not already so.
-3. `./iron.sh` - Builds and launches the Docker Composition
-4. Follow the prompts.
-If this is your first time, select `1`. If you are only testing changes that do not impact the building of the docker containers themselves, select `3`. This will be the most common selection.
+2. `./iron.sh` - Builds and launches the Docker Composition. Use `./iron.sh -h` for help.
+To install the servers and launch them `./iron.sh -i`
+To launch from previously built containers `./iron.sh -l`
 
 #### To Run with Docker-Compose Manual
 Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
