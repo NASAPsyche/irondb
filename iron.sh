@@ -141,7 +141,7 @@ function make_backup ()
   docker exec -t postgres pg_dump -c -U group16 -d postgres > backup-pg/pg_`date +%d-%m-%Y"_"%H_%M_%S`.sql
 }
 
-# Restore 
+# Restore most recent backup of db
 function restore_recent ()
 {
   cd backup-pg
