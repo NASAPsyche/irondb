@@ -21,14 +21,8 @@
 
         <div class="row">
             <div class="col-sm-11 offset-sm-1 col-md-3 offset-md-1 pl-1 mb-3">
-                <form method="POST" action="/data-entry/editor" enctype="multipart/form-data" class="border border-dark align-top mx-auto" id="pdf-form">
-                    <div class="form-group">
-                        <label for="filetoupload">Choose file to upload</label>
-                        <input type="file" id="pdf" name="filetoupload"
-                            accept=".pdf">
-                    </div>
-                    <button type="submit" class="btn btn-secondary mt-2">Submit</button>
-                </form>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#uploadModal">Upload pdf</button>
             </div>
 
             <div class="col-sm-11 col-sm-11 col-md-7">
@@ -58,9 +52,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload PDF</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="/data-entry/editor" enctype="multipart/form-data" class=" align-top mx-auto" id="pdf-form">
+                    <div class="modal-body">
+                        <small><strong>Warning:</strong> Uploading pdf may interupt previously entered work.</small>
+                        <div class="form-group">
+                            <label for="filetoupload">Choose file to upload</label>
+                            <input type="file" id="pdf" name="filetoupload" accept=".pdf">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger mt-2 ml-2 pr-4 pl-4">Upload</button>
+                        <button type="button" class="btn btn-secondary mt-2" data-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     <%- include('bootstrap/js'); %>
     <%- include('components/ejs'); %>
     <script src="/javascripts/editor.js"></script>
+    <script src="/javascripts/editor-modal.js"></script>
 </body>
-</html>
+</html>  
