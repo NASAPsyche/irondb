@@ -1,3 +1,9 @@
+$( 'document' ).ready(function() {
+  // Set tool as default selected
+  styleButtons($( '#tool' ));
+  setForm('tool');
+});
+
 $( '#tool' ).on( 'click', function() {
   styleButtons($(this));
   setForm($(this).attr('id'));
