@@ -43,7 +43,6 @@ passport.use(new LocalStrategy((username, password, done) => {
         // If query returns result, verify password by unhashing.
         if (result.rows.length > 0) {
           const user = result.rows[0];
-          console.log(user);
           bcrypt.compare(password, user.password_hash, function(err, res) {
             if (res) {
               // Return user if password is valid.
