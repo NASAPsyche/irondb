@@ -9,26 +9,25 @@ import nltk
 
 from nltk.tokenize import sent_tokenize, RegexpTokenizer
 import nltk.data
-import driver_methods
-import pdf_metadata
-import pdf_text
+from table_driver import convert_pdf_to_txt_looper, get_num_pages
 import re
 
-# list of known analysis techniques (not cap sensitive) and elements
-lexicon = ['INAA' , 'analysis', 'RNAA', 'PGAA', 'activation', 'neutron', 'spectrophometry', 
-            'spectrometry' 'radiochemical', 'chromatography', 'NAA','LA-ICP-MS', 'ICP-MS']
+
+# list of known analysis techniques (not cap sensitive)
+lexicon = ['analysis', 'INAA', 'activation', 'neutron',
+           'LA-ICP-MS', 'spectrophometry', 'radiochemical', 'RNAA']
 
 # Main driver of finding the analysis techniques and returning text from pdfs
 
 
 def sentence_tokenize(paper):
     # get page numbers
-    total_pages = pdf_metadata.get_num_pages(paper)
+    total_pages = get_num_pages(paper)
 
     # get all text from pdf
     entire_pdf = list()
     for i in range(total_pages):
-        entire_pdf.append(pdf_text.convert_pdf_to_txt_looper(paper, i))
+        entire_pdf.append(convert_pdf_to_txt_looper(paper, i))
 
     # join list as string
     entire_pdf_string = join_text(entire_pdf)
