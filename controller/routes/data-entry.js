@@ -28,8 +28,7 @@ router.post('/', isLoggedIn, function(req, res, next) {
         fs.rename(oldpath, newpath, function(err) {
           if (err) next(createError(500));
           if (fields.tool_select) {
-            // replace with checklist
-            res.render('editor_with_pdf', {data: newpath.slice(15)});
+            res.render('data-entry-checklist', {data: newpath.slice(15)});
           } else if (fields.editor_select) {
             res.render('editor_with_pdf', {data: newpath.slice(15)});
           } else {
