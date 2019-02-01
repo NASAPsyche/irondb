@@ -1,4 +1,48 @@
 """
+======================================================================================================================
+======================================================================================================================
+ *
+ * NNNNNNNN        NNNNNNNNLLLLLLLLLLL             PPPPPPPPPPPPPPPPP
+ * N:::::::N       N::::::NL:::::::::L             P::::::::::::::::P
+ * N::::::::N      N::::::NL:::::::::L             P::::::PPPPPP:::::P
+ * N:::::::::N     N::::::NLL:::::::LL             PP:::::P     P:::::P
+ * N::::::::::N    N::::::N  L:::::L                 P::::P     P:::::P
+ * N:::::::::::N   N::::::N  L:::::L                 P::::P     P:::::P
+ * N:::::::N::::N  N::::::N  L:::::L                 P::::PPPPPP:::::P
+ * N::::::N N::::N N::::::N  L:::::L                 P:::::::::::::PP
+ * N::::::N  N::::N:::::::N  L:::::L                 P::::PPPPPPPPP
+ * N::::::N   N:::::::::::N  L:::::L                 P::::P
+ * N::::::N    N::::::::::N  L:::::L                 P::::P
+ * N::::::N     N:::::::::N  L:::::L         LLLLLL  P::::P
+ * N::::::N      N::::::::NLL:::::::LLLLLLLLL:::::LPP::::::PP
+ * N::::::N       N:::::::NL::::::::::::::::::::::LP::::::::P
+ * N::::::N        N::::::NL::::::::::::::::::::::LP::::::::P
+ * NNNNNNNN         NNNNNNNLLLLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPP
+ *
+ *
+ * PPPPPPPPPPPPPPPPP       OOOOOOOOO      WWWWWWWW               WWWWWWWWEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRR
+ * P::::::::::::::::P    OO:::::::::OO    W::::::W               W::::::WE::::::::::::::::::::ER::::::::::::::::R
+ * P::::::PPPPPP:::::P OO::::::::::::::OO W::::::W               W::::::WE::::::::::::::::::::ER::::::RRRRRR:::::R
+ * PP:::::P     P:::::PO:::::::OOO:::::::OW::::::W               W::::::WEE::::::EEEEEEEEE::::ERR:::::R     R:::::R
+ *   P::::P     P:::::PO::::::O   O::::::OW::::::W     WWWWW     W::::::W  E:::::E       EEEEEE  R::::R     R:::::R
+ *   P::::P     P:::::PO:::::O     O:::::OW::::::W    W:::::W    W::::::W  E:::::E               R::::R     R:::::R
+ *   P::::PPPPPP:::::P O:::::O     O:::::OW::::::W   W:::::::W   W::::::W  E::::::EEEEEEEEEE     R::::RRRRRR:::::R
+ *   P:::::::::::::PP  O:::::O     O:::::OW::::::W  W::::W::::W  W::::::W  E:::::::::::::::E     R:::::::::::::RR
+ *   P::::PPPPPPPPP    O:::::O     O:::::OW::::::W W::::W W::::W W::::::W  E:::::::::::::::E     R::::RRRRRR:::::R
+ *   P::::P            O:::::O     O:::::OW:::::::W::::W   W::::W:::::::W  E::::::EEEEEEEEEE     R::::R     R:::::R
+ *   P::::P            O:::::O     O:::::OW:::::::::::W     W:::::::::::W  E:::::E               R::::R     R:::::R
+ *   P::::P            O::::::O   O::::::OW::::::::::W       W::::::::::W  E:::::E       EEEEEE  R::::R     R:::::R
+ * PP::::::PP          O:::::::OOO:::::::OW:::::::::W         W:::::::::WEE::::::EEEEEEEE:::::ERR:::::R     R:::::R
+ * P::::::::P           OO:::::::::::::OO W::::::::W           W::::::::WE::::::::::::::::::::ER::::::R     R:::::R
+ * P::::::::P             OO:::::::::OO   W:::::::W             W:::::::WE::::::::::::::::::::ER::::::R     R:::::R
+ * PPPPPPPPPP               OOOOOOOOO     WWWWWWWW               WWWWWWWWEEEEEEEEEEEEEEEEEEEEEERRRRRRRR     RRRRRRR
+ *
+======================================================================================================================
+======================================================================================================================
+"""
+
+
+"""
 nlp4metadata.py: Extracts metadata attributes from the text of a pdf
 Attributes include: title, authors, source
 """
@@ -19,7 +63,7 @@ page_num_title = 1
 page_num_authors = 1
 
 
-# stages relevant parts of the first page of a pdf for data extraction
+# extracts relevant parts of the first page of a pdf to be processed
 def relevant_text(pdf_name, tagword):
     page = pdf_text.convert_pdf_to_txt(path + pdf_name, 0)
     text = page.split(tagword, 1)[0]
@@ -27,17 +71,23 @@ def relevant_text(pdf_name, tagword):
     return text
 
 
-# preprocesses the staged parts of the pdf using NLTK
+# preprocesses the relevant parts of the pdf using NLTK
 def stage_text(txt):
     #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
 
     try:
-        tagged = pos_tag(txt.split())
-    except LookupError:
-        nltk.download('averaged_perceptron_tagger')
-        print('******** POS_TAG DEPENDENCIES DOWNLOADED. PLEASE RUN AGAIN. ********')
+    	sentences = nltk.sent_tokenize(txt)
+    	#sentences = [nltk.word_tokenize(sentence) for sentence in sentences]
+    	#sentences = [nltk.pos_tag(sentence) for sentence in sentences]
+    	#tagged = nltk.ne_chunk(sentences) #consider moving this to extract_authors
 
-    return tagged
+    except LookupError:
+        nltk.download('averaged_perceptron_tagger') # pos_tag dependency
+        nltk.download('maxent_ne_chunker') # ne_chunk dependency
+        nltk.download('words') # ne_chunk dependency
+
+    #return tagged
+    return sentences
 
 
 # extracts truncated title from top of any page in the pdf
@@ -54,7 +104,7 @@ def truncated_title(pdf_name):
     return title_trunc.replace('\n', "")
 
 
-# extracts full title from the first page of pdf using truncated title
+# extracts full title from the first page of pdf using NLTK noun-phrase chunking
 def extract_title(pdf_name):
 
     title_full = "Title not found"
@@ -94,19 +144,21 @@ def truncated_authors(pdf_name):
     return authors_trunc[0]
 
 
-# extracts authors from the first page of pdf using truncated authors
+# extracts authors from the first page of pdf using NLTK named entity recognition
 def extract_authors(pdf_name):
     authors_full = "Author(s) not found"
     relevant_data = relevant_text(pdf_name, "Abs")
+    tagged = stage_text(relevant_data)
 
-    pattern = "NOUN-PHRASE: {<NNP><NNP><NNP><NNP><NNP><NNP>}"
-    chunkr = nltk.RegexpParser(pattern)
-    chunks = chunkr.parse(stage_text(relevant_data))
+    #pattern = "NOUN-PHRASE: {<NNP><NNP>+}"
+    #chunkr = nltk.RegexpParser(pattern)
+    #chunks = chunkr.parse(stage_text(relevant_data))
 
-    for chunk in chunks:
+    for chunk in tagged:
         if type(chunk) == nltk.tree.Tree:
-            if chunk.label() == 'NOUN-PHRASE':
+            if chunk.label() == 'PERSON':
                 authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
+                print(chunk)
 
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_data.lower()).find(authors_tagword.lower())
@@ -128,7 +180,7 @@ def extract_authors(pdf_name):
     return authors_full
 
 
-# extracts publishing date from pdf text
+# extracts publishing date from pdf text using Python ReGex
 def extract_date(pdf_name):
     relevant_data = relevant_text(pdf_name, "Abs").split()
     for ch in relevant_data:
@@ -137,7 +189,7 @@ def extract_date(pdf_name):
     return date.group(1)
 
 
-# extracts source URL from pdf text
+# extracts source URL from pdf text using relative location of the data
 def extract_source(pdf_name):
     relevant_data = relevant_text(pdf_name, "Abs")
     
@@ -257,5 +309,5 @@ def extract_source(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-print(extract_title(paper))
+#print(extract_title(paper))
 print(extract_authors(paper))
