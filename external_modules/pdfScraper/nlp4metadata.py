@@ -153,13 +153,19 @@ def extract_authors(pdf_name):
     return authors_full
 
 
-# extracts publishing date from pdf text
+# extracts publishing date from the pdf text
 def extract_date(pdf_name):
-    relevant_data = relevant_text(pdf_name, "Abs").split()
-    for ch in relevant_data:
-        date = (re.search(r'.*([1-3][0-9]{3})', ch))
+    relevant_data = relevant_text(pdf_name, "Abs").lower()
+    if "publish" in relevant_data:
+        relevant_data = relevant_data.rsplit("publish", 1)[1]
+    elif "available" in relevant_data:
+        relevant_data = relevant_data.rsplit("available", 1)[1]
+    elif "accept" in relevant_data:
+        relevant_data = relevant_data.rsplit("accept", 1)[1]
 
-    return date.group(1)
+    date = re.search(r'[1-3][0-9]{3}', relevant_data)
+
+    return date.group()
 
 
 # extracts source URL from the pdf text
