@@ -7,11 +7,14 @@ __version__ = "2.0"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "11/25/18"
 
-import os
-import nltk
-from nltk import tokenize, pos_tag
+import os, io
+#from nltk import tokenize, pos_tag
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
 import re
-import pdf_text
+import nltk
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
@@ -19,9 +22,32 @@ page_num_title = 1
 page_num_authors = 1
 
 
-# stages relevant parts of the first page of a pdf for data extraction
+# imports raw text from a chosen pdf
+def convert_pdf_to_txt(path, pageNo=0):
+    text = ""
+    rsrcmgr = PDFResourceManager()
+    retstr = io.StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+    fp = open(path, 'rb')
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+
+    for page in PDFPage.get_pages(fp, pagenos=[pageNo], check_extractable=True):
+        pageNo += 1
+        interpreter.process_page(page)
+        text = retstr.getvalue()
+    
+    fp.close()
+    device.close()
+    retstr.close()
+
+    return text
+
+
+# stages relevant parts of the first page of the pdf for data extraction
 def relevant_text(pdf_name, tagword):
-    page = pdf_text.convert_pdf_to_txt(path + pdf_name, 0)
+    page = convert_pdf_to_txt(path + pdf_name, 0)
     text = page.split(tagword, 1)[0]
 
     return text
@@ -35,7 +61,6 @@ def stage_text(txt):
         tagged = pos_tag(txt.split())
     except LookupError:
         nltk.download('averaged_perceptron_tagger')
-        print('******** POS_TAG DEPENDENCIES DOWNLOADED. PLEASE RUN AGAIN. ********')
 
     return tagged
 
@@ -43,7 +68,7 @@ def stage_text(txt):
 # extracts truncated title from top of any page in the pdf
 def truncated_title(pdf_name):
     global page_num_title
-    random_page = pdf_text.convert_pdf_to_txt(path + pdf_name, page_num_title)
+    random_page = convert_pdf_to_txt(path + pdf_name, page_num_title)
 
     # extracts the truncated title from the top of a random page
     title_trunc = random_page.split('\n\n', 1)[0]
@@ -54,7 +79,7 @@ def truncated_title(pdf_name):
     return title_trunc.replace('\n', "")
 
 
-# extracts full title from the first page of pdf using truncated title
+# extracts full title from the first page of the pdf using NLTK
 def extract_title(pdf_name):
 
     title_full = "Title not found"
@@ -80,7 +105,7 @@ def extract_title(pdf_name):
 # extracts truncated authors from top of any page in the pdf
 def truncated_authors(pdf_name):
     global page_num_authors
-    random_page = pdf_text.convert_pdf_to_txt(path + pdf_name, page_num_authors)
+    random_page = convert_pdf_to_txt(path + pdf_name, page_num_authors)
 
     # extracts the truncated title from the top of a random page
     authors_trunc = random_page.split('\n\n', 2)
@@ -94,7 +119,7 @@ def truncated_authors(pdf_name):
     return authors_trunc[0]
 
 
-# extracts authors from the first page of pdf using truncated authors
+# extracts authors from the first page of the pdf using truncated authors
 def extract_authors(pdf_name):
     authors_full = "Author(s) not found"
     relevant_data = relevant_text(pdf_name, "Abs")
@@ -137,7 +162,7 @@ def extract_date(pdf_name):
     return date.group(1)
 
 
-# extracts source URL from pdf text
+# extracts source URL from the pdf text
 def extract_source(pdf_name):
     relevant_data = relevant_text(pdf_name, "Abs")
     
@@ -257,5 +282,7 @@ def extract_source(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-print(extract_title(paper))
-print(extract_authors(paper))
+#print(extract_title(paper))
+#print(extract_authors(paper))
+print(extract_date(paper))
+#print(extract_source(paper))
