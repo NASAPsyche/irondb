@@ -10,6 +10,8 @@ function show_help ()
   echo "      the server. This can take 15+ minutes and will download several GB of data."
   echo "--------"
   echo "-l    Launch: Installs node dependencies and then launches the server."
+  echo "-p    Populate and launch: Launches the servers with the database populated"
+  echo "      only from init script. Deletes local data."
   echo "-q    Quick launch: Launches the server without installing node dependencies."
   echo "      SELECT this if there have been no changes to the server since it last ran."
   echo "-a    Attached quick launch: Launches the server with node output to shell."
@@ -37,11 +39,13 @@ function install_global_deps ()
 {
   echo "Installing global dependencies"
   # Global dependencies for testing node
-  if [[$EUID>0]]
+  if [[ $EUID -ne 0 ]];
   then
+    echo "running as sudo"
     sudo npm install -g gulp-cli
     sudo npm install -g jest-cli
   else
+    echo "running as su"
     npm install -g gulp-cli
     npm install -g jest-cli
   fi
@@ -64,11 +68,13 @@ function rm_db ()
   echo ""
   echo "Removing previous database"
   # Remove folders that would prevent building
-  if [[$EUID>0]]
+  if [[ $EUID -ne 0 ]];
   then
+    echo "running as sudo"
     sudo rm -rf pg-data 
     sudo rm -rf node-modules
   else
+    echo "running as su"
     rm -rf pg-data 
     rm -rf node-modules
   fi
@@ -153,7 +159,7 @@ function restore_recent ()
 }
 
 # Read in the options and perform the tasks
-while getopts ":hilqafsxbr " opt; do
+while getopts ":hilpqafsxbr " opt; do
   case ${opt} in
     h )
       show_help
@@ -169,6 +175,12 @@ while getopts ":hilqafsxbr " opt; do
       ;;
     l ) #launch
       stop_containers
+      install_node_deps
+      start_detached
+      ;;
+    p ) #launch with fresh postgres init
+      stop_containers
+      rm_db
       install_node_deps
       start_detached
       ;;

@@ -30,8 +30,8 @@ const panelRouter = require('./routes/panel');
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy((username, password, done) => {
   db.query(
-      'SELECT user_id, username, password, role FROM users WHERE username=$1',
-
+      // eslint-disable-next-line max-len
+      'SELECT user_id, username, password_hash, role_of FROM users WHERE username=$1',
       [username],
       (err, result) => {
         // Verify callback provides user if credentials accepted.
@@ -43,12 +43,12 @@ passport.use(new LocalStrategy((username, password, done) => {
         // If query returns result, verify password by unhashing.
         if (result.rows.length > 0) {
           const user = result.rows[0];
-          bcrypt.compare(password, user.password, function(err, res) {
+          bcrypt.compare(password, user.password_hash, function(err, res) {
             if (res) {
               // Return user if password is valid.
               return done(null, {id: user.user_id,
                 username: user.username,
-                role: user.role});
+                role: user.role_of});
             } else {
               return done(null, false);
             }
@@ -67,7 +67,8 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   db.query(
-      'SELECT user_id, username, password, role FROM users WHERE user_id=$1',
+      // eslint-disable-next-line max-len
+      'SELECT user_id, username, password_hash, role_of FROM users WHERE user_id=$1',
       [id],
       (err, result) => {
         // Get user by id.
@@ -77,7 +78,7 @@ passport.deserializeUser(function(id, done) {
           const user = result.rows[0];
           return done(null, {id: user.user_id,
             username: user.username,
-            role: user.role});
+            role: user.role_of});
         } else {
           return done(err, null);
         }

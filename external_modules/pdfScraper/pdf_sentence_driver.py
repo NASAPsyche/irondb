@@ -1,4 +1,4 @@
-import driver_methods
+from table_driver import display_pdf_names
 from pdf_sentence_tokenizer import sentence_tokenize
 import nltk
 
@@ -11,7 +11,7 @@ except LookupError:
 
 
 # Select PDF
-chosen_pdf = driver_methods.display_pdf_names("pdfs/")
+chosen_pdf = display_pdf_names("pdfs/")
 
 # concatenate chosen_pdf with directory
 chosen_pdf = "pdfs/" + chosen_pdf
