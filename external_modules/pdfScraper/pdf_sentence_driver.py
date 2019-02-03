@@ -1,6 +1,6 @@
-from table_driver import display_pdf_names
 from pdf_sentence_tokenizer import sentence_tokenize
 import nltk
+import os
 
 try:
     nltk.data.find('tokenizers/punkt')
@@ -10,12 +10,38 @@ except LookupError:
     print('let me get punkt for you')
 
 
-# Select PDF
-chosen_pdf = display_pdf_names("pdfs/")
 
-# concatenate chosen_pdf with directory
-chosen_pdf = "pdfs/" + chosen_pdf
+def get_pdf_list(directory):
+    num = 0
+    fileNames = []
+    path = directory
+    dirs = os.listdir(path)
 
-# display chosen paper
-print("Paper Selected: " + chosen_pdf)
-print(sentence_tokenize(chosen_pdf))
+    # This adds all the files and directories inside "pdfs" into a list
+    for file in dirs:
+        if "pdf" in file:
+            #print(str(num + 1) + ". " + file)
+            fileNames.append(file)
+            num += 1
+    return fileNames
+
+
+
+# list of pdfs
+lst = get_pdf_list("pdfs/")
+
+# sublist of specific pdfs to test
+sub_lst = ['WassonandChoe_GCA_2009.pdf', 'Litasov2018_Article_TraceElementCompositionAndClas.pdf', 'Wasson_2004.pdf', 'Wassonetal_GCA_2007.pdf',
+           'WassonandKallemeyn_GCA_2002.pdf']
+
+print("Testing on the following papers:")
+print(sub_lst)
+print("\n")
+
+
+for i in range(len(sub_lst)):
+    # print title
+    print(sub_lst[i])
+
+    print(sentence_tokenize("pdfs/"+sub_lst[i]))
+
