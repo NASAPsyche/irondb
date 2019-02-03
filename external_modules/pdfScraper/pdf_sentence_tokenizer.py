@@ -1,21 +1,27 @@
 """
 __authors__ = "Michael Falgien"
-__version__ = "1.0"
+__version__ = "1.1"
 __email__ = "mfalgien@gmail.com"
-__date__ = "1/19/2019"
+__date__ = "1/25/2019"
 """
 
 import nltk
 
 from nltk.tokenize import sent_tokenize, RegexpTokenizer
 import nltk.data
-from table_driver import convert_pdf_to_txt_looper, get_num_pages
+import PyPDF2
+
 import re
+import io
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
 
 
-# list of known analysis techniques (not cap sensitive)
-lexicon = ['analysis', 'INAA', 'activation', 'neutron',
-           'LA-ICP-MS', 'spectrophometry', 'radiochemical', 'RNAA']
+# list of known analysis techniques (not cap sensitive) and elements
+lexicon = ['INAA' , 'analysis', 'RNAA', 'PGAA', 'activation', 'neutron', 'spectrophometry', 
+          'spectrometry' 'radiochemical', 'chromatography', 'NAA','LA-ICP-MS', 'ICP-MS']
 
 # Main driver of finding the analysis techniques and returning text from pdfs
 
@@ -104,3 +110,49 @@ def convert_list_to_string(_list):
     for i in range(len(_list)):
         final_string += _list[i] + "\n\n"
     return final_string
+
+# START Getting total pages of pdf
+def get_num_pages(path):
+    # created a pdf file object
+    pdfFileObj = open(path, 'rb')
+
+    # created a pdf reader object
+    pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+
+    # This is the number of pages contained in the current pdf
+    numPagesPDF = pdfReader.numPages
+    return numPagesPDF
+# END Getting total pages of pdf
+
+# START This function imports raw text import from a chosen pdf request.
+def convert_pdf_to_txt(path, pageNo=0):
+    text = ""
+    rsrcmgr = PDFResourceManager()
+    retstr = io.StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+    fp = open(path, 'rb')
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+
+    for page in PDFPage.get_pages(fp, pagenos=[pageNo], check_extractable=True):
+        pageNo += 1
+        interpreter.process_page(page)
+        text = retstr.getvalue()
+    fp.close()
+    device.close()
+    retstr.close()
+    return text
+# END This function imports raw text import from a chosen pdf request.
+
+
+# START This function puts each page of text in its own slot in an array of strings
+def convert_pdf_to_txt_looper(path, num_pages):
+    individual_pages = []
+    check = 0
+
+    while check <= num_pages - 1:
+        individual_pages.append(convert_pdf_to_txt(path, check))
+        check += 1
+    return individual_pages
+# END This function puts each page of text in its own slot in an array of strings
