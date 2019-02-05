@@ -1,8 +1,23 @@
 #!/bin/bash
 
+
+
 # Displays the help, default display this when no args given
 function show_help ()
 {
+  echo "    ██╗██████╗  ██████╗ ███╗   ██╗      "
+  echo "    ██║██╔══██╗██╔═══██╗████╗  ██║      "
+  echo "    ██║██████╔╝██║   ██║██╔██╗ ██║      "
+  echo "    ██║██╔══██╗██║   ██║██║╚██╗██║      "
+  echo "    ██║██║  ██║╚██████╔╝██║ ╚████║      "
+  echo "    ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝      "
+  echo "███████╗██╗  ██╗███████╗██╗     ██╗     "
+  echo "██╔════╝██║  ██║██╔════╝██║     ██║     "
+  echo "███████╗███████║█████╗  ██║     ██║     "
+  echo "╚════██║██╔══██║██╔══╝  ██║     ██║     "
+  echo "███████║██║  ██║███████╗███████╗███████╗"
+  echo "╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
+  echo "                                        "
   echo "Welcome to the Iron Meteorite Database. Make sure Docker is running."
   echo "-h    Help: Displays the command options"
   echo "--------"
