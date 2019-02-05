@@ -163,7 +163,7 @@ def process_tables_get(path, page):
     print("This is the size of the DF: " + str(len(dataframe_list)))
     if len(dataframe_list) > 0:
         for i in dataframe_list[0].iterrows():
-            print(i)
+            print("TEST" + str(i))
 
     if len(dataframe_list) > 1:
         print("This is 2nd DF: ")
@@ -181,16 +181,10 @@ def process_tables_get(path, page):
 # START 3. MARKING THE TABLES MARKING THE TABLES MARKING THE TABLES MARKING THE TABLES MARKING THE TABLES MARKING THE TABLES
 
 def process_tables_mark(df):
-    row_count, col_count = df.shape
-    x = 0
-    while x < row_count:
-        y = 0
-        while y < col_count:
-            print(str(df[y][x]))
+    for x in range(df.shape[0]):
+        for y in range(df.shape[1]):
             if len(str(df[y][x])) > 20:
                 df[y][x] = "REMOVE"
-            y += 1
-        x += 1
         # print(df)
     return df
 
@@ -253,14 +247,14 @@ def process_table_engine(path, page):
     table_rec = process_tables_get(path, page)
     print(table_rec)
 
-    # if len(table_rec) > 0:
-    #     for x in table_rec:
-    #         table_marked = process_tables_mark(x)
-    #         # print(table_marked)
-    #         table_cleaned = process_tables_clean(table_marked)
-    #         # print(table_cleaned)
-    #         return json.loads((table_cleaned.to_json(double_precision=10, force_ascii=True,
-    #
+    if len(table_rec) > 0:
+        for x in table_rec:
+            table_marked = process_tables_mark(x)
+            print(table_marked)
+            # table_cleaned = process_tables_clean(table_marked)
+            # # print(table_cleaned)
+            # return json.loads((table_cleaned.to_json(double_precision=10, force_ascii=True,date_unit='ms', lines=False)))
+
 
 
 
