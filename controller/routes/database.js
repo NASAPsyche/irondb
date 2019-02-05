@@ -1,11 +1,11 @@
 const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
-const db = require('../db');
-const createError = require('http-errors');
-const path = require('path');
-const fs = require('fs');
-const json2csv = require('json2csv').parse;
+// const db = require('../db');
+// const createError = require('http-errors');
+// const path = require('path');
+// const fs = require('fs');
+// const json2csv = require('json2csv').parse;
 const {isLoggedIn} = require('../middleware/auth');
 
 
@@ -48,6 +48,7 @@ const {isLoggedIn} = require('../middleware/auth');
 
 //     if (req.body.group !== 'Group') {
 //       argsArray.push(req.body.group);
+// eslint-disable-next-line max-len
 //       queryString += ('AND classification_group=$' + currentQueryIndex + ' ');
 //       currentQueryIndex++;
 //     }
@@ -57,12 +58,15 @@ const {isLoggedIn} = require('../middleware/auth');
 
 //       switch (req.body.range) {
 //         case 'major':
+// eslint-disable-next-line max-len
 //           queryString += ('AND major_elements ~* $' + currentQueryIndex + ' ');
 //           break;
 //         case 'minor':
+// eslint-disable-next-line max-len
 //           queryString += ('AND minor_elements ~* $' + currentQueryIndex + ' ');
 //           break;
 //         case 'trace':
+// eslint-disable-next-line max-len
 //           queryString += ('AND trace_elements ~* $' + currentQueryIndex + ' ');
 //           break;
 //       }
@@ -77,7 +81,7 @@ const {isLoggedIn} = require('../middleware/auth');
 //       }
 
 //       if (dbRes.rows.length === 0) {
-//         // eslint-disable-next-line max-len
+// eslint-disable-next-line max-len
 //         res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
 //       }
 
@@ -112,7 +116,7 @@ const {isLoggedIn} = require('../middleware/auth');
 //       }
 
 //       if (dbRes.rows.length === 0) {
-//         // eslint-disable-next-line max-len
+// eslint-disable-next-line max-len
 //         res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
 //       }
 
@@ -190,6 +194,7 @@ const {isLoggedIn} = require('../middleware/auth');
 //       const dateStr = date.toUTCString().replace(/ /g, '_');
 //       const filename = 'Database_export_' + dateStr + '.csv';
 
+// eslint-disable-next-line max-len
 //       const filePath = path.join(__dirname, ('../../public/temp/' + filename));
 
 //       try {
@@ -220,7 +225,7 @@ const {isLoggedIn} = require('../middleware/auth');
 
 /* GET /database/export */
 // router.get('/:id', function(req, res, next) {
-//   // eslint-disable-next-line max-len
+// eslint-disable-next-line max-len
 //   const queryString = 'SELECT * FROM complete_table WHERE status=$1 AND entry_id=$2';
 
 //   const argsArray = ['active', req.params.id];
