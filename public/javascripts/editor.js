@@ -1,6 +1,6 @@
 // Some functions inline on template to avoid import issues.
 // This file used on all editor templates
-
+/* eslint-disable no-invalid-this */
 /** ---------------------------- */
 /**     Remove Hover Toggle      */
 /** ---------------------------- */

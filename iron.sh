@@ -180,6 +180,18 @@ function restore_recent ()
   cd ..
 }
 
+# Populate mock data
+function populate_mock_data ()
+{
+  echo "Populating mock data"
+  # pip install psycopg2-binary
+  ./wait-for-it.sh  --host:localhost --port:5433 --timeout=5 -q 
+  cd docker
+  node mock-users.js
+  python mock-user-info.py 
+  cd ..
+}
+
 ### BEGIN ###
 
 # Read in the options and perform the tasks
@@ -196,6 +208,7 @@ while getopts ":hilpqafsxbr " opt; do
       rm_db
       build_containers
       start_detached
+      populate_mock_data
       ;;
     l ) #launch
       stop_containers
@@ -207,6 +220,7 @@ while getopts ":hilpqafsxbr " opt; do
       rm_db
       install_node_deps
       start_detached
+      populate_mock_data
       ;;
     q ) #quick launch
       stop_containers
