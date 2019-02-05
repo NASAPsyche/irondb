@@ -17,7 +17,7 @@ router.post('/', function(req, res, next) {
     bcrypt.hash(req.body.password, salt, function(err, hash) {
       db.getClient((err, client, done) => {
         // Transaction functionality modified from example at: https://node-postgres.com/features/transactions
-        let insertQuery = 'INSERT INTO Users(username, password, role)';
+        let insertQuery = 'INSERT INTO Users(username, password_hash, role_of)';
         insertQuery += ' VALUES($1,$2,$3) RETURNING user_id';
         const shouldAbort = (err) => {
           if (err) {

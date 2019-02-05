@@ -178,7 +178,6 @@ router.post('/export', function(req, res, next) {
     }
 
     if (req.body.hasOwnProperty('export')) {
-
       const fields = [];
       fields.push('meteorite_name', 'classification_group', 'technique');
       fields.push('major_elements', 'minor_elements', 'trace_elements');

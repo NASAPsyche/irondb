@@ -6,15 +6,14 @@ __email__ =  "mfalgien@gmail.com"
 __date__ = "1/14/19"
 """
 
-import pdf_metadata
-import pdf_text
+import table_driver
 import os
 import pdf_analysis_technique
 import matplotlib
+from matplotlib import pyplot as plt
 
 # Needed for mac
 matplotlib.use("TkAgg")
-from matplotlib import pyplot as plt
 # Get pdfs in pdf directory
 
 
@@ -53,11 +52,11 @@ for i in range(len(sub_lst)):
     print(sub_lst[i])
 
     # get pages
-    pages = pdf_metadata.get_num_pages("pdfs/"+sub_lst[i])
+    pages = table_driver.get_num_pages("pdfs/"+sub_lst[i])
     print("Total pages: %i " % pages)
 
     # get text
-    text = pdf_text.convert_pdf_to_txt_looper("pdfs/"+sub_lst[i], pages)
+    text = table_driver.convert_pdf_to_txt_looper("pdfs/"+sub_lst[i], pages)
 
     # run analysis technique function on each paper
     count.append(pdf_analysis_technique.find_analysis_technique(pages, text))
