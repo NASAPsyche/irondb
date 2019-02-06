@@ -1,7 +1,8 @@
 /* ASU Style Guide Typography Styles */
 body {
-	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-} 
+	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	padding: 3.4rem 0 0 0;
+}
 
 /* ASU Style Guide Link Styles */
 a {
