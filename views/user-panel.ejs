@@ -5,6 +5,7 @@
   <title>User Panel</title>
   <%- include('bootstrap/css'); %>
   <link rel='stylesheet' href='/stylesheets/data-entry.css' />
+  <link rel='stylesheet' href='/stylesheets/user-panel.css' />
 </head>
 
 <body>
@@ -15,26 +16,86 @@
       <h3 class="h3">User Panel</h3>
     </div>
   </div>
-  </div>
-  <div class="container card pt-3 pb-3">
-    <h3 class="h3">Reported Entries</h3>
-    <label class="sr-only" for="username">username</label>
-    <input type="text" name="username" id="username" class="form-control" placeholder="username" required autofocus
-      minlength="4" maxlength="25">
-    <label class="sr-only" for="password">password</label>
-    <input type="password" name="password" id="password" class="form-control" placeholder="password" required minlength="6"
-      maxlength="25">
+
+  <div class="container card pt-3 pb-3" id="report">
+    <h3 class="h3 label">Reported Entries</h3>
+    <table class="table table-stripd table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Body</th>
+          <th>Paper</th>
+          <th>Title</th>
+          <th>Author(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Guanaco</th>
+          <th>Meteorite Paper</th>
+          <th>Meteorite Paper</th>
+          <th>Wasson, John</th>
+        </tr>
+        <tr>
+          <th>Guanaco</th>
+          <th>Meteorite Paper</th>
+          <th>Meteorite Paper</th>
+          <th>Wasson, John</th>
+        </tr>
+        <tr>
+          <th>Guanaco</th>
+          <th>Meteorite Paper</th>
+          <th>Meteorite Paper</th>
+          <th>Wasson, John</th>
+        </tr>
+        <tr>
+          <th>Guanaco</th>
+          <th>Meteorite Paper</th>
+          <th>Meteorite Paper</th>
+          <th>Wasson, John</th>
+        </tr>
+      </tbody>
+    </table>
 
   </div>
 
-  <div class="container card mt-5 pt-3 pb-3">
-    <h3 class="h3">Approval Needed</h3>
-    <label class="sr-only" for="username">username</label>
-    <input type="text" name="username" id="username" class="form-control" placeholder="username" required autofocus
-      minlength="4" maxlength="25">
-    <label class="sr-only" for="password">password</label>
-    <input type="password" name="password" id="password" class="form-control" placeholder="password" required minlength="6"
-      maxlength="25">
+  <div class="container card mt-5 pt-3 pb-3" id="approval">
+    <h3 class="h3 label">Approval Needed</h3>
+    <table class="table table-stripd table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Body</th>
+          <th>Paper</th>
+          <th>Title</th>
+          <th>Author(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Guanaco</th>
+          <th>Meteorite Paper</th>
+          <th>Meteroite Paper</th>
+          <th>Wasson, John</th>
+        </tr>
+        <tr>
+          <th>Guanaco</th>
+          <th>Meteorite Paper</th>
+          <th>Meteorite Paper</th>
+          <th>Wasson, John</th>
+        </tr>
+        <tr>
+          <th>Guanaco</th>
+          <th>Meteorite Paper</th>
+          <th>Meteorite Paper</th>
+          <th>Wasson, John</th>
+        </tr>
+        <tr>
+          <th>Guanaco</th>
+          <th>Meteorite Paper</th>
+          <th>Meteorite Paper</th>
+          <th>Wasson, John</th>
+        </tr>
+      </tbody>
+    </table>
 
   </div>
 

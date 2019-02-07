@@ -1,0 +1,24 @@
+#report {
+    background-color:#8c1d40;
+    box-shadow: 8px 8px 6px grey;
+}
+
+#approval {
+    background-color: #8c1d40;
+    box-shadow: 8px 8px 6px grey;
+}
+.table {
+    background-color: white;
+}
+
+.thead-dark {
+    background-color: lightgrey;
+}
+
+.link {
+    size: 18px;
+}
+
+.label {
+    color: #FFC627;
+}
