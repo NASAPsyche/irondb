@@ -11,6 +11,7 @@ __date__ = "11/7/18"
 import PyPDF2
 from tabula import read_pdf
 import pandas as pd
+import re
 pd.options.display.max_rows = 999
 pd.options.display.max_columns = 999
 
@@ -34,9 +35,10 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/Wassonetal_GCA_2007.pdf",
        "pdfs/Ruzicka2014.pdf",
        "pdfs/WassonandKallemeyn_GCA_2002.pdf",
-       "pdfs/RuzickaandHutson2010.pdf"]
+       "pdfs/RuzickaandHutson2010.pdf",
+       "pdfs/spinTest.pdf"]
 
-chosen_pdf = pdf[1]
+chosen_pdf = pdf[11]
 
 
 # START 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT
@@ -101,9 +103,9 @@ def process_tables_clean(mdf):
 # END 4. REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS
 
 # START Get number of Pages
-total_pages = PyPDF2.PdfFileReader(open(pdf[1], 'rb')).numPages
+total_pages = PyPDF2.PdfFileReader(open(chosen_pdf, 'rb')).numPages
 # START Get number of Pages
-# print("There are " + str(total_pages) + " pages in this document.")
+print("There are " + str(total_pages) + " pages in this document.")
 
 # START get text from pdf
 text = convert_pdf_to_txt_looper(chosen_pdf, total_pages)
@@ -112,15 +114,15 @@ text = convert_pdf_to_txt_looper(chosen_pdf, total_pages)
 # START Getting pages that have tables on them.
 for iterate in range(total_pages):
     splitted = text[iterate].split()
-    if text[iterate].find('\nTable ') > 0 or splitted[0] == "Table":
+    if text[iterate].find('\nTable ') > 0 or splitted[0] == "Table" or bool(re.search(r'\w\n\w\n\w\n?', text[iterate])):
         print("############# Table exists on Page " + str(iterate + 1) + " #############" + "\n Word: "
               + str(text[iterate].find('\nTable ')))
         pages_with_tables.append(iterate + 1)
 # END Getting pages that have tables on them.
 
 # START Get tables 1 page at a time.
-tables_rec_from_page = read_pdf(chosen_pdf, output_format="dataframe", encoding="utf-8",  multiple_tables=True, pages=pages_with_tables,
-                                    silent=True)
+tables_rec_from_page = read_pdf(chosen_pdf, output_format="dataframe", encoding="utf-8",  multiple_tables=True,
+                                pages=pages_with_tables, silent=True)
 
 print(len(tables_rec_from_page))
 
