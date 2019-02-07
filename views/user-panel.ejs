@@ -1,15 +1,45 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>User Panel</title>
-    <%- include('bootstrap/css'); %>
-    <link rel='stylesheet' href='/stylesheets/data-entry.css' />
-  </head>
-  <body>
-    <%- include('components/navbar_signed_in'); %>
 
-    <h1>Placeholder user-panel</h1>
-    
-    <%- include('bootstrap/js'); %>
-  </body>
+<head>
+  <title>User Panel</title>
+  <%- include('bootstrap/css'); %>
+  <link rel='stylesheet' href='/stylesheets/data-entry.css' />
+</head>
+
+<body>
+  <%- include('components/navbar_signed_in'); %>
+
+  <div class="container pt-3" id="bottom-container">
+    <div class="d-flex flex-row align-items-center justify-content-left mt-5 mb-2">
+      <h3 class="h3">User Panel</h3>
+    </div>
+  </div>
+  </div>
+  <div class="container card pt-3 pb-3">
+    <h3 class="h3">Reported Entries</h3>
+    <label class="sr-only" for="username">username</label>
+    <input type="text" name="username" id="username" class="form-control" placeholder="username" required autofocus
+      minlength="4" maxlength="25">
+    <label class="sr-only" for="password">password</label>
+    <input type="password" name="password" id="password" class="form-control" placeholder="password" required minlength="6"
+      maxlength="25">
+
+  </div>
+
+  <div class="container card mt-5 pt-3 pb-3">
+    <h3 class="h3">Approval Needed</h3>
+    <label class="sr-only" for="username">username</label>
+    <input type="text" name="username" id="username" class="form-control" placeholder="username" required autofocus
+      minlength="4" maxlength="25">
+    <label class="sr-only" for="password">password</label>
+    <input type="password" name="password" id="password" class="form-control" placeholder="password" required minlength="6"
+      maxlength="25">
+
+  </div>
+
+
+  <%- include('bootstrap/js'); %>
+</body>
+
 </html>
