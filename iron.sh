@@ -184,7 +184,6 @@ function restore_recent ()
 function populate_mock_data ()
 {
   echo "Populating mock data"
-  # pip install psycopg2-binary
   ./wait-for-it.sh  --host:localhost --port:5433 --timeout=5 -q 
   cd docker
   node mock-users.js
