@@ -22,3 +22,13 @@
 .label {
     color: #FFC627;
 }
+
+.entry {
+    color: #FFC627;
+    font-size: 26px;
+    text-decoration: underline;
+}
+
+.entry:hover {
+    color: white;
+}

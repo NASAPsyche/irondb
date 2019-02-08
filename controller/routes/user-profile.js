@@ -9,16 +9,16 @@ router.get('/', isLoggedIn, function(req, res, next) {
 });
 
 
-/* GET /panel/user  */
-router.get('/', isLoggedIn, function(req, res, next) {
-  db.query(
-      'SELECT * FROM pending_table WHERE status=$1',
-      ['active'],
-      (dbErr, dbRes) => {
-        if (dbErr) {
-          return next(dbErr);
-        }
-        res.render('user-profile', {Entries: dbRes.rows});
-      });
-});
+// /* GET /panel/user  */
+// router.get('/', isLoggedIn, function(req, res, next) {
+//   db.query(
+//       'SELECT * FROM pending_table WHERE status=$1',
+//       ['active'],
+//       (dbErr, dbRes) => {
+//         if (dbErr) {
+//           return next(dbErr);
+//         }
+//         res.render('user-profile', {Entries: dbRes.rows});
+//       });
+// });
 module.exports = router;
