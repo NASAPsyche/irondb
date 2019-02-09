@@ -1584,6 +1584,42 @@ CREATE VIEW elements_with_bodies_groups_active AS (
   INNER JOIN elements_active as t3 on t1.body_id = t3.body_id
 );
 
+CREATE VIEW major_elements AS (
+  -- View aggregates elemental information for major elements
+  SELECT body_id,
+  paper_id,
+  page_number,
+  technique,
+  array_agg('[' || element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ']') as major_elements
+  FROM elements_with_bodies_groups_active
+  WHERE ppb_mean > 10000000
+  GROUP BY body_id, paper_id, page_number, technique
+);
+
+CREATE VIEW minor_elements AS (
+  -- View aggregates elemental information for minor elements
+  SELECT body_id,
+  paper_id,
+  page_number,
+  technique,
+  array_agg('[' || element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ']') as minor_elements
+  FROM elements_with_bodies_groups_active
+  WHERE ppb_mean <= 10000000 AND ppb_mean >= 1000000
+  GROUP BY body_id, paper_id, page_number, technique
+);
+
+CREATE VIEW trace_elements AS (
+  -- View aggregates elemental information for trace elements
+  SELECT body_id,
+  paper_id,
+  page_number,
+  technique,
+  array_agg('[' || element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ']') as trace_elements
+  FROM elements_with_bodies_groups_active
+  WHERE ppb_mean < 1000000
+  GROUP BY body_id, paper_id, page_number, technique
+);
+
 CREATE VIEW papers_with_journals_active AS (
   SELECT t1.journal_id,
   t1.journal_name,
