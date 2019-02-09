@@ -1,24 +1,29 @@
 const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
-// const db = require('../db');
 // const createError = require('http-errors');
 // const path = require('path');
 // const fs = require('fs');
 // const json2csv = require('json2csv').parse;
+// const db = require('../db');
 const {isLoggedIn} = require('../middleware/auth');
 
 
-// /* GET database page. */
-// router.get('/', function(req, res, next) {
-//   db.query('SELECT * FROM complete_table WHERE status=$1',
-//       ['active'], (dbErr, dbRes) => {
-//         if (dbErr) {
-//           return next(dbErr);
-//         }
-//         res.render('database', {Entries: dbRes.rows});
-//       });
-// });
+/* GET database page. */
+router.get('/', function(req, res, next) {
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+  res.render('database', {Entries: [], isSignedIn: isSignedIn});
+  // db.query('SELECT * FROM complete_table WHERE status=$1',
+  //     ['active'], (dbErr, dbRes) => {
+  //       if (dbErr) {
+  //         return next(dbErr);
+  //       }
+  //       res.render('database', {Entries: dbRes.rows});
+  //     });
+});
 
 
 // /* POST database page */
