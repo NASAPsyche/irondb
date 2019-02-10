@@ -99,6 +99,19 @@ def process_tables_clean(mdf):
         col_iter -= 1
     return mdf
 
+
+def column_by_column(mdf):
+    for col in reversed(range(df.shape[1])):
+        for row in range(df.shape[0]):
+            print(str(mdf.iloc[row][col]))
+
+
+def row_by_row(mdf):
+    for row in reversed(range(df.shape[0])):
+        for col in range(df.shape[1]):
+            print(str(mdf.iloc[row][col]))
+
+
 # END 4. REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS
 # END 4. REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS
 
@@ -136,9 +149,14 @@ if len(tables_rec_from_page) > 0:
                 if len(str(df[y][x])) > 20:
                     df[y][x] = "REMOVE"
 print("START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING ")
-print(tables_rec_from_page)
+# print(tables_rec_from_page)
 # End Marking the fields for removal
 
+print("column_by_column************************************************************************************************************")
+column_by_column(tables_rec_from_page[0])
+
+print("row_by_row************************************************************************************************************")
+row_by_row(tables_rec_from_page[0])
 
 # table_cleaned = process_tables_clean(table_marked)
 # # print(table_cleaned)
