@@ -105,10 +105,7 @@ def stage_text(txt):
     #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
 
     try:
-        #sentences = nltk.sent_tokenize(txt)
         sentences = nltk.word_tokenize(txt)
-        #sentences = [nltk.word_tokenize(sent) for sent in sentences]
-        #tagged = nltk.ne_chunk(sentences) #consider moving this to extract_authors
     except LookupError:
         nltk.download('averaged_perceptron_tagger') # pos_tag dependency
         nltk.download('maxent_ne_chunker') # ne_chunk dependency
@@ -122,8 +119,7 @@ def stage_text(txt):
 def truncated_title(pdf_name):
     global page_num_title
     random_page = convert_pdf_to_txt(path + pdf_name, page_num_title)
-
-    # extracts the truncated title from the top of a random page
+    
     title_trunc = random_page.split('\n\n', 1)[0]
     while (title_trunc.split()[0].isdigit()) or (('Table' in title_trunc) is True):
         page_num_title += 1
@@ -160,7 +156,6 @@ def truncated_authors(pdf_name):
     global page_num_authors
     random_page = convert_pdf_to_txt(path + pdf_name, page_num_authors)
 
-    # extracts the truncated title from the top of a random page
     authors_trunc = random_page.split('\n\n', 2)
     while authors_trunc[0] in truncated_title(pdf_name):
         page_num_authors += 1
@@ -184,7 +179,11 @@ def extract_authors(pdf_name):
     #chunkr = nltk.RegexpParser(pattern)
     #chunks = chunkr.parse(stage_text(relevant_data))
 
-
+    for chunk in nerd:
+        if type(chunk) == nltk.tree.Tree:
+            if chunk.label() == 'PERSON':
+                authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
+                return authors_full
 
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_data.lower()).find(authors_tagword.lower())
@@ -203,7 +202,6 @@ def extract_authors(pdf_name):
     #elif ",," in authors_full:
         #authors_full = authors_full.replace(",,", ",")
 
-    return tagged
 
 # extracts publishing date from the pdf text
 def extract_date(pdf_name):
