@@ -23,38 +23,26 @@
       <table class="table table-stripd table-bordered table-hover">
         <thead class="thead-dark">
           <tr>
-            <th>Body</th>
             <th>Paper</th>
             <th>Title</th>
             <th>Author(s)</th>
           </tr>
         </thead>
         <tbody>
+          <% for(var i=0; i < Entries.length; i++) { %>
           <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>Meteorite Paper</th>
-            <th>Wasson, John</th>
+            <th>
+              <%= Entries[i].journal_name %>
+            </th>
+            <th>
+              <%= Entries[i].title %>
+            </th>
+            <th>
+              <%= Entries[i].author_name %>
+            </th>
+
           </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>Meteorite Paper</th>
-            <th>Wasson, John</th>
-          </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>Meteorite Paper</th>
-            <th>Wasson, John</th>
-          </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>Meteorite Paper</th>
-            <th>Wasson, John</th>
-          </tr>
-        </tbody>
+          <% } %>
       </table>
     </div>
   </div>
