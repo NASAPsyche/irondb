@@ -1590,7 +1590,7 @@ CREATE VIEW major_elements AS (
   paper_id,
   page_number,
   technique,
-  array_agg('[' || element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ']') as major_elements
+  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than) as major_elements
   FROM elements_with_bodies_groups_active
   WHERE ppb_mean > 10000000
   GROUP BY body_id, paper_id, page_number, technique
@@ -1602,7 +1602,7 @@ CREATE VIEW minor_elements AS (
   paper_id,
   page_number,
   technique,
-  array_agg('[' || element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ']') as minor_elements
+  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than) as minor_elements
   FROM elements_with_bodies_groups_active
   WHERE ppb_mean <= 10000000 AND ppb_mean >= 1000000
   GROUP BY body_id, paper_id, page_number, technique
@@ -1614,7 +1614,7 @@ CREATE VIEW trace_elements AS (
   paper_id,
   page_number,
   technique,
-  array_agg('[' || element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ']') as trace_elements
+  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than) as trace_elements
   FROM elements_with_bodies_groups_active
   WHERE ppb_mean < 1000000
   GROUP BY body_id, paper_id, page_number, technique
