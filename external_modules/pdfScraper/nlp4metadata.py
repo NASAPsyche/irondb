@@ -41,6 +41,9 @@
 ======================================================================================================================
 """
 
+"""
+Just don't touch anything, okay.
+"""
 
 """
 nlp4metadata.py: Extracts metadata attributes from the text of a pdf using NLP
@@ -53,7 +56,8 @@ __date__ = "02/06/19"
 
 import os, io, re
 import nltk
-#from nltk import tokenize, pos_tag
+#from nltk.tokenize import word_tokenize
+#rom nltk.tag import pos_tag
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -101,9 +105,9 @@ def stage_text(txt):
     #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
 
     try:
-        sentences = nltk.sent_tokenize(txt)
-        #sentences = [nltk.word_tokenize(sentence) for sentence in sentences]
-        #sentences = [nltk.pos_tag(sentence) for sentence in sentences]
+        #sentences = nltk.sent_tokenize(txt)
+        sentences = nltk.word_tokenize(txt)
+        #sentences = [nltk.word_tokenize(sent) for sent in sentences]
         #tagged = nltk.ne_chunk(sentences) #consider moving this to extract_authors
     except LookupError:
         nltk.download('averaged_perceptron_tagger') # pos_tag dependency
@@ -172,18 +176,15 @@ def truncated_authors(pdf_name):
 def extract_authors(pdf_name):
     authors_full = "Author(s) not found"
     relevant_data = relevant_text(pdf_name, "Abs")
-    tagged = stage_text(relevant_data)
+    tokenized = stage_text(relevant_data)
+    tagged = nltk.pos_tag(tokenized)
+    nerd = nltk.ne_chunk(tagged)
 
     #pattern = "NOUN-PHRASE: {<NNP><NNP>+}"
     #chunkr = nltk.RegexpParser(pattern)
     #chunks = chunkr.parse(stage_text(relevant_data))
 
-    for chunk in tagged:
-        print(chunk)
-        if type(chunk) == nltk.tree.Tree:
-            if chunk.label() == 'PERSON':
-                authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
-                print(chunk)
+
 
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_data.lower()).find(authors_tagword.lower())
@@ -202,7 +203,7 @@ def extract_authors(pdf_name):
     #elif ",," in authors_full:
         #authors_full = authors_full.replace(",,", ",")
 
-    return authors_full
+    return tagged
 
 # extracts publishing date from the pdf text
 def extract_date(pdf_name):
