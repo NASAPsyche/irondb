@@ -35,6 +35,7 @@ function show_help ()
   echo "-a    Attached quick launch: Launches the server with node output to shell."
   echo "-f    Fresh build: Rebuild containers and launch."
   echo "--------"
+  echo "-m    Mock data - add some mock data."
   echo "-s    Stop the server."
   echo "-x    Reset Docker Environment - Stops the server and clear the docker environment."
   echo "      Consider this the factory refresh of your Docker environment. Frees up space " 
@@ -183,18 +184,35 @@ function restore_recent ()
 # Populate mock data
 function populate_mock_data ()
 {
+      # for i in `seq 1 10`;
+      #   do
+      #           echo $i
+      #   done
   echo "Populating mock data"
-  ./wait-for-it.sh  --host:localhost --port:5433 --timeout=5 -q 
-  cd docker
-  node mock-users.js
-  python mock-user-info.py 
-  cd ..
+
+
+  echo "Connecting to postgres, this may take some time"
+  PGRESP=""
+  PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+  
+  while [[ "$PGRESP" = "$PGACK" ]]
+  do
+    echo "..."
+    sleep 7
+    PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+  done
+
+  echo "adding users"
+  node docker/mock-users.js 
+  # ./wait-for-it.sh localhost:5433 -t 20 -q -- 
+  echo "adding user info"
+  python docker/mock-user-info.py 
 }
 
 ### BEGIN ###
 
 # Read in the options and perform the tasks
-while getopts ":hilpqafsxbr " opt; do
+while getopts ":hilpqafsxbrm " opt; do
   case ${opt} in
     h )
       show_help
@@ -207,7 +225,6 @@ while getopts ":hilpqafsxbr " opt; do
       rm_db
       build_containers
       start_detached
-      populate_mock_data
       ;;
     l ) #launch
       stop_containers
@@ -217,9 +234,9 @@ while getopts ":hilpqafsxbr " opt; do
     p ) #launch with fresh postgres init
       stop_containers
       rm_db
-      install_node_deps
+      # install_node_deps
       start_detached
-      populate_mock_data
+      # populate_mock_data
       ;;
     q ) #quick launch
       stop_containers
@@ -235,6 +252,9 @@ while getopts ":hilpqafsxbr " opt; do
       rm_db
       build_containers
       start_detached
+      ;;
+    m )
+      populate_mock_data
       ;;
     s )
       stop_containers
