@@ -185,22 +185,32 @@ function restore_recent ()
 function populate_mock_data ()
 {
   echo "Populating mock data"
-
-
   echo "Connecting to postgres, this may take some time"
-  PGRESP=""
+  NORESP=""
+  PSYEXISTS="$(pip list | grep "psycopg2-binary")"
   PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
-  
-  while [[ "$PGRESP" = "$PGACK" ]]
+  # install psycopg2-binary if not exists
+  if [[ "$PSYEXISTS" =  "$NORESP" ]]
+  then 
+    pip install psycopg2-binary
+  fi
+
+  COUNTER=0
+  while [[ "$PGACK" = "$NORESP" ]]
   do
     echo "..."
-    sleep 7
+    sleep 6
     PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+    COUNTER=$((COUNTER + 1))
+    if [[ "$COUNTER" -ge 5 ]]
+    then
+      echo "This operation timed out. Make sure that Postgres is running and try again."
+      exit 1;
+    fi
   done
 
   echo "adding users"
   node docker/mock-users.js 
-  # ./wait-for-it.sh localhost:5433 -t 20 -q -- 
   echo "adding user info"
   python docker/mock-user-info.py 
 }
