@@ -198,17 +198,18 @@ function populate_mock_data ()
   COUNTER=0
   while [[ "$PGACK" = "$NORESP" ]]
   do
-    echo "..."
-    sleep 6
+    echo -n "."
+    sleep 1
     PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
     COUNTER=$((COUNTER + 1))
-    if [[ "$COUNTER" -ge 5 ]]
+    if [[ "$COUNTER" -ge 30 ]]
     then
       echo "This operation timed out. Make sure that Postgres is running and try again."
       exit 1;
     fi
   done
 
+  echo ""
   echo "adding users"
   node docker/mock-users.js 
   echo "adding user info"
