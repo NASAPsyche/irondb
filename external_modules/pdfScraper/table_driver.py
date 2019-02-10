@@ -36,7 +36,7 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/Ruzicka2014.pdf",
        "pdfs/WassonandKallemeyn_GCA_2002.pdf",
        "pdfs/RuzickaandHutson2010.pdf",
-       "pdfs/spintest.pdf"]
+       "pdfs/spinTest.pdf"]
 
 chosen_pdf = pdf[11]
 
