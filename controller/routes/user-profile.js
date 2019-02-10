@@ -12,7 +12,7 @@ const db = require('../db');
 /* GET /panel/user  */
 router.get('/', isLoggedIn, function(req, res, next) {
   db.query(
-      'SELECT * FROM full_attributions_historical', '',
+      'SELECT * FROM full_attributions_pending', '',
       (dbErr, dbRes) => {
         if (dbErr) {
           return next(dbErr);

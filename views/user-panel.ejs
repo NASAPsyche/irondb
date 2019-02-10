@@ -29,6 +29,7 @@
           </tr>
         </thead>
         <tbody>
+          <% if (Entries.length > 0) { %>
           <% for(var i=0; i < Entries.length; i++) { %>
           <tr>
             <th>
@@ -42,6 +43,7 @@
             </th>
 
           </tr>
+          <% } %>
           <% } %>
       </table>
     </div>

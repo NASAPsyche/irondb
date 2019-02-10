@@ -2069,7 +2069,7 @@ AS
     INNER JOIN papers_with_journals_active as t2 on t1.paper_id = t2.paper_id
 );
 
-CREATE VIEW papers_historical
+CREATE VIEW papers_pending
 AS
   (
   SELECT t1.paper_id,
@@ -2078,20 +2078,20 @@ AS
     t1.doi
   FROM papers as t1
     INNER JOIN paper_status as t2 on t1.status_id = t2.status_id
-      AND t2.current_status = 'historical'
+      AND t2.current_status = 'pending'
 );
 
-CREATE VIEW bodies_historical
+CREATE VIEW bodies_pending
 AS
   (
   SELECT t1.body_id,
     t1.nomenclature
   FROM bodies as t1
     INNER JOIN body_status as t2 on t1.status_id = t2.status_id
-      AND t2.current_status = 'historical'
+      AND t2.current_status = 'pending'
 );
 
-CREATE VIEW authors_historical
+CREATE VIEW authors_pending
 AS
   (
   SELECT t1.author_id,
@@ -2099,10 +2099,10 @@ AS
     t1.single_entity
   FROM authors as t1
     INNER JOIN author_status as t2 on t1.status_id = t2.status_id
-      AND t2.current_status = 'historical'
+      AND t2.current_status = 'pending'
 );
 
-CREATE VIEW elements_historical
+CREATE VIEW elements_pending
 AS
   (
   SELECT t1.element_id ,
@@ -2118,10 +2118,10 @@ AS
     t1.note
   FROM element_entries as t1
     INNER JOIN element_status as t2 on t1.status_id = t2.status_id
-      AND t2.current_status = 'historical'
+      AND t2.current_status = 'pending'
 );
 
-CREATE VIEW journals_historical
+CREATE VIEW journals_pending
 AS
   (
   SELECT t1.journal_id,
@@ -2132,10 +2132,10 @@ AS
     t1.published_year
   FROM journals as t1
     INNER JOIN journal_status as t2 on t1.status_id = t2.status_id
-      AND t2.current_status = 'historical'
+      AND t2.current_status = 'pending'
 );
 
-CREATE VIEW attributions_historical
+CREATE VIEW attributions_pending
 AS
   (
   SELECT t1.attribution_id,
@@ -2146,7 +2146,7 @@ AS
       AND t2.current_status = 'historical'
 );
 
-CREATE VIEW full_attributions_historical
+CREATE VIEW full_attributions_pending
 AS
   (
 
@@ -2162,10 +2162,8 @@ AS
     t3.author_id,
     t4.author_name,
     t4.single_entity
-  FROM journals_historical as t1
-    INNER JOIN papers_historical as t2 on t1.journal_id = t2.journal_id
-    INNER JOIN attributions_historical as t3 on t2.paper_id = t3.paper_id
-    INNER JOIN authors_historical as t4 on t3.author_id = t4.author_id
-
-
+  FROM journals_pending as t1
+    INNER JOIN papers_pending as t2 on t1.journal_id = t2.journal_id
+    INNER JOIN attributions_pending as t3 on t2.paper_id = t3.paper_id
+    INNER JOIN authors_pending as t4 on t3.author_id = t4.author_id
 );
