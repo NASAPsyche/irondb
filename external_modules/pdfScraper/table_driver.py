@@ -101,15 +101,31 @@ def process_tables_clean(mdf):
 
 
 def column_by_column(mdf):
+    col_remove = 0
+    col_null = 0
     for col in reversed(range(df.shape[1])):
         for row in range(df.shape[0]):
+            if str(mdf.iloc[row][col]) == "REMOVE":
+                col_remove += 1
+            if str(mdf.iloc[row][col]) == "nan":
+                col_null += 1
             print(str(mdf.iloc[row][col]))
-
+            print("THIS IS REMOVE TALLY: " + str(col_remove))
+            print("THIS IS NULL TALLY: " + str(col_null))
 
 def row_by_row(mdf):
     for row in reversed(range(df.shape[0])):
+        row_remove = 0
+        row_null = 0
         for col in range(df.shape[1]):
+            if str(mdf.iloc[row][col]) == "REMOVE":
+                row_remove += 1
+            if str(mdf.iloc[row][col]) == "nan":
+                row_null += 1
             print(str(mdf.iloc[row][col]))
+            print("THIS IS REMOVE TALLY: " + str(row_remove))
+            print("THIS IS NULL TALLY: " + str(row_null))
+
 
 
 # END 4. REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS
@@ -152,11 +168,14 @@ print("START THE MARKING START THE MARKING START THE MARKING START THE MARKING S
 # print(tables_rec_from_page)
 # End Marking the fields for removal
 
-print("column_by_column************************************************************************************************************")
-column_by_column(tables_rec_from_page[0])
 
 print("row_by_row************************************************************************************************************")
 row_by_row(tables_rec_from_page[0])
+
+print("column_by_column************************************************************************************************************")
+# column_by_column(tables_rec_from_page[0])
+
+
 
 # table_cleaned = process_tables_clean(table_marked)
 # # print(table_cleaned)
