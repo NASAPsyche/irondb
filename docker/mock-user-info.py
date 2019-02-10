@@ -8,14 +8,10 @@ import sys
 
 def main():
   conn_string = "host=127.0.0.1 dbname=postgres user=group16 password=abc123 port=5433"
-  # conn = psycopg2.connect("dbname=your_database user=postgres password=xxxx host=127.0.0.1 port=5432")
-
-
-  # print("Connecting to database\n", conn_string)  
+ 
   conn = psycopg2.connect(conn_string)
   cursor = conn.cursor()
   record = [];
-
 
   for x in range(1, 4):
     arg = "SELECT user_id FROM users WHERE username='user"  + str(x) + "'"
@@ -40,9 +36,6 @@ def main():
   VALUES (%s, %s, %s, %s);
   """,
   (str(record[2]),"Candy", "Comanche", "candy@email.email"))
-
-  # Commit the changes
-  # conn.commit()
 
   cursor.execute("""
   UPDATE users

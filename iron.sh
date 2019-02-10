@@ -184,10 +184,6 @@ function restore_recent ()
 # Populate mock data
 function populate_mock_data ()
 {
-      # for i in `seq 1 10`;
-      #   do
-      #           echo $i
-      #   done
   echo "Populating mock data"
 
 
@@ -234,7 +230,7 @@ while getopts ":hilpqafsxbrm " opt; do
     p ) #launch with fresh postgres init
       stop_containers
       rm_db
-      # install_node_deps
+      install_node_deps
       start_detached
       # populate_mock_data
       ;;
