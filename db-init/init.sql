@@ -132,7 +132,8 @@ CREATE TABLE IF NOT EXISTS classifications (
 CREATE TABLE IF NOT EXISTS element_entries(
   element_id serial PRIMARY KEY,
   body_id integer NOT NULL,
-  element_symbol varchar(3) NOT NULL CONSTRAINT lower_case CHECK (element_symbol = lower(element_symbol)),
+  element_symbol varchar(3) NOT NULL 
+    CONSTRAINT lower_case CHECK (element_symbol = lower(element_symbol)),
   paper_id integer NOT NULL,
   page_number integer NOT NULL,
   ppb_mean integer NOT NULL 
