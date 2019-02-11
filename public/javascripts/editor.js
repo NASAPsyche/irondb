@@ -198,140 +198,134 @@ function enableInline(element) {
 /** ----------------------------------- */
 
 
-let authorTemplate = '';
-authorTemplate += '<div class="form-row">';
-authorTemplate += '<div class="col-md-1">';
-authorTemplate += '<i class="far fa-times-circle fa-lg';
-authorTemplate += ' remove remove-inline pt-4 text-danger"';
-authorTemplate += 'title="Press to remove author."></i></div>';
-authorTemplate += '<div class="form-group col-md-3">';
-authorTemplate += '  <label for="<%- primaryNameID %>">';
-authorTemplate += 'Last Name or Organization</label>';
-authorTemplate += '<input type="text" class="form-control"';
-authorTemplate += 'id="<%- primaryNameID %>"';
-authorTemplate += 'required="true" placeholder="required">';
-authorTemplate += '</div>';
-authorTemplate += '<div class="form-group col-md-3">';
-authorTemplate += '  <label for="<%- firstNameID %>">First Name</label>';
-authorTemplate += '  <input type="text" class="form-control" ';
-authorTemplate += 'id="<%- firstNameID %>">';
-authorTemplate += '</div>';
-authorTemplate += '<div class="form-group col-md-2">';
-authorTemplate += '  <label for="<%- middleNameID %>">Middle Name</label>';
-authorTemplate += '  <input type="text" class="form-control"';
-authorTemplate += 'id="<%- middleNameID %>">';
-authorTemplate += '</div>';
-authorTemplate += '<div class="form-check col-md-2">';
-authorTemplate += '  <input class="form-check-input" type="checkbox"';
-authorTemplate += 'id="<%- singleEntityID %>">';
-authorTemplate += '  <label class="form-check-label"';
-authorTemplate += 'for="<%- singleEntityID %>">Organization</label>';
-authorTemplate += '</div>';
-authorTemplate += '<div class="form-group col-md-1  mt-4">';
-authorTemplate += '<i class="far fa-save fa-2x save-author"></i>';
-authorTemplate += '<i class="far fa-edit fa-2x edit-author" hidden="true"></i>';
-authorTemplate += '</div></div>';
+const authorTemplate = `
+<div class="form-row">
+<div class="col-md-1">
+  <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" 
+  title="Press to remove author."></i></div>
+<div class="form-group col-md-3">
+  <label for="<%- primaryNameID %>">Last Name or Organization</label>
+  <input type="text" class="form-control" id="<%- primaryNameID %>" 
+  required="true" placeholder="required">
+</div>
+<div class="form-group col-md-3">
+  <label for="<%- firstNameID %>">First Name</label>
+  <input type="text" class="form-control" id="<%- firstNameID %>">
+</div>
+<div class="form-group col-md-2">
+  <label for="<%- middleNameID %>">Middle Name</label>
+  <input type="text" class="form-control" id="<%- middleNameID %>">
+</div>
+<div class="form-check col-md-2">
+  <input class="form-check-input" type="checkbox" id="<%- singleEntityID %>">
+  <label class="form-check-label" for="<%- singleEntityID %>">
+  Organization</label>
+</div>
+<div class="form-group col-md-1  mt-4">
+  <i class="far fa-save fa-2x save-author"></i>
+  <i class="far fa-edit fa-2x edit-author" hidden="true"></i>
+</div>
+</div>
+`;
+
+const noteTemplate = `
+<div class="form-row mt-2">
+  <label for="<%- noteID %>">Note:
+    <i class="far fa-save fa-lg save-note"></i>
+    <i class="far fa-edit fa-lg edit-note" hidden="true"></i>
+    <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" 
+    title="Press to remove note."></i>
+  </label>
+  <textarea class="form-control" id="<%- noteID %>" rows="5">
+  </textarea>
+</div>
+`;
+
+const measurementTemplate = `
+<div class="form-row">
+<div class="col-md-1">
+<i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" 
+title="Press to remove measurement."></i></div>
+<div class="form-group col-md-1">
+  <label for="<%- elementID %>">Element</label>
+  <input type="text" class="form-control" id="<%- elementID %>" 
+  minlength="1" maxlength="3" required="true"> 
+</div>
+<div class="form-check-inline col-md-1">
+  <input class="form-check-input" type="checkbox" id="<%- lessThanID %>">
+  <label class="form-check-label"  for="<%- lessThanID %>">&lt;</label>
+</div>
+<div class="form-group col-md-2">
+  <label for="<%- measurementID %>">Measurement</label>
+  <input type="number" class="form-control" id="<%- measurementID %>" 
+  required="true" min="0">
+</div>
+<div class="form-group col-md-1">
+  <label for="<%- deviationID %>">Deviation</label>
+  <input type="number" class="form-control" id="<%- deviationID %>" 
+  placeholder=" &plusmn;0">
+</div>
+<div class="form-group col-md-2">
+  <label for="<%- unitsID %>">units</label>
+  <select class="form-control" id="<%- unitsID %>" required="true">
+    <option>wt%</option>
+    <option>ppm</option>
+    <option>ppb</option>
+    <option>mg/g</option>
+    <option>&micro;g/g</option>
+    <option>ng/g</option>
+  </select>
+</div>
+<div class="form-group col-md-1">
+  <label for="<%- techniqueID %>">Technique</label>
+  <input type="text" class="form-control" id="<%- techniqueID %>">
+</div>
+<div class="form-group col-md-1">
+  <label for="<%- pageID %>">Page</label>
+  <input type="number" class="form-control" id="<%- pageID %>" min="1" required>
+</div>
+<div class="form-group col-md-1 mt-4">
+  <i class="far fa-save fa-2x save-measurement"></i>
+  <i class="far fa-edit fa-2x edit-measurement" hidden="true"></i>
+</div>
+</div>
+`;
 
 
-let noteTemplate = '';
-noteTemplate += '<div class="form-row mt-2">';
-noteTemplate += '<label for="<%- noteID %>">Note:';
-noteTemplate += '<i class="far fa-save fa-lg save-note"></i>';
-noteTemplate += '<i class="far fa-edit fa-lg edit-note" hidden="true"></i>';
-noteTemplate += '<i class="far fa-times-circle fa-lg';
-noteTemplate += ' remove remove-note pl-5 text-danger"';
-noteTemplate += ' title="Press to remove note."></i>';
-noteTemplate += '</label>';
-noteTemplate += '<textarea class="form-control" id="<%- noteID %>" rows="5">';
-noteTemplate += '</textarea></div>';
+const meteoriteTemplate = `
+<div class="form-row meteorite-header" id="<%- meteoriteID %>">
+  <h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>
+  <i class="fas fa-plus-circle fa-lg add-meteorite mt-2 text-danger"></i>
+</div>
+<div class="form-row">
+<div class="col-md-1">
+  <i class="far fa-times-circle fa-lg remove remove-meteorite pt-4 text-danger" 
+  title="Press to remove meteorite and all associated measurements."></i>
+</div>
+<div class="form-group col-md-4">
+  <label for="<%- bodyNameID %>">Name</label>
+  <input type="text" class="form-control" id="<%- bodyNameID %>" required>
+</div>
+<div class="form-group col-md-3">
+  <label for="<%- groupID %>">Group</label>
+  <input type="text" class="form-control" id="<%- groupID %>" required>
+</div>
+<div class="form-group col-md-3">
+  <label for="<%- classID %>">Class</label>
+  <input type="text" class="form-control" id="<%- classID %>">
+</div>
+<div class="form-group col-md-1 mt-4">
+  <i class="far fa-save fa-2x save-meteorite"></i>
+  <i class="far fa-edit fa-2x edit-meteorite" hidden="true"></i>
+</div>
+</div>
+<div class="form-row">
+  <h5 class="pt-1 mr-2  pl-3">
+  <strong>Measurements</strong></h5>
+  <i class="fas fa-plus-circle fa-lg add-measurement mt-2 text-danger"></i>
+</div>
+` + measurementTemplate; // Add single measurement row to meteorite template
 
-let measurementTemplate = '';
-measurementTemplate += '<div class="form-row">';
-measurementTemplate += '<div class="col-md-1">';
-measurementTemplate += '<i class="far fa-times-circle fa-lg';
-measurementTemplate += ' remove remove-inline pt-4 text-danger"';
-measurementTemplate += ' title="Press to remove measurement."></i></div>';
-measurementTemplate += '<div class="form-group col-md-1">';
-measurementTemplate += '<label for="<%- elementID %>">Element</label>';
-measurementTemplate += '<input type="text" class="form-control"';
-measurementTemplate += 'id="<%- elementID %>"';
-measurementTemplate += 'minlength="1" maxlength="3" required="true">';
-measurementTemplate += '</div>';
-measurementTemplate += '<div class="form-check-inline col-md-1">';
-measurementTemplate += '<input class="form-check-input"';
-measurementTemplate += 'type="checkbox" id="<%- lessThanID %>">';
-measurementTemplate += '<label class="form-check-label" ';
-measurementTemplate += 'for="<%- lessThanID %>">&lt;</label>';
-measurementTemplate += '</div>';
-measurementTemplate += '<div class="form-group col-md-2">';
-measurementTemplate += '<label for="<%- measurementID %>">Measurement</label>';
-measurementTemplate += '<input type="number" class="form-control"';
-measurementTemplate += 'id="<%- measurementID %>" required="true">';
-measurementTemplate += '</div>';
-measurementTemplate += '<div class="form-group col-md-1">';
-measurementTemplate += '<label for="<%- deviationID %>">Deviation</label>';
-measurementTemplate += '<input type="number" class="form-control"';
-measurementTemplate += 'id="<%- deviationID %>" placeholder=" &plusmn;0">';
-measurementTemplate += '</div>';
-measurementTemplate += '<div class="form-group col-md-2">';
-measurementTemplate += '<label for="<%- unitsID %>">units</label>';
-measurementTemplate += '<select class="form-control"';
-measurementTemplate += 'id="<%- unitsID %>" required="true">';
-measurementTemplate += '<option>wt%</option>';
-measurementTemplate += '<option>ppm</option>';
-measurementTemplate += '<option>ppb</option>';
-measurementTemplate += '<option>mg/g</option>';
-measurementTemplate += '<option>&micro;g/g</option>';
-measurementTemplate += '<option>ng/g</option>';
-measurementTemplate += '</select>';
-measurementTemplate += '</div>';
-measurementTemplate += '<div class="form-group col-md-2">';
-measurementTemplate += '<label for="<%- techniqueID %>">Technique</label>';
-measurementTemplate += '<input type="text" class="form-control"';
-measurementTemplate += 'id="<%- techniqueID %>">';
-measurementTemplate += '</div>';
-measurementTemplate += '<div class="form-group col-md-1 mt-4">';
-measurementTemplate += '<i class="far fa-save fa-2x save-measurement"></i>';
-measurementTemplate += '<i class="far fa-edit fa-2x ';
-measurementTemplate += 'edit-measurement" hidden="true"></i>';
-measurementTemplate += '</div></div>';
-
-let meteoriteTemplate = '';
-meteoriteTemplate += '<div class="form-row meteorite-header"';
-meteoriteTemplate += ' id="<%- meteoriteID %>">';
-meteoriteTemplate += '<h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>';
-meteoriteTemplate += '<i class="fas fa-plus-circle fa-lg';
-meteoriteTemplate += ' add-meteorite mt-2 text-danger"></i>';
-meteoriteTemplate += '</div><div class="form-row">';
-meteoriteTemplate += '<div class="col-md-1">';
-meteoriteTemplate += '<i class="far fa-times-circle fa-lg';
-meteoriteTemplate += ' remove remove-meteorite pt-4 text-danger"';
-meteoriteTemplate += ' title="Press to remove meteorite';
-meteoriteTemplate += ' and all associated measurements."></i>';
-meteoriteTemplate += '</div>';
-meteoriteTemplate += '<div class="form-group col-md-4">';
-meteoriteTemplate += '<label for="<%- bodyNameID %>">Name</label>';
-meteoriteTemplate += '<input type="text" class="form-control"';
-meteoriteTemplate += ' id="<%- bodyNameID %>" required="true">';
-meteoriteTemplate += '</div><div class="form-group col-md-3">';
-meteoriteTemplate += '<label for="<%- groupID %>">Group</label>';
-meteoriteTemplate += '<input type="text" class="form-control"';
-meteoriteTemplate += ' id="<%- groupID %>" required="true">';
-meteoriteTemplate += '</div><div class="form-group col-md-3">';
-meteoriteTemplate += '<label for="<%- classID %>">Class</label>';
-meteoriteTemplate += '<input type="text" class="form-control" ';
-meteoriteTemplate += 'id="<%- classID %>">';
-meteoriteTemplate += '</div><div class="form-group col-md-1 mt-4">';
-meteoriteTemplate += '<i class="far fa-save fa-2x save-meteorite"></i>';
-meteoriteTemplate += '<i class="far fa-edit fa-2x edit-meteorite" ';
-meteoriteTemplate += 'hidden="true"></i>';
-meteoriteTemplate += '</div></div><div class="form-row">';
-meteoriteTemplate += '<h5 class="pt-1 mr-2  pl-3">';
-meteoriteTemplate += '<strong>Measurements</strong></h5>';
-meteoriteTemplate += '<i class="fas fa-plus-circle fa-lg ';
-meteoriteTemplate += 'add-measurement mt-2 text-danger"></i></div>';
-// Add single measurement row to meteorite template
-meteoriteTemplate += measurementTemplate;
 
 /** ---------------------------- */
 /**        UI Add Events         */
@@ -351,6 +345,7 @@ let measurementIDCount = 0;
 let deviationIDCount = 0;
 let unitsIDCount = 0;
 let techniqueIDCount = 0;
+let pageIDCount = 0;
 
 let meteoriteIDCount = 1;
 let bodyNameIDCount = 0;
@@ -424,6 +419,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   const deviationID = 'deviation' + meteoriteID + '-' + deviationIDCount;
   const unitsID = 'units' + meteoriteID + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
+  const pageID = 'page' + meteoriteID + '-' + pageIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -433,6 +429,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   idObj['deviationID'] = deviationID;
   idObj['unitsID'] = unitsID;
   idObj['techniqueID'] = techniqueID;
+  idObj['pageID'] = pageID;
 
   // Increment current count
   elementIDCount++;
@@ -441,6 +438,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   deviationIDCount++;
   unitsIDCount++;
   techniqueIDCount++;
+  pageIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -472,6 +470,7 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const deviationID = 'deviation' + meteoriteIDCount + '-' + deviationIDCount;
   const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
+  const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -485,6 +484,7 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   idObj['deviationID'] = deviationID;
   idObj['unitsID'] = unitsID;
   idObj['techniqueID'] = techniqueID;
+  idObj['pageID'] = pageID;
 
   // Increment current count
   meteoriteIDCount++;
@@ -497,6 +497,7 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   deviationIDCount++;
   unitsIDCount++;
   techniqueIDCount++;
+  pageIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line

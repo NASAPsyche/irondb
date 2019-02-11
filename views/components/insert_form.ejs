@@ -120,7 +120,7 @@
         </div>
         <div class="form-group col-md-2">
             <label for="measurement">Measurement</label>
-            <input type="number" class="form-control" id="measurement" required="true">
+            <input type="number" class="form-control" id="measurement" required="true" min="0">
         </div>
         <div class="form-group col-md-1">
             <label for="deviation">Deviation</label>
@@ -137,9 +137,13 @@
                 <option>ng/g</option>
             </select>
         </div>
-        <div class="form-group col-md-2">
+        <div class="form-group col-md-1">
             <label for="technique">Technique</label>
             <input type="text" class="form-control" id="technique">
+        </div>
+        <div class="form-group col-md-1">
+            <label for="page">Page</label>
+            <input type="number" class="form-control" id="page" min="1" required>
         </div>
         <div class="form-group col-md-1 mt-4">
             <i class="far fa-save fa-2x save-measurement"></i>
