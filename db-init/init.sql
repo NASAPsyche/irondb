@@ -42,6 +42,9 @@ CREATE TYPE units AS ENUM ('wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g');
 -- DROP TABLE IF EXISTS element_status;
 -- DROP TABLE IF EXISTS note_status;
 
+-- DROP TABLE IF EXISTS entry_json_store;
+-- DROP TABLE IF EXISTS submissions;
+
 -- DROP TABLE IF EXISTS body_review;
 -- DROP TABLE IF EXISTS journal_review;
 -- DROP TABLE IF EXISTS paper_review;
@@ -51,6 +54,9 @@ CREATE TYPE units AS ENUM ('wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g');
 -- DROP TABLE IF EXISTS classification_review;
 -- DROP TABLE IF EXISTS element_review;
 -- DROP TABLE IF EXISTS note_review;
+
+-- DROP TABLE IF EXISTS data_entry_role_requests;
+
 -------------------
 -- Define tables --
 -------------------
@@ -156,6 +162,31 @@ CREATE TABLE IF NOT EXISTS notes (
   status_id bigint
 );
 
+-- Entry submission tables --
+
+CREATE TABLE IF NOT EXISTS entry_json_store (
+  entry_id bigserial PRIMARY KEY,
+  username citext REFERENCES users(username) NOT NULL,
+  data jsonb NOT NULL,
+  pdf_path text DEFAULT NULL, 
+  -- save the path to the pdf if one is included in submission
+  pending boolean DEFAULT true NOT NULL,
+  last_saved_date timestamp DEFAULT now() NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS submissions (
+  submission_id bigserial PRIMARY KEY,
+  pdf_path text DEFAULT NULL, 
+  -- save the path to the pdf if one is included in submission
+  pending boolean DEFAULT true NOT NULL,
+  -- when a submission is created, it is pending, after data has been
+  -- verified (accept or reject) pending is set to false
+  -- If some data has been accepted but not all data, the user may
+  -- choose to close out submission or review more later.
+  username citext REFERENCES users(username) NOT NULL
+);
+
 -- Status tables --
 
 CREATE TABLE IF NOT EXISTS body_status (
@@ -166,7 +197,8 @@ CREATE TABLE IF NOT EXISTS body_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES body_status(status_id)
+  previous_entry bigint REFERENCES body_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS body_review (
@@ -189,7 +221,8 @@ CREATE TABLE IF NOT EXISTS journal_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES journal_status(status_id)
+  previous_entry bigint REFERENCES journal_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS journal_review (
@@ -212,7 +245,8 @@ CREATE TABLE IF NOT EXISTS paper_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES paper_status(status_id)
+  previous_entry bigint REFERENCES paper_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS paper_review (
@@ -235,7 +269,8 @@ CREATE TABLE IF NOT EXISTS attribution_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES attribution_status(status_id)
+  previous_entry bigint REFERENCES attribution_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS attribution_review (
@@ -258,7 +293,8 @@ CREATE TABLE IF NOT EXISTS author_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES author_status(status_id)
+  previous_entry bigint REFERENCES author_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS author_review (
@@ -281,7 +317,8 @@ CREATE TABLE IF NOT EXISTS group_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES group_status(status_id)
+  previous_entry bigint REFERENCES group_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS group_review (
@@ -304,7 +341,8 @@ CREATE TABLE IF NOT EXISTS classification_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES classification_status(status_id)
+  previous_entry bigint REFERENCES classification_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS classification_review (
@@ -327,7 +365,8 @@ CREATE TABLE IF NOT EXISTS element_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES element_status(status_id)
+  previous_entry bigint REFERENCES element_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS element_review (
@@ -350,7 +389,8 @@ CREATE TABLE IF NOT EXISTS note_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES note_status(status_id)
+  previous_entry bigint REFERENCES note_status(status_id),
+  submission_id bigint REFERENCES submissions(submission_id)
 );
 
 CREATE TABLE IF NOT EXISTS note_review (
@@ -366,6 +406,17 @@ CREATE TABLE IF NOT EXISTS note_review (
 );
 
 
+
+-- Misc support tables
+
+-- User is requesting role as data_entry
+CREATE TABLE IF NOT EXISTS data_entry_role_requests (
+  request_id serial PRIMARY KEY,
+  requesting_user citext REFERENCES users(username) NOT NULL,
+  requested_date timestamp DEFAULT now() NOT NULL,
+  pending boolean DEFAULT true NOT NULL
+);
+
 -------------------------
 -- Insert example data --
 -------------------------
@@ -376,8 +427,12 @@ CREATE TABLE IF NOT EXISTS note_review (
 */
 
 -- DUMMY DATA
-INSERT INTO users (user_id, username, password_hash, role_of)
-  VALUES (DEFAULT, 'dummy', 'digest', 'user');
+INSERT INTO users (username, password_hash, role_of)
+  VALUES 
+  ('dummy', 'digest', 'user');
+  -- ('user1', '$2b$10$8bfz5xVV2nB4xSlLcy3U8ONvBbxMc8O6HmuxmDb3IJMVWWr2q7wS.', 'admin'),
+  -- ('user2', '$2b$10$KOb8ZeYBqGoOf7X6cNOAm.eeLOuPCD1PmrF0LYTt1MSkcvxeCUwcG', 'data-entry'),
+  -- ('user3', '$2b$10$9Perqr/L0WhaddnDN.SOqu164TCrNSbaXovQ/wMC7wRSKUns3e0de', 'user');
 
 INSERT INTO user_info (user_id, first_name, last_name, email_address)
   VALUES
@@ -386,7 +441,27 @@ INSERT INTO user_info (user_id, first_name, last_name, email_address)
     'Dummy',
     'Data',
     'email@email.email'
-  );
+  )
+  -- ,
+  -- (
+  --   (SELECT user_id FROM users WHERE username='user1'),
+  --   'Alice',
+  --   'Apache',
+  --   'aliceax@email.email'
+  -- ),
+  -- (
+  --   (SELECT user_id FROM users WHERE username='user2'),
+  --   'Bob',
+  --   'Bandit',
+  --   'bobbandit@email.email'
+  -- ),
+  -- (
+  --   (SELECT user_id FROM users WHERE username='user3'),
+  --   'Candy',
+  --   'Comanche',
+  --   'candycomanche@email.email'
+  -- )
+  ;
 
 INSERT INTO journals (journal_name, volume, issue, published_year)
   VALUES 

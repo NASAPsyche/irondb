@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 // Send ajax request with params
 $( '#search-form' ).on( 'submit', function( event ) {
   event.preventDefault();
