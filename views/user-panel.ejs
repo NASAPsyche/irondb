@@ -1,15 +1,112 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>User Panel</title>
-    <%- include('bootstrap/css'); %>
-    <link rel='stylesheet' href='/stylesheets/data-entry.css' />
-  </head>
-  <body>
-    <%- include('components/navbar_signed_in'); %>
 
-    <h1>Placeholder user-panel</h1>
-    
-    <%- include('bootstrap/js'); %>
-  </body>
+<head>
+  <title>User Panel</title>
+  <%- include('bootstrap/css'); %>
+  <link rel='stylesheet' href='/stylesheets/data-entry.css' />
+  <link rel='stylesheet' href='/stylesheets/user-panel.css' />
+</head>
+
+<body>
+  <%- include('components/navbar_signed_in'); %>
+
+  <div class="container pt-3" id="bottom-container">
+    <div class="d-flex flex-row align-items-center justify-content-left mt-5 mb-2">
+      <h3 class="h3">User Panel</h3>
+    </div>
+  </div>
+
+  <div class="container card pt-3 pb-3" id="report">
+    <h3>
+      <a href="../database/reported" class="p-2 text-warning">Reported Entries</a>
+    </h3>
+    <div>
+      <table class="table table-stripd table-bordered table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Body</th>
+            <th>Paper</th>
+            <th>Title</th>
+            <th>Author(s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Guanaco</th>
+            <th>Meteorite Paper</th>
+            <th>Meteorite Paper</th>
+            <th>Wasson, John</th>
+          </tr>
+          <tr>
+            <th>Guanaco</th>
+            <th>Meteorite Paper</th>
+            <th>Meteorite Paper</th>
+            <th>Wasson, John</th>
+          </tr>
+          <tr>
+            <th>Guanaco</th>
+            <th>Meteorite Paper</th>
+            <th>Meteorite Paper</th>
+            <th>Wasson, John</th>
+          </tr>
+          <tr>
+            <th>Guanaco</th>
+            <th>Meteorite Paper</th>
+            <th>Meteorite Paper</th>
+            <th>Wasson, John</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="container card mt-5 pt-3 pb-3" id="approval">
+    <h3>
+      <a href="../database/unapproved" class="p-2 text-warning">Approval Needed</a>
+    </h3>
+    <div>
+      <table class="table table-stripd table-bordered table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Body</th>
+            <th>Paper</th>
+            <th>Title</th>
+            <th>Author(s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Guanaco</th>
+            <th>Meteorite Paper</th>
+            <th>Meteroite Paper</th>
+            <th>Wasson, John</th>
+          </tr>
+          <tr>
+            <th>Guanaco</th>
+            <th>Meteorite Paper</th>
+            <th>Meteorite Paper</th>
+            <th>Wasson, John</th>
+          </tr>
+          <tr>
+            <th>Guanaco</th>
+            <th>Meteorite Paper</th>
+            <th>Meteorite Paper</th>
+            <th>Wasson, John</th>
+          </tr>
+          <tr>
+            <th>Guanaco</th>
+            <th>Meteorite Paper</th>
+            <th>Meteorite Paper</th>
+            <th>Wasson, John</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <%- include('bootstrap/js'); %>
+</body>
+
 </html>

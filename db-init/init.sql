@@ -132,7 +132,8 @@ CREATE TABLE IF NOT EXISTS classifications (
 CREATE TABLE IF NOT EXISTS element_entries(
   element_id serial PRIMARY KEY,
   body_id integer NOT NULL,
-  element_symbol varchar(3) NOT NULL CONSTRAINT lower_case CHECK (element_symbol = lower(element_symbol)),
+  element_symbol varchar(3) NOT NULL 
+    CONSTRAINT lower_case CHECK (element_symbol = lower(element_symbol)),
   paper_id integer NOT NULL,
   page_number integer NOT NULL,
   ppb_mean integer NOT NULL 
@@ -1567,4 +1568,89 @@ CREATE VIEW elements_with_bodies_papers_journals_active_with_id AS (
   t1.page_number
   FROM elements_with_bodies_active as t1 
   INNER JOIN papers_with_journals_active as t2 on t1.paper_id = t2.paper_id
+);
+
+
+CREATE VIEW papers_pending AS (
+  SELECT t1.paper_id,
+  t1.journal_id,
+  t1.title,
+  t1.doi
+  FROM papers as t1
+  INNER JOIN paper_status as t2 on t1.status_id = t2.status_id
+  AND t2.current_status = 'pending'
+);
+
+CREATE VIEW bodies_pending AS (
+  SELECT t1.body_id,
+  t1.nomenclature
+  FROM bodies as t1
+  INNER JOIN body_status as t2 on t1.status_id = t2.status_id
+  AND t2.current_status = 'pending'
+);
+
+CREATE VIEW authors_pending AS (
+  SELECT t1.author_id,
+  t1.first_name || ' ' || t1.middle_name || ' ' || t1.primary_name as author_name,
+  t1.single_entity
+  FROM authors as t1
+  INNER JOIN author_status as t2 on t1.status_id = t2.status_id
+  AND t2.current_status = 'pending'
+);
+
+CREATE VIEW elements_pending AS (
+  SELECT t1.element_id ,
+  t1.body_id,
+  t1.element_symbol ,
+  t1.paper_id ,
+  t1.page_number ,
+  t1.ppb_mean ,
+  t1.deviation ,
+  t1.less_than ,
+  t1.original_unit ,
+  t1.technique ,
+  t1.note
+  FROM element_entries as t1
+  INNER JOIN element_status as t2 on t1.status_id = t2.status_id
+  AND t2.current_status = 'pending'
+);
+
+CREATE VIEW journals_pending AS (
+  SELECT t1.journal_id,
+  t1.journal_name,
+  t1.volume,
+  t1.issue,
+  t1.series,
+  t1.published_year
+  FROM journals as t1
+  INNER JOIN journal_status as t2 on t1.status_id = t2.status_id
+  AND t2.current_status = 'pending'
+);
+
+CREATE VIEW attributions_pending AS (
+  SELECT t1.attribution_id,
+  t1.paper_id,
+  t1.author_id
+  FROM attributions as t1
+  INNER JOIN attribution_status as t2 on t1.status_id = t2.status_id
+    AND t2.current_status = 'historical'
+);
+
+CREATE VIEW full_attributions_pending AS (
+  SELECT t1.journal_id,
+  t1.journal_name,
+  t1.volume,
+  t1.issue,
+  t1.series,
+  t1.published_year,
+  t2.paper_id,
+  t2.title,
+  t2.doi,
+  t3.author_id,
+  t4.author_name,
+  t4.single_entity
+  FROM journals_pending as t1
+  INNER JOIN papers_pending as t2 on t1.journal_id = t2.journal_id
+  INNER JOIN attributions_pending as t3 on t2.paper_id = t3.paper_id
+  INNER JOIN authors_pending as t4 on t3.author_id = t4.author_id
 );
