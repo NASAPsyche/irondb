@@ -1547,6 +1547,13 @@ CREATE VIEW authors_active AS (
   AND t2.current_status = 'active'
 );
 
+CREATE VIEW aggregated_authors_by_paper_id AS (
+  SELECT string_agg(t1.author_name, ', ') AS authors, 
+  t2.paper_id FROM authors_active AS t1
+  INNER JOIN attributions_active AS t2 ON t1.author_id = t2.author_id
+  GROUP BY paper_id
+);
+
 CREATE VIEW groups_active AS (
   SELECT t1.group_id,
   t1.body_id,
@@ -1620,6 +1627,66 @@ CREATE VIEW trace_elements AS (
   GROUP BY body_id, paper_id, page_number, technique
 );
 
+CREATE VIEW normalize_major_elements AS (
+  SELECT t1.*, t2.minor_elements, t3.trace_elements FROM major_elements AS t1 
+  LEFT JOIN minor_elements AS t2 
+  ON t1.body_id = t2.body_id
+  AND t1.paper_id = t2.paper_id
+  AND t1.page_number = t2.page_number
+  AND t1.technique = t2.technique
+  LEFT JOIN trace_elements AS t3 
+  ON t1.body_id = t3.body_id
+  AND t1.paper_id = t3.paper_id
+  AND t1.page_number = t3.page_number
+  AND t1.technique = t3.technique
+);
+
+CREATE VIEW normalize_minor_elements AS (
+  SELECT t1.body_id, t1.paper_id, t1.page_number, t1.technique, 
+    t2.major_elements, t1.minor_elements, t3.trace_elements FROM minor_elements AS t1 
+  LEFT JOIN major_elements AS t2 
+  ON t1.body_id = t2.body_id
+  AND t1.paper_id = t2.paper_id
+  AND t1.page_number = t2.page_number
+  AND t1.technique = t2.technique
+  LEFT JOIN trace_elements AS t3 
+  ON t1.body_id = t3.body_id
+  AND t1.paper_id = t3.paper_id
+  AND t1.page_number = t3.page_number
+  AND t1.technique = t3.technique
+);
+
+CREATE VIEW normalize_trace_elements AS (
+  SELECT t1.body_id, t1.paper_id, t1.page_number, t1.technique,
+    t2.major_elements, t3.minor_elements, t1.trace_elements FROM trace_elements AS t1 
+  LEFT JOIN major_elements AS t2 
+  ON t1.body_id = t2.body_id
+  AND t1.paper_id = t2.paper_id
+  AND t1.page_number = t2.page_number
+  AND t1.technique = t2.technique
+  LEFT JOIN minor_elements AS t3 
+  ON t1.body_id = t3.body_id
+  AND t1.paper_id = t3.paper_id
+  AND t1.page_number = t3.page_number
+  AND t1.technique = t3.technique
+);
+
+CREATE VIEW aggregated_elements AS (
+  SELECT * FROM normalize_major_elements UNION
+  SELECT * FROM normalize_minor_elements UNION
+  SELECT * FROM normalize_trace_elements
+  ORDER BY body_id, paper_id, page_number, technique
+);
+
+CREATE VIEW aggregated_elements_with_bodies_groups_active AS (
+  SELECT t1.nomenclature,
+  t2.the_group,
+  t3.*
+  FROM bodies_active as t1 
+  INNER JOIN groups_active as t2 on t1.body_id = t2.body_id
+  INNER JOIN aggregated_elements as t3 on t1.body_id = t3.body_id
+);
+
 CREATE VIEW papers_with_journals_active AS (
   SELECT t1.journal_id,
   t1.journal_name,
@@ -1678,4 +1745,24 @@ CREATE VIEW elements_with_bodies_papers_journals_active_with_id AS (
   t1.page_number
   FROM elements_with_bodies_groups_active as t1 
   INNER JOIN papers_with_journals_active as t2 on t1.paper_id = t2.paper_id
+);
+
+CREATE VIEW complete_table AS (
+  SELECT t1.body_id AS entry_id,
+  t1.nomenclature AS meteorite_name,
+  t1.the_group AS classification_group,
+  t1.technique,
+  t1.major_elements,
+  t1.minor_elements,
+  t1.trace_elements,
+  t2.title,
+  t3.authors,
+  t1.page_number,
+  t2.journal_name AS journal_name,
+  t2.issue AS issue_number,
+  t2.published_year
+  FROM aggregated_elements_with_bodies_groups_active AS t1 
+  INNER JOIN papers_with_journals_active AS t2 ON t1.paper_id = t2.paper_id
+  INNER JOIN aggregated_authors_by_paper_id AS t3 ON t1.paper_id = t3.paper_id
+  ORDER BY body_id, title, published_year
 );
