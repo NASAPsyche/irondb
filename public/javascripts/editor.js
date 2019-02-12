@@ -206,18 +206,21 @@ const authorTemplate = `
 <div class="form-group col-md-3">
   <label for="<%- primaryNameID %>">Last Name or Organization</label>
   <input type="text" class="form-control" id="<%- primaryNameID %>" 
-  required="true" placeholder="required">
+  name="<%- primaryNameID %>" required="true" placeholder="required">
 </div>
 <div class="form-group col-md-3">
   <label for="<%- firstNameID %>">First Name</label>
-  <input type="text" class="form-control" id="<%- firstNameID %>">
+  <input type="text" class="form-control" id="<%- firstNameID %>"
+  name="<%- firstNameID %>">
 </div>
 <div class="form-group col-md-2">
   <label for="<%- middleNameID %>">Middle Name</label>
-  <input type="text" class="form-control" id="<%- middleNameID %>">
+  <input type="text" class="form-control" id="<%- middleNameID %>"
+  name="<%- middleNameID %>">
 </div>
 <div class="form-check col-md-2">
-  <input class="form-check-input" type="checkbox" id="<%- singleEntityID %>">
+  <input class="form-check-input" type="checkbox" id="<%- singleEntityID %>"
+  name="<%- singleEntityID %>">
   <label class="form-check-label" for="<%- singleEntityID %>">
   Organization</label>
 </div>
@@ -236,7 +239,8 @@ const noteTemplate = `
     <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" 
     title="Press to remove note."></i>
   </label>
-  <textarea class="form-control" id="<%- noteID %>" rows="5">
+  <textarea class="form-control" id="<%- noteID %>"
+  name="<%- noteID %>" rows="5">
   </textarea>
 </div>
 `;
@@ -249,25 +253,27 @@ title="Press to remove measurement."></i></div>
 <div class="form-group col-md-1">
   <label for="<%- elementID %>">Element</label>
   <input type="text" class="form-control" id="<%- elementID %>" 
-  minlength="1" maxlength="3" required="true"> 
+  name="<%- elementID %>" minlength="1" maxlength="3" required="true"> 
 </div>
 <div class="form-check-inline col-md-1">
-  <input class="form-check-input" type="checkbox" id="<%- lessThanID %>">
+  <input class="form-check-input" type="checkbox" id="<%- lessThanID %>"
+  name="<%- lessThanID %>">
   <label class="form-check-label"  for="<%- lessThanID %>">&lt;</label>
 </div>
 <div class="form-group col-md-2">
   <label for="<%- measurementID %>">Measurement</label>
   <input type="number" class="form-control" id="<%- measurementID %>" 
-  required="true" min="0">
+  name="<%- measurementID %>" required="true" min="0">
 </div>
 <div class="form-group col-md-1">
   <label for="<%- deviationID %>">Deviation</label>
   <input type="number" class="form-control" id="<%- deviationID %>" 
-  placeholder=" &plusmn;0">
+  name="<%- deviationID %>" placeholder=" &plusmn;0">
 </div>
 <div class="form-group col-md-2">
   <label for="<%- unitsID %>">units</label>
-  <select class="form-control" id="<%- unitsID %>" required="true">
+  <select class="form-control" id="<%- unitsID %>" 
+  name="<%- unitsID %>" required="true">
     <option>wt%</option>
     <option>ppm</option>
     <option>ppb</option>
@@ -278,11 +284,13 @@ title="Press to remove measurement."></i></div>
 </div>
 <div class="form-group col-md-1">
   <label for="<%- techniqueID %>">Technique</label>
-  <input type="text" class="form-control" id="<%- techniqueID %>">
+  <input type="text" class="form-control" id="<%- techniqueID %>"
+  name="<%- techniqueID %>">
 </div>
 <div class="form-group col-md-1">
   <label for="<%- pageID %>">Page</label>
-  <input type="number" class="form-control" id="<%- pageID %>" min="1" required>
+  <input type="number" class="form-control" id="<%- pageID %>" 
+  name="<%- pageID %>" min="1" required>
 </div>
 <div class="form-group col-md-1 mt-4">
   <i class="far fa-save fa-2x save-measurement"></i>
@@ -304,15 +312,18 @@ const meteoriteTemplate = `
 </div>
 <div class="form-group col-md-4">
   <label for="<%- bodyNameID %>">Name</label>
-  <input type="text" class="form-control" id="<%- bodyNameID %>" required>
+  <input type="text" class="form-control" id="<%- bodyNameID %>" 
+  name="<%- bodyNameID %>" required>
 </div>
 <div class="form-group col-md-3">
   <label for="<%- groupID %>">Group</label>
-  <input type="text" class="form-control" id="<%- groupID %>" required>
+  <input type="text" class="form-control" id="<%- groupID %>"
+  name="<%- groupID %>" required>
 </div>
 <div class="form-group col-md-3">
   <label for="<%- classID %>">Class</label>
-  <input type="text" class="form-control" id="<%- classID %>">
+  <input type="text" class="form-control" id="<%- classID %>" 
+  name="<%- classID %>">
 </div>
 <div class="form-group col-md-1 mt-4">
   <i class="far fa-save fa-2x save-meteorite"></i>
@@ -332,12 +343,12 @@ const meteoriteTemplate = `
 /** ---------------------------- */
 
 // Set Global ID counts
-let primaryNameIDCount = 0;
-let firstNameIDCount = 0;
-let middleNameIDCount = 0;
-let singleEntityIDCount = 0;
+let primaryNameIDCount = 1;
+let firstNameIDCount = 1;
+let middleNameIDCount = 1;
+let singleEntityIDCount = 1;
 
-let noteIDCount = 0;
+let noteIDCount = 1;
 
 let elementIDCount = 0;
 let lessThanIDCount = 0;
@@ -348,9 +359,9 @@ let techniqueIDCount = 0;
 let pageIDCount = 0;
 
 let meteoriteIDCount = 1;
-let bodyNameIDCount = 0;
-let groupIDCount = 0;
-let classIDCount = 0;
+let bodyNameIDCount = 1;
+let groupIDCount = 1;
+let classIDCount = 1;
 
 // Simple Add Event Handlers
 $( '#insert-form' ).on('click', 'i.add-author', function( event ) {
@@ -400,7 +411,7 @@ $( '#insert-form' ).on('click', 'i.add-note', function( event ) {
   const html = ejs.render(noteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('button').before(html);
+  $(this).parent().siblings('button:submit').before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
@@ -551,4 +562,15 @@ $( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
     // Remove row
     $(this).parent().parent().remove();
   }
+});
+
+
+/* Save the form data */
+
+$(document).ready(function() {
+  $('#save-btn').click(function() {
+    const serializedData = $('#insert-form').serializeArray();
+    console.log(serializedData);
+    // console.log();
+  });
 });

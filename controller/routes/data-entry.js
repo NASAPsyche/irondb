@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 
 router.get('/', isLoggedIn, function(req, res, next) {
-  res.render('data-entry');
+  res.render('data-entry', {username: req.user.username});
 });
 
 router.post('/', isLoggedIn, function(req, res, next) {
@@ -28,9 +28,11 @@ router.post('/', isLoggedIn, function(req, res, next) {
         fs.rename(oldpath, newpath, function(err) {
           if (err) next(createError(500));
           if (fields.tool_select) {
-            res.render('data-entry-checklist', {data: newpath.slice(15)});
+            res.render('data-entry-checklist',
+                {data: newpath.slice(15), username: req.user.username});
           } else if (fields.editor_select) {
-            res.render('editor_with_pdf', {data: newpath.slice(15)});
+            res.render('editor_with_pdf',
+                {data: newpath.slice(15), username: req.user.username});
           } else {
             next(createError(500));
           }
@@ -43,7 +45,7 @@ router.post('/', isLoggedIn, function(req, res, next) {
 });
 
 router.get('/editor', isLoggedIn, function(req, res, next) {
-  res.render('editor');
+  res.render('editor', {username: req.user.username});
 });
 
 router.post('/editor', isLoggedIn, function(req, res, next) {
@@ -56,7 +58,8 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
     try {
       fs.rename(oldpath, newpath, function(err) {
         if (err) throw err;
-        res.render('editor_with_pdf', {data: newpath.slice(15)});
+        res.render('editor_with_pdf',
+            {data: newpath.slice(15), username: req.user.username});
       });
     } catch (err) {
       next(createError(500));

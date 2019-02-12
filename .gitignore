@@ -146,9 +146,6 @@ pg-data/
 # Jest Coverage reports
 coverage/
 
-# RabbitMQ
-rabbitmq/data/
-
 # PyCharm
 .idea/
 
@@ -158,5 +155,5 @@ rabbitmq/data/
 # public temp directory
 public/temp/*.csv
 public/temp/*.pdf
-
+public/temp/upload*
 
