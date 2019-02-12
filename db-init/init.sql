@@ -1712,20 +1712,12 @@ CREATE VIEW attributions_pending AS (
 );
 
 CREATE VIEW full_attributions_pending AS (
-  SELECT t1.journal_id,
-  t1.journal_name,
-  t1.volume,
-  t1.issue,
-  t1.series,
-  t1.published_year,
-  t2.paper_id,
+  SELECT t1.nomenclature,
   t2.title,
-  t2.doi,
-  t3.author_id,
-  t4.author_name,
-  t4.single_entity
-  FROM journals_pending as t1
-  INNER JOIN papers_pending as t2 on t1.journal_id = t2.journal_id
-  INNER JOIN attributions_pending as t3 on t2.paper_id = t3.paper_id
-  INNER JOIN authors_pending as t4 on t3.author_id = t4.author_id
+  t3.published_year,
+  t4.author_name
+  FROM bodies_pending as t1
+  INNER JOIN papers_pending as t2 on t1.body_id = t2.journal_id
+  INNER JOIN journals_pending as t3 on t2.paper_id = t3.journal_id
+  INNER JOIN authors_pending as t4 on t3.journal_id = t4.author_id
 );
