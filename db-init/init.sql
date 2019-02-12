@@ -1708,7 +1708,7 @@ CREATE VIEW attributions_pending AS (
   t1.author_id
   FROM attributions as t1
   INNER JOIN attribution_status as t2 on t1.status_id = t2.status_id
-    AND t2.current_status = 'historical'
+    AND t2.current_status = 'pending'
 );
 
 CREATE VIEW full_attributions_pending AS (
