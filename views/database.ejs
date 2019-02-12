@@ -141,9 +141,81 @@
                 </th>
                 <th><%= Entries[i].classification_group %></th>
                 <th><%= Entries[i].technique %></th>
-                <th><%= Entries[i].major_elements %></th>
-                <th><%= Entries[i].minor_elements %></th>
-                <th><%= Entries[i].trace_elements %></th>
+                <th>
+                  <% 
+                  if (Entries[i].major_elements !== null) {
+                  %>
+                    <%
+                    for(var j = 0; j < Entries[i].major_elements.length; j++) {
+                      var temp = Entries[i].major_elements[j].split(',');
+                      var element_symbol = temp[0];
+                      var ppb_mean = temp[1];
+                      var deviation = temp[2];
+                      var less_than = temp[3];
+                    %>
+                    <p>
+                      <strong><%= element_symbol %>:</strong> 
+                      <% if (less_than === 'true') { %>
+                        &lt;
+                      <% } %>
+                      <%= ppb_mean %>
+                      <% if (deviation !== '0') { %>
+                        &plusmn; <%= deviation %>
+                      <% } %>
+                    </p>
+                    <% } %>
+                  <% } %>
+                </th>
+                <th>
+                  <% 
+                  if (Entries[i].minor_elements !== null) {
+                  %>
+                    <%
+                    for(var j = 0; j < Entries[i].minor_elements.length; j++) {
+                      var temp = Entries[i].minor_elements[j].split(',');
+                      var element_symbol = temp[0];
+                      var ppb_mean = temp[1];
+                      var deviation = temp[2];
+                      var less_than = temp[3];
+                    %>
+                    <p>
+                      <strong><%= element_symbol %>:</strong> 
+                      <% if (less_than === 'true') { %>
+                        &lt;
+                      <% } %>
+                      <%= ppb_mean %>
+                      <% if (deviation !== '0') { %>
+                        &plusmn; <%= deviation %>
+                      <% } %>
+                    </p>
+                    <% } %>
+                  <% } %>
+                </th>
+                <th>
+                  <% 
+                  if (Entries[i].trace_elements !== null) {
+                  %>
+                    <%
+                    for(var j = 0; j < Entries[i].trace_elements.length; j++) {
+                      var temp = Entries[i].trace_elements[j].split(',');
+                      var element_symbol = temp[0];
+                      var ppb_mean = temp[1];
+                      var deviation = temp[2];
+                      var less_than = temp[3];
+                    %>
+                    <p>
+                      <strong><%= element_symbol %>:</strong> 
+                      <% if (less_than === 'true') { %>
+                        &lt;
+                      <% } %>
+                      <%= ppb_mean %>
+                      <% if (deviation !== '0') { %>
+                        &plusmn; <%= deviation %>
+                      <% } %>
+                    </p>
+                    <% } %>
+                  <% } %>
+                </th>
                 <th><%= Entries[i].title %></th>
                 <th><%= Entries[i].authors %></th>
                 <th><%= Entries[i].page_number %></th> 
