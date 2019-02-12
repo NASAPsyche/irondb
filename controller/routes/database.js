@@ -5,7 +5,7 @@ const router = express.Router();
 // const path = require('path');
 // const fs = require('fs');
 // const json2csv = require('json2csv').parse;
-// const db = require('../db');
+const db = require('../db');
 const {isLoggedIn} = require('../middleware/auth');
 
 
@@ -15,14 +15,13 @@ router.get('/', function(req, res, next) {
   if (req.isAuthenticated()) {
     isSignedIn = true;
   }
-  res.render('database', {Entries: [], isSignedIn: isSignedIn});
-  // db.query('SELECT * FROM complete_table WHERE status=$1',
-  //     ['active'], (dbErr, dbRes) => {
-  //       if (dbErr) {
-  //         return next(dbErr);
-  //       }
-  //       res.render('database', {Entries: dbRes.rows});
-  //     });
+  db.query('SELECT * FROM complete_table',
+      [], (dbErr, dbRes) => {
+        if (dbErr) {
+          return next(dbErr);
+        }
+        res.render('database', {Entries: dbRes.rows, isSignedIn: isSignedIn});
+      });
 });
 
 
