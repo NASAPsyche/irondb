@@ -6,9 +6,10 @@ const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
 const fs = require('fs');
+// const db = require('../db');
 
 router.get('/', isLoggedIn, function(req, res, next) {
-  res.render('data-entry', {username: req.user.username});
+  res.render('data-entry');
 });
 
 router.post('/', isLoggedIn, function(req, res, next) {
@@ -17,7 +18,7 @@ router.post('/', isLoggedIn, function(req, res, next) {
   form.parse(req, function(err, fields, files) {
     if (err) next(createError(500));
     if (fields.editor_select === 'true' && files.filetoupload.size === 0) {
-      res.render('editor');
+      res.render('editor', {username: req.user.username, data: null});
     } else if (fields.tool_select === 'true' && files.filetoupload.size === 0) {
       next(createError(500));
     } else {
@@ -45,7 +46,7 @@ router.post('/', isLoggedIn, function(req, res, next) {
 });
 
 router.get('/editor', isLoggedIn, function(req, res, next) {
-  res.render('editor', {username: req.user.username});
+  res.render('editor', {username: req.user.username, data: null});
 });
 
 router.post('/editor', isLoggedIn, function(req, res, next) {
@@ -66,5 +67,6 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
     }
   });
 });
+
 
 module.exports = router;
