@@ -591,5 +591,6 @@ $(document).ready(function() {
     xhr.open('POST', '/save', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(jsonsend));
+    alert('Saved the form');
   });
 });
