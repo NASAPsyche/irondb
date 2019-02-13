@@ -6,7 +6,6 @@ const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
 const fs = require('fs');
-// const db = require('../db');
 
 router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
