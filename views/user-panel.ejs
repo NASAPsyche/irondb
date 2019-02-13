@@ -35,30 +35,22 @@
           </tr>
         </thead>
         <tbody>
+          <% for(var i=0; i < Entries.length; i++) { %>
           <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>1990</th>
-            <th>Wasson, John</th>
+            <th>
+              <%= Entries[i] %>
+            </th>
+            <th>
+              <%= Entries[i] %>
+            </th>
+            <th>
+              <%= Entries[i] %>
+            </th>
+            <th>
+              <%= Entries[i] %>
+            </th>
           </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>2004</th>
-            <th>Wasson, John</th>
-          </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>2009</th>
-            <th>Wasson, John</th>
-          </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>2012</th>
-            <th>Wasson, John</th>
-          </tr>
+          <% } %>
         </tbody>
       </table>
     </div>

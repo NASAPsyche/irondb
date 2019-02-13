@@ -876,7 +876,7 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
   (
     DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   );
@@ -886,7 +886,7 @@ INSERT INTO classification_status (status_id, classification_id, current_status,
   (
     DEFAULT,
     (SELECT classification_id FROM classifications WHERE classification='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   );
@@ -896,7 +896,7 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   (
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -941,7 +941,7 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
   (
     DEFAULT,
     (SELECT journal_id FROM journals WHERE journal_name='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -958,7 +958,7 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, pre
   (
     DEFAULT,
     (SELECT paper_id FROM papers WHERE title='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -975,7 +975,7 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, p
   (
     DEFAULT,
     (SELECT author_id FROM authors WHERE primary_name='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -1003,7 +1003,7 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
       WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Dummy')
       AND author_id = (SELECT author_id FROM authors WHERE primary_name='Dummy')
     ),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -1042,7 +1042,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
       AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Dummy')
       AND page_number = 1
     ),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
