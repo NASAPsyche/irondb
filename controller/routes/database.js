@@ -25,30 +25,35 @@ router.get('/', function(req, res, next) {
 });
 
 
-// /* POST database page */
-// router.post('/', function(req, res, next) {
-//   if (req.xhr) {
-//     let queryString = 'SELECT * FROM complete_table WHERE status=$1 ';
-//     const argsArray = ['active'];
-//     let currentQueryIndex = 2;
+/* POST database page */
+router.post('/', function(req, res, next) {
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
 
-//     if (req.body.name !== '') {
-//       argsArray.push(req.body.name);
-//       queryString += ('AND meteorite_name ~* $' + currentQueryIndex + ' ');
-//       currentQueryIndex++;
-//     }
+  // if (req.xhr) {
+  //   let queryString = 'SELECT * FROM complete_table WHERE published_year >1900';
+  //   const argsArray = [];
+  //   let currentQueryIndex = 1;
 
-//     if (req.body.title !== '') {
-//       argsArray.push(req.body.title);
-//       queryString += ('AND title ~* $' + currentQueryIndex + ' ');
-//       currentQueryIndex++;
-//     }
+  //   if (req.body.name !== '') {
+  //     argsArray.push(req.body.name);
+  //     queryString += ('AND meteorite_name ~* $' + currentQueryIndex + ' ');
+  //     currentQueryIndex++;
+  //   }
 
-//     if (req.body.author !== '') {
-//       argsArray.push(req.body.author);
-//       queryString += ('AND authors ~* $' + currentQueryIndex + ' ');
-//       currentQueryIndex++;
-//     }
+  //   if (req.body.title !== '') {
+  //     argsArray.push(req.body.title);
+  //     queryString += ('AND title ~* $' + currentQueryIndex + ' ');
+  //     currentQueryIndex++;
+  //   }
+
+  //   if (req.body.author !== '') {
+  //     argsArray.push(req.body.author);
+  //     queryString += ('AND authors ~* $' + currentQueryIndex + ' ');
+  //     currentQueryIndex++;
+  //   }
 
 //     if (req.body.group !== 'Group') {
 //       argsArray.push(req.body.group);
@@ -79,55 +84,54 @@ router.get('/', function(req, res, next) {
 //     }
 
 
-//     db.query(queryString, argsArray, (dbErr, dbRes) => {
-//       if (dbErr) {
-//         return next(dbErr);
-//       }
+  //   db.query(queryString, argsArray, (dbErr, dbRes) => {
+  //     if (dbErr) {
+  //       return next(dbErr);
+  //     }
 
-//       if (dbRes.rows.length === 0) {
-// eslint-disable-next-line max-len
-//         res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
-//       }
+  //     if (dbRes.rows.length === 0) {
+  //       // eslint-disable-next-line max-len
+  //       res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
+  //     }
 
-//       res.render('components/database-xhr-response', {Entries: dbRes.rows});
-//     });
-//   } else {
-//     let queryString = 'SELECT * FROM complete_table WHERE status=$1 ';
-//     const argsArray = ['active'];
-//     let currentQueryIndex = 2;
+  //     res.render('components/database-xhr-response', {Entries: dbRes.rows});
+  //   });
+  // } else {
+    let queryString = 'SELECT * FROM complete_table WHERE published_year >1900';
+    const argsArray = [];
+    let currentQueryIndex = 1;
 
-//     if (req.body.name !== '') {
-//       argsArray.push(req.body.name);
-//       queryString += ('AND meteorite_name ~* $' + currentQueryIndex + ' ');
-//       currentQueryIndex++;
-//     }
+    if (req.body.name !== '') {
+      argsArray.push(req.body.name);
+      queryString += ('AND meteorite_name ~* $' + currentQueryIndex + ' ');
+      currentQueryIndex++;
+    }
 
-//     if (req.body.title !== '') {
-//       argsArray.push(req.body.title);
-//       queryString += ('AND title ~* $' + currentQueryIndex + ' ');
-//       currentQueryIndex++;
-//     }
+    if (req.body.title !== '') {
+      argsArray.push(req.body.title);
+      queryString += ('AND title ~* $' + currentQueryIndex + ' ');
+      currentQueryIndex++;
+    }
 
-//     if (req.body.author !== '') {
-//       argsArray.push(req.body.author);
-//       queryString += ('AND authors ~* $' + currentQueryIndex + ' ');
-//       currentQueryIndex++;
-//     }
+    if (req.body.author !== '') {
+      argsArray.push(req.body.author);
+      queryString += ('AND authors ~* $' + currentQueryIndex + ' ');
+      currentQueryIndex++;
+    }
 
-//     db.query(queryString, argsArray, (dbErr, dbRes) => {
-//       if (dbErr) {
-//         return next(dbErr);
-//       }
+    db.query(queryString, argsArray, (dbErr, dbRes) => {
+      if (dbErr) {
+        return next(dbErr);
+      }
 
-//       if (dbRes.rows.length === 0) {
-// eslint-disable-next-line max-len
-//         res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
-//       }
+      if (dbRes.rows.length === 0) {
+        res.render('database', {Entries: [], isSignedIn: isSignedIn});
+      }
 
-//       res.render('database', {Entries: dbRes.rows});
-//     });
-//   }
-// });
+      res.render('database', {Entries: dbRes.rows, isSignedIn: isSignedIn});
+    });
+  // }
+});
 
 
 // /* GET /database/export */
