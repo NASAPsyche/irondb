@@ -472,6 +472,12 @@ INSERT INTO journals (journal_name, volume, issue, published_year)
     1900
   ),
   (
+    'Dummy_journal', 
+    420, 
+    69, 
+    2000
+  ),
+  (
     'Geochimica et Cosmochimica Acta', 
     '73', 
     '16', 
@@ -481,8 +487,12 @@ INSERT INTO journals (journal_name, volume, issue, published_year)
 INSERT INTO papers (journal_id,  title)
   VALUES
   (
-    (SELECT journal_id FROM journals WHERE journal_name='Dummy' AND issue='1'), 
+    (SELECT journal_id FROM journals WHERE journal_name='Dummy' AND issue='20'), 
     'Dummy'
+  ),
+  (
+    (SELECT journal_id FROM journals WHERE journal_name='Dummy_journal' AND issue='1'), 
+    'Dummy_Title'
   ),
   (
     (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='16'),
@@ -492,6 +502,7 @@ INSERT INTO papers (journal_id,  title)
 INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
   VALUES
   (DEFAULT, 'Dummy', '', '', true),
+  (DEFAULT, 'Dummy_author', '', '', true),
   (DEFAULT, 'Wasson', 'John', 'T.', DEFAULT),
   (DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT);
 
@@ -500,6 +511,10 @@ INSERT INTO attributions (paper_id, author_id)
   (
     (SELECT paper_id FROM papers WHERE title='Dummy'),
     (SELECT author_id FROM authors WHERE primary_name='Dummy')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Dummy_Title'),
+    (SELECT author_id FROM authors WHERE primary_name='Dummy_author')
   ),
   (
     (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
@@ -513,6 +528,10 @@ INSERT INTO attributions (paper_id, author_id)
 INSERT INTO bodies (nomenclature)
   VALUES 
   ('Dummy'),
+  ('Dummy1'),
+  ('Dummy2'),
+  ('Dummy3'),
+  ('Dummy4'),
   ('Guanaco'),
   ('Tombigbee R.'),
   ('Bellsbank'),
@@ -525,6 +544,26 @@ INSERT INTO groups (group_id, body_id, the_group)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
     'Dummy'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy1'),
+    'Dummy_pending'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy2'),
+    'Dummy_pending'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy3'),
+    'Dummy_pending'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy4'),
+    'Dummy_pending'
   );
 
 INSERT INTO classifications (classification_id, body_id, classification)
@@ -533,6 +572,26 @@ INSERT INTO classifications (classification_id, body_id, classification)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
     'Dummy'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy1'),
+    'Dummy_pending'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy2'),
+    'Dummy_pending'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy3'),
+    'Dummy_pending'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy4'),
+    'Dummy_pending'
   );
 
 INSERT INTO element_entries (element_id, body_id, element_symbol, paper_id, page_number, ppb_mean, deviation, less_than, original_unit, technique)
@@ -541,6 +600,58 @@ INSERT INTO element_entries (element_id, body_id, element_symbol, paper_id, page
   (
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Dummy'),
+    1,
+    1,
+    1,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /*Dummy1*/
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy1'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Dummy'),
+    1,
+    1,
+    1,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /*Dummy2*/
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy2'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Dummy'),
+    1,
+    1,
+    1,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /*Dummy3*/
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy3'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Dummy'),
+    1,
+    1,
+    1,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /*Dummy4*/
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy4'),
     'cr',
     (SELECT paper_id FROM papers WHERE title='Dummy'),
     1,
@@ -876,6 +987,13 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
   (
     DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='Dummy'),
+    'historical',
+    'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='Dummy_pending'),
     'pending',
     'Ken',
     NULL
@@ -886,8 +1004,15 @@ INSERT INTO classification_status (status_id, classification_id, current_status,
   (
     DEFAULT,
     (SELECT classification_id FROM classifications WHERE classification='Dummy'),
-    'pending',
+    'historical',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT classification_id FROM classifications WHERE classification='Dummy_pending'),
+    'pending',
+    'Michael',
     NULL
   );
 
@@ -896,8 +1021,36 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   (
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
-    'pending',
+    'historical',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy1'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy2'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy3'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Dummy4'),
+    'pending',
+    'Michael',
     NULL
   ),
   (
@@ -941,8 +1094,15 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
   (
     DEFAULT,
     (SELECT journal_id FROM journals WHERE journal_name='Dummy'),
-    'pending',
+    'historical',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Dummy_journal'),
+    'pending',
+    'Michael',
     NULL
   ),
   (
@@ -958,8 +1118,15 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, pre
   (
     DEFAULT,
     (SELECT paper_id FROM papers WHERE title='Dummy'),
-    'pending',
+    'historical',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Dummy_Title'),
+    'pending',
+    'Michael',
     NULL
   ),
   (
@@ -975,8 +1142,15 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, p
   (
     DEFAULT,
     (SELECT author_id FROM authors WHERE primary_name='Dummy'),
-    'pending',
+    'historical',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Dummy_author'),
+    'pending',
+    'Michael',
     NULL
   ),
   (
@@ -1003,8 +1177,19 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
       WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Dummy')
       AND author_id = (SELECT author_id FROM authors WHERE primary_name='Dummy')
     ),
-    'pending',
+    'historical',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Dummy_Title')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Dummy_author')
+    ),
+    'pending',
+    'Michael',
     NULL
   ),
   (
@@ -1042,10 +1227,67 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
       AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Dummy')
       AND page_number = 1
     ),
-    'pending',
+    'historical',
     'Ken',
     NULL
   ),
+  /* Dummy1 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Dummy1')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Dummy_Title')
+      AND page_number = 1
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  /* Dummy2 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Dummy2')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Dummy_Title')
+      AND page_number = 1
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  /* Dummy3 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Dummy3')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Dummy_Title')
+      AND page_number = 1
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+   /* Dummy4 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Dummy4')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Dummy_Title')
+      AND page_number = 1
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  
   /* Guanaco */
   (
     DEFAULT,
