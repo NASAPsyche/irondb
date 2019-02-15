@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Iron Meteorite Database</title>
+    <%- include('components/font-awesome'); %>
     <%- include('bootstrap/css'); %>
     <link rel='stylesheet' href='/stylesheets/database.css' />
   </head>
@@ -30,7 +31,7 @@
         </div>
         <div class="col-sm-10">
           <form action="/database" method="POST" id="search-form">
-            <div class="row">
+            <div class="form-row">
               <div class="col-md-3 offset-md-1">
                 <label class="sr-only" for="name"></label>
                 <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name">
@@ -67,13 +68,56 @@
                 </select>  
               </div>
             </div>
-            <div class="row mt-3">
-              <div class="col-md-3 offset-md-1">
+            <i class="far fa-plus-square fa-lg show-journal text-warning" title="Show journal options"></i>
+            <i class="far fa-minus-square fa-lg hide-journal text-warning" title="Hide journal options"></i>
+            <i class="far fa-plus-square fa-lg show-year text-warning" title="Show published year options"></i>
+            <i class="far fa-minus-square fa-lg hide-year text-warning" title="Hide published year options"></i>
+            <div class="form-row journal" hidden="true">
+              <div class="form-group col-md-3 offset-md-1">
+                <label class="sr-only" for="journal_name"></label>
+                <input type="text" name="journal_name" id="journal_name" class="form-control" placeholder="journal name" disabled="true">
+              </div>
+              <div class="form-group col-md-3">
+                <label class="sr-only" for="issue"></label>
+                <input type="text" name="issue" id="issue" class="form-control" placeholder="issue" disabled="true">
+              </div>
+              <div class="form-group col-md-2">
+                <label class="sr-only" for="page_number"></label>
+                <input type="text" name="page_number" id="page_number" class="form-control" placeholder="page number" disabled="true">
+              </div>
+            </div>
+            <div class="form-row year">
+              <div class="form-group col-md-1 offset-md-1 year" hidden="true">
+                <label class="sr-only" for="pub_yr_sign">published year modifier sign</label>
+                <select class="form-control" name="pub_yr_sign" disabled="true">
+                  <option value="equal" default>=</option>
+                  <option value="less">&lt;</option>
+                  <option value="greater">&gt;</option>
+                </select>
+              </div>
+              <div class="form-group col-md-2 year" hidden="true">
+                <label class="sr-only" for="pub_year">published year</label>
+                <input type="number" class="form-control" name="pub_year" id="pub_year" min="1900" Max="2019" step="1" placeholder="year" disabled="true">
+              </div>
+            </div>
+            <div class="form-row mt-3" id="composition0">
+              <div class="col-md-2">
                 <h4 class="text-light">Composition:</h4>
               </div>
-              <div class="col-sm-3">
-                <label class="sr-only" for="element">element</label>
-                <select class="form-control custom-select" name="element" multiple id="element1">
+              <div class="col-md-1 mt-1">
+                  <i class="fas fa-plus-circle fa-lg text-warning show-element" title="Add element constraint"></i>
+                  <i class="fas fa-minus-circle fa-lg text-warning hide-element" title="Remove element constraint"></i>
+              </div>
+              <div class="form-group col-md-1 hide-target" hidden="true">
+                <label class="sr-only" for="element0_mod">Element modifier</label>
+                <select class="form-control" name="element0_mod" title="Select whether to search for an element that appears in the data or not" disabled="true">
+                  <option value="IN" default>IN</option>
+                  <option value="NOT">NOT</option>
+                </select>
+              </div>
+              <div class="form-group col-sm-3 element hide-target" hidden="true">
+                <label class="sr-only" for="element0">element</label>
+                <select class="form-control custom-select element" name="element0" multiple disabled="true">
                   <option disabled>Element</option>
                   <option value="H">H</option>
                   <option value="He">He</option>
@@ -195,9 +239,9 @@
                   <option value="Og">Og</option>                   
                 </select>
               </div>
-              <div class="col-sm-3">
-                <label class="sr-only" for="range">Range</label>
-                <select class="form-control" name="range">
+              <div class="form-group col-sm-3 hide-target" hidden="true">
+                <label class="sr-only" for="range0">Range</label>
+                <select class="form-control" name="range0" disabled="true">
                   <option>Range</option>
                   <option value="major">Major</option>
                   <option value="minor">Minor</option>
@@ -205,6 +249,291 @@
                 </select>
               </div>
             </div>
+            <div class="form-row mt-2" id="composition1" hidden="true">
+              <div class="form-group col-md-1 offset-md-3">
+                <label class="sr-only" for="element1_mod">Element modifier</label>
+                <select class="form-control" name="element1_mod" title="Select whether to search for an element that appears in the data or not" disabled="true">
+                  <option value="IN" default>IN</option>
+                  <option value="NOT">NOT</option>
+                </select>
+              </div>
+              <div class="form-group col-sm-3 element">
+                <label class="sr-only" for="element1">element</label>
+                <select class="form-control custom-select element" name="element1" multiple disabled="true">
+                  <option disabled>Element</option>
+                  <option value="H">H</option>
+                  <option value="He">He</option>
+                  <option value="Li">Li</option>
+                  <option value="Be">Be</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="N">N</option>
+                  <option value="O">O</option>
+                  <option value="F">F</option>
+                  <option value="Ne">Ne</option> 
+                  <option value="Na">Na</option> 
+                  <option value="Mg">Mg</option> 
+                  <option value="Al">Al</option> 
+                  <option value="Si">Si</option> 
+                  <option value="P">P</option>
+                  <option value="S">S</option>
+                  <option value="Cl">Cl</option> 
+                  <option value="Ar">Ar</option> 
+                  <option value="K">K</option>
+                  <option value="Ca">Ca</option> 
+                  <option value="Sc">Sc</option> 
+                  <option value="Ti">Ti</option> 
+                  <option value="V">V</option>
+                  <option value="Cr">Cr</option> 
+                  <option value="Mn">Mn</option> 
+                  <option value="Fe">Fe</option> 
+                  <option value="Co">Co</option> 
+                  <option value="Ni">Ni</option> 
+                  <option value="Cu">Cu</option> 
+                  <option value="Zn">Zn</option> 
+                  <option value="Ga">Ga</option> 
+                  <option value="Ge">Ge</option> 
+                  <option value="As">As</option> 
+                  <option value="Se">Se</option> 
+                  <option value="Br">Br</option> 
+                  <option value="Kr">Kr</option> 
+                  <option value="Rb">Rb</option> 
+                  <option value="Sr">Sr</option> 
+                  <option value="Y">Y</option>
+                  <option value="Zr">Zr</option> 
+                  <option value="Nb">Nb</option> 
+                  <option value="Mo">Mo</option> 
+                  <option value="Tc">Tc</option> 
+                  <option value="Ru">Ru</option> 
+                  <option value="Rh">Rh</option> 
+                  <option value="Pd">Pd</option> 
+                  <option value="Ag">Ag</option> 
+                  <option value="Cd">Cd</option> 
+                  <option value="In">In</option> 
+                  <option value="Sn">Sn</option> 
+                  <option value="Sb">Sb</option> 
+                  <option value="Te">Te</option> 
+                  <option value="I">I</option>
+                  <option value="Xe">Xe</option> 
+                  <option value="Cs">Cs</option> 
+                  <option value="Ba">Ba</option> 
+                  <option value="La">La</option> 
+                  <option value="Ce">Ce</option> 
+                  <option value="Pr">Pr</option> 
+                  <option value="Nd">Nd</option> 
+                  <option value="Pm">Pm</option> 
+                  <option value="Sm">Sm</option> 
+                  <option value="Eu">Eu</option> 
+                  <option value="Gd">Gd</option> 
+                  <option value="Tb">Tb</option> 
+                  <option value="Dy">Dy</option> 
+                  <option value="Ho">Ho</option> 
+                  <option value="Er">Er</option> 
+                  <option value="Tm">Tm</option> 
+                  <option value="Yb">Yb</option> 
+                  <option value="Lu">Lu</option> 
+                  <option value="Hf">Hf</option> 
+                  <option value="Ta">Ta</option> 
+                  <option value="W">W</option>
+                  <option value="Re">Re</option> 
+                  <option value="Os">Os</option> 
+                  <option value="Ir">Ir</option> 
+                  <option value="Pt">Pt</option> 
+                  <option value="Au">Au</option> 
+                  <option value="Hg">Hg</option> 
+                  <option value="Tl">Tl</option> 
+                  <option value="Pb">Pb</option> 
+                  <option value="Bi">Bi</option> 
+                  <option value="Po">Po</option> 
+                  <option value="At">At</option> 
+                  <option value="Rn">Rn</option> 
+                  <option value="Fr">Fr</option> 
+                  <option value="Ra">Ra</option> 
+                  <option value="Ac">Ac</option> 
+                  <option value="Th">Th</option> 
+                  <option value="Pa">Pa</option>
+                  <option value="U">U</option>
+                  <option value="Np">Np</option> 
+                  <option value="Pu">Pu</option> 
+                  <option value="Am">Am</option> 
+                  <option value="Cm">Cm</option> 
+                  <option value="Bk">Bk</option> 
+                  <option value="Cf">Cf</option> 
+                  <option value="Es">Es</option> 
+                  <option value="Fm">Fm</option> 
+                  <option value="Md">Md</option> 
+                  <option value="No">No</option> 
+                  <option value="Lr">Lr</option> 
+                  <option value="Rf">Rf</option> 
+                  <option value="Db">Db</option> 
+                  <option value="Sg">Sg</option> 
+                  <option value="Bh">Bh</option> 
+                  <option value="Hs">Hs</option> 
+                  <option value="Mt">Mt</option> 
+                  <option value="Ds">Ds</option> 
+                  <option value="Rg">Rg</option> 
+                  <option value="Cn">Cn</option> 
+                  <option value="Nh">Nh</option> 
+                  <option value="Fl">Fl</option> 
+                  <option value="Mc">Mc</option> 
+                  <option value="Lv">Lv</option> 
+                  <option value="Ts">Ts</option> 
+                  <option value="Og">Og</option>                   
+                </select>
+              </div>
+              <div class="form-group col-sm-3">
+                <label class="sr-only" for="range1">Range</label>
+                <select class="form-control" name="range1" disabled="true">
+                  <option>Range</option>
+                  <option value="major">Major</option>
+                  <option value="minor">Minor</option>
+                  <option value="trace">Trace</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row mt-2" id="composition2" hidden="true">
+              <div class="form-group col-md-1 offset-md-3">
+                <label class="sr-only" for="element2_mod">Element modifier</label>
+                <select class="form-control" name="element2_mod" title="Select whether to search for an element that appears in the data or not" disabled="true">
+                  <option value="IN" default>IN</option>
+                  <option value="NOT">NOT</option>
+                </select>
+              </div>
+              <div class="form-group col-sm-3 element">
+                <label class="sr-only" for="element2">element</label>
+                <select class="form-control custom-select element" name="element2" multiple disabled="true">
+                  <option disabled>Element</option>
+                  <option value="H">H</option>
+                  <option value="He">He</option>
+                  <option value="Li">Li</option>
+                  <option value="Be">Be</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="N">N</option>
+                  <option value="O">O</option>
+                  <option value="F">F</option>
+                  <option value="Ne">Ne</option> 
+                  <option value="Na">Na</option> 
+                  <option value="Mg">Mg</option> 
+                  <option value="Al">Al</option> 
+                  <option value="Si">Si</option> 
+                  <option value="P">P</option>
+                  <option value="S">S</option>
+                  <option value="Cl">Cl</option> 
+                  <option value="Ar">Ar</option> 
+                  <option value="K">K</option>
+                  <option value="Ca">Ca</option> 
+                  <option value="Sc">Sc</option> 
+                  <option value="Ti">Ti</option> 
+                  <option value="V">V</option>
+                  <option value="Cr">Cr</option> 
+                  <option value="Mn">Mn</option> 
+                  <option value="Fe">Fe</option> 
+                  <option value="Co">Co</option> 
+                  <option value="Ni">Ni</option> 
+                  <option value="Cu">Cu</option> 
+                  <option value="Zn">Zn</option> 
+                  <option value="Ga">Ga</option> 
+                  <option value="Ge">Ge</option> 
+                  <option value="As">As</option> 
+                  <option value="Se">Se</option> 
+                  <option value="Br">Br</option> 
+                  <option value="Kr">Kr</option> 
+                  <option value="Rb">Rb</option> 
+                  <option value="Sr">Sr</option> 
+                  <option value="Y">Y</option>
+                  <option value="Zr">Zr</option> 
+                  <option value="Nb">Nb</option> 
+                  <option value="Mo">Mo</option> 
+                  <option value="Tc">Tc</option> 
+                  <option value="Ru">Ru</option> 
+                  <option value="Rh">Rh</option> 
+                  <option value="Pd">Pd</option> 
+                  <option value="Ag">Ag</option> 
+                  <option value="Cd">Cd</option> 
+                  <option value="In">In</option> 
+                  <option value="Sn">Sn</option> 
+                  <option value="Sb">Sb</option> 
+                  <option value="Te">Te</option> 
+                  <option value="I">I</option>
+                  <option value="Xe">Xe</option> 
+                  <option value="Cs">Cs</option> 
+                  <option value="Ba">Ba</option> 
+                  <option value="La">La</option> 
+                  <option value="Ce">Ce</option> 
+                  <option value="Pr">Pr</option> 
+                  <option value="Nd">Nd</option> 
+                  <option value="Pm">Pm</option> 
+                  <option value="Sm">Sm</option> 
+                  <option value="Eu">Eu</option> 
+                  <option value="Gd">Gd</option> 
+                  <option value="Tb">Tb</option> 
+                  <option value="Dy">Dy</option> 
+                  <option value="Ho">Ho</option> 
+                  <option value="Er">Er</option> 
+                  <option value="Tm">Tm</option> 
+                  <option value="Yb">Yb</option> 
+                  <option value="Lu">Lu</option> 
+                  <option value="Hf">Hf</option> 
+                  <option value="Ta">Ta</option> 
+                  <option value="W">W</option>
+                  <option value="Re">Re</option> 
+                  <option value="Os">Os</option> 
+                  <option value="Ir">Ir</option> 
+                  <option value="Pt">Pt</option> 
+                  <option value="Au">Au</option> 
+                  <option value="Hg">Hg</option> 
+                  <option value="Tl">Tl</option> 
+                  <option value="Pb">Pb</option> 
+                  <option value="Bi">Bi</option> 
+                  <option value="Po">Po</option> 
+                  <option value="At">At</option> 
+                  <option value="Rn">Rn</option> 
+                  <option value="Fr">Fr</option> 
+                  <option value="Ra">Ra</option> 
+                  <option value="Ac">Ac</option> 
+                  <option value="Th">Th</option> 
+                  <option value="Pa">Pa</option>
+                  <option value="U">U</option>
+                  <option value="Np">Np</option> 
+                  <option value="Pu">Pu</option> 
+                  <option value="Am">Am</option> 
+                  <option value="Cm">Cm</option> 
+                  <option value="Bk">Bk</option> 
+                  <option value="Cf">Cf</option> 
+                  <option value="Es">Es</option> 
+                  <option value="Fm">Fm</option> 
+                  <option value="Md">Md</option> 
+                  <option value="No">No</option> 
+                  <option value="Lr">Lr</option> 
+                  <option value="Rf">Rf</option> 
+                  <option value="Db">Db</option> 
+                  <option value="Sg">Sg</option> 
+                  <option value="Bh">Bh</option> 
+                  <option value="Hs">Hs</option> 
+                  <option value="Mt">Mt</option> 
+                  <option value="Ds">Ds</option> 
+                  <option value="Rg">Rg</option> 
+                  <option value="Cn">Cn</option> 
+                  <option value="Nh">Nh</option> 
+                  <option value="Fl">Fl</option> 
+                  <option value="Mc">Mc</option> 
+                  <option value="Lv">Lv</option> 
+                  <option value="Ts">Ts</option> 
+                  <option value="Og">Og</option>                   
+                </select>
+              </div>
+              <div class="form-group col-sm-3">
+                <label class="sr-only" for="range2">Range</label>
+                <select class="form-control" name="range2" disabled="true">
+                  <option>Range</option>
+                  <option value="major">Major</option>
+                  <option value="minor">Minor</option>
+                  <option value="trace">Trace</option>
+                </select>
+              </div>
+            </div>
+
             <div class="row mt-1">
 
               <div class=" col-md-2 offset-md-6 col-sm-3 offset-sm-6">
@@ -340,6 +669,3 @@
     <script src="/javascripts/database.js"></script>
   </body>
 </html>
-
-
-

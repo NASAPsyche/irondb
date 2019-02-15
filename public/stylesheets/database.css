@@ -14,25 +14,29 @@
 	color: rgb(0, 0, 0);
 }
 
+select.element {
+	max-height: 3rem;
+}
+
 /* Padding to top of body to push content below floating panel. */
 
 /* Bootstrap xs */
 @media (max-width: 576px) { 
 	body {
-		padding: 31.9375rem 0 0 0;
+		padding: 32.9375rem 0 0 0;
 	}
 }
 
 /* Bootstrap xs to sm*/
 @media (min-width: 576px) and (max-width: 767.98px) {
 	body {
-		padding: 23.8125rem 0 0 0;
+		padding: 24.8125rem 0 0 0;
 	}
 }
 
 /* Bootstrap greater than sm */
 @media (min-width: 767.98px) { 
 	body {
-		padding: 14.375rem 0 0 0;
+		padding: 15.375rem 0 0 0;
 	}
  }

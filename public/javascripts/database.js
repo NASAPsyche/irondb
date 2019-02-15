@@ -26,3 +26,95 @@ $( document ).ajaxComplete(function() {
         .appendTo( $( '#entry-ids' ) );
   });
 });
+
+// Form elements:
+$( 'document' ).ready(function() {
+  // hide hide ui
+  $( 'i.hide-journal').prop('hidden', true);
+  $('i.hide-year').prop('hidden', true);
+});
+
+$( '#search-panel' ).on( 'click', 'i.show-journal', function( event ) {
+  $(this).siblings('div.journal').prop('hidden', false);
+  $(this).siblings('div.journal').children('div.form-group')
+      .children('input').prop('disabled', false);
+  $(this).prop('hidden', true);
+  $(this).siblings('i.hide-journal').prop('hidden', false);
+});
+
+$( '#search-panel' ).on( 'click', 'i.hide-journal', function( event ) {
+  $(this).siblings('div.journal').prop('hidden', true);
+  $(this).siblings('div.journal').children('div.form-group')
+      .children('input').prop('disabled', true);
+  $(this).prop('hidden', true);
+  $(this).siblings('i.show-journal').prop('hidden', false);
+});
+
+$( '#search-panel' ).on( 'click', 'i.show-year', function( event ) {
+  $(this).siblings('div.year')
+      .children('div.toggleable-offset').removeClass('offset-md-4');
+  $(this).siblings('div.year').children('div.year').prop('hidden', false);
+  $(this).siblings('div.year').children('div.year')
+      .children('input').prop('disabled', false);
+  $(this).siblings('div.year').children('div.year')
+      .children('select').prop('disabled', false);
+  $(this).prop('hidden', true);
+  $(this).siblings('i.hide-year').prop('hidden', false);
+});
+
+$( '#search-panel' ).on( 'click', 'i.hide-year', function( event ) {
+  $(this).siblings('div.year')
+      .children('div.toggleable-offset').addClass('offset-md-4');
+  $(this).siblings('div.year').children('div.year').prop('hidden', true);
+  $(this).siblings('div.year').children('div.year')
+      .children('input').prop('disabled', true);
+  $(this).siblings('div.year').children('div.year')
+      .children('select').prop('disabled', true);
+  $(this).prop('hidden', true);
+  $(this).siblings('i.show-year').prop('hidden', false);
+});
+
+$( '#search-panel' ).on( 'click', 'i.show-element', function( event ) {
+  const elementVisibilityArray = getElementVisibilityArray();
+  console.log(elementVisibilityArray);
+  const targetNum = elementVisibilityArray.indexOf(true);
+  if (targetNum === 0) {
+    $('#composition' + targetNum)
+        .children('.hide-target').prop('hidden', false);
+    $('#composition' + targetNum)
+        .children('.hide-target').children('select').prop('disabled', false);
+  } else {
+    $('#composition' + targetNum).prop('hidden', false);
+    $('#composition' + targetNum)
+        .children('div.form-group').children('select').prop('disabled', false);
+  }
+});
+
+$( '#search-panel' ).on( 'click', 'i.hide-element', function( event ) {
+  const elementVisibilityArray = getElementVisibilityArray();
+  console.log(elementVisibilityArray);
+  const targetNum = elementVisibilityArray.lastIndexOf(false);
+  if (targetNum === 0) {
+    $('#composition' + targetNum).children('.hide-target').prop('hidden', true);
+    $('#composition' + targetNum)
+        .children('.hide-target').children('select').prop('disabled', true);
+  } else {
+    $('#composition' + targetNum).prop('hidden', true);
+    $('#composition' + targetNum)
+        .children('div.form-group').children('select').prop('disabled', true);
+  }
+});
+
+/**
+ * @function getElementVisibilityArray
+ * @description Function returns array visibility array of composition divs.
+ * @return {object} visibilityArray
+ */
+function getElementVisibilityArray() {
+  const visibilityArray = [];
+  visibilityArray.push( $('#composition0')
+      .children('div.hide-target').first().prop('hidden') );
+  visibilityArray.push( $('#composition1').prop('hidden') );
+  visibilityArray.push( $('#composition2').prop('hidden') );
+  return visibilityArray;
+}
