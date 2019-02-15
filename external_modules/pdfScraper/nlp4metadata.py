@@ -42,7 +42,7 @@
 """
 
 """
-Just don't touch anything, okay.
+Just don't touch anything okay.
 """
 
 """
@@ -58,6 +58,7 @@ import os, io, re
 import nltk
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
+#from nltk.corpus import stopwords
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -92,7 +93,7 @@ def convert_pdf_to_txt(path, pageNo=0):
     return text
 
 
-# extracts relevant parts of the first page of the pdf
+# extracts relevant parts of the first page of the pdf using a tagword
 def relevant_text(pdf_name, tagword):
     page = convert_pdf_to_txt(path + pdf_name, 0)
     text = page.split(tagword, 1)[0]
@@ -110,16 +111,15 @@ def stage_text(txt):
         nltk.download('averaged_perceptron_tagger') # pos_tag dependency
         nltk.download('maxent_ne_chunker') # ne_chunk dependency
         nltk.download('words') # ne_chunk dependency
-
-    #return tagged
+    
     return sentences
 
 
-# extracts truncated title from top of any page in the pdf
+# extracts truncated title from top of any page in the pdf using magic
 def truncated_title(pdf_name):
     global page_num_title
     random_page = convert_pdf_to_txt(path + pdf_name, page_num_title)
-    
+
     title_trunc = random_page.split('\n\n', 1)[0]
     while (title_trunc.split()[0].isdigit()) or (('Table' in title_trunc) is True):
         page_num_title += 1
@@ -151,7 +151,7 @@ def extract_title(pdf_name):
     return title_full
 
 
-# extracts truncated authors from top of any page in the pdf
+# extracts truncated authors from top of any page in the pdf using the truncated title
 def truncated_authors(pdf_name):
     global page_num_authors
     random_page = convert_pdf_to_txt(path + pdf_name, page_num_authors)
@@ -171,6 +171,12 @@ def truncated_authors(pdf_name):
 def extract_authors(pdf_name):
     authors_full = "Author(s) not found"
     relevant_data = relevant_text(pdf_name, "Abs")
+
+    for element in relevant_data:
+        if element.isdigit() or element == "*" or element == "," or element == "and":
+            relevant_data = relevant_data.replace(element, "")
+    
+
     tokenized = stage_text(relevant_data)
     tagged = nltk.pos_tag(tokenized)
     nerd = nltk.ne_chunk(tagged)
@@ -183,7 +189,7 @@ def extract_authors(pdf_name):
         if type(chunk) == nltk.tree.Tree:
             if chunk.label() == 'PERSON':
                 authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
-                return authors_full
+                #return authors_full
 
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_data.lower()).find(authors_tagword.lower())
@@ -202,8 +208,10 @@ def extract_authors(pdf_name):
     #elif ",," in authors_full:
         #authors_full = authors_full.replace(",,", ",")
 
+    return nerd
 
-# extracts publishing date from the pdf text
+
+# extracts publishing date from the pdf text using RegEx
 def extract_date(pdf_name):
     relevant_data = relevant_text(pdf_name, "Abs").lower()
     if "publish" in relevant_data:
