@@ -1591,6 +1591,30 @@ CREATE VIEW elements_with_bodies_groups_active AS (
   INNER JOIN elements_active as t3 on t1.body_id = t3.body_id
 );
 
+CREATE VIEW major_element_symbol_arrays_by_body_id AS (
+  SELECT body_id,
+  array_agg(element_symbol)
+  FROM elements_with_bodies_groups_active
+  WHERE ppb_mean > 10000000
+  GROUP BY body_id
+);
+
+CREATE VIEW minor_element_symbol_arrays_by_body_id AS (
+  SELECT body_id,
+  array_agg(element_symbol)
+  FROM elements_with_bodies_groups_active
+  WHERE ppb_mean <= 10000000 AND ppb_mean >= 1000000
+  GROUP BY body_id
+);
+
+CREATE VIEW trace_element_symbol_arrays_by_body_id AS (
+  SELECT body_id,
+  array_agg(element_symbol)
+  FROM elements_with_bodies_groups_active
+  WHERE ppb_mean < 1000000
+  GROUP BY body_id
+);
+
 CREATE VIEW major_elements AS (
   -- View aggregates elemental information for major elements
   SELECT body_id,

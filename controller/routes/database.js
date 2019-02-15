@@ -27,12 +27,8 @@ router.get('/', function(req, res, next) {
 
 /* POST database page */
 router.post('/', function(req, res, next) {
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
-  }
-
   if (req.xhr) {
+    console.log(req.body);
     // eslint-disable-next-line max-len
     let queryString = 'SELECT * FROM complete_table WHERE published_year >1900 ';
     const argsArray = [];
@@ -63,51 +59,117 @@ router.post('/', function(req, res, next) {
       currentQueryIndex++;
     }
 
-    if (req.body.element !== 'Element' && req.body.range !== 'Range') {
-      // Push elements selected as array to arguments
-      if ((typeof req.body.element) === 'string') {
-        const elementArray = [req.body.element.toLowerCase()];
-        argsArray.push(elementArray);
-      } else {
-        argsArray.push(req.body.element.map( (el) => el.toLowerCase() ));
-      }
-
-      queryString += 'AND entry_id in (SELECT body_id FROM ';
-
-      switch (req.body.range) {
-        case 'major':
-          // eslint-disable-next-line max-len
-          queryString += 'major_element_symbol_arrays_by_body_id';
-          break;
-        case 'minor':
-          // eslint-disable-next-line max-len
-          queryString += 'minor_element_symbol_arrays_by_body_id';
-          break;
-        case 'trace':
-          // eslint-disable-next-line max-len
-          queryString += 'trace_element_symbol_arrays_by_body_id';
-          break;
-      }
-      queryString += ' WHERE CAST(array_agg as text[]) @> $';
-      queryString += currentQueryIndex + ')';
-
+    // ------------------------------------
+    //      Optional Search Parameters
+    // ------------------------------------
+    if (req.body.hasOwnProperty('journal_name')
+        && req.body.journal_name !== '') {
+      argsArray.push(req.body.journal_name);
+      queryString += ('AND journal_name ~* $' + currentQueryIndex + ' ');
       currentQueryIndex++;
     }
 
-console.log(argsArray);
+    if (req.body.hasOwnProperty('issue') && req.body.issue !== '') {
+      argsArray.push(req.body.issue);
+      queryString += ('AND issue_number = $' + currentQueryIndex + ' ');
+      currentQueryIndex++;
+    }
+
+    if (req.body.hasOwnProperty('page_number') && req.body.page_number !== '') {
+      argsArray.push(parseInt(req.body.page_number, 10));
+      queryString += ('AND page_number = $' + currentQueryIndex + ' ');
+      currentQueryIndex++;
+    }
+
+    if (req.body.hasOwnProperty('pub_year') && req.body.pub_year !== '') {
+      argsArray.push(parseInt(req.body.pub_year, 10));
+
+      queryString += 'AND published_year ';
+
+      switch (req.body.pub_yr_sign) {
+        case 'equal':
+          queryString += '=';
+          break;
+        case 'less':
+          queryString += '<';
+          break;
+        case 'greater':
+          queryString += '>';
+          break;
+      }
+
+      queryString += (' $' + currentQueryIndex + ' ');
+      currentQueryIndex++;
+    }
+
+    let elementCounter = -1;
+    if (req.body.hasOwnProperty('element0') && req.body.range0 !== 'Range') {
+      elementCounter++;
+    }
+    if (req.body.hasOwnProperty('element1') && req.body.range1 !== 'Range') {
+      elementCounter++;
+    }
+    if (req.body.hasOwnProperty('element2') && req.body.range2 !== 'Range') {
+      elementCounter++;
+    }
+
+    if (elementCounter !== -1) {
+      while (elementCounter > -1) {
+        if (typeof req.body['element' + elementCounter] === 'string') {
+          const elementArray = [req.body['element' + elementCounter]];
+          argsArray.push(elementArray);
+        } else {
+          argsArray.push(req.body['element' + elementCounter]);
+        }
+
+        queryString += 'AND entry_id';
+        if (req.body['element' + elementCounter + '_mod'] === 'NOT') {
+          queryString += ' NOT';
+        }
+        queryString += ' IN (SELECT body_id FROM ';
+
+        switch (req.body['range' + elementCounter]) {
+          case 'major':
+            queryString += 'major_element_symbol_arrays_by_body_id';
+            break;
+          case 'minor':
+            queryString += 'minor_element_symbol_arrays_by_body_id';
+            break;
+          case 'trace':
+            queryString += 'trace_element_symbol_arrays_by_body_id';
+            break;
+        }
+
+        queryString += ' WHERE CAST(array_agg as text[])';
+
+        queryString += ' @> $';
+        queryString += currentQueryIndex + ') ';
+        currentQueryIndex++;
+        elementCounter--;
+      }
+    }
+
+
+    console.log(req.body);
     db.query(queryString, argsArray, (dbErr, dbRes) => {
       if (dbErr) {
+        console.log(dbErr);
         return next(dbErr);
       }
 
       if (dbRes.rows.length === 0) {
         // eslint-disable-next-line max-len
         res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
+      } else {
+        res.render('components/database-xhr-response', {Entries: dbRes.rows});
       }
-
-      res.render('components/database-xhr-response', {Entries: dbRes.rows});
     });
   } else {
+    let isSignedIn = false;
+    if (req.isAuthenticated()) {
+      isSignedIn = true;
+    }
+
     let queryString = 'SELECT * FROM complete_table WHERE published_year >1900';
     const argsArray = [];
     let currentQueryIndex = 1;
@@ -137,9 +199,9 @@ console.log(argsArray);
 
       if (dbRes.rows.length === 0) {
         res.render('database', {Entries: [], isSignedIn: isSignedIn});
+      } else {
+        res.render('database', {Entries: dbRes.rows, isSignedIn: isSignedIn});
       }
-
-      res.render('database', {Entries: dbRes.rows, isSignedIn: isSignedIn});
     });
   }
 });
