@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 $( 'document' ).ready(function() {
   // Set tool as default selected
   styleButtons($( '#tool' ));

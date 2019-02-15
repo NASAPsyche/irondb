@@ -35,6 +35,7 @@ function show_help ()
   echo "-a    Attached quick launch: Launches the server with node output to shell."
   echo "-f    Fresh build: Rebuild containers and launch."
   echo "--------"
+  echo "-m    Mock data - add some mock data."
   echo "-s    Stop the server."
   echo "-x    Reset Docker Environment - Stops the server and clear the docker environment."
   echo "      Consider this the factory refresh of your Docker environment. Frees up space " 
@@ -180,10 +181,45 @@ function restore_recent ()
   cd ..
 }
 
+# Populate mock data
+function populate_mock_data ()
+{
+  echo "Populating mock data"
+  echo "Connecting to postgres, this may take some time"
+  NORESP=""
+  PSYEXISTS="$(pip list | grep "psycopg2-binary")"
+  PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+  # install psycopg2-binary if not exists
+  if [[ "$PSYEXISTS" =  "$NORESP" ]]
+  then 
+    pip install psycopg2-binary
+  fi
+
+  COUNTER=0
+  while [[ "$PGACK" = "$NORESP" ]]
+  do
+    echo -n "."
+    sleep 1
+    PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+    COUNTER=$((COUNTER + 1))
+    if [[ "$COUNTER" -ge 30 ]]
+    then
+      echo "This operation timed out. Make sure that Postgres is running and try again."
+      exit 1;
+    fi
+  done
+
+  echo ""
+  echo "adding users"
+  node docker/mock-users.js 
+  echo "adding user info"
+  python docker/mock-user-info.py 
+}
+
 ### BEGIN ###
 
 # Read in the options and perform the tasks
-while getopts ":hilpqafsxbr " opt; do
+while getopts ":hilpqafsxbrm " opt; do
   case ${opt} in
     h )
       show_help
@@ -207,6 +243,7 @@ while getopts ":hilpqafsxbr " opt; do
       rm_db
       install_node_deps
       start_detached
+      # populate_mock_data
       ;;
     q ) #quick launch
       stop_containers
@@ -222,6 +259,9 @@ while getopts ":hilpqafsxbr " opt; do
       rm_db
       build_containers
       start_detached
+      ;;
+    m )
+      populate_mock_data
       ;;
     s )
       stop_containers
