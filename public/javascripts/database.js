@@ -10,6 +10,8 @@ $( '#search-form' ).on( 'submit', function( event ) {
 // On error, no results found
 $( document ).ajaxError( function() {
   $( '#results' ).replaceWith( '<p>Error: No results found.</p>' );
+  $('#results').css('margin-top',
+      $('#search-panel').outerHeight() + $('nav').outerHeight());
 });
 
 // On click, clear form elements
@@ -18,14 +20,14 @@ $( '#reset-btn' ).on( 'click', function( event ) {
 });
 
 // After AJAx, reset stored ids of export button
-$( document ).ajaxComplete(function() {
-  $( '#entry-ids' ).empty();
-  $( 'p:hidden' ).each(function() {
-    $( '<input>' ).attr({type: 'hidden', name: 'entries'})
-        .val( $(this).text() )
-        .appendTo( $( '#entry-ids' ) );
-  });
-});
+// $( document ).ajaxComplete(function() {
+//   $( '#entry-ids' ).empty();
+//   $( 'p:hidden' ).each(function() {
+//     $( '<input>' ).attr({type: 'hidden', name: 'entries'})
+//         .val( $(this).text() )
+//         .appendTo( $( '#entry-ids' ) );
+//   });
+// });
 
 // Form elements:
 $( 'document' ).ready(function() {
@@ -76,7 +78,6 @@ $( '#search-panel' ).on( 'click', 'i.hide-year', function( event ) {
 
 $( '#search-panel' ).on( 'click', 'i.show-element', function( event ) {
   const elementVisibilityArray = getElementVisibilityArray();
-  console.log(elementVisibilityArray);
   const targetNum = elementVisibilityArray.indexOf(true);
   if (targetNum === 0) {
     $('#composition' + targetNum)
@@ -92,7 +93,6 @@ $( '#search-panel' ).on( 'click', 'i.show-element', function( event ) {
 
 $( '#search-panel' ).on( 'click', 'i.hide-element', function( event ) {
   const elementVisibilityArray = getElementVisibilityArray();
-  console.log(elementVisibilityArray);
   const targetNum = elementVisibilityArray.lastIndexOf(false);
   if (targetNum === 0) {
     $('#composition' + targetNum).children('.hide-target').prop('hidden', true);
@@ -103,6 +103,11 @@ $( '#search-panel' ).on( 'click', 'i.hide-element', function( event ) {
     $('#composition' + targetNum)
         .children('div.form-group').children('select').prop('disabled', true);
   }
+});
+
+$( '#search-panel' ).on( 'click', 'i', function( event ) {
+  $('#results').css('margin-top',
+      $('#search-panel').outerHeight() + $('nav').outerHeight());
 });
 
 /**
@@ -118,3 +123,4 @@ function getElementVisibilityArray() {
   visibilityArray.push( $('#composition2').prop('hidden') );
   return visibilityArray;
 }
+

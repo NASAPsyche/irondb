@@ -22,21 +22,24 @@ select.element {
 
 /* Bootstrap xs */
 @media (max-width: 576px) { 
-	body {
-		padding: 32.9375rem 0 0 0;
+	#results {
+		margin-top: 27.5rem;
+		padding: 0;
 	}
 }
 
 /* Bootstrap xs to sm*/
 @media (min-width: 576px) and (max-width: 767.98px) {
-	body {
-		padding: 24.8125rem 0 0 0;
+	#results {
+		margin-top: 21.5rem;
+		padding: 0;
 	}
 }
 
 /* Bootstrap greater than sm */
 @media (min-width: 767.98px) { 
-	body {
-		padding: 15.375rem 0 0 0;
+	#results {
+		margin-top: 12.5rem;
+		padding: 0;
 	}
  }

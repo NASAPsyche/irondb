@@ -28,7 +28,6 @@ router.get('/', function(req, res, next) {
 /* POST database page */
 router.post('/', function(req, res, next) {
   if (req.xhr) {
-    console.log(req.body);
     // eslint-disable-next-line max-len
     let queryString = 'SELECT * FROM complete_table WHERE published_year >1900 ';
     const argsArray = [];
@@ -150,10 +149,8 @@ router.post('/', function(req, res, next) {
     }
 
 
-    console.log(req.body);
     db.query(queryString, argsArray, (dbErr, dbRes) => {
       if (dbErr) {
-        console.log(dbErr);
         return next(dbErr);
       }
 
