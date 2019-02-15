@@ -67,5 +67,10 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
   });
 });
 
+router.post('/insert', isLoggedIn, function(req, res, next) {
+  // Redirect to panel when done
+  res.redirect('/panel');
+});
+
 
 module.exports = router;

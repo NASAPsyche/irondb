@@ -350,13 +350,13 @@ let singleEntityIDCount = 1;
 
 let noteIDCount = 1;
 
-let elementIDCount = 0;
-let lessThanIDCount = 0;
-let measurementIDCount = 0;
-let deviationIDCount = 0;
-let unitsIDCount = 0;
-let techniqueIDCount = 0;
-let pageIDCount = 0;
+let elementIDCount = 1;
+let lessThanIDCount = 1;
+let measurementIDCount = 1;
+let deviationIDCount = 1;
+let unitsIDCount = 1;
+let techniqueIDCount = 1;
+let pageIDCount = 1;
 
 let meteoriteIDCount = 1;
 let bodyNameIDCount = 1;
