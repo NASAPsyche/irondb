@@ -472,6 +472,12 @@ INSERT INTO journals (journal_name, volume, issue, published_year)
     1900
   ),
   (
+    'Fake', 
+    420, 
+    69, 
+    2000
+  ),
+  (
     'Geochimica et Cosmochimica Acta', 
     '73', 
     '16', 
@@ -485,6 +491,10 @@ INSERT INTO papers (journal_id,  title)
     'Dummy'
   ),
   (
+    (SELECT journal_id FROM journals WHERE journal_name='Fake' AND issue='69'), 
+    'Fake'
+  ),
+  (
     (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='16'),
     ('The IIG iron meteorites: Probable formation in the IIAB core')
   );
@@ -492,6 +502,7 @@ INSERT INTO papers (journal_id,  title)
 INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
   VALUES
   (DEFAULT, 'Dummy', '', '', true),
+  (DEFAULT, 'Fake', '', '', true),
   (DEFAULT, 'Wasson', 'John', 'T.', DEFAULT),
   (DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT);
 
@@ -500,6 +511,10 @@ INSERT INTO attributions (paper_id, author_id)
   (
     (SELECT paper_id FROM papers WHERE title='Dummy'),
     (SELECT author_id FROM authors WHERE primary_name='Dummy')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Fake'),
+    (SELECT author_id FROM authors WHERE primary_name='Fake')
   ),
   (
     (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
@@ -513,6 +528,7 @@ INSERT INTO attributions (paper_id, author_id)
 INSERT INTO bodies (nomenclature)
   VALUES 
   ('Dummy'),
+  ('Fake'),
   ('Guanaco'),
   ('Tombigbee R.'),
   ('Bellsbank'),
@@ -528,6 +544,11 @@ INSERT INTO groups (group_id, body_id, the_group)
   ),
   (
     DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Fake'),
+    'Fake'
+  ),
+  (
+    Default,
     (SELECT body_id FROM bodies WHERE nomenclature='Guanaco'),
     'IIG'
   ),
@@ -558,6 +579,11 @@ INSERT INTO classifications (classification_id, body_id, classification)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
     'Dummy'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Fake'),
+    'Fake'
   );
 
 INSERT INTO element_entries (element_id, body_id, element_symbol, paper_id, page_number, ppb_mean, deviation, less_than, original_unit, technique)
@@ -568,6 +594,19 @@ INSERT INTO element_entries (element_id, body_id, element_symbol, paper_id, page
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
     'cr',
     (SELECT paper_id FROM papers WHERE title='Dummy'),
+    1,
+    1,
+    1,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /*Fake*/
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Fake'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Fake'),
     1,
     1,
     1,
@@ -901,7 +940,7 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
   (
     DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -941,14 +980,38 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
     NULL
   );
 
+INSERT INTO group_review (review_id, group_id, note, resolved, email_address, reviewed_by, submission_date)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='Dummy'),
+    'not correct',
+    DEFAULT,
+    'fake@gmail.com',
+    1,
+    DEFAULT
+  );
+
 INSERT INTO classification_status (status_id, classification_id, current_status, submitted_by, previous_entry)
   VALUES
   (
     DEFAULT,
     (SELECT classification_id FROM classifications WHERE classification='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
+  );
+
+INSERT INTO classification_review (review_id, classification_id, note, resolved, email_address, reviewed_by, submission_date)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT classification_id FROM classifications WHERE classification='Dummy'),
+    'not correct',
+    DEFAULT,
+    'fake@gmail.com',
+    1,
+    DEFAULT
   );
 
 INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previous_entry)
@@ -956,7 +1019,7 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   (
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -996,12 +1059,24 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
     NULL
   );
 
+INSERT INTO body_review (review_id, body_id, note, resolved, email_address, reviewed_by, submission_date)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Fake'),
+    'not correct',
+    DEFAULT,
+    'fake@gmail.com',
+    1,
+    DEFAULT
+  );
+
 INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by, previous_entry)
   VALUES
   (
     DEFAULT,
     (SELECT journal_id FROM journals WHERE journal_name='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -1013,12 +1088,24 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
     NULL
   );
 
+INSERT INTO journal_review (review_id, journal_id, note, resolved, email_address, reviewed_by, submission_date)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Fake'),
+    'not correct',
+    DEFAULT,
+    'fake@gmail.com',
+    1,
+    DEFAULT
+  );
+
 INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, previous_entry)
   VALUES
   (
     DEFAULT,
     (SELECT paper_id FROM papers WHERE title='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -1030,12 +1117,24 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, pre
     NULL
   );
 
+INSERT INTO paper_review (review_id, paper_id, note, resolved, email_address, reviewed_by, submission_date)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Fake'),
+    'not correct',
+    DEFAULT,
+    'fake@gmail.com',
+    1,
+    DEFAULT
+  );
+
 INSERT INTO author_status (status_id, author_id, current_status, submitted_by, previous_entry)
   VALUES
   (
     DEFAULT,
     (SELECT author_id FROM authors WHERE primary_name='Dummy'),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -1054,6 +1153,18 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, p
     NULL
   );
 
+INSERT INTO author_review (review_id, author_id, note, resolved, email_address, reviewed_by, submission_date)
+  VALUES
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Fake'),
+    'not correct',
+    DEFAULT,
+    'fake@gmail.com',
+    1,
+    DEFAULT
+  );
+
 INSERT INTO attribution_status (status_id, attribution_id, current_status, submitted_by, previous_entry)
   VALUES
   (
@@ -1063,7 +1174,7 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
       WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Dummy')
       AND author_id = (SELECT author_id FROM authors WHERE primary_name='Dummy')
     ),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -1090,6 +1201,22 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
     NULL
   );
 
+INSERT INTO attribution_review (review_id, attribution_id, note, resolved, email_address, reviewed_by, submission_date)
+  VALUES
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Fake')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Fake')
+    ),
+    'not correct',
+    DEFAULT,
+    'fake@gmail.com',
+    1,
+    DEFAULT
+  );
+
 INSERT INTO element_status (status_id, element_id, current_status, submitted_by, previous_entry)
   VALUES
   /* Dummy */
@@ -1102,7 +1229,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
       AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Dummy')
       AND page_number = 1
     ),
-    'historical',
+    'pending',
     'Ken',
     NULL
   ),
@@ -1447,6 +1574,23 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     NULL
   );
 
+INSERT INTO element_review (review_id, element_id, note, resolved, email_address, reviewed_by, submission_date)
+  VALUES
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Fake')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fake')
+      AND page_number = 1
+    ),
+    'not correct',
+    DEFAULT,
+    'fake@gmail.com',
+    1,
+    DEFAULT
+  );
 
 
 -------------------------
@@ -1877,12 +2021,28 @@ CREATE VIEW papers_pending AS (
   AND t2.current_status = 'pending'
 );
 
+CREATE VIEW flagged_papers AS (
+  SELECT t1.paper_id,
+  t1.journal_id,
+  t1.title,
+  t1.doi
+  FROM papers as t1
+  INNER JOIN paper_review as t2 on t1.paper_id = t2.paper_id
+);
+
 CREATE VIEW bodies_pending AS (
   SELECT t1.body_id,
   t1.nomenclature
   FROM bodies as t1
   INNER JOIN body_status as t2 on t1.status_id = t2.status_id
   AND t2.current_status = 'pending'
+);
+
+CREATE VIEW flagged_bodies AS (
+  SELECT t1.body_id,
+  t1.nomenclature
+  FROM bodies as t1
+  INNER JOIN body_review as t2 on t1.body_id = t2.body_id
 );
 
 CREATE VIEW authors_pending AS (
@@ -1892,6 +2052,14 @@ CREATE VIEW authors_pending AS (
   FROM authors as t1
   INNER JOIN author_status as t2 on t1.status_id = t2.status_id
   AND t2.current_status = 'pending'
+);
+
+CREATE VIEW flagged_authors AS (
+  SELECT t1.author_id,
+  t1.first_name || ' ' || t1.middle_name || ' ' || t1.primary_name as author_name,
+  t1.single_entity
+  FROM authors as t1
+  INNER JOIN author_review as t2 on t1.author_id = t2.author_id
 );
 
 CREATE VIEW elements_pending AS (
@@ -1911,6 +2079,22 @@ CREATE VIEW elements_pending AS (
   AND t2.current_status = 'pending'
 );
 
+CREATE VIEW flagged_elements AS (
+  SELECT t1.element_id ,
+  t1.body_id,
+  t1.element_symbol ,
+  t1.paper_id ,
+  t1.page_number ,
+  t1.ppb_mean ,
+  t1.deviation ,
+  t1.less_than ,
+  t1.original_unit ,
+  t1.technique ,
+  t1.note
+  FROM element_entries as t1
+  INNER JOIN element_review as t2 on t1.element_id = t2.element_id
+);
+
 CREATE VIEW journals_pending AS (
   SELECT t1.journal_id,
   t1.journal_name,
@@ -1923,30 +2107,52 @@ CREATE VIEW journals_pending AS (
   AND t2.current_status = 'pending'
 );
 
+CREATE VIEW flagged_journals AS (
+  SELECT t1.journal_id,
+  t1.journal_name,
+  t1.volume,
+  t1.issue,
+  t1.series,
+  t1.published_year
+  FROM journals as t1
+  INNER JOIN journal_review as t2 on t1.journal_id = t2.journal_id
+);
+
 CREATE VIEW attributions_pending AS (
   SELECT t1.attribution_id,
   t1.paper_id,
   t1.author_id
   FROM attributions as t1
   INNER JOIN attribution_status as t2 on t1.status_id = t2.status_id
-    AND t2.current_status = 'historical'
+    AND t2.current_status = 'pending'
+);
+
+CREATE VIEW flagged_attributions AS (
+  SELECT t1.attribution_id,
+  t1.paper_id,
+  t1.author_id
+  FROM attributions as t1
+  INNER JOIN attribution_review as t2 on t1.attribution_id = t2.attribution_id
 );
 
 CREATE VIEW full_attributions_pending AS (
-  SELECT t1.journal_id,
-  t1.journal_name,
-  t1.volume,
-  t1.issue,
-  t1.series,
-  t1.published_year,
-  t2.paper_id,
+  SELECT t1.nomenclature,
   t2.title,
-  t2.doi,
-  t3.author_id,
-  t4.author_name,
-  t4.single_entity
-  FROM journals_pending as t1
-  INNER JOIN papers_pending as t2 on t1.journal_id = t2.journal_id
-  INNER JOIN attributions_pending as t3 on t2.paper_id = t3.paper_id
-  INNER JOIN authors_pending as t4 on t3.author_id = t4.author_id
+  t3.published_year,
+  t4.author_name
+  FROM bodies_pending as t1
+  INNER JOIN papers_pending as t2 on t1.body_id = t2.journal_id
+  INNER JOIN journals_pending as t3 on t2.paper_id = t3.journal_id
+  INNER JOIN authors_pending as t4 on t3.journal_id = t4.author_id
+);
+
+CREATE VIEW full_attributions_flagged AS (
+  SELECT t1.nomenclature,
+  t2.title,
+  t3.published_year,
+  t4.author_name
+  FROM flagged_bodies as t1
+  INNER JOIN flagged_papers as t2 on t1.body_id = t2.journal_id
+  INNER JOIN flagged_journals as t3 on t2.paper_id = t3.journal_id
+  INNER JOIN flagged_authors as t4 on t3.journal_id = t4.author_id
 );

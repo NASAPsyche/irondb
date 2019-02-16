@@ -12,12 +12,13 @@ const db = require('../db');
 /* GET /panel/user  */
 router.get('/', isLoggedIn, function(req, res, next) {
   db.query(
-      'SELECT * FROM full_attributions_pending', '',
+      /* eslint-disable-next-line max-len */
+      'SELECT nomenclature, title, published_year, author_name FROM full_attributions_pending', [],
       (dbErr, dbRes) => {
         if (dbErr) {
           return next(dbErr);
         }
-        console.log(dbRes.rows);
+        console.log(dbRes);
         res.render('user-panel', {Entries: dbRes.rows});
       });
 });
