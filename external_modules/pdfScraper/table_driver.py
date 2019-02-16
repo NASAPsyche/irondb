@@ -38,7 +38,7 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/RuzickaandHutson2010.pdf",
        "pdfs/spinTest.pdf"]
 
-chosen_pdf = pdf[11]
+chosen_pdf = pdf[1]
 
 
 # START 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT
@@ -80,36 +80,51 @@ def convert_pdf_to_txt_looper(path, total_pages):
 # START 4. REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS
 # START 4. REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS
 
-def process_tables_clean(mdf):
-    row_count, col_count = mdf.shape
-    col_iter = col_count - 1
-    while col_iter >= 0:
-        tally_col = row_iter = 0
-        while row_iter < row_count:
-            value_to_test = str(mdf.iloc[row_iter][col_iter])
-            if value_to_test == "REMOVE":
-                tally_col += 1
-            row_iter += 1
-        if tally_col / row_count > .49:
-            if mdf.empty:
-                print('DataFrame is empty!')
-            else:
-                # print(mdf)
-                mdf = mdf.drop(mdf.columns[col_iter], axis=1)
-        col_iter -= 1
-    return mdf
-
-
-def column_by_column(mdf):
-    for col in reversed(range(df.shape[1])):
-        for row in range(df.shape[0]):
-            print(str(mdf.iloc[row][col]))
-
 
 def row_by_row(mdf):
-    for row in reversed(range(df.shape[0])):
-        for col in range(df.shape[1]):
+    i,j = mdf.shape
+    print("Rows: " + str(i) + " Cols: " + str(j))
+    for row in reversed(range(mdf.shape[0])):
+        row_remove = 0
+        row_null = 0
+        for col in range(mdf.shape[1]):
+            if str(mdf.iloc[row][col]) == "REMOVE":
+                row_remove += 1
+            if str(mdf.iloc[row][col]) == "nan":
+                row_null += 1
             print(str(mdf.iloc[row][col]))
+            print("THIS IS REMOVE TALLY: " + str(row_remove))
+            print("THIS IS NULL TALLY: " + str(row_null))
+            print("THIS IS Amount of Rows: " + str(mdf.shape[0]))
+            print(mdf)
+        if mdf.shape[1] - (row_remove + row_null) < 2:
+            mdf = mdf.drop(row)
+            if mdf.empty:
+                return "DataFrame is Empty."
+    return mdf
+
+def column_by_column(mdf):
+    for col in reversed(range(mdf.shape[1])):
+        col_remove = 0
+        col_null = 0
+        for row in range(mdf.shape[0]):
+            if str(mdf.iloc[row][col]) == "REMOVE":
+                col_remove += 1
+            if str(mdf.iloc[row][col]) == "nan":
+                col_null += 1
+            print(str(mdf.iloc[row][col]))
+            print("THIS IS REMOVE TALLY: " + str(col_remove))
+            print("THIS IS NULL TALLY: " + str(col_null))
+            print("THIS IS Amount of Col: " + str(mdf.shape[0]))
+            print("THIS IS Cols - bads: " + str(mdf.shape[0] - (col_remove + col_null)))
+        print("This is Column Number:" + str(col))
+        # print("This is cols divided by bads: " + str(mdf.shape[0]/(col_remove + col_null)))
+        print(mdf)
+        if mdf.shape[0] - (col_remove + col_null) < 2 or(col_remove + col_null)/ mdf.shape[0] > .85:
+            mdf = mdf.drop(mdf.columns[col], axis=1)
+            if mdf.empty:
+                return "DataFrame is Empty."
+    return mdf
 
 
 # END 4. REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS REMOVING BAD ROWS and COLS
@@ -127,7 +142,7 @@ text = convert_pdf_to_txt_looper(chosen_pdf, total_pages)
 # START Getting pages that have tables on them.
 for iterate in range(total_pages):
     splitted = text[iterate].split()
-    if text[iterate].find('\nTable ') > 0 or splitted[0] == "Table" or bool(re.search(r'\w\n\w\n\w\n?', text[iterate])):
+    if splitted[0] == "Table" or text[iterate].find('\nTable ') > 0  or bool(re.search(r'\w\n\w\n\w\n?', text[iterate])):
         print("############# Table exists on Page " + str(iterate + 1) + " #############" + "\n Word: "
               + str(text[iterate].find('\nTable ')))
         pages_with_tables.append(iterate + 1)
@@ -149,15 +164,22 @@ if len(tables_rec_from_page) > 0:
                 if len(str(df[y][x])) > 20:
                     df[y][x] = "REMOVE"
 print("START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING ")
-# print(tables_rec_from_page)
+ind = 3
+print(tables_rec_from_page[ind])
 # End Marking the fields for removal
 
-print("column_by_column************************************************************************************************************")
-column_by_column(tables_rec_from_page[0])
-
+print("Length of array with DFs: " + str(len(tables_rec_from_page)))
+i, j = tables_rec_from_page[ind].shape
+print("Rows: " + str(i) + " Cols: " + str(j))
 print("row_by_row************************************************************************************************************")
-row_by_row(tables_rec_from_page[0])
+tables_rec_from_page[ind] = row_by_row(tables_rec_from_page[ind])
 
+# print(tables_rec_from_page[ind])
+# print("column_by_column************************************************************************************************************")
+#tables_rec_from_page[ind] = column_by_column(tables_rec_from_page[ind])
+#
+#
+print(tables_rec_from_page[ind])
 # table_cleaned = process_tables_clean(table_marked)
 # # print(table_cleaned)
 # return json.loads((table_cleaned.to_json(double_precision=10, force_ascii=True,date_unit='ms', lines=False)))
