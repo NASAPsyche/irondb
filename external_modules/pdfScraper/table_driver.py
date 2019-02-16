@@ -24,6 +24,7 @@ from pdfminer.pdfpage import PDFPage
 
 master_json = ""
 pages_with_tables = []
+pages_with_continue = []
 master_dict_tables = {}
 pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/WassonandChoe_GCA_2009.pdf",
@@ -38,7 +39,7 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/RuzickaandHutson2010.pdf",
        "pdfs/spinTest.pdf"]
 
-chosen_pdf = pdf[1]
+chosen_pdf = pdf[10]
 
 
 # START 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT
@@ -92,11 +93,11 @@ def row_by_row(mdf):
                 row_remove += 1
             if str(mdf.iloc[row][col]) == "nan":
                 row_null += 1
-            print(str(mdf.iloc[row][col]))
-            print("THIS IS REMOVE TALLY: " + str(row_remove))
-            print("THIS IS NULL TALLY: " + str(row_null))
-            print("THIS IS Amount of Rows: " + str(mdf.shape[0]))
-            print(mdf)
+            # print(str(mdf.iloc[row][col]))
+            # print("THIS IS REMOVE TALLY: " + str(row_remove))
+            # print("THIS IS NULL TALLY: " + str(row_null))
+            # print("THIS IS Amount of Rows: " + str(mdf.shape[0]))
+            # print(mdf)
         if mdf.shape[1] - (row_remove + row_null) < 2:
             mdf = mdf.drop(row)
             if mdf.empty:
@@ -112,12 +113,12 @@ def column_by_column(mdf):
                 col_remove += 1
             if str(mdf.iloc[row][col]) == "nan":
                 col_null += 1
-            print(str(mdf.iloc[row][col]))
-            print("THIS IS REMOVE TALLY: " + str(col_remove))
-            print("THIS IS NULL TALLY: " + str(col_null))
-            print("THIS IS Amount of Col: " + str(mdf.shape[0]))
-            print("THIS IS Cols - bads: " + str(mdf.shape[0] - (col_remove + col_null)))
-        print("This is Column Number:" + str(col))
+        #     print(str(mdf.iloc[row][col]))
+        #     print("THIS IS REMOVE TALLY: " + str(col_remove))
+        #     print("THIS IS NULL TALLY: " + str(col_null))
+        #     print("THIS IS Amount of Col: " + str(mdf.shape[0]))
+        #     print("THIS IS Cols - bads: " + str(mdf.shape[0] - (col_remove + col_null)))
+        # print("This is Column Number:" + str(col))
         # print("This is cols divided by bads: " + str(mdf.shape[0]/(col_remove + col_null)))
         print(mdf)
         if mdf.shape[0] - (col_remove + col_null) < 2 or(col_remove + col_null)/ mdf.shape[0] > .85:
@@ -139,13 +140,21 @@ print("There are " + str(total_pages) + " pages in this document.")
 text = convert_pdf_to_txt_looper(chosen_pdf, total_pages)
 # End get text from pdf.
 
-# START Getting pages that have tables on them.
+# START Getting pages that have tables on them. looking for page 15
 for iterate in range(total_pages):
     splitted = text[iterate].split()
-    if splitted[0] == "Table" or text[iterate].find('\nTable ') > 0  or bool(re.search(r'\w\n\w\n\w\n?', text[iterate])):
+    if splitted[0] == "Table" or text[iterate].find('\nTable ') > 0 or bool(re.search(r'\w\n\w\n\w\n', text[iterate])):
         print("############# Table exists on Page " + str(iterate + 1) + " #############" + "\n Word: "
               + str(text[iterate].find('\nTable ')))
         pages_with_tables.append(iterate + 1)
+        # print("This is Pages With Tables: " + str(pages_with_tables))
+
+if pages_with_tables:
+    for page in pages_with_tables:
+        if re.search(r'Continued\S\n', text[page], re.IGNORECASE):
+            pages_with_continue.append(page + 1)
+print("Pages with CONTINUED: " + str(pages_with_continue))
+
 # END Getting pages that have tables on them.
 
 # START Get tables 1 page at a time.
@@ -165,7 +174,9 @@ if len(tables_rec_from_page) > 0:
                     df[y][x] = "REMOVE"
 print("START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING ")
 ind = 3
-print(tables_rec_from_page[ind])
+# print(tables_rec_from_page[ind])
+
+
 # End Marking the fields for removal
 
 print("Length of array with DFs: " + str(len(tables_rec_from_page)))
@@ -179,7 +190,11 @@ tables_rec_from_page[ind] = row_by_row(tables_rec_from_page[ind])
 #tables_rec_from_page[ind] = column_by_column(tables_rec_from_page[ind])
 #
 #
-print(tables_rec_from_page[ind])
+
+
+# print(tables_rec_from_page[ind])
+
+
 # table_cleaned = process_tables_clean(table_marked)
 # # print(table_cleaned)
 # return json.loads((table_cleaned.to_json(double_precision=10, force_ascii=True,date_unit='ms', lines=False)))
