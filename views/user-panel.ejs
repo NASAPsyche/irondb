@@ -22,7 +22,7 @@
       <a class="btn btn-danger btn-large p-2 text-warning " href="../database/unapproved" role="button">Approval
         Needed
         <span class="h1 badge badge-light">
-          <%= Approval %></span>
+          <%= pendingCount %></span>
       </a>
     </div>
     <div>
@@ -36,19 +36,19 @@
           </tr>
         </thead>
         <tbody>
-          <% for(var i=0; i < Entries.length; i++) { %>
+          <% for(var i=0; i < Pending.length; i++) { %>
           <tr>
             <th>
-              <%= Entries[i].nomenclature %>
+              <%= Pending[i].nomenclature %>
             </th>
             <th>
-              <%= Entries[i].title %>
+              <%= Pending[i].title %>
             </th>
             <th>
-              <%= Entries[i].published_year %>
+              <%= Pending[i].published_year %>
             </th>
             <th>
-              <%= Entries[i].author_name %>
+              <%= Pending[i].author_name %>
             </th>
           </tr>
           <% } %>
@@ -60,7 +60,8 @@
   <div class="container card mt-5 pt-2 pb-2" id="approval">
     <div>
       <a class="btn btn-danger btn-large p-2 text-warning " href="../database/reported" role="button">Reported Entries
-        <span class="badge badge-light">4</span>
+        <span class="badge badge-light">
+          <%= flaggedCount %> </span>
       </a>
     </div>
     <div>
@@ -74,30 +75,22 @@
           </tr>
         </thead>
         <tbody>
+          <% for(var i=0; i < Flagged.length; i++) { %>
           <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>1990</th>
-            <th>Wasson, John</th>
+            <th>
+              <%= Flagged[i].nomenclature %>
+            </th>
+            <th>
+              <%= Flagged[i].title %>
+            </th>
+            <th>
+              <%= Flagged[i].published_year %>
+            </th>
+            <th>
+              <%= Flagged[i].author_name %>
+            </th>
           </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>2004</th>
-            <th>Wasson, John</th>
-          </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>2009</th>
-            <th>Wasson, John</th>
-          </tr>
-          <tr>
-            <th>Guanaco</th>
-            <th>Meteorite Paper</th>
-            <th>2012</th>
-            <th>Wasson, John</th>
-          </tr>
+          <% } %>
         </tbody>
       </table>
     </div>
