@@ -164,10 +164,10 @@ CREATE TABLE IF NOT EXISTS notes (
 
 -- Entry submission tables --
 
-CREATE TABLE IF NOT EXISTS entry_json_store (
+CREATE TABLE IF NOT EXISTS entry_store (
   entry_id bigserial PRIMARY KEY,
   username citext REFERENCES users(username) NOT NULL,
-  data jsonb NOT NULL,
+  savedata jsonb NOT NULL,
   pdf_path text DEFAULT NULL, 
   -- save the path to the pdf if one is included in submission
   pending boolean DEFAULT true NOT NULL,

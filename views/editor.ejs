@@ -10,7 +10,7 @@
     <%- include('components/navbar_signed_in'); %>
     <div class="container-fluid pt-3 pb-4" id="top-container">
         <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
-            <h1>Data Entry Editor</h1>
+            <h1>Data Entry Editor  </h1>
         </div>
         <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
             <!-- Button trigger modal -->
@@ -73,9 +73,14 @@
             </div>
         </div>
     </div>
-    
     <%- include('bootstrap/js'); %>
     <%- include('components/ejs'); %>
+    <script>
+        const username = "<%= username %>";
+        console.log(username); 
+        const filename = "<%= data %>";
+        console.log(filename);
+    </script>
     <script src="/javascripts/editor.js"></script>
     <script src="/javascripts/editor-modal.js"></script>
 </body>

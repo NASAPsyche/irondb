@@ -9,37 +9,37 @@
     <div class="form-row">
         <div class="form-group">
             <label for="journalName">Journal Name</label>
-            <input type="text" class="form-control" id="journalName" required="true" placeholder="required">
+            <input type="text" class="form-control" id="journalName" name="journalName" required="true" placeholder="required">
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-group col-md-2">
             <label for="volue">Volume</label>
-            <input type="text" class="form-control" id="volume" placeholder="optional">
+            <input type="text" class="form-control" id="volume" name="volume" placeholder="optional">
         </div>
         <div class="form-group offset-md-1 col-md-2">
             <label for="issue">Issue</label>
-            <input type="text" class="form-control" id="issue" placeholder="optional">
+            <input type="text" class="form-control" id="issue" name="issue" placeholder="optional">
         </div>
         <div class="form-group offset-md-1 col-md-2">
             <label for="series">Series</label>
-            <input type="text" class="form-control" id="series" placeholder="optional">
+            <input type="text" class="form-control" id="series" name="series" placeholder="optional">
         </div>
         <div class="form-group offset-md-1 col-md-2">
             <label for="pub_year">Year Published</label>
-            <input type="number" class="form-control" id="pub_year" required="true" min="1900" Max="2100" step="1">
+            <input type="number" class="form-control" id="pubYear" name="pubYear" required="true" min="1900" Max="2100" step="1">
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-group col-md-8">
             <label for="paperTitle">Paper Title</label>
-            <input type="text" class="form-control" id="paperTitle" required="true" placeholder="required"> 
+            <input type="text" class="form-control" id="paperTitle" name="paperTitle" required="true" placeholder="required"> 
         </div>
         <div class="form-group col-md-4">
             <label for="doi">DOI</label>
-            <input type="text" class="form-control" id="doi" placeholder="optional">
+            <input type="text" class="form-control" id="doi" name="doi" placeholder="optional">
         </div>
     </div>
 
@@ -54,18 +54,18 @@
         </div>
         <div class="form-group col-md-3">
             <label for="primaryName">Last Name or Organization</label>
-            <input type="text" class="form-control" id="primaryName" required="true" placeholder="required"> 
+            <input type="text" class="form-control" id="primaryName" name="primaryName0" required="true" placeholder="required"> 
         </div>
         <div class="form-group col-md-3">
             <label for="firstName">First Name</label>
-            <input type="text" class="form-control" id="firstName"> 
+            <input type="text" class="form-control" id="firstName" name="firstName0"> 
         </div>
         <div class="form-group col-md-2">
             <label for="middleName">Middle Name</label>
-            <input type="text" class="form-control" id="middleName"> 
+            <input type="text" class="form-control" id="middleName" name="middleName0"> 
         </div>
         <div class="form-check col-md-2">
-            <input class="form-check-input" type="checkbox" id="singleEntity">
+            <input class="form-check-input" type="checkbox" id="singleEntity" name="singleEntity0">
             <label class="form-check-label" for="singleEntity">Organization</label>
         </div>
         <div class="form-group col-md-1  mt-4">
@@ -85,15 +85,15 @@
         </div>
         <div class="form-group col-md-4">
             <label for="bodyName">Name</label>
-            <input type="text" class="form-control" id="bodyName" required="true">
+            <input type="text" class="form-control" id="bodyName" name="bodyName0" required="true">
         </div>
         <div class="form-group col-md-3">
             <label for="group">Group</label>
-            <input type="text" class="form-control" id="group" required="true">
+            <input type="text" class="form-control" id="group" name="group0" required="true">
         </div>
         <div class="form-group col-md-3">
             <label for="class">Class</label>
-            <input type="text" class="form-control" id="class">
+            <input type="text" class="form-control" id="class" name="class0">
         </div>
         <div class="form-group col-md-1 mt-4">
             <i class="far fa-save fa-2x save-meteorite"></i>
@@ -112,7 +112,7 @@
         </div>        
         <div class="form-group col-md-1">
             <label for="element">Element</label>
-            <input type="text" class="form-control" id="element" minlength="1" maxlength="3" required="true">
+            <input type="text" class="form-control" id="element" name="element0-0" minlength="1" maxlength="3" required="true">
         </div>
         <div class="form-check-inline col-md-1">
             <input class="form-check-input" type="checkbox" id="lessThan">
@@ -120,15 +120,15 @@
         </div>
         <div class="form-group col-md-2">
             <label for="measurement">Measurement</label>
-            <input type="number" class="form-control" id="measurement" required="true">
+            <input type="number" class="form-control" id="measurement" name="measurement0-0" required="true" min="0">
         </div>
         <div class="form-group col-md-1">
             <label for="deviation">Deviation</label>
-            <input type="number" class="form-control" id="deviation" placeholder=" &plusmn;0">
+            <input type="number" class="form-control" id="deviation" name="deviation0-0" placeholder=" &plusmn;0">
         </div>
         <div class="form-group col-md-2">
             <label for="units">units</label>
-            <select class="form-control" id="units" required="true">
+            <select class="form-control" id="units" name="units0-0" required="true">
                 <option>wt%</option>
                 <option>ppm</option>
                 <option>ppb</option>
@@ -137,9 +137,13 @@
                 <option>ng/g</option>
             </select>
         </div>
-        <div class="form-group col-md-2">
+        <div class="form-group col-md-1">
             <label for="technique">Technique</label>
-            <input type="text" class="form-control" id="technique">
+            <input type="text" class="form-control" id="technique" name="technique0-0">
+        </div>
+        <div class="form-group col-md-1">
+            <label for="page">Page</label>
+            <input type="number" class="form-control" id="page" name="page0-0" min="1" required>
         </div>
         <div class="form-group col-md-1 mt-4">
             <i class="far fa-save fa-2x save-measurement"></i>
@@ -158,8 +162,8 @@
             <i class="far fa-edit fa-lg edit-note" hidden="true"></i>
             <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" title="Press to remove note."></i>
         </label>
-        <textarea class="form-control" id="note" rows="5"></textarea>
+        <textarea class="form-control" id="note" name="note0" rows="5"></textarea>
     </div>
-
     <button type="submit" class="btn btn-warning mt-2 mr-5 float-right">Submit</button>
+    <button type="button" class="btn btn-secondary mt-2 mr-5 float-right" id="save-btn">Save</button>
 </form>
