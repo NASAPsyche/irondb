@@ -59,6 +59,7 @@ import nltk
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
 #from nltk.corpus import stopwords
+from nltk.corpus import words, stopwords
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -169,13 +170,14 @@ def truncated_authors(pdf_name):
 
 # extracts authors from the first page of the pdf using NLTK named entity recognition
 def extract_authors(pdf_name):
-    authors_full = "Author(s) not found"
+    authors_full = ""
     relevant_data = relevant_text(pdf_name, "Abs")
 
     for element in relevant_data:
-        if element.isdigit() or element == "*" or element == "," or element == "and":
+        if element.isdigit() or element == "*":
             relevant_data = relevant_data.replace(element, "")
-    
+        if element == "," or element == "and":
+        	relevant_data = relevant_data.replace(element, ",")
 
     tokenized = stage_text(relevant_data)
     tagged = nltk.pos_tag(tokenized)
@@ -185,11 +187,19 @@ def extract_authors(pdf_name):
     #chunkr = nltk.RegexpParser(pattern)
     #chunks = chunkr.parse(stage_text(relevant_data))
 
+    ####################################################
+    #OPTIMIZE: SEARCH ONLY AROUND TITLE CONTEXT.
+    ####################################################
+
     for chunk in nerd:
         if type(chunk) == nltk.tree.Tree:
-            if chunk.label() == 'PERSON':
-                authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
-                #return authors_full
+        	if chunk.label() == 'PERSON':
+        		authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
+        		break #fix architecture
+
+    if authors_full == "":
+    	return "Author(s) not found."
+
 
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_data.lower()).find(authors_tagword.lower())
@@ -208,7 +218,8 @@ def extract_authors(pdf_name):
     #elif ",," in authors_full:
         #authors_full = authors_full.replace(",,", ",")
 
-    return nerd
+    #return nerd
+    return authors_full
 
 
 # extracts publishing date from the pdf text using RegEx
