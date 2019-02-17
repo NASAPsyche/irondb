@@ -197,6 +197,14 @@ def extract_authors(pdf_name):
         		authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
         		break #fix architecture
 
+    for chunk in nerd:
+        if type(chunk) != nltk.tree.Tree:
+            for line in relevant_data.split('\n\n'):
+                for word in tagged:
+                    if (word[0] in chunk) and (word[0] not in authors_full) and (word[0] not in words.words()):
+                        if (word[1] == 'NNP') and (word[0] in line) and (authors_full in line):
+                            authors_full = line
+
     if authors_full == "":
     	return "Author(s) not found."
 
