@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
 const fs = require('fs');
+const pg = require('../db');
 
 router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
@@ -72,7 +73,7 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
 router.post('/insert', isLoggedIn, function(req, res, next) {
   // Get the body of the request as an object
   const body_ = req.body;
-  // console.log(body_);
+  const username = req.user.username;
   /* Get Keys */
   // Get an array of the keys, needed for filtering
   const keys = Object.keys(body_);
@@ -210,7 +211,6 @@ router.post('/insert', isLoggedIn, function(req, res, next) {
       };
       meteorite.measurements.push(measure);
     });
-    // console.log(elementKeyString, ' - ', measurements);
     bodies.push(meteorite);
   });
 
@@ -218,6 +218,74 @@ router.post('/insert', isLoggedIn, function(req, res, next) {
   console.log('Paper ', paper);
   console.log('Authors: ', authors);
   console.log('Bodies ', bodies);
+
+  pg.getClient((err, client, done) => {
+    const shouldAbort = (err) => {
+      if (err) {
+        console.error('Error in transaction', err.stack);
+        client.query('ROLLBACK', (err) => {
+          if (err) {
+            console.error('Error rolling back client', err.stack);
+          }
+          // release the client back to the pool
+          done();
+        });
+      }
+      return !!err;
+    };
+    client.query('BEGIN', (err) => {
+      if (shouldAbort(err)) return;
+      // Make the query strings
+      const journalQuery =
+      `INSERT INTO
+      journals(journal_name, volume, issue, series, published_year)
+      VALUES($1, $2, $3, $4, $5)
+      RETURNING journal_id`;
+      const journalValue = [
+        journal.journalName,
+        journal.volume,
+        journal.issue,
+        journal.series,
+        journal.pubYear,
+      ];
+      client.query(journalQuery, journalValue, (err, res) => {
+        if (shouldAbort(err)) return;
+        const journalStatusQuery =
+        `INSERT INTO journal_status(journal_id, current_status, submitted_by)
+        VALUES($1, $2, $3)
+        RETURNING status_id`;
+        const journalId = res.rows[0].journal_id;
+        const journalStatusValue = [
+          journalId,
+          'pending',
+          username,
+        ];
+        client.query(journalStatusQuery, journalStatusValue, (err, res) => {
+          if (shouldAbort(err)) return;
+          const journalUpdateQuery =
+          `UPDATE journals
+          SET status_id = ($1)
+          WHERE journal_id = ($2)`;
+          const statusId = res.rows[0].status_id;
+          const journalUpdateValue = [
+            statusId,
+            journalId,
+          ];
+          client.query(journalUpdateQuery, journalUpdateValue, (err, res) => {
+            if (shouldAbort(err)) return;
+            client.query('COMMIT', (err) => {
+              if (err) {
+                console.error('Error committing transaction ', err.stack);
+              }
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
+
+  // console.log(req.user.id);
 
   // Redirect to panel when done
   res.redirect('/panel');
