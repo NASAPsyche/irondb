@@ -191,23 +191,18 @@ def extract_authors(pdf_name):
     #OPTIMIZE: SEARCH ONLY AROUND TITLE CONTEXT.
     ####################################################
 
-    for chunk in nerd:
-        if type(chunk) == nltk.tree.Tree:
-            if chunk.label() == 'PERSON':
-                english_author =   " ".join([leaf[0] for leaf in chunk.leaves()])
-                for line in relevant_data.split('\n\n'):
-                    for word in tagged:
-                        if (english_author in line):
-                            authors_full = line
-                break #fix architecture
-
-    for chunk in nerd:
-        if type(chunk) != nltk.tree.Tree:
-            for line in relevant_data.split('\n\n'):
-                for word in tagged:
-                    if (word[0] in chunk) and (word[0] not in authors_full) and (word[0] not in words.words()):
-                        if (word[1] == 'NNP') and (word[0] in line) and (authors_full in line):
-                            authors_full = line
+    for line in relevant_data.split('\n\n'):
+        for chunk in nerd:
+            if type(chunk) == nltk.tree.Tree:
+                if chunk.label() == 'PERSON' and authors_full == "":
+                    english_author = " ".join([leaf[0] for leaf in chunk.leaves()])
+                    if (english_author in line) and (len(line.split()) > 1):
+                        authors_full = line
+        if authors_full == "":
+            for word in tagged:
+                if ((word[0] not in words.words()) and (word[1] == 'NNP') and 
+                    (word[0] in chunk) and (word[0] in line) and (len(line.split()) > 1)):
+                    authors_full = line
 
     if authors_full == "":
     	return "Author(s) not found."
@@ -230,6 +225,8 @@ def extract_authors(pdf_name):
     #elif ",," in authors_full:
         #authors_full = authors_full.replace(",,", ",")
 
+    #print(relevant_data)
+    #print(nerd)
     return authors_full
 
 
