@@ -59,7 +59,7 @@ import nltk
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
 #from nltk.corpus import stopwords
-from nltk.corpus import words, stopwords
+from nltk.corpus import words
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -193,9 +193,13 @@ def extract_authors(pdf_name):
 
     for chunk in nerd:
         if type(chunk) == nltk.tree.Tree:
-        	if chunk.label() == 'PERSON':
-        		authors_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
-        		break #fix architecture
+            if chunk.label() == 'PERSON':
+                english_author =   " ".join([leaf[0] for leaf in chunk.leaves()])
+                for line in relevant_data.split('\n\n'):
+                    for word in tagged:
+                        if (english_author in line):
+                            authors_full = line
+                break #fix architecture
 
     for chunk in nerd:
         if type(chunk) != nltk.tree.Tree:
@@ -226,7 +230,6 @@ def extract_authors(pdf_name):
     #elif ",," in authors_full:
         #authors_full = authors_full.replace(",,", ",")
 
-    #return nerd
     return authors_full
 
 
@@ -258,9 +261,9 @@ def extract_source(pdf_name):
 
 
 
-#paper = input("Enter name of paper with extension (.pdf): ")
+paper = input("Enter name of paper with extension (.pdf): ")
 #print(extract_title(paper))
 #print(extract_authors(paper))
-print(extract_authors('WassonandChoe_GCA_2009.pdf'))
+print(extract_authors(paper))
 #print(extract_date(paper))
 #print(extract_source(paper))
