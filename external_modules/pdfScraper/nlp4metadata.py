@@ -109,10 +109,15 @@ def stage_text(txt):
     try:
         sentences = nltk.word_tokenize(txt)
     except LookupError:
+        nltk.download('punkt')
         nltk.download('averaged_perceptron_tagger') # pos_tag dependency
         nltk.download('maxent_ne_chunker') # ne_chunk dependency
         nltk.download('words') # ne_chunk dependency
-    
+        print("\n")
+        print("                  ******************************************")
+        print("                  DEPENDENCIES DOWNLOADED. PLEASE RUN AGAIN")
+        print("                  ******************************************\n\n")
+
     return sentences
 
 
