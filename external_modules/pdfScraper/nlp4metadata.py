@@ -192,9 +192,9 @@ def extract_authors(pdf_name):
     #chunkr = nltk.RegexpParser(pattern)
     #chunks = chunkr.parse(stage_text(relevant_data))
 
-    ####################################################
+    ############################################
     #OPTIMIZE: SEARCH ONLY AROUND TITLE CONTEXT.
-    ####################################################
+    ############################################
 
     for line in relevant_data.split('\n\n'):
         for chunk in nerd:
@@ -250,13 +250,25 @@ def extract_date(pdf_name):
     return date.group()
 
 
-# extracts source URL from the pdf text
+# extracts journal source from the pdf text using tagwords
 def extract_source(pdf_name):
     relevant_data = relevant_text(pdf_name, "Abs")
-    
-    source_tagword = (extract_authors(pdf_name).split())[0]
-    source_index = (relevant_data.lower()).find(source_tagword.lower())
-    source = relevant_data[source_index:].rsplit('\n\n')[1]
+    source_tagword = "Vol"
+    source = "Source not found."
+
+    for line in relevant_data.split('\n\n'):
+        if ((source_tagword in line) or (source_tagword.lower() in line) or
+            ("Acta"in line) or ("acta"in line)):
+            source = line
+
+    if (("Copyright" in source) and 
+        (source_tagword not in source.split("Copyright")[1]) and 
+        (source_tagword.lower() not in source.split("Copyright")[1])):
+        source = source.split("Copyright")[0]
+
+    ####################################################
+    #OPTIMIZE: ELIMINATE RUBBISH THAT CONATINS AUTHOR(S)
+    ####################################################
 
     return source
 
@@ -266,6 +278,5 @@ def extract_source(pdf_name):
 paper = input("Enter name of paper with extension (.pdf): ")
 #print(extract_title(paper))
 #print(extract_authors(paper))
-print(extract_authors(paper))
 #print(extract_date(paper))
-#print(extract_source(paper))
+print(extract_source(paper))
