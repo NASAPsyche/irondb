@@ -206,6 +206,11 @@ router.post('/', function(req, res, next) {
 
 // /* GET /database/export */
 // router.get('/export', function(req, res, next) {
+// // check if signed in
+// let isSignedIn = false;
+// if (req.isAuthenticated()) {
+//   isSignedIn = true;
+// }
 //   db.query(
 //       'SELECT * FROM complete_table WHERE status=$1',
 //       ['active'],
@@ -213,7 +218,8 @@ router.post('/', function(req, res, next) {
 //         if (dbErr) {
 //           return next(dbErr);
 //         }
-//         res.render('db-export', {Entries: dbRes.rows});
+// eslint-disable-next-line max-len
+//         res.render('db-export', {Entries: dbRes.rows, isSignedIn: isSignedIn});
 //       });
 // });
 
@@ -332,3 +338,4 @@ router.get('/unapproved', isLoggedIn, function(req, res, next) {
 });
 
 module.exports = router;
+

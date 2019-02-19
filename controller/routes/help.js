@@ -4,7 +4,12 @@ const router = express.Router();
 
 /* GET help page. */
 router.get('/', function(req, res, next) {
-  res.render('help');
+  // check if signed in
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+  res.render('help', {isSignedIn: isSignedIn});
 });
 
 module.exports = router;

@@ -6,7 +6,12 @@
     <link rel='stylesheet' href='/stylesheets/single-entry.css' />
   </head>
   <body>
-    <%- include('components/navbar'); %>
+    <% if(isSignedIn){ %>
+      <%- include('components/navbar_signed_in'); %>
+    <% } else { %>
+      <%- include('components/navbar'); %>
+    <% } %>
+    
     <div class="container-fluid p-0">
       <div class="d-flex flex-row justify-content-center bd-highlight text-light bg-danger pt-3">
         <h1><%= Entries[0].meteorite_name %> - Entry ID: <%= Entries[0].entry_id %></h1>

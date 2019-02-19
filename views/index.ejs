@@ -6,7 +6,11 @@
     <link rel='stylesheet' href='/stylesheets/index.css' />
   </head>
   <body>
-    <%- include('components/navbar'); %>
+    <% if(isSignedIn){ %>
+      <%- include('components/navbar_signed_in'); %>
+    <% } else { %>
+      <%- include('components/navbar'); %>
+    <% } %>
 
   	<div class="container-fluid pt-3 pb-4" id="top-container">
       <div class="row">

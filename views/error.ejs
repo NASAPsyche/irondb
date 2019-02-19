@@ -5,7 +5,11 @@
     <%- include('bootstrap/css'); %>
   </head>
   <body>
-    <%- include('components/navbar'); %>
+    <% if(isSignedIn){ %>
+      <%- include('components/navbar_signed_in'); %>
+    <% } else { %>
+      <%- include('components/navbar'); %>
+    <% } %>
 
   	<div class="container-fluid">
   		<h1 class="text-danger"><%= message %></h1>
