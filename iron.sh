@@ -1,9 +1,27 @@
 #!/bin/bash
+# Kenneth Bonilla 2019
+# Iron Shell - Iron Meteorite Database Manager
+# For deploying and managing the docker composition.
 
-# Displays the help, default display this when no args given
+# Displays the help contents
 function show_help ()
 {
-  echo "Welcome to the Iron Meteorite Database. Make sure Docker is running."
+  echo "                                        "
+  echo "    ██╗██████╗  ██████╗ ███╗   ██╗      "
+  echo "    ██║██╔══██╗██╔═══██╗████╗  ██║      "
+  echo "    ██║██████╔╝██║   ██║██╔██╗ ██║      "
+  echo "    ██║██╔══██╗██║   ██║██║╚██╗██║      "
+  echo "    ██║██║  ██║╚██████╔╝██║ ╚████║      "
+  echo "    ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝      "
+  echo "███████╗██╗  ██╗███████╗██╗     ██╗     "
+  echo "██╔════╝██║  ██║██╔════╝██║     ██║     "
+  echo "███████╗███████║█████╗  ██║     ██║     "
+  echo "╚════██║██╔══██║██╔══╝  ██║     ██║     "
+  echo "███████║██║  ██║███████╗███████╗███████╗"
+  echo "╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
+  echo "                                        "
+  echo "Welcome to the Iron Meteorite Database Manager." 
+  echo "Make sure Docker is running before performing any operations."
   echo "-h    Help: Displays the command options"
   echo "--------"
   echo "-i    Initial install: Install dependencies, build the containers, and launch"
@@ -17,8 +35,11 @@ function show_help ()
   echo "-a    Attached quick launch: Launches the server with node output to shell."
   echo "-f    Fresh build: Rebuild containers and launch."
   echo "--------"
+  echo "-m    Mock data - add some mock data."
   echo "-s    Stop the server."
-  echo "-x    Stop and delete all containers."
+  echo "-x    Reset Docker Environment - Stops the server and clear the docker environment."
+  echo "      Consider this the factory refresh of your Docker environment. Frees up space " 
+  echo "      in your virtual drive. This does NOT uninstall Docker. "
   echo "--------"
   echo "Postgress must be running for backup operations."
   echo "-b    Backup: Makes a backup of the database."
@@ -26,13 +47,13 @@ function show_help ()
   echo ""
 }
 
-# No args, display help
+# No args given, display help
 if [[ $# -eq 0 ]] ; then
   show_help
   exit 1
 fi 
 
-# Declare functions for manipulating server and database
+#### Declare functions for manipulating server and database ###
 
 # Install the global dependencies
 function install_global_deps ()
@@ -120,22 +141,24 @@ function start_attached ()
 function delete_containers ()
 {
   echo "This will delete ALL containers on the system, are you sure you want to continue? "
-  read -n1 -p "[y,n]: " doit 
+  read -n1 -p "[y/N]: " doit 
   case $doit in  
     y|Y) 
-      echo "Stopping all running containers"
-      docker stop $(docker ps -aq)
-      echo "Deleting all containers"
-      docker rm $(docker ps -aq)
-      echo "Removing dangling containers"
-      docker images -aq -f 'dangling=true' | xargs docker rmi
-      ;; 
-    n|N) 
-      echo " "
-      echo "Selected NO, exiting." ;; 
-    *) 
+      # The output is supressed to avoid unecessary warnings about
+      # docker ${command} requiring at least one argument
+      # since that just means it didn't find anything that met the criteria
       echo ""
-      echo "Exiting" ;; 
+      echo "Stop and remove running containers"
+      docker stop $(docker ps -aq)  > /dev/null 2>&1
+      docker rm $(docker ps -aq)  > /dev/null 2>&1
+      echo "Erasing dangling containers "
+      docker images -aq -f 'dangling=true' | xargs docker rmi  > /dev/null 2>&1
+      echo "Reclaiming space on virtual drive "
+      docker system prune -a --volumes
+      ;; 
+    *) # NO
+      echo ""
+      ;; 
   esac
 }
 
@@ -158,8 +181,45 @@ function restore_recent ()
   cd ..
 }
 
+# Populate mock data
+function populate_mock_data ()
+{
+  echo "Populating mock data"
+  echo "Connecting to postgres, this may take some time"
+  NORESP=""
+  PSYEXISTS="$(pip list | grep "psycopg2-binary")"
+  PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+  # install psycopg2-binary if not exists
+  if [[ "$PSYEXISTS" =  "$NORESP" ]]
+  then 
+    pip install psycopg2-binary
+  fi
+
+  COUNTER=0
+  while [[ "$PGACK" = "$NORESP" ]]
+  do
+    echo -n "."
+    sleep 1
+    PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+    COUNTER=$((COUNTER + 1))
+    if [[ "$COUNTER" -ge 30 ]]
+    then
+      echo "This operation timed out. Make sure that Postgres is running and try again."
+      exit 1;
+    fi
+  done
+
+  echo ""
+  echo "adding users"
+  node docker/mock-users.js 
+  echo "adding user info"
+  python docker/mock-user-info.py 
+}
+
+### BEGIN ###
+
 # Read in the options and perform the tasks
-while getopts ":hilpqafsxbr " opt; do
+while getopts ":hilpqafsxbrm " opt; do
   case ${opt} in
     h )
       show_help
@@ -183,6 +243,7 @@ while getopts ":hilpqafsxbr " opt; do
       rm_db
       install_node_deps
       start_detached
+      # populate_mock_data
       ;;
     q ) #quick launch
       stop_containers
@@ -198,6 +259,9 @@ while getopts ":hilpqafsxbr " opt; do
       rm_db
       build_containers
       start_detached
+      ;;
+    m )
+      populate_mock_data
       ;;
     s )
       stop_containers

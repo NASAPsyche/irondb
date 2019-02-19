@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 // Remove row when x clicked.
 $( 'i' ).click(function() {
   $( this ).parent().parent().remove();
