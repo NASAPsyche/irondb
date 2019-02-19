@@ -145,9 +145,15 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  // check if signed in
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {isSignedIn: isSignedIn});
 });
 
 module.exports = app;

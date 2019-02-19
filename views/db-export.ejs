@@ -7,7 +7,11 @@
     <link rel='stylesheet' href='/stylesheets/db-export.css' />
   </head>
   <body>
-    <%- include('components/navbar'); %>
+    <% if(isSignedIn){ %>
+      <%- include('components/navbar_signed_in'); %>
+    <% } else { %>
+      <%- include('components/navbar'); %>
+    <% } %>
 
     <div class="container-fluid pt-3">
       <div class="row">

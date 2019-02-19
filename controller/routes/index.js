@@ -4,7 +4,11 @@ const router = express.Router();
 
 /* GET landing page. */
 router.get('/', function(req, res, next) {
-  res.render('index');
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+  res.render('index', {isSignedIn: isSignedIn});
 });
 
 module.exports = router;

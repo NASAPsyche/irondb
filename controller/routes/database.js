@@ -206,6 +206,10 @@ router.post('/', function(req, res, next) {
 
 // /* GET /database/export */
 // router.get('/export', function(req, res, next) {
+//   let isSignedIn = false;
+// if (req.isAuthenticated()) {
+//   isSignedIn = true;
+// }
 //   db.query(
 //       'SELECT * FROM complete_table WHERE status=$1',
 //       ['active'],
@@ -213,7 +217,8 @@ router.post('/', function(req, res, next) {
 //         if (dbErr) {
 //           return next(dbErr);
 //         }
-//         res.render('db-export', {Entries: dbRes.rows});
+// eslint-disable-next-line max-len
+//         res.render('db-export', {Entries: dbRes.rows, isSignedIn: isSignedIn}});
 //       });
 // });
 
@@ -303,6 +308,10 @@ router.post('/', function(req, res, next) {
 
 /* GET /database/export */
 // router.get('/:id', function(req, res, next) {
+// let isSignedIn = false;
+// if (req.isAuthenticated()) {
+//   isSignedIn = true;
+// }
 // eslint-disable-next-line max-len
 //   const queryString = 'SELECT * FROM complete_table WHERE status=$1 AND entry_id=$2';
 
@@ -312,8 +321,8 @@ router.post('/', function(req, res, next) {
 //     if (dbErr) {
 //       return next(dbErr);
 //     }
-
-//     res.render('single-entry', {Entries: dbRes.rows});
+// eslint-disable-next-line max-len
+//     res.render('single-entry', {Entries: dbRes.rows, isSignedIn: isSignedIn}});
 //   });
 // });
 

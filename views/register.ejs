@@ -6,7 +6,11 @@
   <link rel='stylesheet' href='/stylesheets/auth_form.css' />
 </head>
 <body>
-  <%- include('components/navbar'); %>
+  <% if(isSignedIn){ %>
+    <%- include('components/navbar_signed_in'); %>
+  <% } else { %>
+    <%- include('components/navbar'); %>
+  <% } %>
 
   <div class="container mt-4">
     <div class="row">

@@ -7,7 +7,11 @@ const passport = require('passport');
 
 /* GET registration page. */
 router.get('/', function(req, res, next) {
-  res.render('register');
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+  res.render('register', {isSignedIn: isSignedIn});
 });
 
 router.post('/', function(req, res, next) {
