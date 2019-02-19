@@ -7,7 +7,11 @@
     <link rel='stylesheet' href='/stylesheets/db-export.css' />
   </head>
   <body>
-    <%- include('components/navbar'); %>
+    <% if(isSignedIn){ %>
+      <%- include('components/navbar_signed_in'); %>
+    <% } else { %>
+      <%- include('components/navbar'); %>
+    <% } %>
 
     <div class="container-fluid pt-3">
       <div class="row">
@@ -34,9 +38,21 @@
             <th>Name</th>
             <th>Group</th>
             <th>Measurement Technique</th>
-            <th>Major Elements</th>
-            <th>Minor Elements</th>
-            <th>Trace Elements</th>
+            <% var elementCount = 0;
+            for(var i=0; i < Entries.length; i++) { %>
+              
+              <th>
+                <%= Entries[i].element_symbol.charAt(0).toUpperCase() + Entries[i].element_symbol.slice(1) %>
+                <% if(Entries[i].measurement > 10000000) { %>
+                  [Major]
+                <% } else if(Entries[i].measurement <= 10000000 && Entries[i].measurement >= 1000000){ %>
+                  [Minor]
+                <% } else if(Entries[i].measurement < 1000000) {%>
+                  [Trace]
+                <% } %>
+              </th>
+
+            <% elementCount++; } %>
             <th>Title</th>
             <th>Authors</th>
             <th>Pg.#</th> 
@@ -46,18 +62,31 @@
           </tr>
         </thead>
         <tbody>
+          <% var currentRow = 0; %>
           <% for(var i=0; i < Entries.length; i++) { %>
             <tr>
               <th>
                 <i class="far fa-times-circle fa-2x row ml-1 mr-1 mt-5"></i>
               </th>
-              <th hidden="true"><%= Entries[i].entry_id %></th>
-              <th><%= Entries[i].meteorite_name %></th>
-              <th><%= Entries[i].classification_group %></th>
-              <th><%= Entries[i].technique %></th>
-              <th><%= Entries[i].major_elements %></th>
-              <th><%= Entries[i].minor_elements %></th>
-              <th><%= Entries[i].trace_elements %></th>
+              <th class="data meteorite_name"><%= Entries[i].meteorite_name %></th>
+              <th class="data classification_group"><%= Entries[i].classification_group %></th>
+              <th class="data "><%= Entries[i].technique %></th>
+              <% for(var j = 0; j < currentRow; j++) { %>
+                <th></th>
+              <% } currentRow++; %>
+              <th>
+                <% if (Entries[i].less_than === 'true') { %>
+                  &lt;
+                <% } %>
+                <%= Entries[i].measurement %>
+                <% if (Entries[i].deviation !== '0') { %>
+                  &plusmn; <%= Entries[i].deviation %>
+                <% } %>
+              </th>
+              <% elementCount--;
+                for(var j = 0; j < elementCount; j++) { %>
+                  <th></th>
+              <% } %>
               <th><%= Entries[i].title %></th>
               <th><%= Entries[i].authors %></th>
               <th><%= Entries[i].page_number %></th> 
