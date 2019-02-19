@@ -1711,16 +1711,16 @@ CREATE VIEW bodies_active AS (
 );
 
 CREATE VIEW elements_active AS (
-  SELECT t1.element_id ,
+  SELECT t1.element_id,
   t1.body_id,
-  t1.element_symbol ,
-  t1.paper_id ,
-  t1.page_number ,
-  t1.ppb_mean ,
-  t1.deviation ,
-  t1.less_than ,
-  t1.original_unit ,
-  t1.technique ,
+  t1.element_symbol,
+  t1.paper_id,
+  t1.page_number,
+  t1.ppb_mean,
+  t1.deviation,
+  t1.less_than,
+  t1.original_unit,
+  t1.technique,
   t1.note 
   FROM element_entries as t1
   INNER JOIN element_status as t2 on t1.status_id = t2.status_id
@@ -2009,6 +2009,27 @@ CREATE VIEW complete_table AS (
   INNER JOIN papers_with_journals_active AS t2 ON t1.paper_id = t2.paper_id
   INNER JOIN aggregated_authors_by_paper_id AS t3 ON t1.paper_id = t3.paper_id
   ORDER BY body_id, title, published_year
+);
+
+CREATE VIEW export_table AS (
+  SELECT t1.body_id,
+  t1.nomenclature AS meteorite_name,
+  t1.the_group AS classification_group,
+  t1.technique,
+  t1.element_symbol,
+  t1.ppb_mean AS measurement,
+  t1.deviation,
+  t1.less_than,
+  t1.title,
+  t2.authors,
+  t1.page_number,
+  t1.journal_name,
+  t1.volume,
+  t1.issue,
+  t1.published_year
+  FROM elements_with_bodies_papers_journals_active_with_id as t1 
+  INNER JOIN aggregated_authors_by_paper_id as t2 on t1.paper_id = t2.paper_id
+  ORDER BY body_id, title, page_number, measurement DESC
 );
 
 CREATE VIEW papers_pending AS (
