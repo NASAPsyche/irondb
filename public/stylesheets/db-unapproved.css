@@ -1,0 +1,22 @@
+#bottom-container {
+    background-color: #8c1d40;
+    box-shadow: 8px 8px 6px grey;
+}
+
+.h2 {
+    color: #FFC627;
+}
+
+.h3 {
+    color: #FFC627;
+}
+
+tr {
+    background-color: white;
+}
+
+.table:hover {
+    background-color: lightgray;
+}
+
+
