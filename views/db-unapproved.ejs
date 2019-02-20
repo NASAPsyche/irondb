@@ -1,15 +1,132 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Unapproved Database Entries</title>
-    <%- include('bootstrap/css'); %>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <%- include('components/navbar_signed_in'); %>
 
-    <h1>Placeholder db-unapproved</h1>
-    
-    <%- include('bootstrap/js'); %>
-  </body>
+<head>
+  <title>Unapproved Database Entries</title>
+  <%- include('bootstrap/css'); %>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel='stylesheet' href='/stylesheets/db-unapproved.css' />
+</head>
+
+<body>
+  <div>
+    <br>
+    <br>
+  </div>
+  <%- include('components/navbar_signed_in'); %>
+
+  <div class="container pt-1 pb-3" id="bottom-container">
+    <div class="d-flex flex-row align-items-center justify-content-left mt-5 mb-2">
+      <h3 class="h2">Unapproved Database Entries</h3>
+      <br>
+    </div>
+    <div>
+      <h2 class="h3">Click entry to review import</h2>
+    </div>
+
+
+
+
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Entry ID</th>
+          <th>Source ID</th>
+          <th>Date Imported</th>
+          <th>Imported by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>
+            001
+          </th>
+          <th>
+            003
+          </th>
+          <th>
+            02-18-2019
+          </th>
+          <th>
+            minion1
+          </th>
+        </tr>
+        <tr>
+          <th>
+            001
+          </th>
+          <th>
+            003
+          </th>
+          <th>
+            02-18-2019
+          </th>
+          <th>
+            minion1
+          </th>
+        </tr>
+        <tr>
+          <th>
+            001
+          </th>
+          <th>
+            003
+          </th>
+          <th>
+            02-18-2019
+          </th>
+          <th>
+            minion1
+          </th>
+        </tr>
+        <tr>
+          <th>
+            001
+          </th>
+          <th>
+            003
+          </th>
+          <th>
+            02-18-2019
+          </th>
+          <th>
+            minion1
+          </th>
+        </tr>
+        <tr>
+          <th>
+            001
+          </th>
+          <th>
+            003
+          </th>
+          <th>
+            02-18-2019
+          </th>
+          <th>
+            minion1
+          </th>
+        </tr>
+        <tr>
+          <th>
+            001
+          </th>
+          <th>
+            003
+          </th>
+          <th>
+            02-18-2019
+          </th>
+          <th>
+            minion1
+          </th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <%- include('bootstrap/js'); %>
+</body>
+
 </html>
