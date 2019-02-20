@@ -1,10 +1,10 @@
 const express = require('express');
 // eslint-disable-next-line new-cap
 const router = express.Router();
-// const createError = require('http-errors');
-// const path = require('path');
-// const fs = require('fs');
-// const json2csv = require('json2csv').parse;
+const createError = require('http-errors');
+const path = require('path');
+const fs = require('fs');
+const json2csv = require('json2csv').parse;
 const db = require('../db');
 const {isLoggedIn} = require('../middleware/auth');
 
@@ -204,104 +204,126 @@ router.post('/', function(req, res, next) {
 });
 
 
-// /* GET /database/export */
-// router.get('/export', function(req, res, next) {
-//   db.query(
-//       'SELECT * FROM complete_table WHERE status=$1',
-//       ['active'],
-//       (dbErr, dbRes) => {
-//         if (dbErr) {
-//           return next(dbErr);
-//         }
-//         res.render('db-export', {Entries: dbRes.rows});
-//       });
-// });
-
-
-// /* POST /database/export */
-// router.post('/export', function(req, res, next) {
-//   let queryString = '';
-//   if (req.body.hasOwnProperty('export')) {
-//     // Select only data rows
-//     queryString += 'SELECT meteorite_name, classification_group, technique,';
-//     queryString += ' major_elements, minor_elements, trace_elements, title,';
-//     queryString += ' authors, page_number, journal_name, issue_number,';
-//     queryString += ' published_year FROM complete_table WHERE status=$1 ';
-//   } else {
-//     queryString += 'SELECT * FROM complete_table WHERE status=$1 ';
-//   }
-
-//   const argsArray = ['active'];
-//   let currentQueryIndex = 2;
-
-//   if (!req.body.hasOwnProperty('entries')) {
-//     next(createError(400));
-//   }
-
-//   if ( req.body.entries.length >= 2) {
-//     req.body.entries.forEach(function(element) {
-//       argsArray.push(element);
-//       if (currentQueryIndex === 2) {
-//         // Set AND for first element added to query
-//         queryString += ('AND entry_id=$' + currentQueryIndex + ' ');
-//       } else {
-//         queryString += ('OR entry_id=$' + currentQueryIndex + ' ');
-//       }
-//       currentQueryIndex++;
-//     });
-//   } else if (req.body.entries.length === 1) {
-//     argsArray.push(req.body.entries[0]);
-//     queryString += ('AND entry_id=$' + currentQueryIndex + ' ');
-//   }
-
-
-//   db.query(queryString, argsArray, (dbErr, dbRes) => {
-//     if (dbErr) {
-//       return next(dbErr);
-//     }
-
-//     if (req.body.hasOwnProperty('export')) {
-//       const fields = [];
-//       fields.push('meteorite_name', 'classification_group', 'technique');
-//       fields.push('major_elements', 'minor_elements', 'trace_elements');
-//       fields.push('title', 'authors', 'page_number');
-//       fields.push('journal_name', 'issue_number', 'published_year');
-
-//       const opts = {fields};
-//       const date = new Date();
-//       const dateStr = date.toUTCString().replace(/ /g, '_');
-//       const filename = 'Database_export_' + dateStr + '.csv';
-
-// eslint-disable-next-line max-len
-//       const filePath = path.join(__dirname, ('../../public/temp/' + filename));
-
-//       try {
-//         // create and write csv using json2csv
-//         const csv = json2csv(dbRes.rows, opts);
-//         fs.writeFile(filePath, csv, function(err) {
-//           if (err) throw err;
-
-//           const options = {root: path.join(__dirname, '../../public/temp/')};
-//           res.sendFile(filename, options, function(err) {
-//             if (err) throw err;
-
-//             // remove sent file
-//             fs.unlink(filePath, function(err) {
-//               if (err) throw err;
-//             });
-//           });
-//         });
-//       } catch (err) {
-//         next(createError(500));
-//       }
-//     } else {
-//       res.render('db-export', {Entries: dbRes.rows});
-//     }
-//   });
-// });
-
-
 /* GET /database/export */
+router.get('/export', function(req, res, next) {
+  next(createError(501));
+});
+
+
+/* POST /database/export */
+router.post('/export', function(req, res, next) {
+  // check if signed in for navbar
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+  console.log(req.body);
+
+  if (req.body.hasOwnProperty('export')) {
+    // get arrays from request
+    const tableData = JSON.parse(req.body.tableData);
+    const fields = tableData.fields;
+    const data = tableData.data;
+
+    console.log(fields);
+    console.log(data);
+
+    const opts = {fields};
+    const date = new Date();
+    const dateStr = date.toUTCString().replace(/ /g, '_');
+    const filename = 'Database_export_' + dateStr + '.csv';
+
+    // eslint-disable-next-line max-len
+    const filePath = path.join(
+        __dirname, ('../../public/temp/' + filename));
+
+    try {
+      // create and write csv using json2csv
+      const csv = json2csv(data, opts);
+      fs.writeFile(filePath, csv, function(err) {
+        if (err) throw err;
+
+        const options = {root: path.join(__dirname, '../../public/temp/')};
+        res.sendFile(filename, options, function(err) {
+          if (err) throw err;
+
+          // remove sent file
+          fs.unlink(filePath, function(err) {
+            if (err) throw err;
+          });
+        });
+      });
+    } catch (err) {
+      next(createError(500));
+    }
+  } else {
+    // build query
+    let queryString = '';
+    if (!req.body.hasOwnProperty('export')) {
+      // if not export select corresponding rows from export table
+      queryString += 'SELECT * FROM export_table WHERE published_year > 1900 ';
+    }
+
+    const argsArray = [];
+    let currentQueryIndex = 1;
+
+    if (!req.body.hasOwnProperty('entries')) {
+      // If request does not have ids for search
+      next(createError(400));
+    }
+
+    if ( req.body.entries.length >= 2) {
+      req.body.entries.forEach(function(element) {
+        argsArray.push(element);
+        if (currentQueryIndex === 1) {
+          // Set AND for first element added to query
+          queryString += ('AND body_id=$' + currentQueryIndex + ' ');
+        } else {
+          queryString += ('OR body_id=$' + currentQueryIndex + ' ');
+        }
+        currentQueryIndex++;
+      });
+    } else if (req.body.entries.length === 1) {
+      argsArray.push(req.body.entries[0]);
+      queryString += ('AND body_id=$' + currentQueryIndex + ' ');
+    }
+
+    db.query(queryString, argsArray, (dbErr, dbRes) => {
+      if (dbErr) {
+        return next(dbErr);
+      }
+
+      // element symbols with categories
+      // Refactor to db queries
+      const major = [];
+      const minor = [];
+      const trace = [];
+      for (const row in dbRes.rows) {
+        if (dbRes.rows[row].measurement > 10000000 ) {
+          if (!major.includes(dbRes.rows[row].element_symbol)) {
+            major.push(dbRes.rows[row].element_symbol);
+          }
+        } else if (dbRes.rows[row].measurement <= 10000000
+              && dbRes.rows[row].measurement >= 1000000) {
+          if (!minor.includes(dbRes.rows[row].element_symbol)) {
+            minor.push(dbRes.rows[row].element_symbol);
+          }
+        } else if (dbRes.rows[row].measurement < 1000000) {
+          if (!trace.includes(dbRes.rows[row].element_symbol)) {
+            trace.push(dbRes.rows[row].element_symbol);
+          }
+        }
+      }
+
+      res.render('db-export', {Entries: dbRes.rows,
+        major: major, minor: minor,
+        trace: trace, isSignedIn: isSignedIn});
+    });
+  }
+});
+
+
+/* GET single entry */
 // router.get('/:id', function(req, res, next) {
 // eslint-disable-next-line max-len
 //   const queryString = 'SELECT * FROM complete_table WHERE status=$1 AND entry_id=$2';
