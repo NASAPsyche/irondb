@@ -38,21 +38,15 @@
             <th>Name</th>
             <th>Group</th>
             <th>Measurement Technique</th>
-            <% var elementCount = 0;
-            for(var i=0; i < Entries.length; i++) { %>
-              
-              <th>
-                <%= Entries[i].element_symbol.charAt(0).toUpperCase() + Entries[i].element_symbol.slice(1) %>
-                <% if(Entries[i].measurement > 10000000) { %>
-                  [Major]
-                <% } else if(Entries[i].measurement <= 10000000 && Entries[i].measurement >= 1000000){ %>
-                  [Minor]
-                <% } else if(Entries[i].measurement < 1000000) {%>
-                  [Trace]
-                <% } %>
-              </th>
-
-            <% elementCount++; } %>
+            <% for(var i=0; i < major.length; i++) { %>
+              <th><%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (major)</th>
+            <% } %>
+            <% for(var i=0; i < minor.length; i++) { %>
+              <th><%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (minor)</th>
+            <% } %>
+            <% for(var i=0; i < trace.length; i++) { %>
+              <th><%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (trace)</th>
+            <% } %>
             <th>Title</th>
             <th>Authors</th>
             <th>Pg.#</th> 
@@ -70,29 +64,94 @@
               </th>
               <th class="data meteorite_name"><%= Entries[i].meteorite_name %></th>
               <th class="data classification_group"><%= Entries[i].classification_group %></th>
-              <th class="data "><%= Entries[i].technique %></th>
-              <% for(var j = 0; j < currentRow; j++) { %>
-                <th></th>
-              <% } currentRow++; %>
-              <th>
-                <% if (Entries[i].less_than === 'true') { %>
-                  &lt;
-                <% } %>
-                <%= Entries[i].measurement %>
-                <% if (Entries[i].deviation !== '0') { %>
-                  &plusmn; <%= Entries[i].deviation %>
-                <% } %>
-              </th>
-              <% elementCount--;
-                for(var j = 0; j < elementCount; j++) { %>
+              <th class="data technique"><%= Entries[i].technique %></th>
+              <!-- Major elements -->
+              <% if ( major.indexOf(Entries[i].element_symbol) === -1 ) { %>
+                <!-- if element symbol not in elements array print all empty -->
+                <% for(var j = 0; j < major.length; j++) { %>
                   <th></th>
+                <% } %>
+              <% } else { %>
+                <!-- else print empty upto index -->
+                <% for(var j = 0; j < major.indexOf(Entries[i].element_symbol); j++) { %>
+                  <th></th>
+                <% } %>
+                <!-- print element at index -->
+                <th>
+                    <% if (Entries[i].less_than === true) { %>
+                      &lt;
+                    <% } %>
+                    <%= Entries[i].measurement %>
+                    <% if (Entries[i].deviation !== 0) { %>
+                      &plusmn; <%= Entries[i].deviation %>
+                    <% } %>
+                  </th>
+                <!-- print empty till end of array -->
+                <% for(var j = major.indexOf(Entries[i].element_symbol) + 1; j < major.length; j++) { %>
+                  <th></th>
+                <% } %>
               <% } %>
-              <th><%= Entries[i].title %></th>
-              <th><%= Entries[i].authors %></th>
-              <th><%= Entries[i].page_number %></th> 
-              <th><%= Entries[i].journal_name %></th> 
-              <th><%= Entries[i].issue_number %></th>
-              <th><%= Entries[i].published_year %></th> 
+
+              <!-- Minor elements -->
+              <% if ( minor.indexOf(Entries[i].element_symbol) === -1 ) { %>
+                <!-- if element symbol not in elements array print all empty -->
+                <% for(var j = 0; j < minor.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } else { %>
+                <!-- else print empty upto index -->
+                <% for(var j = 0; j < minor.indexOf(Entries[i].element_symbol); j++) { %>
+                  <th></th>
+                <% } %>
+                <!-- print element at index -->
+                <th>
+                    <% if (Entries[i].less_than === true) { %>
+                      &lt;
+                    <% } %>
+                    <%= Entries[i].measurement %>
+                    <% if (Entries[i].deviation !== 0) { %>
+                      &plusmn; <%= Entries[i].deviation %>
+                    <% } %>
+                  </th>
+                <!-- print empty till end of array -->
+                <% for(var j = minor.indexOf(Entries[i].element_symbol) + 1; j < minor.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } %>
+
+              <!-- Trace elements -->
+              <% if ( trace.indexOf(Entries[i].element_symbol) === -1 ) { %>
+                <!-- if element symbol not in elements array print all empty -->
+                <% for(var j = 0; j < trace.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } else { %>
+                <!-- else print empty upto index -->
+                <% for(var j = 0; j < trace.indexOf(Entries[i].element_symbol); j++) { %>
+                  <th></th>
+                <% } %>
+                <!-- print element at index -->
+                <th>
+                    <% if (Entries[i].less_than === true) { %>
+                      &lt;
+                    <% } %>
+                    <%= Entries[i].measurement %>
+                    <% if (Entries[i].deviation !== 0) { %>
+                      &plusmn; <%= Entries[i].deviation %>
+                    <% } %>
+                  </th>
+                <!-- print empty till end of array -->
+                <% for(var j = trace.indexOf(Entries[i].element_symbol) + 1; j < trace.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } %>
+
+              <th class="data title"><%= Entries[i].title %></th>
+              <th class="data authors"><%= Entries[i].authors %></th>
+              <th class="data page_number"><%= Entries[i].page_number %></th> 
+              <th class="data journal_name"><%= Entries[i].journal_name %></th> 
+              <th class="data issue_number"><%= Entries[i].issue_number %></th>
+              <th class="data published_year"><%= Entries[i].published_year %></th> 
             </tr>
           <% } %>
         </tbody>
@@ -101,8 +160,9 @@
 
     <div class="container-fluid">
       <div class="d-flex flex-row-reverse">
-        <form action="/database/export" method="POST">
-          <div id="entry-ids"></div>
+        <form action="/database/export" method="POST" id="export-form">
+          <label class="sr-only" for="tableData">table data for export request</label>
+          <input type="hidden" id="tableData" name="tableData" ></input>
           <!-- <div class="form-group form-check">
             <input type="checkbox" class="form-check-input" id="notes" name="notes">
             <label class="form-check-label" for="notes">Include Notes:</label>
