@@ -8,6 +8,9 @@ $( 'i' ).click(function() {
   }
 });
 
+$('#top-btn').on('click', function() {
+  $('#export-btn').trigger('click');
+});
 
 $( '#export-form' ).submit( function( event ) {
   // Get fields
