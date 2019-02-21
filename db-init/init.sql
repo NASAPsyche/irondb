@@ -2156,3 +2156,14 @@ CREATE VIEW full_attributions_flagged AS (
   INNER JOIN flagged_journals as t3 on t2.paper_id = t3.journal_id
   INNER JOIN flagged_authors as t4 on t3.journal_id = t4.author_id
 );
+
+CREATE VIEW pending_entries_panel AS (
+  SELECT t1.body_id,
+  t2.nomenclature,
+  t3.title,
+  t1.submission_date,
+  t1.submitted_by
+  FROM body_status AS t1
+  INNER JOIN bodies AS t2 ON t1.status_id = t2.status_id AND t1.current_status='pending'
+  INNER JOIN papers AS t3 ON t3.status_id = t2.status_id AND t1.current_status='pending'
+);
