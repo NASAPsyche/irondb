@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS journals (
 CREATE TABLE IF NOT EXISTS papers (
   paper_id serial PRIMARY KEY,
   journal_id integer NOT NULL,
-  title citext NOT NULL UNIQUE,
+  title citext NOT NULL,
   doi citext,
   status_id bigint
 );
