@@ -217,16 +217,12 @@ router.post('/export', function(req, res, next) {
   if (req.isAuthenticated()) {
     isSignedIn = true;
   }
-  console.log(req.body);
 
   if (req.body.hasOwnProperty('export')) {
     // get arrays from request
     const tableData = JSON.parse(req.body.tableData);
     const fields = tableData.fields;
     const data = tableData.data;
-
-    console.log(fields);
-    console.log(data);
 
     const opts = {fields};
     const date = new Date();
