@@ -62,7 +62,7 @@ router.post('/', function(req, res, next) {
     //      Optional Search Parameters
     // ------------------------------------
     if (req.body.hasOwnProperty('journal_name')
-        && req.body.journal_name !== '') {
+      && req.body.journal_name !== '') {
       argsArray.push(req.body.journal_name);
       queryString += ('AND journal_name ~* $' + currentQueryIndex + ' ');
       currentQueryIndex++;
@@ -333,8 +333,16 @@ router.get('/reported', isLoggedIn, function(req, res, next) {
 
 /* GET /database/unapproved */
 router.get('/unapproved', isLoggedIn, function(req, res, next) {
-  // placeholder
-  res.render('db-unapproved');
+  db.query(
+      'SELECT * FROM pending_entries_panel', [], (dbErr, dbRes) => {
+        if (dbErr) {
+          return next(dbErr);
+        }
+        console.log(dbRes);
+        res.render('db-unapproved', {
+          Entries: dbRes.rows,
+        });
+      });
 });
 
 module.exports = router;

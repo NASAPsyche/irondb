@@ -39,25 +39,27 @@
         </tr>
       </thead>
       <tbody>
+        <% for(var i=0; i < Entries.length; i++) { %>
         <tr>
           <th>
-            001
+            <%= Entries[i].body_id %>
           </th>
           <th>
-            003
-          </th>
-          <th> Fake Title</th>
-          <th>
-            02-18-2019
+            <%= Entries[i].nomenclature %>
           </th>
           <th>
-            minion1
+            <%= Entries[i].title %>
+          </th>
+          <th>
+            <%= Entries[i].submission_date %>
+          </th>
+          <th>
+            <%= Entries[i].submitted_by %>
           </th>
           <th>
             button
           </th>
-        </tr>
-
+          <% } %>
         </tr>
       </tbody>
     </table>
