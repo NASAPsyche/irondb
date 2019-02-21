@@ -218,10 +218,6 @@ router.get('/export', function(req, res, next) {
         if (dbErr) {
           return next(dbErr);
         }
-    // eslint-disable-next-line max-len
-    res.render('db-export', {Entries: dbRes.rows, isSignedIn: isSignedIn});
-  });
-});
 
         // element symbols with categories
         // Refactor to db queries
