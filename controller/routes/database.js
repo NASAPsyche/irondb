@@ -206,7 +206,45 @@ router.post('/', function(req, res, next) {
 
 /* GET /database/export */
 router.get('/export', function(req, res, next) {
-  next(createError(501));
+  // check if signed in
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+  db.query(
+      'SELECT * FROM export_table',
+      [],
+      (dbErr, dbRes) => {
+        if (dbErr) {
+          return next(dbErr);
+        }
+
+        // element symbols with categories
+        // Refactor to db queries
+        const major = [];
+        const minor = [];
+        const trace = [];
+        for (const row in dbRes.rows) {
+          if (dbRes.rows[row].measurement > 10000000 ) {
+            if (!major.includes(dbRes.rows[row].element_symbol)) {
+              major.push(dbRes.rows[row].element_symbol);
+            }
+          } else if (dbRes.rows[row].measurement <= 10000000
+                && dbRes.rows[row].measurement >= 1000000) {
+            if (!minor.includes(dbRes.rows[row].element_symbol)) {
+              minor.push(dbRes.rows[row].element_symbol);
+            }
+          } else if (dbRes.rows[row].measurement < 1000000) {
+            if (!trace.includes(dbRes.rows[row].element_symbol)) {
+              trace.push(dbRes.rows[row].element_symbol);
+            }
+          }
+        }
+
+        res.render('db-export', {Entries: dbRes.rows,
+          major: major, minor: minor,
+          trace: trace, isSignedIn: isSignedIn});
+      });
 });
 
 
