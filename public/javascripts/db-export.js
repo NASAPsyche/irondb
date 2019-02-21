@@ -22,27 +22,12 @@ $( '#export-form' ).submit( function( event ) {
   let currentRow = {};
   $('tbody > tr').map(function() {
     $.each( this.children, function(index, value) {
-      console.log(value);
       if (index === 0) {
         data.push(currentRow);
         currentRow = {};
       } else {
-        // console.log('-----------------------------------------');
-        // console.log('current field: ' + fields[index - 1]);
-        // console.log('current value: ' + value);
-        // console.log('current textContent: ' + value.textContent);
-        // console.log('null test ' + value.textContent === null);
-        // console.log('current innerText: ' + value.innerText);
-        // console.log('type of inner' + typeof value.innerText);
-        // console.log('-----------------------------------------');
-
         currentRow[fields[index - 1]] = (value.textContent.search(/\n/) !== -1)
             ? value.innerText : value.textContent;
-      }
-
-      if (data.length === index) {
-        data.shift();
-        data.push(currentRow);
       }
     });
   });

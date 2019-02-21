@@ -65,18 +65,14 @@
               <th class="data meteorite_name"><%= Entries[i].meteorite_name %></th>
               <th class="data classification_group"><%= Entries[i].classification_group %></th>
               <th class="data technique"><%= Entries[i].technique %></th>
-              <!-- Major elements -->
               <% if ( major.indexOf(Entries[i].element_symbol) === -1 ) { %>
-                <!-- if element symbol not in elements array print all empty -->
                 <% for(var j = 0; j < major.length; j++) { %>
                   <th></th>
                 <% } %>
               <% } else { %>
-                <!-- else print empty upto index -->
                 <% for(var j = 0; j < major.indexOf(Entries[i].element_symbol); j++) { %>
                   <th></th>
                 <% } %>
-                <!-- print element at index -->
                 <th>
                     <% if (Entries[i].less_than === true) { %>
                       &lt;
@@ -86,24 +82,19 @@
                       &plusmn; <%= Entries[i].deviation %>
                     <% } %>
                   </th>
-                <!-- print empty till end of array -->
                 <% for(var j = major.indexOf(Entries[i].element_symbol) + 1; j < major.length; j++) { %>
                   <th></th>
                 <% } %>
               <% } %>
 
-              <!-- Minor elements -->
               <% if ( minor.indexOf(Entries[i].element_symbol) === -1 ) { %>
-                <!-- if element symbol not in elements array print all empty -->
                 <% for(var j = 0; j < minor.length; j++) { %>
                   <th></th>
                 <% } %>
               <% } else { %>
-                <!-- else print empty upto index -->
                 <% for(var j = 0; j < minor.indexOf(Entries[i].element_symbol); j++) { %>
                   <th></th>
                 <% } %>
-                <!-- print element at index -->
                 <th>
                     <% if (Entries[i].less_than === true) { %>
                       &lt;
@@ -113,24 +104,19 @@
                       &plusmn; <%= Entries[i].deviation %>
                     <% } %>
                   </th>
-                <!-- print empty till end of array -->
                 <% for(var j = minor.indexOf(Entries[i].element_symbol) + 1; j < minor.length; j++) { %>
                   <th></th>
                 <% } %>
               <% } %>
 
-              <!-- Trace elements -->
               <% if ( trace.indexOf(Entries[i].element_symbol) === -1 ) { %>
-                <!-- if element symbol not in elements array print all empty -->
                 <% for(var j = 0; j < trace.length; j++) { %>
                   <th></th>
                 <% } %>
               <% } else { %>
-                <!-- else print empty upto index -->
                 <% for(var j = 0; j < trace.indexOf(Entries[i].element_symbol); j++) { %>
                   <th></th>
                 <% } %>
-                <!-- print element at index -->
                 <th>
                     <% if (Entries[i].less_than === true) { %>
                       &lt;
@@ -140,7 +126,6 @@
                       &plusmn; <%= Entries[i].deviation %>
                     <% } %>
                   </th>
-                <!-- print empty till end of array -->
                 <% for(var j = trace.indexOf(Entries[i].element_symbol) + 1; j < trace.length; j++) { %>
                   <th></th>
                 <% } %>
@@ -163,10 +148,6 @@
         <form action="/database/export" method="POST" id="export-form">
           <label class="sr-only" for="tableData">table data for export request</label>
           <input type="hidden" id="tableData" name="tableData" ></input>
-          <!-- <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="notes" name="notes">
-            <label class="form-check-label" for="notes">Include Notes:</label>
-          </div> -->
           <button class="btn btn-warning" id="export-btn" name="export" value="true">Export Data</button>
         </form>
       </div>
