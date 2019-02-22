@@ -501,7 +501,7 @@ INSERT INTO papers (journal_id,  title)
 
 INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
   VALUES
-  (DEFAULT, 'Dummy', '', '', true),
+  (DEFAULT, 'Dummy', 'Michael', '', true),
   (DEFAULT, 'Fake', '', '', true),
   (DEFAULT, 'Wasson', 'John', 'T.', DEFAULT),
   (DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT);
@@ -510,7 +510,7 @@ INSERT INTO attributions (paper_id, author_id)
   VALUES 
   (
     (SELECT paper_id FROM papers WHERE title='Dummy'),
-    (SELECT author_id FROM authors WHERE primary_name='Dummy')
+    (SELECT author_id FROM authors WHERE primary_name='Dummy' and first_name='Michael')
   ),
   (
     (SELECT paper_id FROM papers WHERE title='Fake'),
@@ -1172,7 +1172,7 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
     (
       SELECT attribution_id FROM attributions
       WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Dummy')
-      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Dummy')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Dummy' AND first_name='Michael')
     ),
     'pending',
     'Ken',
@@ -2042,6 +2042,15 @@ CREATE VIEW papers_pending AS (
   AND t2.current_status = 'pending'
 );
 
+CREATE VIEW groups_pending AS (
+  SELECT t1.group_id,
+  t1.body_id,
+  t1.the_group
+  FROM groups as t1
+  INNER JOIN group_status as t2 on t1.status_id = t2.status_id
+  AND t2.current_status = 'pending'
+);
+
 CREATE VIEW flagged_papers AS (
   SELECT t1.paper_id,
   t1.journal_id,
@@ -2073,6 +2082,22 @@ CREATE VIEW authors_pending AS (
   FROM authors as t1
   INNER JOIN author_status as t2 on t1.status_id = t2.status_id
   AND t2.current_status = 'pending'
+);
+
+CREATE VIEW attributions_pending AS (
+  SELECT t1.attribution_id,
+  t1.paper_id,
+  t1.author_id
+  FROM attributions as t1
+  INNER JOIN attribution_status as t2 on t1.status_id = t2.status_id
+    AND t2.current_status = 'pending'
+);
+
+CREATE VIEW pending_aggregated_authors_by_paper_id AS (
+  SELECT string_agg(t1.author_name, ', ') AS authors, 
+  t2.paper_id FROM authors_pending AS t1
+  INNER JOIN attributions_pending AS t2 ON t1.author_id = t2.author_id
+  GROUP BY paper_id
 );
 
 CREATE VIEW flagged_authors AS (
@@ -2139,15 +2164,6 @@ CREATE VIEW flagged_journals AS (
   INNER JOIN journal_review as t2 on t1.journal_id = t2.journal_id
 );
 
-CREATE VIEW attributions_pending AS (
-  SELECT t1.attribution_id,
-  t1.paper_id,
-  t1.author_id
-  FROM attributions as t1
-  INNER JOIN attribution_status as t2 on t1.status_id = t2.status_id
-    AND t2.current_status = 'pending'
-);
-
 CREATE VIEW flagged_attributions AS (
   SELECT t1.attribution_id,
   t1.paper_id,
@@ -2156,16 +2172,6 @@ CREATE VIEW flagged_attributions AS (
   INNER JOIN attribution_review as t2 on t1.attribution_id = t2.attribution_id
 );
 
-CREATE VIEW full_attributions_pending AS (
-  SELECT t1.nomenclature,
-  t2.title,
-  t3.published_year,
-  t4.author_name
-  FROM bodies_pending as t1
-  INNER JOIN papers_pending as t2 on t1.body_id = t2.journal_id
-  INNER JOIN journals_pending as t3 on t2.paper_id = t3.journal_id
-  INNER JOIN authors_pending as t4 on t3.journal_id = t4.author_id
-);
 
 CREATE VIEW full_attributions_flagged AS (
   SELECT t1.nomenclature,
@@ -2178,13 +2184,67 @@ CREATE VIEW full_attributions_flagged AS (
   INNER JOIN flagged_authors as t4 on t3.journal_id = t4.author_id
 );
 
-CREATE VIEW pending_entries_panel AS (
+CREATE VIEW pending_elements_with_bodies_groups AS (
+  SELECT t1.nomenclature,
+  t2.the_group,
+  t3.*
+  FROM bodies_pending as t1 
+  INNER JOIN groups_pending as t2 on t1.body_id = t2.body_id
+  INNER JOIN elements_pending as t3 on t1.body_id = t3.body_id
+);
+
+CREATE VIEW pending_papers_with_journals AS (
+  SELECT t1.journal_id,
+  t1.journal_name,
+  t1.volume,
+  t1.issue,
+  t1.series,
+  t1.published_year,
+  t2.title,
+  t2.paper_id,
+  t2.doi
+  FROM journals_pending as t1 
+  INNER JOIN papers_pending as t2 on t1.journal_id = t2.journal_id
+);
+
+CREATE VIEW pending_elements_with_bodies_papers_journals AS (
   SELECT t1.body_id,
-  t2.nomenclature,
-  t3.title,
-  t1.submission_date,
-  t1.submitted_by
-  FROM body_status AS t1
-  INNER JOIN bodies AS t2 ON t1.status_id = t2.status_id AND t1.current_status='pending'
-  INNER JOIN papers AS t3 ON t3.status_id = t2.status_id AND t1.current_status='pending'
+  t1.nomenclature,
+  t1.the_group,
+  t1.element_symbol,
+  t1.ppb_mean,
+  t1.deviation,
+  t1.less_than,
+  t1.original_unit,
+  t1.technique,
+  t1.note,
+  t2.journal_name,
+  t2.volume,
+  t2.issue,
+  t2.series,
+  t2.published_year,
+  t2.title,
+  t1.page_number,
+  t2.paper_id
+  FROM pending_elements_with_bodies_groups as t1 
+  INNER JOIN pending_papers_with_journals as t2 on t1.paper_id = t2.paper_id
+);
+
+CREATE VIEW full_attributions_pending AS (
+  SELECT t1.nomenclature,
+    t1.title,
+    t1.published_year,
+    t2.authors
+    FROM pending_elements_with_bodies_papers_journals as t1
+    INNER JOIN pending_aggregated_authors_by_paper_id as t2 on t1.paper_id = t2.paper_id
+);
+
+CREATE VIEW pending_entries_panel AS (
+  select t1.body_id,
+  t1.nomenclature,
+  t1.title,
+  t2.submission_date,
+  t2.submitted_by
+  from pending_elements_with_bodies_papers_journals as t1
+  inner join body_status as t2 on t1.body_id = t2.body_id and t2.current_status='pending'
 );

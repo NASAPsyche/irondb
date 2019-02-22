@@ -145,7 +145,7 @@ router.post('/insert', isLoggedIn, function(req, res, next) {
     const author = {
       'primaryName': body_[String(name)],
       'firstName': body_[String(firstName)],
-      'middleNmae': body_[String(middleName)],
+      'middleName': body_[String(middleName)],
       'singleEntity': singleEntityVal,
     };
     authors.push(author);
