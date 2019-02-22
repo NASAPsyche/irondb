@@ -13,7 +13,7 @@
       <%- include('components/navbar'); %>
     <% } %>
 
-    <div class="container-fluid pt-3">
+    <div class="container-fluid pt-3 ml-3">
       <div class="row">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
@@ -28,6 +28,9 @@
       <div class="row">
         <p>Select meteorites for inclusion in export.</p>
       </div>
+      <div class="row align-right">
+        <button class="btn btn-warning" id="top-btn">Export Data</button>
+      </div>
     </div>
 
     <div class="container-fluid pt-3" id="entries">
@@ -38,9 +41,15 @@
             <th>Name</th>
             <th>Group</th>
             <th>Measurement Technique</th>
-            <th>Major Elements</th>
-            <th>Minor Elements</th>
-            <th>Trace Elements</th>
+            <% for(var i=0; i < major.length; i++) { %>
+              <th><%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (major)</th>
+            <% } %>
+            <% for(var i=0; i < minor.length; i++) { %>
+              <th><%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (minor)</th>
+            <% } %>
+            <% for(var i=0; i < trace.length; i++) { %>
+              <th><%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (trace)</th>
+            <% } %>
             <th>Title</th>
             <th>Authors</th>
             <th>Pg.#</th> 
@@ -50,24 +59,87 @@
           </tr>
         </thead>
         <tbody>
+          <% var currentRow = 0; %>
           <% for(var i=0; i < Entries.length; i++) { %>
             <tr>
               <th>
                 <i class="far fa-times-circle fa-2x row ml-1 mr-1 mt-5"></i>
               </th>
-              <th hidden="true"><%= Entries[i].entry_id %></th>
-              <th><%= Entries[i].meteorite_name %></th>
-              <th><%= Entries[i].classification_group %></th>
-              <th><%= Entries[i].technique %></th>
-              <th><%= Entries[i].major_elements %></th>
-              <th><%= Entries[i].minor_elements %></th>
-              <th><%= Entries[i].trace_elements %></th>
-              <th><%= Entries[i].title %></th>
-              <th><%= Entries[i].authors %></th>
-              <th><%= Entries[i].page_number %></th> 
-              <th><%= Entries[i].journal_name %></th> 
-              <th><%= Entries[i].issue_number %></th>
-              <th><%= Entries[i].published_year %></th> 
+              <th class="data meteorite_name"><%= Entries[i].meteorite_name %></th>
+              <th class="data classification_group"><%= Entries[i].classification_group %></th>
+              <th class="data technique"><%= Entries[i].technique %></th>
+              <% if ( major.indexOf(Entries[i].element_symbol) === -1 ) { %>
+                <% for(var j = 0; j < major.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } else { %>
+                <% for(var j = 0; j < major.indexOf(Entries[i].element_symbol); j++) { %>
+                  <th></th>
+                <% } %>
+                <th>
+                    <% if (Entries[i].less_than === true) { %>
+                      &lt;
+                    <% } %>
+                    <%= Entries[i].measurement %>
+                    <% if (Entries[i].deviation !== 0) { %>
+                      &plusmn; <%= Entries[i].deviation %>
+                    <% } %>
+                  </th>
+                <% for(var j = major.indexOf(Entries[i].element_symbol) + 1; j < major.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } %>
+
+              <% if ( minor.indexOf(Entries[i].element_symbol) === -1 ) { %>
+                <% for(var j = 0; j < minor.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } else { %>
+                <% for(var j = 0; j < minor.indexOf(Entries[i].element_symbol); j++) { %>
+                  <th></th>
+                <% } %>
+                <th>
+                    <% if (Entries[i].less_than === true) { %>
+                      &lt;
+                    <% } %>
+                    <%= Entries[i].measurement %>
+                    <% if (Entries[i].deviation !== 0) { %>
+                      &plusmn; <%= Entries[i].deviation %>
+                    <% } %>
+                  </th>
+                <% for(var j = minor.indexOf(Entries[i].element_symbol) + 1; j < minor.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } %>
+
+              <% if ( trace.indexOf(Entries[i].element_symbol) === -1 ) { %>
+                <% for(var j = 0; j < trace.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } else { %>
+                <% for(var j = 0; j < trace.indexOf(Entries[i].element_symbol); j++) { %>
+                  <th></th>
+                <% } %>
+                <th>
+                    <% if (Entries[i].less_than === true) { %>
+                      &lt;
+                    <% } %>
+                    <%= Entries[i].measurement %>
+                    <% if (Entries[i].deviation !== 0) { %>
+                      &plusmn; <%= Entries[i].deviation %>
+                    <% } %>
+                  </th>
+                <% for(var j = trace.indexOf(Entries[i].element_symbol) + 1; j < trace.length; j++) { %>
+                  <th></th>
+                <% } %>
+              <% } %>
+
+              <th class="data title"><%= Entries[i].title %></th>
+              <th class="data authors"><%= Entries[i].authors %></th>
+              <th class="data page_number"><%= Entries[i].page_number %></th> 
+              <th class="data journal_name"><%= Entries[i].journal_name %></th> 
+              <th class="data issue_number"><%= Entries[i].issue_number %></th>
+              <th class="data published_year"><%= Entries[i].published_year %></th> 
             </tr>
           <% } %>
         </tbody>
@@ -76,12 +148,9 @@
 
     <div class="container-fluid">
       <div class="d-flex flex-row-reverse">
-        <form action="/database/export" method="POST">
-          <div id="entry-ids"></div>
-          <!-- <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="notes" name="notes">
-            <label class="form-check-label" for="notes">Include Notes:</label>
-          </div> -->
+        <form action="/database/export" method="POST" id="export-form">
+          <label class="sr-only" for="tableData">table data for export request</label>
+          <input type="hidden" id="tableData" name="tableData" ></input>
           <button class="btn btn-warning" id="export-btn" name="export" value="true">Export Data</button>
         </form>
       </div>
