@@ -39,7 +39,7 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/RuzickaandHutson2010.pdf",
        "pdfs/spinTest.pdf"]
 
-chosen_pdf = pdf[10]
+chosen_pdf = pdf[4]
 
 
 # START 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT
@@ -158,41 +158,53 @@ print("Pages with CONTINUED: " + str(pages_with_continue))
 # END Getting pages that have tables on them.
 
 # START Get tables 1 page at a time.
-tables_rec_from_page = read_pdf(chosen_pdf, output_format="dataframe", encoding="utf-8",  multiple_tables=True,
-                                pages=pages_with_tables, silent=True)
+tables_rec_from_pages = read_pdf(chosen_pdf, output_format="dataframe", encoding="utf-8", multiple_tables=True,
+                                 pages=pages_with_tables, silent=True)
 
-print(len(tables_rec_from_page))
-
+print(len(tables_rec_from_pages))
+# print(tables_rec_from_pages)
 # END Get tables 1 page at a time.
 
 # Start Marking the fields for removal
-if len(tables_rec_from_page) > 0:
-    for df in tables_rec_from_page:
+if len(tables_rec_from_pages) > 0:
+    for df in tables_rec_from_pages:
         for x in range(df.shape[0]):
             for y in range(df.shape[1]):
                 if len(str(df[y][x])) > 20:
                     df[y][x] = "REMOVE"
 print("START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING ")
-ind = 3
-# print(tables_rec_from_page[ind])
-
-
+# ind = 0
+# print(tables_rec_from_pages[ind])
 # End Marking the fields for removal
 
-print("Length of array with DFs: " + str(len(tables_rec_from_page)))
-i, j = tables_rec_from_page[ind].shape
-print("Rows: " + str(i) + " Cols: " + str(j))
+
+
+# print("Length of array with DFs: " + str(len(tables_rec_from_pages)))
+# i, j = tables_rec_from_pages[ind].shape
+# print("Rows: " + str(i) + " Cols: " + str(j))
 print("row_by_row************************************************************************************************************")
-tables_rec_from_page[ind] = row_by_row(tables_rec_from_page[ind])
 
-# print(tables_rec_from_page[ind])
-# print("column_by_column************************************************************************************************************")
-#tables_rec_from_page[ind] = column_by_column(tables_rec_from_page[ind])
+
+for ind in tables_rec_from_pages:
+    print("BEFORE_START BEFORE_START BEFORE_START BEFORE_START BEFORE_START BEFORE_START BEFORE_START BEFORE_START")
+    print(ind)
+    print("BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END")
+    ind = row_by_row(ind)
+    print("AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START")
+    print(ind)
+    print("AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END")
+
+
+
+
+
+print("column_by_column************************************************************************************************************")
+#tables_rec_from_pages[ind] = column_by_column(tables_rec_from_page[ind])
 #
-#
 
 
-# print(tables_rec_from_page[ind])
+
+# print(tables_rec_from_pages[ind])
 
 
 # table_cleaned = process_tables_clean(table_marked)
