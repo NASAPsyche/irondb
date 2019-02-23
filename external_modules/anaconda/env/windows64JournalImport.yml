@@ -120,5 +120,6 @@ dependencies:
   - wcwidth=0.1.7=py36h3d5aa90_0
   - webencodings=0.5.1=py36_1
   - wrapt=1.10.11=py36hfa6e2cd_2
+  - rake-nltk=1.0.4=py36_0
 prefix: C:\Users\Hajar\Anaconda3\envs\journalImport
 
