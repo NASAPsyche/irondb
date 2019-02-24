@@ -50,7 +50,7 @@ nlp4metadata.py: Extracts metadata attributes from the text of a pdf using NLP
 Attributes include: title, authors, publishing date, and source
 """
 __authors__ = "Hajar Boughoula"
-__version__ = "2.2"
+__version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
@@ -59,11 +59,12 @@ import nltk
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
 #from nltk.corpus import stopwords
-from nltk.corpus import words
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
+from nltk.corpus import words
+from rake_nltk import Rake
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
@@ -71,7 +72,7 @@ page_num_title = 1
 page_num_authors = 1
 
 
-# retrieves raw text from a chosen pdf
+# retrieves raw text from any given pdf
 def convert_pdf_to_txt(path, pageNo=0):
     text = ""
     rsrcmgr = PDFResourceManager()
@@ -102,7 +103,7 @@ def relevant_text(pdf_name, tagword):
     return text
 
 
-# stages the relevant parts of the pdf using NLTK
+# stages the relevant parts of the pdf using NLTK sentence tokenization
 def stage_text(txt):
     #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
 
@@ -121,6 +122,11 @@ def stage_text(txt):
     return sentences
 
 
+# extracts ranked key phrases from any given text using RAKE and NLTK
+def keyword_extract(txt):
+    return("List of ranked key phrases")
+
+
 # extracts truncated title from top of any page in the pdf using magic
 def truncated_title(pdf_name):
     global page_num_title
@@ -135,7 +141,7 @@ def truncated_title(pdf_name):
 
 
 # extracts full title from the first page of the pdf using NLTK noun-phrase chunking
-def extract_title(pdf_name):
+def title_extract(pdf_name):
 
     title_full = "Title not found"
     relevant_data = relevant_text(pdf_name, extract_authors(pdf_name)[0])
@@ -276,7 +282,7 @@ def extract_source(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-#print(extract_title(paper))
+#print(title_extract(paper))
 #print(extract_authors(paper))
 #print(extract_date(paper))
 print(extract_source(paper))
