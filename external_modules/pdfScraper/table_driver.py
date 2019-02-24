@@ -12,6 +12,7 @@ import PyPDF2
 from tabula import read_pdf
 import pandas as pd
 import re
+import copy
 pd.options.display.max_rows = 999
 pd.options.display.max_columns = 999
 
@@ -39,7 +40,7 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/RuzickaandHutson2010.pdf",
        "pdfs/spinTest.pdf"]
 
-chosen_pdf = pdf[4]
+chosen_pdf = pdf[7]
 
 
 # START 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT 0. GETTING THE TEXT
@@ -101,7 +102,8 @@ def row_by_row(mdf):
         if mdf.shape[1] - (row_remove + row_null) < 2:
             mdf = mdf.drop(row)
             if mdf.empty:
-                return "DataFrame is Empty."
+                emptyDF = pd.DataFrame()
+                return emptyDF
     return mdf
 
 def column_by_column(mdf):
@@ -124,7 +126,8 @@ def column_by_column(mdf):
         if mdf.shape[0] - (col_remove + col_null) < 2 or(col_remove + col_null)/ mdf.shape[0] > .85:
             mdf = mdf.drop(mdf.columns[col], axis=1)
             if mdf.empty:
-                return "DataFrame is Empty."
+                emptyDF = pd.DataFrame()
+                return emptyDF
     return mdf
 
 
@@ -162,7 +165,7 @@ tables_rec_from_pages = read_pdf(chosen_pdf, output_format="dataframe", encoding
                                  pages=pages_with_tables, silent=True)
 
 print(len(tables_rec_from_pages))
-# print(tables_rec_from_pages)
+print(tables_rec_from_pages)
 # END Get tables 1 page at a time.
 
 # Start Marking the fields for removal
@@ -171,10 +174,9 @@ if len(tables_rec_from_pages) > 0:
         for x in range(df.shape[0]):
             for y in range(df.shape[1]):
                 if len(str(df[y][x])) > 20:
+                    # and not any(x.isupper() for x in str(df[y][x]))
                     df[y][x] = "REMOVE"
 print("START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING START THE MARKING ")
-# ind = 0
-# print(tables_rec_from_pages[ind])
 # End Marking the fields for removal
 
 
@@ -184,31 +186,50 @@ print("START THE MARKING START THE MARKING START THE MARKING START THE MARKING S
 # print("Rows: " + str(i) + " Cols: " + str(j))
 print("row_by_row************************************************************************************************************")
 
+print("Length before row by row:" + str(len(tables_rec_from_pages)))
 
-for ind in tables_rec_from_pages:
+for ind in range(len(tables_rec_from_pages)):
     print("BEFORE_START BEFORE_START BEFORE_START BEFORE_START BEFORE_START BEFORE_START BEFORE_START BEFORE_START")
-    print(ind)
+    print(tables_rec_from_pages[ind])
     print("BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END BEFORE_END")
-    ind = row_by_row(ind)
+    tables_rec_from_pages[ind] = row_by_row(tables_rec_from_pages[ind])
     print("AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START AFTER_START")
-    print(ind)
+    print(tables_rec_from_pages[ind])
     print("AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END AFTER_END")
 
+print("Length after row by row:" + str(len(tables_rec_from_pages)))
+
+# Remove dead tables from list after row by row
+temp_tables = copy.copy(tables_rec_from_pages)
+for remover in range(len(temp_tables)):
+    if temp_tables[remover].empty:
+        del tables_rec_from_pages[remover]
+        print("yes: Empty")
+    else:
+        print(temp_tables[remover])
+
+print("Length after row cleanse:" + str(len(tables_rec_from_pages)))
+print("column_by_column*********************************************************************************************************")
+for ind in range(len(tables_rec_from_pages)):
+    tables_rec_from_pages[ind] = column_by_column(tables_rec_from_pages[ind])
+
+print("Length after column by column:" + str(len(tables_rec_from_pages)))
+
+
+# Remove dead tables from list after col by col
+temp_tables = copy.copy(tables_rec_from_pages)
+for remover in range(len(temp_tables)):
+    if temp_tables[remover].empty:
+        del tables_rec_from_pages[remover]
+        print("yes: Empty")
+    else:
+        print(temp_tables[remover])
+
+print("Length after column cleanse:" + str(len(tables_rec_from_pages)))
+print(tables_rec_from_pages)
 
 
 
-
-print("column_by_column************************************************************************************************************")
-#tables_rec_from_pages[ind] = column_by_column(tables_rec_from_page[ind])
-#
-
-
-
-# print(tables_rec_from_pages[ind])
-
-
-# table_cleaned = process_tables_clean(table_marked)
-# # print(table_cleaned)
 # return json.loads((table_cleaned.to_json(double_precision=10, force_ascii=True,date_unit='ms', lines=False)))
 
 
