@@ -68,8 +68,8 @@ from rake_nltk import Rake
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
-page_num_title = 1
-page_num_authors = 1
+page_num_title = 1 #shouldn't be global, make it local
+page_num_authors = 1 #shouldn't be global, make it local
 
 
 # retrieves raw text from any given pdf
@@ -144,7 +144,7 @@ def truncated_title(pdf_name):
 def title_extract(pdf_name):
 
     title_full = "Title not found"
-    relevant_data = relevant_text(pdf_name, extract_authors(pdf_name)[0])
+    relevant_data = relevant_text(pdf_name, authors_extract(pdf_name)[0])
 
     pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
     chunkr = nltk.RegexpParser(pattern)
@@ -180,7 +180,7 @@ def truncated_authors(pdf_name):
 
 
 # extracts authors from the first page of the pdf using NLTK named entity recognition
-def extract_authors(pdf_name):
+def authors_extract(pdf_name):
     authors_full = ""
     relevant_data = relevant_text(pdf_name, "Abs")
 
@@ -242,7 +242,7 @@ def extract_authors(pdf_name):
 
 
 # extracts publishing date from the pdf text using RegEx
-def extract_date(pdf_name):
+def date_extract(pdf_name):
     relevant_data = relevant_text(pdf_name, "Abs").lower()
     if "publish" in relevant_data:
         relevant_data = relevant_data.rsplit("publish", 1)[1]
@@ -257,7 +257,7 @@ def extract_date(pdf_name):
 
 
 # extracts journal source from the pdf text using tagwords
-def extract_source(pdf_name):
+def source_extract(pdf_name):
     relevant_data = relevant_text(pdf_name, "Abs")
     source_tagword = "Vol"
     source = "Source not found."
@@ -280,9 +280,8 @@ def extract_source(pdf_name):
 
 
 
-
 paper = input("Enter name of paper with extension (.pdf): ")
 #print(title_extract(paper))
-#print(extract_authors(paper))
-#print(extract_date(paper))
-print(extract_source(paper))
+#print(authors_extract(paper))
+#print(date_extract(paper))
+print(source_extract(paper))
