@@ -588,7 +588,7 @@ $(document).ready(function() {
 
     // Send a post request to save the data
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/save', true);
+    xhr.open('POST', '/data-entry/save', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(jsonsend));
     alert('Saved the form');
