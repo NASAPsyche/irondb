@@ -225,8 +225,8 @@ const authorTemplate = `
   Organization</label>
 </div>
 <div class="form-group col-md-1  mt-4">
-  <i class="far fa-save fa-2x save-author"></i>
-  <i class="far fa-edit fa-2x edit-author" hidden="true"></i>
+  <i class="fa fa-lock-open fa-lg save-author"></i>
+  <i class="fa fa-lock fa-lg edit-author" hidden="true"></i>
 </div>
 </div>
 `;
@@ -234,8 +234,8 @@ const authorTemplate = `
 const noteTemplate = `
 <div class="form-row mt-2">
   <label for="<%- noteID %>">Note:
-    <i class="far fa-save fa-lg save-note"></i>
-    <i class="far fa-edit fa-lg edit-note" hidden="true"></i>
+    <i class="fa fa-lock-open fa-lg save-note"></i>
+    <i class="fa fa-lock fa-lg edit-note" hidden="true"></i>
     <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" 
     title="Press to remove note."></i>
   </label>
@@ -293,8 +293,8 @@ title="Press to remove measurement."></i></div>
   name="<%- pageID %>" min="1" required>
 </div>
 <div class="form-group col-md-1 mt-4">
-  <i class="far fa-save fa-2x save-measurement"></i>
-  <i class="far fa-edit fa-2x edit-measurement" hidden="true"></i>
+  <i class="fa fa-lock-open fa-lg save-measurement"></i>
+  <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
 </div>
 </div>
 `;
@@ -326,8 +326,8 @@ const meteoriteTemplate = `
   name="<%- classID %>">
 </div>
 <div class="form-group col-md-1 mt-4">
-  <i class="far fa-save fa-2x save-meteorite"></i>
-  <i class="far fa-edit fa-2x edit-meteorite" hidden="true"></i>
+  <i class="fa fa-lock-open fa-lg save-meteorite"></i>
+  <i class="fa fa-lock fa-lg edit-meteorite" hidden="true"></i>
 </div>
 </div>
 <div class="form-row">
