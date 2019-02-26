@@ -5,3 +5,11 @@ body {
 .pdfobject-container { 
 	height: 30rem; border: 1rem solid rgba(0,0,0,.1); 
 }
+
+.fa-lock  {
+	opacity: 0.3;
+}
+
+.fa-lock-open {
+	opacity: 0.3;
+}

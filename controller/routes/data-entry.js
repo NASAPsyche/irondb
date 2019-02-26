@@ -68,6 +68,45 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
   });
 });
 
+router.post('/save', isLoggedIn, function(req, res, next) {
+  console.log('data: ', req.body.data);
+  pg.getClient((err, client, done) => {
+    const insertQuery =
+      'INSERT INTO entry_store(username, savedata, pdf_path) VALUES($1,$2,$3)';
+    const shouldAbort = (err) => {
+      if (err) {
+        console.error('Error in transaction', err.stack);
+        client.query('ROLLBACK', (err) => {
+          if (err) {
+            console.error('Error rolling back client', err.stack);
+          }
+          // release the client back to the pool
+          done();
+          next();
+        });
+      }
+      return !!err;
+    };
+
+    client.query('BEGIN', (err) => {
+      if (shouldAbort(err)) return;
+      client.query(
+          insertQuery,
+          [req.body.username, req.body.data, req.body.pdf_path],
+          (err, res) => {
+            if (shouldAbort(err)) return;
+            client.query('COMMIT', (err) => {
+              if (err) {
+                console.error('Error committing transaction', err.stack);
+              }
+              console.log('done, next');
+              done();
+              next();
+            });
+          });
+    });
+  });
+});
 
 router.post('/insert', isLoggedIn, function(req, res, next) {
   // Get the body of the request as an object
