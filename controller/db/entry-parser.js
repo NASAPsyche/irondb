@@ -82,6 +82,7 @@ function getPaper(reqBody) {
 
 
 /**
+ * Gets authors from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array} Array of author objects
@@ -119,6 +120,7 @@ function getAuthors(reqBody, keys) {
 
 
 /**
+ * Gets meteorites and their measurements from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array} Array of meteorite objects
@@ -196,6 +198,7 @@ function getBodies(reqBody, keys) {
 
 
 /**
+ * Get notes from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array}
