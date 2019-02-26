@@ -1,15 +1,116 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Reported Database Entries</title>
-    <%- include('bootstrap/css'); %>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <%- include('components/navbar_signed_in'); %>
 
-    <h1>Placeholder db-reported</h1>
-    
-    <%- include('bootstrap/js'); %>
-  </body>
+<head>
+  <title>Reported Database Entries</title>
+  <%- include('bootstrap/css'); %>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel='stylesheet' href='/stylesheets/db-reported.css' />
+</head>
+
+<body>
+  <%- include('components/navbar_signed_in'); %>
+
+  <div class="container-fluid ml-3 mt-4 py-3">
+    <div class='row'>
+      <div class='col col-8'>
+        <div class='p-3' id='top-container'>
+          <div class="h1">
+            Reported Database Entries
+          </div>
+
+          <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+              <tr>
+                <th>Entry ID</th>
+                <th>Report Comment</th>
+                <th>Report Date</th>
+              </tr>
+            </thead>
+            <tbody class="table-light">
+              <tr>
+                <th>
+                  032
+                </th>
+                <th>
+                  Missing citation
+                </th>
+                <th>
+                  11/30/18
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  231
+                </th>
+                <th>
+                  Analysis technique >
+                </th>
+                <th>
+                  12/1/18
+                </th>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class='row'>
+        <div class='col col-4'>
+          <button> Hello</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+  <div class="container ml-3 mt-4 py-3" id="top-container">
+    <div class="h2">
+      Inactive Entries
+    </div>
+
+
+    <div class="container d-flex">
+      <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Entry </th>
+            <th>Report </th>
+            <th>Labeled</th>
+          </tr>
+        </thead>
+        <tbody class='table-light'>
+          <tr>
+            <th>
+              423
+            </th>
+            <th>
+              Author misspelled
+            </th>
+            <th>
+              11/28/18
+            </th>
+          </tr>
+          <tr>
+            <th>
+              790
+            </th>
+            <th>
+              Trace element >
+            </th>
+            <th>
+              12/2/18
+            </th>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <%- include('bootstrap/js'); %>
+
+</body>
+
 </html>
