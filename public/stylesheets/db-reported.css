@@ -10,3 +10,12 @@
 .h2 {
     color: #FFC627;
 }
+
+#fill {
+    background-color: #8c1d40;
+    border-color: #8c1d40;
+}
+
+table {
+    text-align: center;
+}

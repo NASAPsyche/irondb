@@ -2248,3 +2248,10 @@ CREATE VIEW pending_entries_panel AS (
   from pending_elements_with_bodies_papers_journals as t1
   inner join body_status as t2 on t1.body_id = t2.body_id and t2.current_status='pending'
 );
+
+CREATE VIEW flagged_entries_panel AS ( 
+  SELECT t1.element_id AS entry_id,
+  t1.note,
+  t1.submission_date
+  FROM element_review as t1
+);
