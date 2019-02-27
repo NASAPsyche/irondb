@@ -482,6 +482,12 @@ INSERT INTO journals (journal_name, volume, issue, published_year)
     '73', 
     '16', 
     2009
+  ),
+  (
+    'Fake Historical Paper',
+    '1',
+    '1',
+    2019
   );
 
 INSERT INTO papers (journal_id,  title)
@@ -497,6 +503,10 @@ INSERT INTO papers (journal_id,  title)
   (
     (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='16'),
     ('The IIG iron meteorites: Probable formation in the IIAB core')
+  ),
+  (
+    (SELECT journal_id FROM journals WHERE journal_name='Fake Historical Paper' AND issue='1'),
+    'Fake Historical Paper'
   );
 
 INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
@@ -504,7 +514,8 @@ INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_en
   (DEFAULT, 'Dummy', 'Michael', '', true),
   (DEFAULT, 'Fake', '', '', true),
   (DEFAULT, 'Wasson', 'John', 'T.', DEFAULT),
-  (DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT);
+  (DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT),
+  (DEFAULT, 'Historical','Fake','', DEFAULT);
 
 INSERT INTO attributions (paper_id, author_id)
   VALUES 
@@ -523,6 +534,10 @@ INSERT INTO attributions (paper_id, author_id)
   (
     (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
     (SELECT author_id FROM authors WHERE primary_name='Choe' AND first_name='Won-Hie')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
+    (SELECT author_id FROM authors WHERE primary_name='Historical' AND first_name='Fake')
   );
 
 INSERT INTO bodies (nomenclature)
@@ -533,7 +548,8 @@ INSERT INTO bodies (nomenclature)
   ('Tombigbee R.'),
   ('Bellsbank'),
   ('Twannberg'),
-  ('La Primitiva');
+  ('La Primitiva'),
+  ('Historical');
 
 INSERT INTO groups (group_id, body_id, the_group)
   VALUES
@@ -571,6 +587,11 @@ INSERT INTO groups (group_id, body_id, the_group)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='La Primitiva'),
     'IIG'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
+    'Historical'
   );
 
 INSERT INTO classifications (classification_id, body_id, classification)
@@ -584,6 +605,11 @@ INSERT INTO classifications (classification_id, body_id, classification)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Fake'),
     'Fake'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
+    'Historical'
   );
 
 INSERT INTO element_entries (element_id, body_id, element_symbol, paper_id, page_number, ppb_mean, deviation, less_than, original_unit, technique)
@@ -607,6 +633,19 @@ INSERT INTO element_entries (element_id, body_id, element_symbol, paper_id, page
     (SELECT body_id FROM bodies WHERE nomenclature='Fake'),
     'cr',
     (SELECT paper_id FROM papers WHERE title='Fake'),
+    1,
+    1,
+    1,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /*Historical*/
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
     1,
     1,
     1,
@@ -978,6 +1017,13 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
     'active',
     'Troy',
     NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='Historical' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Historical')),
+    'historical',
+    'Michael',
+    NULL
   );
 
 INSERT INTO group_review (review_id, group_id, note, resolved, email_address, reviewed_by, submission_date)
@@ -990,6 +1036,15 @@ INSERT INTO group_review (review_id, group_id, note, resolved, email_address, re
     'fake@gmail.com',
     1,
     DEFAULT
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='Historical'),
+    'Inactive entry',
+    DEFAULT,
+    'fake@yahoo.com',
+    1,
+    DEFAULT
   );
 
 INSERT INTO classification_status (status_id, classification_id, current_status, submitted_by, previous_entry)
@@ -999,6 +1054,13 @@ INSERT INTO classification_status (status_id, classification_id, current_status,
     (SELECT classification_id FROM classifications WHERE classification='Dummy'),
     'pending',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT classification_id FROM classifications WHERE classification='Historical'),
+    'historical',
+    'Michael',
     NULL
   );
 
@@ -1010,6 +1072,15 @@ INSERT INTO classification_review (review_id, classification_id, note, resolved,
     'not correct',
     DEFAULT,
     'fake@gmail.com',
+    1,
+    DEFAULT
+  ),
+  (
+    DEFAULT,
+    (SELECT classification_id FROM classifications WHERE classification='Historical'),
+    'Inactive entry',
+    DEFAULT,
+    'fake@yahoo.com',
     1,
     DEFAULT
   );
@@ -1057,6 +1128,13 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
     'active',
     'Ken',
     NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
+    'historical',
+    'Michael',
+    NULL
   );
 
 INSERT INTO body_review (review_id, body_id, note, resolved, email_address, reviewed_by, submission_date)
@@ -1067,6 +1145,15 @@ INSERT INTO body_review (review_id, body_id, note, resolved, email_address, revi
     'not correct',
     DEFAULT,
     'fake@gmail.com',
+    1,
+    DEFAULT
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
+    'Inactive entry',
+    DEFAULT,
+    'fake@yahoo.com',
     1,
     DEFAULT
   );
@@ -1086,6 +1173,13 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
     'active',
     'Ken',
     NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Fake Historical Paper' AND issue = '1'),
+    'historical',
+    'Michael',
+    NULL
   );
 
 INSERT INTO journal_review (review_id, journal_id, note, resolved, email_address, reviewed_by, submission_date)
@@ -1096,6 +1190,15 @@ INSERT INTO journal_review (review_id, journal_id, note, resolved, email_address
     'not correct',
     DEFAULT,
     'fake@gmail.com',
+    1,
+    DEFAULT
+  ),
+  (
+    DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Fake Historical Paper'),
+    'Inactive entry',
+    DEFAULT,
+    'fake@yahoo.com',
     1,
     DEFAULT
   );
@@ -1115,6 +1218,13 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, pre
     'active',
     'Ken',
     NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
+    'historical',
+    'Michael',
+    NULL
   );
 
 INSERT INTO paper_review (review_id, paper_id, note, resolved, email_address, reviewed_by, submission_date)
@@ -1125,6 +1235,15 @@ INSERT INTO paper_review (review_id, paper_id, note, resolved, email_address, re
     'not correct',
     DEFAULT,
     'fake@gmail.com',
+    1,
+    DEFAULT
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
+    'Inactive entry',
+    DEFAULT,
+    'fake@yahoo.com',
     1,
     DEFAULT
   );
@@ -1151,6 +1270,13 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, p
     'active',
     'Ken',
     NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Historical' AND first_name='Fake'),
+    'historical',
+    'Michael',
+    NULL
   );
 
 INSERT INTO author_review (review_id, author_id, note, resolved, email_address, reviewed_by, submission_date)
@@ -1161,6 +1287,15 @@ INSERT INTO author_review (review_id, author_id, note, resolved, email_address, 
     'not correct',
     DEFAULT,
     'fake@gmail.com',
+    1,
+    DEFAULT
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
+    'Inactive entry',
+    DEFAULT,
+    'fake@yahoo.com',
     1,
     DEFAULT
   );
@@ -1199,6 +1334,17 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
     'active',
     'Ken',
     NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Fake Historical Paper')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Historical' AND first_name='Fake')
+    ),
+    'historical',
+    'Michael',
+    NULL
   );
 
 INSERT INTO attribution_review (review_id, attribution_id, note, resolved, email_address, reviewed_by, submission_date)
@@ -1213,6 +1359,19 @@ INSERT INTO attribution_review (review_id, attribution_id, note, resolved, email
     'not correct',
     DEFAULT,
     'fake@gmail.com',
+    1,
+    DEFAULT
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Fake Historical Paper')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Historical')
+    ),
+    'Inactive entry',
+    DEFAULT,
+    'fake@yahoo.com',
     1,
     DEFAULT
   );
@@ -1245,6 +1404,20 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'active',
     'Ken',
+    NULL
+  ),
+  /* Historical */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Historical')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fake Historical Paper')
+      AND page_number = 1
+    ),
+    'historical',
+    'Michael',
     NULL
   ),
   (
@@ -1588,6 +1761,21 @@ INSERT INTO element_review (review_id, element_id, note, resolved, email_address
     'not correct',
     DEFAULT,
     'fake@gmail.com',
+    1,
+    DEFAULT
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Historical')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fake Historical Paper')
+      AND page_number = 1
+    ),
+    'Inactive entry',
+    DEFAULT,
+    'fake@yahoo.com',
     1,
     DEFAULT
   );
@@ -2254,4 +2442,17 @@ CREATE VIEW flagged_entries_panel AS (
   t1.note,
   t1.submission_date
   FROM element_review as t1
+  WHERE t1.element_id NOT IN 
+    (SELECT t2.element_id 
+     FROM element_status AS t2)
+);
+
+CREATE VIEW inactive_entries_panel AS (
+  SELECT t1.element_id AS entry_id,
+  t1.note,
+  t1.submission_date
+  FROM element_review AS t1
+  WHERE t1.element_id IN 
+    (SELECT t2.element_id 
+     FROM element_status as t2)
 );
