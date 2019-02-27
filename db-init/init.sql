@@ -78,6 +78,17 @@ CREATE TABLE IF NOT EXISTS user_info (
   PRIMARY KEY(user_id)
 );
 
+-- Session table --
+-- Table copied from: https://github.com/voxpelli/node-connect-pg-simple/blob/HEAD/table.sql
+-- as per usage documentation: https://www.npmjs.com/package/connect-pg-simple
+CREATE TABLE "session" (
+  "sid" varchar NOT NULL COLLATE "default",
+	"sess" json NOT NULL,
+	"expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
 -- Data tables --
 
 CREATE TABLE IF NOT EXISTS bodies (
