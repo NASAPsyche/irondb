@@ -8,6 +8,9 @@ const path = require('path');
 const fs = require('fs');
 const pg = require('../db');
 
+const toolRouter = require('./data-entry/tool');
+router.use('/tool', toolRouter);
+
 router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
 });
