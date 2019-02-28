@@ -64,7 +64,7 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from nltk.corpus import words
-from rake_nltk import Rake
+#from rake_nltk import rake
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
@@ -124,7 +124,10 @@ def stage_text(txt):
 
 # extracts ranked key phrases from any given text using RAKE and NLTK
 def keyword_extract(txt):
-    return("List of ranked key phrases")
+    #abstract = re.search('Abstract(.*)\n\n', txt)
+    text = txt.split("Abstract", 1)[1]
+    abstract = text.split('\n\n', 1)[0]
+    return abstract
 
 
 # extracts truncated title from top of any page in the pdf using magic
@@ -281,7 +284,8 @@ def source_extract(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
+print(keyword_extract(paper))
 #print(title_extract(paper))
 #print(authors_extract(paper))
 #print(date_extract(paper))
-print(source_extract(paper))
+#print(source_extract(paper))
