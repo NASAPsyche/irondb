@@ -1030,7 +1030,7 @@ INSERT INTO group_review (review_id, group_id, note, resolved, email_address, re
   VALUES
   (
     DEFAULT,
-    (SELECT group_id FROM groups WHERE the_group='Dummy'),
+    (SELECT group_id FROM groups WHERE the_group='Fake'),
     'not correct',
     DEFAULT,
     'fake@gmail.com',
@@ -1068,7 +1068,7 @@ INSERT INTO classification_review (review_id, classification_id, note, resolved,
   VALUES
   (
     DEFAULT,
-    (SELECT classification_id FROM classifications WHERE classification='Dummy'),
+    (SELECT classification_id FROM classifications WHERE classification='Fake'),
     'not correct',
     DEFAULT,
     'fake@gmail.com',
@@ -1283,7 +1283,7 @@ INSERT INTO author_review (review_id, author_id, note, resolved, email_address, 
   VALUES
   (
     DEFAULT,
-    (SELECT paper_id FROM papers WHERE title='Fake'),
+    (SELECT author_id FROM authors WHERE primary_name='Fake'),
     'not correct',
     DEFAULT,
     'fake@gmail.com',
@@ -1292,7 +1292,7 @@ INSERT INTO author_review (review_id, author_id, note, resolved, email_address, 
   ),
   (
     DEFAULT,
-    (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
+    (SELECT author_id FROM authors WHERE primary_name='Historical' AND first_name='Fake'),
     'Inactive entry',
     DEFAULT,
     'fake@yahoo.com',
@@ -2360,18 +2360,6 @@ CREATE VIEW flagged_attributions AS (
   INNER JOIN attribution_review as t2 on t1.attribution_id = t2.attribution_id
 );
 
-
-CREATE VIEW full_attributions_flagged AS (
-  SELECT t1.nomenclature,
-  t2.title,
-  t3.published_year,
-  t4.author_name
-  FROM flagged_bodies as t1
-  INNER JOIN flagged_papers as t2 on t1.body_id = t2.journal_id
-  INNER JOIN flagged_journals as t3 on t2.paper_id = t3.journal_id
-  INNER JOIN flagged_authors as t4 on t3.journal_id = t4.author_id
-);
-
 CREATE VIEW pending_elements_with_bodies_groups AS (
   SELECT t1.nomenclature,
   t2.the_group,
@@ -2455,4 +2443,74 @@ CREATE VIEW inactive_entries_panel AS (
   WHERE t1.element_id IN 
     (SELECT t2.element_id 
      FROM element_status as t2)
+);
+
+CREATE VIEW flagged_groups AS (
+  SELECT t1.group_id,
+  t1.body_id,
+  t1.the_group
+  FROM groups AS t1
+  INNER JOIN group_review AS t2 ON t2.group_id = t1.group_id
+);
+
+CREATE VIEW flagged_elements_with_bodies_group AS (
+  SELECT t1.nomenclature,
+  t2.the_group,
+  t3.*
+  FROM flagged_bodies AS t1 
+  INNER JOIN flagged_groups AS t2 ON t1.body_id = t2.body_id
+  INNER JOIN flagged_elements AS t3 ON t1.body_id = t3.body_id
+);
+
+CREATE VIEW flagged_papers_with_journals AS (
+  SELECT t1.journal_id,
+  t1.journal_name,
+  t1.volume,
+  t1.issue,
+  t1.series,
+  t1.published_year,
+  t2.title,
+  t2.paper_id,
+  t2.doi
+  FROM flagged_journals AS t1 
+  INNER JOIN flagged_papers AS t2 ON t1.journal_id = t2.journal_id
+);
+
+CREATE VIEW flagged_elements_with_bodies_papers_journals AS (
+  SELECT t1.body_id,
+  t1.nomenclature,
+  t1.the_group,
+  t1.element_symbol,
+  t1.ppb_mean,
+  t1.deviation,
+  t1.less_than,
+  t1.original_unit,
+  t1.technique,
+  t1.note,
+  t2.journal_name,
+  t2.volume,
+  t2.issue,
+  t2.series,
+  t2.published_year,
+  t2.title,
+  t1.page_number,
+  t2.paper_id
+  FROM flagged_elements_with_bodies_group AS t1 
+  INNER JOIN flagged_papers_with_journals AS t2 ON t1.paper_id = t2.paper_id
+);
+
+CREATE VIEW flagged_aggregated_authors_by_paper_id AS (
+  SELECT string_agg(t1.author_name, ', ') AS authors, 
+  t2.paper_id FROM flagged_authors AS t1
+  INNER JOIN flagged_attributions AS t2 ON t1.author_id = t2.author_id
+  GROUP BY paper_id
+);
+
+CREATE VIEW full_attributions_flagged AS (
+  SELECT t1.nomenclature,
+    t1.title,
+    t1.published_year,
+    t2.authors
+    FROM flagged_elements_with_bodies_papers_journals AS t1
+    INNER JOIN flagged_aggregated_authors_by_paper_id AS t2 ON t1.paper_id = t2.paper_id
 );
