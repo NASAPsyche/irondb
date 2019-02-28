@@ -11,61 +11,47 @@
 <body>
   <%- include('components/navbar_signed_in'); %>
 
-  <div class="container-fluid ml-3 mt-4 py-3">
-    <div class='row'>
-      <div class='col col-8'>
-        <div class='p-3' id='top-container'>
-          <div class="h1">
-            Reported Database Entries
-          </div>
+  <div class="container mt-5 py-3" id="top-container">
 
-          <table class="table table-bordered table-hover">
-            <thead class="thead-dark">
-              <tr>
-                <th>Entry ID</th>
-                <th>Report Comment</th>
-                <th>Report Date</th>
-              </tr>
-            </thead>
-            <tbody class="table-light">
-              <tr>
-                <th>
-                  032
-                </th>
-                <th>
-                  Missing citation
-                </th>
-                <th>
-                  11/30/18
-                </th>
-              </tr>
-              <tr>
-                <th>
-                  231
-                </th>
-                <th>
-                  Analysis technique >
-                </th>
-                <th>
-                  12/1/18
-                </th>
-              </tr>
-
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class='row'>
-        <div class='col col-4'>
-          <button> Hello</button>
-        </div>
-      </div>
+    <div class="h1">
+      Reported Database Entries
     </div>
-  </div>
+
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Element ID</th>
+          <th>Report Comment</th>
+          <th>Report Date</th>
+        </tr>
+      </thead>
+      <tbody class="table-light">
+        <% for(var i=0; i < Reported.length; i++) { %>
+        <tr>
+          <th>
+            <%= Reported[i].entry_id %>
+          </th>
+          <th>
+            <%= Reported[i].note %>
+          </th>
+          <th>
+            <%= Reported[i].submission_date %>
+          </th>
+          <th id="fill">
+            <button class="btn btn-warning" id="edit"> Edit </button>
+            <button class="btn btn-warning" id="inactive"> Inactive </button>
+          </th>
+          <% } %>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
 
-  <div class="container-fluid ml-3 mt-4 py-3" id="top-container">
+
+
+
+  <div class="container py-3 mt-5" id="top-container">
     <div class="h2">
       Inactive Entries
     </div>
@@ -75,42 +61,29 @@
 
       <thead class="thead-dark">
         <tr>
-          <th>Entry </th>
+          <th>Element ID </th>
           <th>Report </th>
-          <th>Labeled</th>
+          <th>Report Date</th>
         </tr>
       </thead>
-      <tbody class='table-light'>
+
+      <tbody class="table-light">
+        <% for(var i=0; i < Inactive.length; i++) { %>
         <tr>
           <th>
-            423
+            <%= Inactive[i].entry_id %>
           </th>
           <th>
-            Author misspelled
+            <%= Inactive[i].note %>
           </th>
           <th>
-            11/28/18
+            <%= Inactive[i].submission_date %>
           </th>
           <th id="fill">
-            <button class="btn btn-warning"> Edit</button>
-            <button class="btn btn-warning"> Delete</button>
+            <button class="btn btn-warning" id="edit"> Edit </button>
+            <button class="btn btn-warning" id="inactive"> Delete </button>
           </th>
-        </tr>
-        <tr>
-          <th>
-            790
-          </th>
-          <th>
-            Trace element >
-          </th>
-          <th>
-            12/2/18
-          </th>
-          <th id="fill">
-            <button> Edit</button>
-            <button> Delete </button>
-          </th>
-        </tr>
+          <% } %>
       </tbody>
     </table>
 
