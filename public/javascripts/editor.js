@@ -262,7 +262,7 @@ title="Press to remove measurement."></i></div>
 </div>
 <div class="form-group col-md-2">
   <label for="<%- measurementID %>">Measurement</label>
-  <input type="number" class="form-control" id="<%- measurementID %>" 
+  <input type="text" class="form-control" id="<%- measurementID %>" 
   name="<%- measurementID %>" required="true" min="0">
 </div>
 <div class="form-group col-md-1">
