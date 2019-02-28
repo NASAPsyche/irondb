@@ -10,6 +10,9 @@ const pg = require('../db');
 const parser = require('../db/entry-parser');
 const inserter = require('../db/insert-entry');
 
+const toolRouter = require('./data-entry/tool');
+router.use('/tool', toolRouter);
+
 router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
 });
