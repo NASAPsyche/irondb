@@ -22,7 +22,7 @@
             <!-- storing id to update export inputs -->
             <p hidden="true"><%= Entries[i].entry_id %></p>
             <th>
-              <a href="/database/<%= Entries[i].entry_id %>">
+              <a href="/database/meteorite/<%= Entries[i].entry_id %>?paper=<%= Entries[i].paper_id %>">
                 <%= Entries[i].meteorite_name %>
               </a>
             </th>
