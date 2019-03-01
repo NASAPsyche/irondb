@@ -594,3 +594,26 @@ $(document).ready(function() {
     alert('Saved the form');
   });
 });
+
+
+$('#insert-form').submit(function(event) {
+  let measurementsAreNumbers = true;
+  // For each field 'measrement*', check that it parses to a number
+  $('[id^="measure"]').each(function(idx) {
+    if (isNaN(parseFloat($(this).val()))) {
+      console.log($(this).val(), ' is NaN');
+      $(this).addClass('is-invalid');
+      measurementsAreNumbers = false;
+    } else {
+      console.log($(this).val(), ' is a number');
+      $(this).removeClass('is-invalid');
+    }
+  });
+
+  // send if checks pass
+  if (measurementsAreNumbers == true) {
+    return;
+  } else {
+    event.preventDefault();
+  }
+});
