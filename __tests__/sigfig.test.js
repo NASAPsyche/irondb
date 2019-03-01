@@ -4,7 +4,7 @@
  * represenation of a number
  */
 
-const sf = require('../public/javascripts/sigfig');
+const sf = require('../controller/utils/sigfig');
 
 describe('Test to get significant figures from numbers', () => {
   test('Positive integer', () => {

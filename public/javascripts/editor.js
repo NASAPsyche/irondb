@@ -609,17 +609,25 @@ $('#insert-form').submit(function(event) {
   let measurementsAreNumbers = true;
   // For each field 'measrement*', check that it parses to a number
   $('[id^="measure"]').each(function(idx) {
+    const _name = $(this).attr('name');
+    const _expr = 'measurement';
+    // scrape the idx from elem name, ex: '0-0'
+    const _idx = _name.subtstring(_expr.length);
     if (isNaN(parseFloat($(this).val()))) {
       $(this).addClass('is-invalid');
       measurementsAreNumbers = false;
     } else {
       $(this).removeClass('is-invalid');
+      const _sigfig = 'sigfig' + _idx;
+      console.log('test1');
+      console.log(geteSigFig(String($(this).val())));
     }
   });
 
   // send if checks pass
   if (measurementsAreNumbers == true) {
-    return;
+    event.preventDefault();
+    // return;
   } else {
     event.preventDefault();
   }
