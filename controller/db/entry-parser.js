@@ -162,23 +162,19 @@ function getBodies(reqBody, keys) {
     measurements.forEach((elem) => {
       const elemNum = elem.substring(elementKeyString.length);
       const element = elem;
-      const lessThan =
-      'lessThan' + String(bodyNum) + '-' + String(elemNum);
+      const idx = String(bodyNum) + '-' + String(elemNum);
+      const lessThan = 'lessThan' + idx;
       let lessThanVal = false;
       if (lessThanKeys.includes(String(lessThan))) {
         lessThanVal = true;
       }
-      const measurement =
-      'measurement' + String(bodyNum) + '-' + String(elemNum);
-      const deviation =
-      'deviation' + String(bodyNum) + '-' + String(elemNum);
-      const unit =
-      'units' + String(bodyNum) + '-' + String(elemNum);
-      const technique =
-      'technique' + String(bodyNum) + '-' + String(elemNum);
-      const page =
-      'page' + String(bodyNum) + '-' + String(elemNum);
+      const measurement = 'measurement' + idx;
+      const deviation = 'deviation' + idx;
+      const unit = 'units' + idx;
+      const technique = 'technique' + idx;
+      const page = 'page' + idx;
       const units = convertUnitString(reqBody[String(unit)]);
+      const sigfig = 'sigfig' + idx;
 
       const measure = {
         'element': reqBody[String(element)],
@@ -188,6 +184,7 @@ function getBodies(reqBody, keys) {
         'unit': units,
         'technique': reqBody[String(technique)],
         'page': reqBody[String(page)],
+        'sigfig': reqBody[String(sigfig)],
       };
       meteorite.measurements.push(measure);
     });
