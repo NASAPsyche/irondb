@@ -3,7 +3,7 @@
  */
 
 /**
- * Gets keys from request body
+ * @description Gets keys from request body
  * @param  {object} reqBody
  * @return {object}
  */
@@ -38,7 +38,7 @@ function getKeys(reqBody) {
 
 
 /**
- * Gets journal from request body
+ * @description Gets journal from request body
  * @param {object} reqBody The body of the request
  * @return {object} The journal
  */
@@ -63,7 +63,7 @@ function getJournal(reqBody) {
 
 
 /**
- * Gets paper from request body
+ * @description Gets paper from request body
  * @param  {object} reqBody
  * @return {object} The paper
  */
@@ -82,7 +82,7 @@ function getPaper(reqBody) {
 
 
 /**
- * Gets authors from request body
+ * @description Gets authors from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array} Array of author objects
@@ -120,7 +120,7 @@ function getAuthors(reqBody, keys) {
 
 
 /**
- * Gets meteorites and their measurements from request body
+ * @description Gets meteorites and their measurements from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array} Array of meteorite objects
@@ -162,6 +162,7 @@ function getBodies(reqBody, keys) {
     measurements.forEach((elem) => {
       const elemNum = elem.substring(elementKeyString.length);
       const element = elem;
+      // The index of the measurement, ex: '0-0'
       const idx = String(bodyNum) + '-' + String(elemNum);
       const lessThan = 'lessThan' + idx;
       let lessThanVal = false;
@@ -176,10 +177,11 @@ function getBodies(reqBody, keys) {
       const units = convertUnitString(reqBody[String(unit)]);
       const sigfig = 'sigfig' + idx;
 
+      // The measurement object
       const measure = {
         'element': reqBody[String(element)],
         'lessThan': lessThanVal,
-        'measurement': reqBody[String(measurement)],
+        'measurement': reqBody[String(parseFloat(measurement))],
         'deviation': reqBody[String(deviation)],
         'unit': units,
         'technique': reqBody[String(technique)],
@@ -195,7 +197,7 @@ function getBodies(reqBody, keys) {
 
 
 /**
- * Get notes from request body
+ * @description Get notes from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array}
@@ -212,7 +214,8 @@ function getNotes(reqBody, keys) {
 
 
 /**
- * Converts units from values in form to values expected by database
+ * @description Converts units from values in form
+ * to values expected by database
  * @param  {string} orignalUnit
  * @return {string} converted string
  */
