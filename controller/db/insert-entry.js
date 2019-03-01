@@ -373,8 +373,10 @@ function insertEntry(
                           deviation, 
                           less_than, 
                           original_unit, 
-                          technique)
-                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                          technique,
+                          sigfig
+                        )
+                        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                         RETURNING element_id
                         `;
                         if (measure.deviation == '') {
@@ -394,6 +396,7 @@ function insertEntry(
                           measure.lessThan,
                           measure.unit,
                           measure.technique,
+                          parseInt(measure.sigfig),
                         ];
                         // INSERT MEASUREMENT
                         client.query(measureQuery, measureValue, (err, res) => {
