@@ -295,6 +295,7 @@ title="Press to remove measurement."></i></div>
 <div class="form-group col-md-1 mt-4">
   <i class="fa fa-lock-open fa-lg save-measurement"></i>
   <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
+  <input type="hidden" id="<%- sigfigID %>" name="<%- sigfigID %>" value="0">
 </div>
 </div>
 `;
@@ -357,6 +358,7 @@ let deviationIDCount = 1;
 let unitsIDCount = 1;
 let techniqueIDCount = 1;
 let pageIDCount = 1;
+let sigfigIDCount = 1;
 
 let meteoriteIDCount = 1;
 let bodyNameIDCount = 1;
@@ -431,6 +433,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   const unitsID = 'units' + meteoriteID + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteID + '-' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -441,6 +444,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   idObj['unitsID'] = unitsID;
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
+  idObj['sigfigID'] = sigfigID;
 
   // Increment current count
   elementIDCount++;
@@ -450,6 +454,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   unitsIDCount++;
   techniqueIDCount++;
   pageIDCount++;
+  sigfigIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -482,6 +487,8 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+
 
   // Assign IDs
   const idObj = {};
@@ -496,6 +503,7 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   idObj['unitsID'] = unitsID;
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
+  idObj['sigfigID'] = sigfigID;
 
   // Increment current count
   meteoriteIDCount++;
@@ -509,6 +517,7 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   unitsIDCount++;
   techniqueIDCount++;
   pageIDCount++;
+  sigfigIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
