@@ -225,12 +225,12 @@ router.get('/export', function(req, res, next) {
         const minor = [];
         const trace = [];
         for (const row in dbRes.rows) {
-          if (dbRes.rows[row].measurement > 10000000 ) {
+          if (dbRes.rows[row].measurement > 10000000) {
             if (!major.includes(dbRes.rows[row].element_symbol)) {
               major.push(dbRes.rows[row].element_symbol);
             }
           } else if (dbRes.rows[row].measurement <= 10000000
-                && dbRes.rows[row].measurement >= 1000000) {
+          && dbRes.rows[row].measurement >= 1000000) {
             if (!minor.includes(dbRes.rows[row].element_symbol)) {
               minor.push(dbRes.rows[row].element_symbol);
             }
@@ -241,9 +241,11 @@ router.get('/export', function(req, res, next) {
           }
         }
 
-        res.render('db-export', {Entries: dbRes.rows,
+        res.render('db-export', {
+          Entries: dbRes.rows,
           major: major, minor: minor,
-          trace: trace, isSignedIn: isSignedIn});
+          trace: trace, isSignedIn: isSignedIn,
+        });
       });
 });
 
@@ -306,7 +308,7 @@ router.post('/export', function(req, res, next) {
       next(createError(400));
     }
 
-    if ( req.body.entries.length >= 2) {
+    if (req.body.entries.length >= 2) {
       req.body.entries.forEach(function(element) {
         argsArray.push(element);
         if (currentQueryIndex === 1) {
@@ -333,12 +335,12 @@ router.post('/export', function(req, res, next) {
       const minor = [];
       const trace = [];
       for (const row in dbRes.rows) {
-        if (dbRes.rows[row].measurement > 10000000 ) {
+        if (dbRes.rows[row].measurement > 10000000) {
           if (!major.includes(dbRes.rows[row].element_symbol)) {
             major.push(dbRes.rows[row].element_symbol);
           }
         } else if (dbRes.rows[row].measurement <= 10000000
-              && dbRes.rows[row].measurement >= 1000000) {
+          && dbRes.rows[row].measurement >= 1000000) {
           if (!minor.includes(dbRes.rows[row].element_symbol)) {
             minor.push(dbRes.rows[row].element_symbol);
           }
@@ -349,9 +351,11 @@ router.post('/export', function(req, res, next) {
         }
       }
 
-      res.render('db-export', {Entries: dbRes.rows,
+      res.render('db-export', {
+        Entries: dbRes.rows,
         major: major, minor: minor,
-        trace: trace, isSignedIn: isSignedIn});
+        trace: trace, isSignedIn: isSignedIn,
+      });
     });
   }
 });
@@ -376,8 +380,24 @@ router.post('/export', function(req, res, next) {
 
 /* GET /database/reported */
 router.get('/reported', isLoggedIn, function(req, res, next) {
-  // placeholder
-  res.render('db-reported');
+  db.query(
+      'SELECT * FROM flagged_entries_panel', [],
+      (dbErr1, dbRes1) => {
+        if (dbErr1) {
+          return next(dbErr1);
+        }
+        db.query(
+        /* eslint-disable-next-line max-len */
+            'SELECT * FROM inactive_entries_panel', [], (dbErr2, dbRes2) => {
+              if (dbErr2) {
+                return next(dbErr2);
+              }
+              res.render('db-reported', {
+                Reported: dbRes1.rows,
+                Inactive: dbRes2.rows,
+              });
+            });
+      });
 });
 
 

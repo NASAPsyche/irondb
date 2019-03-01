@@ -1,15 +1,97 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Reported Database Entries</title>
-    <%- include('bootstrap/css'); %>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <%- include('components/navbar_signed_in'); %>
 
-    <h1>Placeholder db-reported</h1>
-    
-    <%- include('bootstrap/js'); %>
-  </body>
+<head>
+  <title>Reported Database Entries</title>
+  <%- include('bootstrap/css'); %>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel='stylesheet' href='/stylesheets/db-reported.css' />
+</head>
+
+<body>
+  <%- include('components/navbar_signed_in'); %>
+
+  <div class="container mt-5 py-3" id="top-container">
+
+    <div class="h1">
+      Reported Database Entries
+    </div>
+
+    <table class="table table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Element ID</th>
+          <th>Report Comment</th>
+          <th>Report Date</th>
+        </tr>
+      </thead>
+      <tbody class="table-light">
+        <% for(var i=0; i < Reported.length; i++) { %>
+        <tr>
+          <th>
+            <%= Reported[i].entry_id %>
+          </th>
+          <th>
+            <%= Reported[i].note %>
+          </th>
+          <th>
+            <%= Reported[i].submission_date %>
+          </th>
+          <th id="fill">
+            <button class="btn btn-warning" id="edit"> Edit </button>
+            <button class="btn btn-warning" id="inactive"> Inactive </button>
+          </th>
+          <% } %>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+
+
+  <div class="container py-3 mt-5" id="top-container">
+    <div class="h2">
+      Inactive Entries
+    </div>
+
+
+    <table class="table table-bordered table-hover">
+
+      <thead class="thead-dark">
+        <tr>
+          <th>Element ID </th>
+          <th>Report </th>
+          <th>Report Date</th>
+        </tr>
+      </thead>
+
+      <tbody class="table-light">
+        <% for(var i=0; i < Inactive.length; i++) { %>
+        <tr>
+          <th>
+            <%= Inactive[i].entry_id %>
+          </th>
+          <th>
+            <%= Inactive[i].note %>
+          </th>
+          <th>
+            <%= Inactive[i].submission_date %>
+          </th>
+          <th id="fill">
+            <button class="btn btn-warning" id="edit"> Edit </button>
+            <button class="btn btn-warning" id="inactive"> Delete </button>
+          </th>
+          <% } %>
+      </tbody>
+    </table>
+
+  </div>
+  </div>
+
+  <%- include('bootstrap/js'); %>
+
+</body>
+
 </html>
