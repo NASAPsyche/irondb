@@ -164,29 +164,31 @@ function getBodies(reqBody, keys) {
       const element = elem;
       // The index of the measurement, ex: '0-0'
       const idx = String(bodyNum) + '-' + String(elemNum);
-      const lessThan = 'lessThan' + idx;
+      const lessThan = 'lessThan' + String(idx);
       let lessThanVal = false;
       if (lessThanKeys.includes(String(lessThan))) {
         lessThanVal = true;
       }
-      const measurement = 'measurement' + idx;
-      const deviation = 'deviation' + idx;
-      const unit = 'units' + idx;
-      const technique = 'technique' + idx;
-      const page = 'page' + idx;
+      const measurement = 'measurement' + String(idx);
+      const deviation = 'deviation' + String(idx);
+      const unit = 'units' + String(idx);
+      const technique = 'technique' + String(idx);
+      const page = 'page' + String(idx);
       const units = convertUnitString(reqBody[String(unit)]);
-      const sigfig = 'sigfig' + idx;
-
+      const sigfig = 'sigfig' + String(idx);
+      if (isNaN(parseInt(reqBody[String(deviation)]))) {
+        reqBody[String(deviation)] = 0;
+      }
       // The measurement object
       const measure = {
         'element': reqBody[String(element)],
         'lessThan': lessThanVal,
-        'measurement': reqBody[String(parseFloat(measurement))],
-        'deviation': reqBody[String(deviation)],
+        'measurement': parseInt(reqBody[String((measurement))]),
+        'deviation': parseInt(reqBody[String(deviation)]),
         'unit': units,
         'technique': reqBody[String(technique)],
-        'page': reqBody[String(page)],
-        'sigfig': reqBody[String(sigfig)],
+        'page': parseInt(reqBody[String(page)]),
+        'sigfig': parseInt(reqBody[String(sigfig)]),
       };
       meteorite.measurements.push(measure);
     });

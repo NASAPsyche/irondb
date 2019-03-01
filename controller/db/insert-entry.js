@@ -385,19 +385,22 @@ function insertEntry(
                         if (measure.deviation < 0) {
                           measure.deviation = measure.deviation * -1;
                         }
+                        const sigfigVal = parseInt(measure.sigfig, 10);
+                        const measureVal = parseInt(measure.measurement, 10);
                         measure.element = String(measure.element).toLowerCase();
                         const measureValue = [
                           bodyId,
                           measure.element,
                           paperId,
                           measure.page,
-                          parseInt(measure.measurement),
+                          measureVal,
                           parseFloat(measure.deviation),
                           measure.lessThan,
                           measure.unit,
                           measure.technique,
-                          parseInt(measure.sigfig),
+                          sigfigVal,
                         ];
+
                         // INSERT MEASUREMENT
                         client.query(measureQuery, measureValue, (err, res) => {
                           if (shouldAbort(err)) return;
