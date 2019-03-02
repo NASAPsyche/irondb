@@ -22,7 +22,8 @@
       <a class="btn btn-danger btn-large p-2 text-warning " href="../database/unapproved" role="button"> <u>Approval
           Needed</u>
         <span class="h1 badge badge-light">
-          <%= pendingCount %></span>
+          <% let pCount = pendingCount <= 4 ? pendingCount : "4+" %>
+          <%= pCount %></span>
       </a>
     </div>
     <div>
@@ -71,7 +72,8 @@
       <a class="btn btn-danger btn-large p-2 text-warning " href="../database/reported" role="button"><u>Reported
           Entries</u>
         <span class="badge badge-light">
-          <%= flaggedCount %> </span>
+          <% let fCount = flaggedCount <= 4 ? flaggedCount : "4+" %>
+          <%= fCount %></span>
       </a>
     </div>
     <div>
