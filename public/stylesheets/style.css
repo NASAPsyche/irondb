@@ -10,9 +10,11 @@ a {
 	color: #8c1d40;
 	text-decoration: none;
 	transition: all 0.25s ease-in-out 0s;
+	text-decoration: underline;
 }
 
 a.hover, a.focus {
 	border-bottom: 1px dotted #d23153;
 	color: #d23153;
+	text-decoration: underline;
 }

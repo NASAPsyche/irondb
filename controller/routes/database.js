@@ -8,6 +8,9 @@ const json2csv = require('json2csv').parse;
 const db = require('../db');
 const {isLoggedIn} = require('../middleware/auth');
 
+const singleBodyRouter = require('./database/meteorite');
+router.use('/meteorite', singleBodyRouter);
+
 
 /* GET database page. */
 router.get('/', function(req, res, next) {
@@ -361,23 +364,6 @@ router.post('/export', function(req, res, next) {
 });
 
 
-/* GET single entry */
-// router.get('/:id', function(req, res, next) {
-// eslint-disable-next-line max-len
-//   const queryString = 'SELECT * FROM complete_table WHERE status=$1 AND entry_id=$2';
-
-//   const argsArray = ['active', req.params.id];
-
-//   db.query(queryString, argsArray, (dbErr, dbRes) => {
-//     if (dbErr) {
-//       return next(dbErr);
-//     }
-
-//     res.render('single-entry', {Entries: dbRes.rows});
-//   });
-// });
-
-
 /* GET /database/reported */
 router.get('/reported', isLoggedIn, function(req, res, next) {
   db.query(
@@ -416,4 +402,5 @@ router.get('/unapproved', isLoggedIn, function(req, res, next) {
 });
 
 module.exports = router;
+
 

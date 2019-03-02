@@ -31,7 +31,9 @@ const pool = new Pool(config);
 
 // Export query function for use in application.
 // Export defined in documentation at:
-// node-postgres.com/guides/project-structure
+// https://node-postgres.com/guides/project-structure
+// async/await query defined in documentation at:
+// https://node-postgres.com/guides/async-express
 module.exports = {
   query: (text, params, callback) => {
     const start = Date.now();
@@ -41,6 +43,7 @@ module.exports = {
       callback(err, res);
     });
   },
+  aQuery: (text, params) => pool.query(text, params),
   getClient: (callback) => {
     pool.connect((err, client, done) => {
       callback(err, client, done);

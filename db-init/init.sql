@@ -2198,6 +2198,7 @@ CREATE VIEW complete_table AS (
   t1.major_elements,
   t1.minor_elements,
   t1.trace_elements,
+  t2.paper_id,
   t2.title,
   t3.authors,
   t1.page_number,

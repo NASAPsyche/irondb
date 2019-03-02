@@ -572,7 +572,7 @@
           <% for(var i=0; i < Entries.length; i++) { %>
               <tr>
                 <th>
-                  <a href="/database/<%= Entries[i].entry_id %>">
+                  <a href="/database/meteorite/<%= Entries[i].entry_id %>?paper=<%= Entries[i].paper_id %>">
                     <%= Entries[i].meteorite_name %>
                   </a>
                 </th>
