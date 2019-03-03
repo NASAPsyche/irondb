@@ -120,14 +120,14 @@
         </div>
         <div class="form-group col-md-2">
             <label for="measurement">Measurement</label>
-            <input type="number" class="form-control" id="measurement" name="measurement0-0" required="true" min="0">
+            <input type="text" class="form-control" id="measurement" name="measurement0-0" required="true" min="0">
         </div>
         <div class="form-group col-md-1">
             <label for="deviation">Deviation</label>
             <input type="number" class="form-control" id="deviation" name="deviation0-0" placeholder=" &plusmn;0">
         </div>
         <div class="form-group col-md-2">
-            <label for="units">units</label>
+            <label for="units">Units</label>
             <select class="form-control" id="units" name="units0-0" required="true">
                 <option>wt%</option>
                 <option>ppm</option>
@@ -148,6 +148,7 @@
         <div class="form-group col-md-1 mt-4">
             <i class="fa fa-lock-open fa-lg save-measurement"></i>
             <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
+            <input type="hidden" id="sigfig0-0" name="sigfig0-0" value="0">
         </div>
     </div>
 

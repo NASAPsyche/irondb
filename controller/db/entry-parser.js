@@ -3,7 +3,7 @@
  */
 
 /**
- * Gets keys from request body
+ * @description Gets keys from request body
  * @param  {object} reqBody
  * @return {object}
  */
@@ -38,7 +38,7 @@ function getKeys(reqBody) {
 
 
 /**
- * Gets journal from request body
+ * @description Gets journal from request body
  * @param {object} reqBody The body of the request
  * @return {object} The journal
  */
@@ -63,7 +63,7 @@ function getJournal(reqBody) {
 
 
 /**
- * Gets paper from request body
+ * @description Gets paper from request body
  * @param  {object} reqBody
  * @return {object} The paper
  */
@@ -82,7 +82,7 @@ function getPaper(reqBody) {
 
 
 /**
- * Gets authors from request body
+ * @description Gets authors from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array} Array of author objects
@@ -120,7 +120,7 @@ function getAuthors(reqBody, keys) {
 
 
 /**
- * Gets meteorites and their measurements from request body
+ * @description Gets meteorites and their measurements from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array} Array of meteorite objects
@@ -162,32 +162,33 @@ function getBodies(reqBody, keys) {
     measurements.forEach((elem) => {
       const elemNum = elem.substring(elementKeyString.length);
       const element = elem;
-      const lessThan =
-      'lessThan' + String(bodyNum) + '-' + String(elemNum);
+      // The index of the measurement, ex: '0-0'
+      const idx = String(bodyNum) + '-' + String(elemNum);
+      const lessThan = 'lessThan' + String(idx);
       let lessThanVal = false;
       if (lessThanKeys.includes(String(lessThan))) {
         lessThanVal = true;
       }
-      const measurement =
-      'measurement' + String(bodyNum) + '-' + String(elemNum);
-      const deviation =
-      'deviation' + String(bodyNum) + '-' + String(elemNum);
-      const unit =
-      'units' + String(bodyNum) + '-' + String(elemNum);
-      const technique =
-      'technique' + String(bodyNum) + '-' + String(elemNum);
-      const page =
-      'page' + String(bodyNum) + '-' + String(elemNum);
+      const measurement = 'measurement' + String(idx);
+      const deviation = 'deviation' + String(idx);
+      const unit = 'units' + String(idx);
+      const technique = 'technique' + String(idx);
+      const page = 'page' + String(idx);
       const units = convertUnitString(reqBody[String(unit)]);
-
+      const sigfig = 'sigfig' + String(idx);
+      if (isNaN(parseInt(reqBody[String(deviation)]))) {
+        reqBody[String(deviation)] = 0;
+      }
+      // The measurement object
       const measure = {
         'element': reqBody[String(element)],
         'lessThan': lessThanVal,
-        'measurement': reqBody[String(measurement)],
-        'deviation': reqBody[String(deviation)],
+        'measurement': parseInt(reqBody[String((measurement))]),
+        'deviation': parseInt(reqBody[String(deviation)]),
         'unit': units,
         'technique': reqBody[String(technique)],
-        'page': reqBody[String(page)],
+        'page': parseInt(reqBody[String(page)]),
+        'sigfig': parseInt(reqBody[String(sigfig)]),
       };
       meteorite.measurements.push(measure);
     });
@@ -198,7 +199,7 @@ function getBodies(reqBody, keys) {
 
 
 /**
- * Get notes from request body
+ * @description Get notes from request body
  * @param  {object} reqBody
  * @param  {object} keys
  * @return {Array}
@@ -215,7 +216,8 @@ function getNotes(reqBody, keys) {
 
 
 /**
- * Converts units from values in form to values expected by database
+ * @description Converts units from values in form
+ * to values expected by database
  * @param  {string} orignalUnit
  * @return {string} converted string
  */

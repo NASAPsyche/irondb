@@ -9,7 +9,10 @@ function getSigFig(num) {
   if (isNaN(parseFloat(num))) return; // invalid
   if ((parseFloat(num)) == 0) return 0;
   const splitStr = num.split('.');
-  splitStr[0] = splitStr[0].replace(/\D/g, ''); // remove non numeric characters
+  // remove non numeric characters
+  splitStr.forEach((value, i) =>{
+    splitStr[i] = value.replace(/\D/g, '');
+  });
 
   return (
     (typeof splitStr[1] == 'undefined') // if no decimals
