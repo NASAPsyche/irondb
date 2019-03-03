@@ -64,7 +64,7 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from nltk.corpus import words
-#from rake_nltk import rake
+from rake_nltk import Rake
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
@@ -127,7 +127,12 @@ def keyword_extract(pdf_name):
     after_tagword = relevant_text(pdf_name, "Abstract")[1]
     abstract = re.split("Introduction", after_tagword, flags=re.IGNORECASE)[0]
 
-    return abstract
+    r = Rake()
+    keywords = r.extract_keywords_from_text(abstract)
+    ranked = r.get_ranked_phrases()
+
+    return ranked
+    #return abstract
 
 
 # extracts truncated title from top of any page in the pdf using magic

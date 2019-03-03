@@ -66,5 +66,5 @@ dependencies:
     - pyparsing==2.3.1
     - pypdf2==1.26.0
     - singledispatch==3.4.0.3
-    - rake-nltk==1.0.4
+    - rake_nltk==1.0.3
 prefix: ~/anaconda3/envs/journalImport
