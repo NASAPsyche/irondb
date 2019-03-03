@@ -1,6 +1,7 @@
 import PyPDF2
 import sys
 import os
+import json
 from tabula import read_pdf
 import pandas as pd
 pd.options.display.max_rows = 999
@@ -17,46 +18,38 @@ pd.options.display.max_columns = 999
 print(sys.argv[1])
 
 pdf_name = "pdfs/" + str(sys.argv[1])
-pagenum = int(sys.argv[2]) - 1
+tables_rec_from_pages = []
 
 
 def target_coords():
     print(sys.argv[1])
-    pdf_name = "pdfs/" + str(sys.argv[1])
-    pdf_name = "pdfs/Wassonetal_GCA_2007.pdf"
-    pagenum = int(sys.argv[2]) - 1
-    pagenum = 5
+    pdfname = "pdfs/Wassonetal_GCA_2007.pdf"
+    page_num = int(sys.argv[2])
 
+    # page_in = open(pdfname, 'rb')
+    return read_pdf(pdfname, output_format="dataframe", encoding="utf-8", multiple_tables=True,
+                                    pages=page_num, silent=True, area=[521.71, 27.73, 705, 560])
+
+
+def rotate_page():
+    pagenum = int(sys.argv[2])
     page_in = open(pdf_name, 'rb')
     page_reader = PyPDF2.PdfFileReader(page_in)
-    page_in.close()
-    tables_rec_from_page = read_pdf(pdf_name, output_format="dataframe", encoding="utf-8", multiple_tables=True,
-                                    pages=pagenum, silent=True, area=[521.71, 27.73, 705, 560])
-    print(tables_rec_from_page)
-
-
-def turn_page():
-    page_in = open(pdf_name, 'rb')
-    page_reader = PyPDF2.PdfFileReader(page_in)
-    page_writer = PyPDF2.PdfFileWriter()
 
     page = page_reader.getPage(pagenum)
     page.rotateClockwise(90)
-    page_writer.addPage(page)
-
-    pdf_out = open('rotatedPage.pdf', 'wb')
-    page_writer.write(pdf_out)
-    pdf_out.close()
-    page_in.close()
+    return read_pdf(pdf_name, output_format="dataframe", encoding="utf-8", multiple_tables=True,
+                                    pages=pagenum, silent=True)
 
 
 if int(sys.argv[3]) == 0:
-    turn_page()
-    # START Get tables 1 page at a time.
-    tables_rec_from_page = read_pdf('rotatedPage.pdf', output_format="dataframe", encoding="utf-8", multiple_tables=True,
-                                    pages=0, silent=True)
-    os.remove("rotatedPage.pdf")
-    print(tables_rec_from_page)
+    tables_rec_from_pages = rotate_page()
 
 elif int(sys.argv[3]) == 1:
-    target_coords()
+    tables_rec_from_pages = target_coords()
+
+for ind in range(len(tables_rec_from_pages)):
+    tables_rec_from_pages[ind] = json.loads(tables_rec_from_pages[ind].to_json())
+
+
+print(tables_rec_from_pages)
