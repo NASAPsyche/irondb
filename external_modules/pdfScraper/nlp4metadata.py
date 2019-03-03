@@ -129,10 +129,10 @@ def keyword_extract(pdf_name):
 
     r = Rake()
     keywords = r.extract_keywords_from_text(abstract)
-    ranked = r.get_ranked_phrases()
+    ranked_kywrds = r.get_ranked_phrases()
+    scored_kywrds = r.get_ranked_phrases_with_scores()
 
-    return ranked
-    #return abstract
+    return scored_kywrds
 
 
 # extracts truncated title from top of any page in the pdf using magic
