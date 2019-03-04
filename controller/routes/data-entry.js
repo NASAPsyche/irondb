@@ -23,7 +23,12 @@ router.post('/', isLoggedIn, function(req, res, next) {
   form.parse(req, function(err, fields, files) {
     if (err) next(createError(500));
     if (fields.editor_select === 'true' && files.filetoupload.size === 0) {
-      res.render('editor', {username: req.user.username, data: null});
+      console.log(req);
+      res.render('editor', {
+        username: req.user.username,
+        data: null,
+        sessionID: req.sessionID,
+      });
     } else if (fields.tool_select === 'true' && files.filetoupload.size === 0) {
       next(createError(500));
     } else {
@@ -34,11 +39,17 @@ router.post('/', isLoggedIn, function(req, res, next) {
         fs.rename(oldpath, newpath, function(err) {
           if (err) next(createError(500));
           if (fields.tool_select) {
-            res.render('data-entry-checklist',
-                {data: newpath.slice(15), username: req.user.username});
+            res.render('data-entry-checklist', {
+              data: newpath.slice(15),
+              username: req.user.username,
+              sessionID: req.sessionID,
+            });
           } else if (fields.editor_select) {
-            res.render('editor_with_pdf',
-                {data: newpath.slice(15), username: req.user.username});
+            res.render('editor_with_pdf', {
+              data: newpath.slice(15),
+              username: req.user.username,
+              sessionID: req.sessionID,
+            });
           } else {
             next(createError(500));
           }
@@ -51,7 +62,11 @@ router.post('/', isLoggedIn, function(req, res, next) {
 });
 
 router.get('/editor', isLoggedIn, function(req, res, next) {
-  res.render('editor', {username: req.user.username, data: null});
+  res.render('editor', {
+    username: req.user.username,
+    data: null,
+    sessionID: req.sessionID,
+  });
 });
 
 router.post('/editor', isLoggedIn, function(req, res, next) {
@@ -64,8 +79,11 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
     try {
       fs.rename(oldpath, newpath, function(err) {
         if (err) throw err;
-        res.render('editor_with_pdf',
-            {data: newpath.slice(15), username: req.user.username});
+        res.render('editor_with_pdf', {
+          data: newpath.slice(15),
+          username: req.user.username,
+          sessionID: req.sessionID,
+        });
       });
     } catch (err) {
       next(createError(500));
