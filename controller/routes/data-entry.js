@@ -6,12 +6,15 @@ const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
 const fs = require('fs');
-const pg = require('../db');
+// const pg = require('../db');
 const parser = require('../db/entry-parser');
 const inserter = require('../db/insert-entry');
 
 const toolRouter = require('./data-entry/tool');
 router.use('/tool', toolRouter);
+
+const dataEntrySaveRouter = require('./data-entry/save');
+router.use('/save', dataEntrySaveRouter);
 
 router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
@@ -91,47 +94,8 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
   });
 });
 
-router.post('/save', isLoggedIn, function(req, res, next) {
-  console.log('data: ', req.body.data);
-  pg.getClient((err, client, done) => {
-    const insertQuery =
-      'INSERT INTO entry_store(username, savedata, pdf_path) VALUES($1,$2,$3)';
-    const shouldAbort = (err) => {
-      if (err) {
-        console.error('Error in transaction', err.stack);
-        client.query('ROLLBACK', (err) => {
-          if (err) {
-            console.error('Error rolling back client', err.stack);
-          }
-          // release the client back to the pool
-          done();
-          next();
-        });
-      }
-      return !!err;
-    };
 
-    client.query('BEGIN', (err) => {
-      if (shouldAbort(err)) return;
-      client.query(
-          insertQuery,
-          [req.body.username, req.body.data, req.body.pdf_path],
-          (err, res) => {
-            if (shouldAbort(err)) return;
-            client.query('COMMIT', (err) => {
-              if (err) {
-                console.error('Error committing transaction', err.stack);
-              }
-              console.log('done, next');
-              done();
-              next();
-            });
-          });
-    });
-  });
-});
-
-router.post('/insert', isLoggedIn, function(req, res, next) {
+router.post('/insert', isLoggedIn, async (req, res, next) => {
   const reqBody = req.body;
   const username = req.user.username;
 
