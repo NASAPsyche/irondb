@@ -50,7 +50,7 @@ nlp4metadata.py: Extracts metadata attributes from the text of a pdf using NLP
 Attributes include: title, authors, publishing date, and source
 """
 __authors__ = "Hajar Boughoula"
-__version__ = "2.2"
+__version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
@@ -59,19 +59,20 @@ import nltk
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
 #from nltk.corpus import stopwords
-from nltk.corpus import words
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
+from nltk.corpus import words
+from rake_nltk import Rake
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
-page_num_title = 1
-page_num_authors = 1
+page_num_title = 1 #shouldn't be global, make it local
+page_num_authors = 1 #shouldn't be global, make it local
 
 
-# retrieves raw text from a chosen pdf
+# retrieves raw text from any given pdf
 def convert_pdf_to_txt(path, pageNo=0):
     text = ""
     rsrcmgr = PDFResourceManager()
@@ -96,13 +97,13 @@ def convert_pdf_to_txt(path, pageNo=0):
 
 # extracts relevant parts of the first page of the pdf using a tagword
 def relevant_text(pdf_name, tagword):
-    page = convert_pdf_to_txt(path + pdf_name, 0)
-    text = page.split(tagword, 1)[0]
+    paper = convert_pdf_to_txt(path + pdf_name)
+    text = re.split(tagword, paper, flags=re.IGNORECASE)
 
     return text
 
 
-# stages the relevant parts of the pdf using NLTK
+# stages the relevant parts of the pdf using NLTK sentence tokenization
 def stage_text(txt):
     #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
 
@@ -121,6 +122,19 @@ def stage_text(txt):
     return sentences
 
 
+# extracts ranked key phrases from any given text using RAKE and NLTK
+def keyword_extract(pdf_name):
+    after_tagword = relevant_text(pdf_name, "Abstract")[1]
+    abstract = re.split("Introduction", after_tagword, flags=re.IGNORECASE)[0]
+
+    r = Rake()
+    keywords = r.extract_keywords_from_text(abstract)
+    ranked_kywrds = r.get_ranked_phrases()
+    scored_kywrds = r.get_ranked_phrases_with_scores()
+
+    return scored_kywrds
+
+
 # extracts truncated title from top of any page in the pdf using magic
 def truncated_title(pdf_name):
     global page_num_title
@@ -135,10 +149,10 @@ def truncated_title(pdf_name):
 
 
 # extracts full title from the first page of the pdf using NLTK noun-phrase chunking
-def extract_title(pdf_name):
+def title_extract(pdf_name):
 
     title_full = "Title not found"
-    relevant_data = relevant_text(pdf_name, extract_authors(pdf_name)[0])
+    relevant_data = relevant_text(pdf_name, authors_extract(pdf_name)[0])[0]
 
     pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
     chunkr = nltk.RegexpParser(pattern)
@@ -174,15 +188,15 @@ def truncated_authors(pdf_name):
 
 
 # extracts authors from the first page of the pdf using NLTK named entity recognition
-def extract_authors(pdf_name):
+def authors_extract(pdf_name):
     authors_full = ""
-    relevant_data = relevant_text(pdf_name, "Abs")
+    relevant_data = relevant_text(pdf_name, "Abstract")[0]
 
+    relevant_data = relevant_data.replace("and", ",") #eliminate with stopwords
+    relevant_data = relevant_data.replace("*", "") #eliminate with stopwords
     for element in relevant_data:
-        if element.isdigit() or element == "*":
+        if element.isdigit():
             relevant_data = relevant_data.replace(element, "")
-        if element == "," or element == "and":
-        	relevant_data = relevant_data.replace(element, ",")
 
     tokenized = stage_text(relevant_data)
     tagged = nltk.pos_tag(tokenized)
@@ -236,8 +250,8 @@ def extract_authors(pdf_name):
 
 
 # extracts publishing date from the pdf text using RegEx
-def extract_date(pdf_name):
-    relevant_data = relevant_text(pdf_name, "Abs").lower()
+def date_extract(pdf_name):
+    relevant_data = relevant_text(pdf_name, "Abstract")[0].lower()
     if "publish" in relevant_data:
         relevant_data = relevant_data.rsplit("publish", 1)[1]
     elif "available" in relevant_data:
@@ -251,8 +265,8 @@ def extract_date(pdf_name):
 
 
 # extracts journal source from the pdf text using tagwords
-def extract_source(pdf_name):
-    relevant_data = relevant_text(pdf_name, "Abs")
+def source_extract(pdf_name):
+    relevant_data = relevant_text(pdf_name, "Abstract")[0]
     source_tagword = "Vol"
     source = "Source not found."
 
@@ -274,9 +288,9 @@ def extract_source(pdf_name):
 
 
 
-
 paper = input("Enter name of paper with extension (.pdf): ")
-#print(extract_title(paper))
-#print(extract_authors(paper))
-#print(extract_date(paper))
-print(extract_source(paper))
+print(keyword_extract(paper))
+#print(title_extract(paper))
+#print(authors_extract(paper))
+#print(date_extract(paper))
+#print(source_extract(paper))
