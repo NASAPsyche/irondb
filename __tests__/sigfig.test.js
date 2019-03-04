@@ -28,4 +28,7 @@ describe('Test to get significant figures from numbers', () => {
   test('Invalid string', () => {
     expect(sf.getSigFig('a1.10')).toBe(undefined);
   });
+  test('Junk trailing after numbers', () => {
+    expect(sf.getSigFig('-1.01a')).toBe(3);
+  });
 });

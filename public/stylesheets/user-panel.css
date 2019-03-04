@@ -40,3 +40,7 @@
 .badge {
     margin: .09rem;
 }
+
+.btn-sm {
+    font-size: .80rem;
+}

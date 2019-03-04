@@ -224,20 +224,8 @@ print("Length after column cleanse:" + str(len(tables_rec_from_pages)))
 print(tables_rec_from_pages)
 
 for ind in range(len(tables_rec_from_pages)):
-    tables_rec_from_pages[ind] = tables_rec_from_pages[ind].to_json()
-    tables_rec_from_pages[ind] = {"table_" + str(ind + 1): str(tables_rec_from_pages[ind])}
+    tables_rec_from_pages[ind] = json.loads(tables_rec_from_pages[ind].to_json())
 
 print(tables_rec_from_pages)
-# table_built =
-
-
-# def table_to_json(df_list):
-#     table_json = {}
-#     if len(df_list) > 0:
-#         for x in df_list:
-#             table_json = process_tables_mark(x).to_json(orient='index')
-#     return table_json
-
-# return json.loads((table_cleaned.to_json(double_precision=10, force_ascii=True,date_unit='ms', lines=False)))
 
 
