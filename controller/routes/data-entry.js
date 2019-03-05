@@ -26,7 +26,6 @@ router.post('/', isLoggedIn, function(req, res, next) {
   form.parse(req, function(err, fields, files) {
     if (err) next(createError(500));
     if (fields.editor_select === 'true' && files.filetoupload.size === 0) {
-      console.log(req);
       res.render('editor', {
         username: req.user.username,
         data: null,
