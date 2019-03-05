@@ -7,14 +7,15 @@ const formidable = require('formidable');
 const path = require('path');
 const fs = require('fs');
 // const pg = require('../db');
-const parser = require('../db/entry-parser');
-const inserter = require('../db/insert-entry');
 
 const toolRouter = require('./data-entry/tool');
 router.use('/tool', toolRouter);
 
 const dataEntrySaveRouter = require('./data-entry/save');
 router.use('/save', dataEntrySaveRouter);
+
+const insertRouter = require('./data-entry/insert');
+router.use('/insert', insertRouter);
 
 router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
@@ -91,32 +92,6 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
       next(createError(500));
     }
   });
-});
-
-
-router.post('/insert', isLoggedIn, async (req, res, next) => {
-  const reqBody = req.body;
-  const username = req.user.username;
-
-  /* Get Keys */
-  // Get an array of the keys, needed for filtering
-  const keys = parser.getKeys(reqBody);
-
-  // Singular objects
-  const journal = parser.getJournal(reqBody);
-  const paper = parser.getPaper(reqBody);
-  // Arrays of objects
-  const authors = parser.getAuthors(reqBody, keys);
-  const bodies = parser.getBodies(reqBody, keys);
-  const notes = parser.getNotes(reqBody, keys);
-
-  // Insert the entry as pending
-  inserter.insertEntry(
-      journal, paper, authors, bodies, notes, username, 'pending'
-  );
-
-  // Redirect to panel when done
-  res.redirect('/panel');
 });
 
 
