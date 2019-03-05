@@ -1,34 +1,36 @@
 /**
+ * A collection of functions for saving work in progress in the editor
+ */
+
+
+/**
  * @description On click the save, it sends serialized form via post.
  */
-$(document).ready(function() {
-  $('#save-btn').click(function() {
+$(document).ready(async () => {
+  $('#save-btn').click(async () => {
     const jsonString = serializeInsertForm();
-    const success = postSave(jsonString);
-    if (success === true) {
-      return true; // submit
-    } else {
-      alert('There was an error saving your data, try again later.');
-      return false;
-    }
+    postSave(jsonString);
   });
 });
+
 
 /**
  * @description When on the manual editor, and you choose to upload a PDF, this
  * saves your work before continuing on.
  */
-$(document).ready(function() {
-  $('#pdf-form').submit(function(event) {
+$(document).ready(async function() {
+  $('#pdf-form').submit(async function(event) {
     const jsonString = serializeInsertForm();
-    const success = postSave(jsonString);
-    if (success === true) {
+    if (await postSave(jsonString) === true) {
+      // event.preventDefault(); // do not submit
       return; // submit
     } else {
+      alert('failed to save');
       event.preventDefault(); // do not submit
     }
   });
 });
+
 
 /**
  * @description serialize the insert form
@@ -36,12 +38,11 @@ $(document).ready(function() {
  */
 function serializeInsertForm() {
   const serializedData = $('#insert-form').serializeArray();
-  console.log(serializedData);
   const jsondata_ = {};
+  // match keys to values
   serializedData.forEach(function(element) {
     jsondata_[element['name']] = element['value'];
   });
-  console.log(jsondata_);
   // eslint-disable-next-line no-undef
   const username_ = username; // username defined in ejs from route
   // eslint-disable-next-line no-undef
@@ -52,33 +53,28 @@ function serializeInsertForm() {
     data: jsondata_,
     pdf_path: filename_,
   };
-
-  console.log(fullJson);
   return (JSON.stringify(fullJson));
 }
+
+
 /**
+ * @description sends POST to save serialized form
  * @param  {String} jsonString
- * @return {boolean} success
  */
-function postSave(jsonString) {
-  let flag;
-  $.ajax({
+async function postSave(jsonString) {
+  await $.ajax({
     url: '/data-entry/save',
     type: 'POST',
     data: jsonString,
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
+    async: true,
     success: function(data, status, jqXHR) {
       alert(status);
-      flag = true;
+      return true;
     },
-
     error: function(jqXHR, status) {
-      // error handler
-      console.log(jqXHR);
-      alert('fail' + status.code);
-      flag = false;
+      return false;
     },
   });
-  return flag;
 }
