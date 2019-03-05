@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS papers (
 );
 
 CREATE TABLE IF NOT EXISTS attributions (
-  attribution_id serial NOT NULL,
+  attribution_id serial UNIQUE NOT NULL,
   paper_id integer ,
   author_id integer ,
   status_id bigint,
@@ -673,6 +673,7 @@ INSERT INTO element_entries (
     (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
     'co',
     (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
+    1,
     1,
     1,
     1,
