@@ -93,7 +93,7 @@ ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFE
 
 CREATE TABLE IF NOT EXISTS bodies (
   body_id serial PRIMARY KEY,
-  nomenclature citext UNIQUE NOT NULL,
+  nomenclature citext NOT NULL,
   status_id bigint
 );
 
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS papers (
 );
 
 CREATE TABLE IF NOT EXISTS attributions (
-  attribution_id serial UNIQUE NOT NULL,
+  attribution_id serial NOT NULL,
   paper_id integer ,
   author_id integer ,
   status_id bigint,
