@@ -41,9 +41,7 @@
 ======================================================================================================================
 """
 
-"""
-Just don't touch anything okay.
-"""
+#Just don't touch anything okay.
 
 """
 nlp4metadata.py: Extracts metadata attributes from the text of a pdf using NLP
@@ -95,14 +93,6 @@ def convert_pdf_to_txt(path, pageNo=0):
     return text
 
 
-# extracts relevant parts of the first page of the pdf using a tagword
-def relevant_text(pdf_name, tagword):
-    paper = convert_pdf_to_txt(path + pdf_name)
-    text = re.split(tagword, paper, flags=re.IGNORECASE)
-
-    return text
-
-
 # stages the relevant parts of the pdf using NLTK sentence tokenization
 def stage_text(txt):
     #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
@@ -122,13 +112,16 @@ def stage_text(txt):
     return sentences
 
 
-# extracts ranked key phrases from any given text using RAKE and NLTK
-def keyword_extract(pdf_name):
-    after_tagword = relevant_text(pdf_name, "Abstract")[1]
-    abstract = re.split("Introduction", after_tagword, flags=re.IGNORECASE)[0]
+# extracts ranked key phrases from any text between two tagwords using RAKE
+def keyword_extract(pdf_name, below=" ", above=" ", pageNo=0):
+    page = convert_pdf_to_txt(path + pdf_name, pageNo)
+    if below == " " and above == " ":
+        relevant_text = page
+    else:
+        relevant_text = (page.split(below)[1]).split(above)[0]
 
     r = Rake()
-    keywords = r.extract_keywords_from_text(abstract)
+    keywords = r.extract_keywords_from_text(relevant_text)
     ranked_kywrds = r.get_ranked_phrases()
     scored_kywrds = r.get_ranked_phrases_with_scores()
 
@@ -190,27 +183,14 @@ def truncated_authors(pdf_name):
 # extracts authors from the first page of the pdf using NLTK named entity recognition
 def authors_extract(pdf_name):
     authors_full = ""
-    relevant_data = relevant_text(pdf_name, "Abstract")[0]
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = (page.split("Trace Element Composition and Classification\n\nof the Chinga Iron Meteorite")[1]).split("Abstract")[0]
 
-    relevant_data = relevant_data.replace("and", ",") #eliminate with stopwords
-    relevant_data = relevant_data.replace("*", "") #eliminate with stopwords
-    for element in relevant_data:
-        if element.isdigit():
-            relevant_data = relevant_data.replace(element, "")
-
-    tokenized = stage_text(relevant_data)
+    tokenized = stage_text(relevant_text)
     tagged = nltk.pos_tag(tokenized)
     nerd = nltk.ne_chunk(tagged)
 
-    #pattern = "NOUN-PHRASE: {<NNP><NNP>+}"
-    #chunkr = nltk.RegexpParser(pattern)
-    #chunks = chunkr.parse(stage_text(relevant_data))
-
-    ############################################
-    #OPTIMIZE: SEARCH ONLY AROUND TITLE CONTEXT.
-    ############################################
-
-    for line in relevant_data.split('\n\n'):
+    for line in relevant_text.split('\n\n'):
         for chunk in nerd:
             if type(chunk) == nltk.tree.Tree:
                 if chunk.label() == 'PERSON' and authors_full == "":
@@ -220,57 +200,50 @@ def authors_extract(pdf_name):
         if authors_full == "":
             for word in tagged:
                 if ((word[0] not in words.words()) and (word[1] == 'NNP') and 
-                    (word[0] in chunk) and (word[0] in line) and (len(line.split()) > 1)):
+                    (word[0] in line) and (len(line.split()) > 1)):
                     authors_full = line
 
     if authors_full == "":
     	return "Author(s) not found."
-
+    else:
+        for element in authors_full:
+            if element.isdigit() or element == "*":
+                authors_full = authors_full.replace(element, "")
+            if element == "," or element == "and":
+                authors_full = authors_full.replace(element, ",")
+        authors_full = authors_full.replace(" ,", ",")
 
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
-    #authors_index = (relevant_data.lower()).find(authors_tagword.lower())
-    #authors_full = relevant_data[:authors_index].rsplit('\n\n', 1)[1] + relevant_data[authors_index:].split('\n', 1)[0]
+    #authors_index = (relevant_text.lower()).find(authors_tagword.lower())
+    #authors_full = relevant_text[:authors_index].rsplit('\n\n', 1)[1] + relevant_text[authors_index:].split('\n', 1)[0]
 
-    #for element in authors_full:
-        #if (element.isdigit()) or (element == "*"):
-            #authors_full = authors_full.replace(element, "")
-
-    #if ", and" in authors_full:
-        #authors_full = authors_full.replace("and", "")
-    #elif " and" in authors_full:
-        #authors_full = authors_full.replace(" and", ",")
-    #if " ," in authors_full:
-        #authors_full = authors_full.replace(" ,", ",")
-    #elif ",," in authors_full:
-        #authors_full = authors_full.replace(",,", ",")
-
-    #print(relevant_data)
-    #print(nerd)
     return authors_full
 
 
 # extracts publishing date from the pdf text using RegEx
 def date_extract(pdf_name):
-    relevant_data = relevant_text(pdf_name, "Abstract")[0].lower()
-    if "publish" in relevant_data:
-        relevant_data = relevant_data.rsplit("publish", 1)[1]
-    elif "available" in relevant_data:
-        relevant_data = relevant_data.rsplit("available", 1)[1]
-    elif "accept" in relevant_data:
-        relevant_data = relevant_data.rsplit("accept", 1)[1]
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = page.split("Abstract")[0].lower()
+    if "publish" in relevant_text:
+        relevant_text = relevant_text.rsplit("publish", 1)[1]
+    elif "available" in relevant_text:
+        relevant_text = relevant_text.rsplit("available", 1)[1]
+    elif "accept" in relevant_text:
+        relevant_text = relevant_text.rsplit("accept", 1)[1]
 
-    date = re.search(r'[1-3][0-9]{3}', relevant_data)
+    date = re.search(r'[1-3][0-9]{3}', relevant_text)
 
     return date.group()
 
 
 # extracts journal source from the pdf text using tagwords
 def source_extract(pdf_name):
-    relevant_data = relevant_text(pdf_name, "Abstract")[0]
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = page.split("Abstract")[0]
     source_tagword = "Vol"
     source = "Source not found."
 
-    for line in relevant_data.split('\n\n'):
+    for line in relevant_text.split('\n\n'):
         if ((source_tagword in line) or (source_tagword.lower() in line) or
             ("Acta"in line) or ("acta"in line)):
             source = line
@@ -280,17 +253,17 @@ def source_extract(pdf_name):
         (source_tagword.lower() not in source.split("Copyright")[1])):
         source = source.split("Copyright")[0]
 
-    ####################################################
-    #OPTIMIZE: ELIMINATE RUBBISH THAT CONATINS AUTHOR(S)
-    ####################################################
+    ######################################################################
+    #OPTIMIZE: pull out journal names from online catalogue and find match
+    ######################################################################
 
     return source
 
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-print(keyword_extract(paper))
+#print(keyword_extract(paper))
 #print(title_extract(paper))
-#print(authors_extract(paper))
+print(authors_extract(paper))
 #print(date_extract(paper))
 #print(source_extract(paper))
