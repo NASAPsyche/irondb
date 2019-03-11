@@ -676,6 +676,7 @@ INSERT INTO element_entries (
     1,
     1,
     1,
+    1,
     false,
     'ug_g',
     'INAA'
