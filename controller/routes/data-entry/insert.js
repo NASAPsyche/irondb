@@ -22,7 +22,7 @@ router.post('/', async (req, res, next) => {
   const notes = parser.getNotes(reqBody, keys);
 
   // Insert the entry as pending
-  inserter.insertEntry(
+  await inserter.insertEntry(
       journal, paper, authors, bodies, notes, username, 'pending'
   );
 
