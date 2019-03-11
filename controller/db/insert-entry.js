@@ -259,8 +259,7 @@ async function insertEntry(
         bodyId,
         body.group,
       ];
-      rows = client.query(groupQuery, groupValue);
-
+      rows = await client.query(groupQuery, groupValue);
       const groupId = rows.rows[0].group_id;
       const groupStatusQuery = `
       INSERT INTO
@@ -438,7 +437,7 @@ async function insertEntry(
         status,
         username,
       ];
-      rows = client.query(noteStatusQuery, noteStatusValue);
+      rows = await client.query(noteStatusQuery, noteStatusValue);
 
       const statusIdNote = rows.rows[0].status_id;
       const noteUpdateQuery = `
