@@ -3,12 +3,6 @@
 CREATE DATABASE irondb WITH OWNER = group16; 
 CREATE EXTENSION citext;
 
-/*
-  The DATA tables and the STATUS tables have been populated with Dummy Data
-  where the text values are usually 'Dummy'. This is useful incase you need to point
-  a reference at something that doesn't exist yet.
-  No  REVIEW tables have been populated.
-*/
 -------------------
 -- Define enums  --
 -------------------
@@ -17,45 +11,6 @@ CREATE TYPE user_role AS ENUM ('admin', 'data-entry', 'user');
 CREATE TYPE statuses AS ENUM('pending', 'rejected', 'active', 'historical');
 CREATE TYPE units AS ENUM ('wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g');
 
--------------------
--- Drop tables   --
--------------------
--- DROP TABLE IF EXISTS users;
--- DROP TABLE IF EXISTS user_info;
--- DROP TABLE IF EXISTS bodies;
--- DROP TABLE IF EXISTS journals;
--- DROP TABLE IF EXISTS papers;
--- DROP TABLE IF EXISTS attributions;
--- DROP TABLE IF EXISTS authors;
--- DROP TABLE IF EXISTS groups;
--- DROP TABLE IF EXISTS classifications;
--- DROP TABLE IF EXISTS element_entries;
--- DROP TABLE IF EXISTS notes;
-
--- DROP TABLE IF EXISTS body_status;
--- DROP TABLE IF EXISTS journal_status;
--- DROP TABLE IF EXISTS paper_status;
--- DROP TABLE IF EXISTS attribution_status;
--- DROP TABLE IF EXISTS author_status;
--- DROP TABLE IF EXISTS group_status;
--- DROP TABLE IF EXISTS classification_status;
--- DROP TABLE IF EXISTS element_status;
--- DROP TABLE IF EXISTS note_status;
-
--- DROP TABLE IF EXISTS entry_json_store;
--- DROP TABLE IF EXISTS submissions;
-
--- DROP TABLE IF EXISTS body_review;
--- DROP TABLE IF EXISTS journal_review;
--- DROP TABLE IF EXISTS paper_review;
--- DROP TABLE IF EXISTS attribution_review;
--- DROP TABLE IF EXISTS author_review;
--- DROP TABLE IF EXISTS group_review;
--- DROP TABLE IF EXISTS classification_review;
--- DROP TABLE IF EXISTS element_review;
--- DROP TABLE IF EXISTS note_review;
-
--- DROP TABLE IF EXISTS data_entry_role_requests;
 
 -------------------
 -- Define tables --
