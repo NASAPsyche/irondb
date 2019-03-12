@@ -72,8 +72,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS user_info (
   user_id integer,
-  first_name citext NOT NULL,
-  last_name citext NOT NULL,
+  first_name text NOT NULL,
+  last_name text NOT NULL,
   email_address citext UNIQUE NOT NULL,
   PRIMARY KEY(user_id)
 );
