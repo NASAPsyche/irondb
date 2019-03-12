@@ -169,8 +169,8 @@ function getBodies(reqBody, keys) {
       if (lessThanKeys.includes(String(lessThan))) {
         lessThanVal = true;
       }
-      const measurement = 'measurement' + String(idx);
-      const deviation = 'deviation' + String(idx);
+      const measurement = 'convertedMeasurement' + String(idx);
+      const deviation = 'convertedDeviation' + String(idx);
       const unit = 'units' + String(idx);
       const technique = 'technique' + String(idx);
       const page = 'page' + String(idx);
