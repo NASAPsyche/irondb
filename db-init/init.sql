@@ -63,46 +63,18 @@ CREATE TYPE units AS ENUM ('wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g');
 
 -- User tables --
 
-CREATE TABLE IF NOT EXISTS users (
-  user_id serial PRIMARY KEY,
-  username citext UNIQUE NOT NULL,
-  password_hash text NOT NULL,
-  role_of user_role NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS user_info (
-  user_id integer,
-  first_name text NOT NULL,
-  last_name text NOT NULL,
-  email_address citext UNIQUE NOT NULL,
-  PRIMARY KEY(user_id)
-);
-
--- Session table --
--- Table copied from: https://github.com/voxpelli/node-connect-pg-simple/blob/HEAD/table.sql
--- as per usage documentation: https://www.npmjs.com/package/connect-pg-simple
-CREATE TABLE "session" (
-  "sid" varchar NOT NULL COLLATE "default",
-	"sess" json NOT NULL,
-	"expire" timestamp(6) NOT NULL
-)
-WITH (OIDS=FALSE);
-ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-
--- Data tables --
-
 CREATE TABLE IF NOT EXISTS bodies (
   body_id serial PRIMARY KEY,
-  nomenclature text NOT NULL,
+  nomenclature citext UNIQUE NOT NULL,
   status_id bigint
 );
 
 CREATE TABLE IF NOT EXISTS journals (
   journal_id serial PRIMARY KEY,
   journal_name text NOT NULL,
-  volume text,
-  issue text,
-  series text,
+  volume citext,
+  issue citext,
+  series citext,
   published_year integer NOT NULL CHECK (published_year >= 1900),
   status_id bigint 
 );
@@ -110,8 +82,8 @@ CREATE TABLE IF NOT EXISTS journals (
 CREATE TABLE IF NOT EXISTS papers (
   paper_id serial PRIMARY KEY,
   journal_id integer NOT NULL,
-  title text NOT NULL,
-  doi text,
+  title citext NOT NULL,
+  doi citext,
   status_id bigint
 );
 
@@ -125,9 +97,9 @@ CREATE TABLE IF NOT EXISTS attributions (
 
 CREATE TABLE IF NOT EXISTS authors (
   author_id serial PRIMARY KEY,
-  primary_name text NOT NULL,
-  first_name text,
-  middle_name text,
+  primary_name citext NOT NULL,
+  first_name citext,
+  middle_name citext,
   single_entity boolean NOT NULL DEFAULT true,
   status_id bigint
 );
