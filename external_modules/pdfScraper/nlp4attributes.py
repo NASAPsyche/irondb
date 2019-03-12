@@ -145,7 +145,7 @@ def truncated_title(pdf_name):
 def title_extract(pdf_name):
     title_full = "Title not found"
     page = convert_pdf_to_txt(path + pdf_name)
-    relevant_text = page.split("Abstract")[0]
+    relevant_text = page.split("Abstract")[0].replace(source_extract(pdf_name), "")
     kywrd_tagword = " "
     if "introduction" in page.lower():
         kywrd_tagword = page[page.find("introduction")]
@@ -154,9 +154,9 @@ def title_extract(pdf_name):
     keywords = keyword_extract(pdf_name, "Abstract", kywrd_tagword)
 
     for tpl in keywords:
-        for wrd in tpl[1].split():
+        for kywrd in tpl[1].split():
             for line in relevant_text.split('\n\n'):
-                if wrd.lower() in line.lower():
+                if any(kywrd.lower()==wrd.lower() for wrd in line.split()):
                     title_full = line
                     return title_full #find a better way to  exit nested loops
 
@@ -178,7 +178,7 @@ def title_extract(pdf_name):
     #title_index = (relevant_data.lower()).find(title_tagword.lower())
     #title_full = relevant_data[:title_index].rsplit('\n\n', 1)[1] + relevant_data[title_index:].split('\n', 1)[0]
 
-    #return title_full
+    return title_full
 
 
 # extracts truncated authors from top of any page in the pdf using the truncated title
@@ -241,6 +241,7 @@ def authors_extract(pdf_name):
 def date_extract(pdf_name):
     page = convert_pdf_to_txt(path + pdf_name)
     relevant_text = page.split("Abstract")[0].lower()
+    source = source_extract(pdf_name)
     if "publish" in relevant_text:
         relevant_text = relevant_text.rsplit("publish", 1)[1]
     elif "available" in relevant_text:
@@ -248,9 +249,17 @@ def date_extract(pdf_name):
     elif "accept" in relevant_text:
         relevant_text = relevant_text.rsplit("accept", 1)[1]
 
-    date = re.search(r'[1-3][0-9]{3}', relevant_text)
+    date = re.search(r'[1-3][0-9]{3}', source)
+    while date != None and int(date.group()) < 1665: #make this check in the regex
+        date = re.search(r'[1-3][0-9]{3}', source.replace(date.group(), ""))
+    if date is None:
+        date = re.search(r'[1-3][0-9]{3}', relevant_text)
 
-    return date.group()
+    if date != None:
+        return date.group()
+    else:
+        date = "Date not found."
+        return date
 
 
 # extracts journal source from the pdf text using tagwords
@@ -279,7 +288,8 @@ def source_extract(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-print(title_extract(paper))
-print(authors_extract(paper))
-print(date_extract(paper))
-print(source_extract(paper))
+print()
+print("TITLE: " + title_extract(paper) + '\n')
+print("AUTHOR(S): " + authors_extract(paper) + '\n')
+print("DATE: " + date_extract(paper) + '\n')
+print("SOURCE: " + source_extract(paper) + '\n')
