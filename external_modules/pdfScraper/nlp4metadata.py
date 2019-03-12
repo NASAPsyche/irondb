@@ -62,7 +62,7 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from nltk.corpus import words
-from rake_nltk import Rake
+from rake_nltk import Rake, Metric
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
@@ -120,7 +120,7 @@ def keyword_extract(pdf_name, below=" ", above=" ", pageNo=0):
     else:
         relevant_text = (page.split(below)[1]).split(above)[0]
 
-    r = Rake()
+    r = Rake(ranking_metric=Metric.WORD_FREQUENCY)
     keywords = r.extract_keywords_from_text(relevant_text)
     ranked_kywrds = r.get_ranked_phrases()
     scored_kywrds = r.get_ranked_phrases_with_scores()
@@ -141,27 +141,44 @@ def truncated_title(pdf_name):
     return title_trunc.replace('\n', "")
 
 
-# extracts full title from the first page of the pdf using NLTK noun-phrase chunking
+# extracts full title from the first page of the pdf using RAKE and NLTK
 def title_extract(pdf_name):
-
     title_full = "Title not found"
-    relevant_data = relevant_text(pdf_name, authors_extract(pdf_name)[0])[0]
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = page.split("Abstract")[0]
+    kywrd_tagword = " "
+    if "introduction" in page.lower():
+        kywrd_tagword = page[page.find("introduction")]
+    elif "doi" in page.lower():
+        kywrd_tagword = page[page.find("doi")]
+    keywords = keyword_extract(pdf_name, "Abstract", kywrd_tagword)
 
-    pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
-    chunkr = nltk.RegexpParser(pattern)
-    chunks = chunkr.parse(stage_text(relevant_data))
+    for tpl in keywords:
+        for wrd in tpl[1].split():
+            for line in relevant_text.split('\n\n'):
+                if wrd.lower() in line.lower():
+                    title_full = line
+                    return title_full #find a better way to  exit nested loops
 
-    for chunk in chunks:
-        if type(chunk) == nltk.tree.Tree:
-            if chunk.label() == 'NOUN-PHRASE':
-                title_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
+    #########################################################################
+    #OPTIMIZE: Organze keywords list by most significant instead of frequency
+    #########################################################################
+
+    #pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
+    #chunkr = nltk.RegexpParser(pattern)
+    #chunks = chunkr.parse(stage_text(relevant_data))
+
+    #for chunk in chunks:
+        #if type(chunk) == nltk.tree.Tree:
+            #if chunk.label() == 'NOUN-PHRASE':
+                #title_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
 
     #title_split = truncated_title(pdf_name).split()
     #title_tagword = title_split[0] + ' ' + title_split[1]
     #title_index = (relevant_data.lower()).find(title_tagword.lower())
     #title_full = relevant_data[:title_index].rsplit('\n\n', 1)[1] + relevant_data[title_index:].split('\n', 1)[0]
 
-    return title_full
+    #return title_full
 
 
 # extracts truncated authors from top of any page in the pdf using the truncated title
@@ -184,7 +201,7 @@ def truncated_authors(pdf_name):
 def authors_extract(pdf_name):
     authors_full = ""
     page = convert_pdf_to_txt(path + pdf_name)
-    relevant_text = (page.split("Trace Element Composition and Classification\n\nof the Chinga Iron Meteorite")[1]).split("Abstract")[0]
+    relevant_text = (page.split(title_extract(pdf_name))[1]).split("Abstract")[0]
 
     tokenized = stage_text(relevant_text)
     tagged = nltk.pos_tag(tokenized)
@@ -254,7 +271,7 @@ def source_extract(pdf_name):
         source = source.split("Copyright")[0]
 
     ######################################################################
-    #OPTIMIZE: pull out journal names from online catalogue and find match
+    #OPTIMIZE: Pull out journal names from online catalogue and find match
     ######################################################################
 
     return source
@@ -262,8 +279,7 @@ def source_extract(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-#print(keyword_extract(paper))
-#print(title_extract(paper))
+print(title_extract(paper))
 print(authors_extract(paper))
-#print(date_extract(paper))
-#print(source_extract(paper))
+print(date_extract(paper))
+print(source_extract(paper))
