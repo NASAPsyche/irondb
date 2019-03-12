@@ -93,16 +93,16 @@ ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFE
 
 CREATE TABLE IF NOT EXISTS bodies (
   body_id serial PRIMARY KEY,
-  nomenclature citext NOT NULL,
+  nomenclature text NOT NULL,
   status_id bigint
 );
 
 CREATE TABLE IF NOT EXISTS journals (
   journal_id serial PRIMARY KEY,
   journal_name text NOT NULL,
-  volume citext,
-  issue citext,
-  series citext,
+  volume text,
+  issue text,
+  series text,
   published_year integer NOT NULL CHECK (published_year >= 1900),
   status_id bigint 
 );
@@ -110,8 +110,8 @@ CREATE TABLE IF NOT EXISTS journals (
 CREATE TABLE IF NOT EXISTS papers (
   paper_id serial PRIMARY KEY,
   journal_id integer NOT NULL,
-  title citext NOT NULL,
-  doi citext,
+  title text NOT NULL,
+  doi text,
   status_id bigint
 );
 
@@ -125,9 +125,9 @@ CREATE TABLE IF NOT EXISTS attributions (
 
 CREATE TABLE IF NOT EXISTS authors (
   author_id serial PRIMARY KEY,
-  primary_name citext NOT NULL,
-  first_name citext,
-  middle_name citext,
+  primary_name text NOT NULL,
+  first_name text,
+  middle_name text,
   single_entity boolean NOT NULL DEFAULT true,
   status_id bigint
 );
