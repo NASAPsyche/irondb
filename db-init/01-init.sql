@@ -1,5 +1,4 @@
 -- Create and connect to irondb database 
--- if using https://rextester.com/EMEDS96343 to test, then comment out the next two lines
 CREATE DATABASE irondb WITH OWNER = group16; 
 CREATE EXTENSION citext;
 
