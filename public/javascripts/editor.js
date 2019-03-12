@@ -221,7 +221,7 @@ function getSigFig(num) {
 /**        EJS Templates for Add        */
 /** ----------------------------------- */
 
-
+/* eslint-disable max-len*/
 const authorTemplate = `
 <div class="form-row">
 <div class="col-md-1">
@@ -320,6 +320,8 @@ title="Press to remove measurement."></i></div>
   <i class="fa fa-lock-open fa-lg save-measurement"></i>
   <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
   <input type="hidden" id="<%- sigfigID %>" name="<%- sigfigID %>" value="0">
+  <input type="hidden" id="<%- convertedMeasurementID %>" name="<%- convertedMeasurementID %>" value="0">
+  <input type="hidden" id="<%- convertedDeviationID %>" name="<%- convertedDeviationID %>" value="0">
 </div>
 </div>
 `;
@@ -362,6 +364,7 @@ const meteoriteTemplate = `
 </div>
 ` + measurementTemplate; // Add single measurement row to meteorite template
 
+/* eslint-enable max-len*/
 
 /** ---------------------------- */
 /**        UI Add Events         */
@@ -383,6 +386,8 @@ let unitsIDCount = 1;
 let techniqueIDCount = 1;
 let pageIDCount = 1;
 let sigfigIDCount = 1;
+let convertedMeasurementIDCount = 1;
+let convertedDeviationIDCount = 1;
 
 let meteoriteIDCount = 1;
 let bodyNameIDCount = 1;
@@ -458,6 +463,10 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteID + '-' + pageIDCount;
   const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const convertedMeasurementID =
+    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  const convertedDeviationID =
+    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -469,6 +478,9 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
   idObj['sigfigID'] = sigfigID;
+  idObj['convertedMeasurementID'] = convertedMeasurementID;
+  idObj['convertedDeviationID'] = convertedDeviationID;
+
 
   // Increment current count
   elementIDCount++;
@@ -479,6 +491,8 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   techniqueIDCount++;
   pageIDCount++;
   sigfigIDCount++;
+  convertedMeasurementIDCount++;
+  convertedDeviationIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -512,6 +526,10 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
   const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const convertedMeasurementID =
+    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  const convertedDeviationID =
+    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
 
 
   // Assign IDs
@@ -528,6 +546,8 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
   idObj['sigfigID'] = sigfigID;
+  idObj['convertedMeasurementID'] = convertedMeasurementID;
+  idObj['convertedDeviationID'] = convertedDeviationID;
 
   // Increment current count
   meteoriteIDCount++;
@@ -542,6 +562,8 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   techniqueIDCount++;
   pageIDCount++;
   sigfigIDCount++;
+  convertedMeasurementIDCount++;
+  convertedDeviationIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -611,7 +633,7 @@ $( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
 $('#insert-form').submit(function(event) {
   // flag - are all entries valid?
   let allValid = true;
-  // For each field 'measrement*', check that it parses to a number
+  // For each field 'measurement*', check that it parses to a number
   $('[id^="measure"]').each(function(idx) {
     const _name = $(this).attr('name');
     const _expr = 'measurement';
