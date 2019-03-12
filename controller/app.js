@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
+const PgSession = require('connect-pg-simple')(session);
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -28,7 +29,6 @@ const dataEntryRouter = require('./routes/data-entry');
 const panelRouter = require('./routes/panel');
 const profileRouter = require('./routes/user-profile');
 const usersRouter = require('./routes/user-management');
-const saveRouter = require('./routes/save');
 
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy((username, password, done) => {
@@ -105,6 +105,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(session({
+  store: new PgSession({
+    pool: db.pool,
+  }),
   secret: 'Temporary_Example_Secret_Hide_Real_Secret_When_in_Production',
   resave: false,
   saveUninitialized: false,
@@ -128,7 +131,6 @@ app.use('/logout', logoutRouter);
 
 // Protected Routes
 app.use('/data-entry', dataEntryRouter);
-app.use('/save', saveRouter);
 app.use('/panel', panelRouter);
 app.use('/profile', profileRouter);
 app.use('/users', usersRouter);
@@ -145,9 +147,15 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  // check if logged in
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {isSignedIn: isSignedIn});
 });
 
 module.exports = app;

@@ -192,6 +192,30 @@ function enableInline(element) {
       .prop('disabled', false);
 }
 
+/**
+ * @param  {string} num The number that you need
+ * the number of significant figures of
+ * @return {number}
+ * @description Takes a string and if it parses to a number then it returns the
+ * number of significant figures, else it returns undefined
+ */
+function getSigFig(num) {
+  if (typeof num != 'string') return; // invalid
+  if (isNaN(parseFloat(num))) return; // invalid
+  if ((parseFloat(num)) == 0) return 0;
+  const splitStr = num.split('.');
+  // remove non numeric characters
+  splitStr.forEach((value, i) =>{
+    splitStr[i] = value.replace(/\D/g, '');
+  });
+
+  return (
+    (typeof splitStr[1] == 'undefined') // if no decimals
+    ? splitStr[0].length
+    : splitStr[0].length + splitStr[1].length
+  );
+}
+
 
 /** ----------------------------------- */
 /**        EJS Templates for Add        */
@@ -225,8 +249,8 @@ const authorTemplate = `
   Organization</label>
 </div>
 <div class="form-group col-md-1  mt-4">
-  <i class="far fa-save fa-2x save-author"></i>
-  <i class="far fa-edit fa-2x edit-author" hidden="true"></i>
+  <i class="fa fa-lock-open fa-lg save-author"></i>
+  <i class="fa fa-lock fa-lg edit-author" hidden="true"></i>
 </div>
 </div>
 `;
@@ -234,8 +258,8 @@ const authorTemplate = `
 const noteTemplate = `
 <div class="form-row mt-2">
   <label for="<%- noteID %>">Note:
-    <i class="far fa-save fa-lg save-note"></i>
-    <i class="far fa-edit fa-lg edit-note" hidden="true"></i>
+    <i class="fa fa-lock-open fa-lg save-note"></i>
+    <i class="fa fa-lock fa-lg edit-note" hidden="true"></i>
     <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" 
     title="Press to remove note."></i>
   </label>
@@ -262,7 +286,7 @@ title="Press to remove measurement."></i></div>
 </div>
 <div class="form-group col-md-2">
   <label for="<%- measurementID %>">Measurement</label>
-  <input type="number" class="form-control" id="<%- measurementID %>" 
+  <input type="text" class="form-control" id="<%- measurementID %>" 
   name="<%- measurementID %>" required="true" min="0">
 </div>
 <div class="form-group col-md-1">
@@ -293,8 +317,9 @@ title="Press to remove measurement."></i></div>
   name="<%- pageID %>" min="1" required>
 </div>
 <div class="form-group col-md-1 mt-4">
-  <i class="far fa-save fa-2x save-measurement"></i>
-  <i class="far fa-edit fa-2x edit-measurement" hidden="true"></i>
+  <i class="fa fa-lock-open fa-lg save-measurement"></i>
+  <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
+  <input type="hidden" id="<%- sigfigID %>" name="<%- sigfigID %>" value="0">
 </div>
 </div>
 `;
@@ -326,8 +351,8 @@ const meteoriteTemplate = `
   name="<%- classID %>">
 </div>
 <div class="form-group col-md-1 mt-4">
-  <i class="far fa-save fa-2x save-meteorite"></i>
-  <i class="far fa-edit fa-2x edit-meteorite" hidden="true"></i>
+  <i class="fa fa-lock-open fa-lg save-meteorite"></i>
+  <i class="fa fa-lock fa-lg edit-meteorite" hidden="true"></i>
 </div>
 </div>
 <div class="form-row">
@@ -350,13 +375,14 @@ let singleEntityIDCount = 1;
 
 let noteIDCount = 1;
 
-let elementIDCount = 0;
-let lessThanIDCount = 0;
-let measurementIDCount = 0;
-let deviationIDCount = 0;
-let unitsIDCount = 0;
-let techniqueIDCount = 0;
-let pageIDCount = 0;
+let elementIDCount = 1;
+let lessThanIDCount = 1;
+let measurementIDCount = 1;
+let deviationIDCount = 1;
+let unitsIDCount = 1;
+let techniqueIDCount = 1;
+let pageIDCount = 1;
+let sigfigIDCount = 1;
 
 let meteoriteIDCount = 1;
 let bodyNameIDCount = 1;
@@ -431,6 +457,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   const unitsID = 'units' + meteoriteID + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteID + '-' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -441,6 +468,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   idObj['unitsID'] = unitsID;
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
+  idObj['sigfigID'] = sigfigID;
 
   // Increment current count
   elementIDCount++;
@@ -450,6 +478,7 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   unitsIDCount++;
   techniqueIDCount++;
   pageIDCount++;
+  sigfigIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -482,6 +511,8 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+
 
   // Assign IDs
   const idObj = {};
@@ -496,6 +527,7 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   idObj['unitsID'] = unitsID;
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
+  idObj['sigfigID'] = sigfigID;
 
   // Increment current count
   meteoriteIDCount++;
@@ -509,6 +541,7 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   unitsIDCount++;
   techniqueIDCount++;
   pageIDCount++;
+  sigfigIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -564,33 +597,43 @@ $( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
   }
 });
 
+/** ---------------------------- */
+/**       Submit the form        */
+/** ---------------------------- */
 
-/* Save the form data */
+/**
+ * Submit the form.
+ * Check that measurements are parseable to numbers & mark invalid fields.
+ * Then get significant figures and assign to hidden fields.
+ * If valid then submit.
+ */
 
-
-$(document).ready(function() {
-  $('#save-btn').click(function() {
-    const serializedData = $('#insert-form').serializeArray();
-    const jsondata_ = {};
-    serializedData.forEach(function(element) {
-      jsondata_[element['name']] = element['value'];
-    });
-    // eslint-disable-next-line no-undef
-    const username_ = username; // username defined in ejs from route
-    // eslint-disable-next-line no-undef
-    const filename_ = filename; // filename defined in ejs from route
-
-    const jsonsend = {
-      username: username_,
-      data: jsondata_,
-      pdf_path: filename_,
-    };
-
-    // Send a post request to save the data
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/save', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(jsonsend));
-    alert('Saved the form');
+$('#insert-form').submit(function(event) {
+  // flag - are all entries valid?
+  let allValid = true;
+  // For each field 'measrement*', check that it parses to a number
+  $('[id^="measure"]').each(function(idx) {
+    const _name = $(this).attr('name');
+    const _expr = 'measurement';
+    // scrape the idx from elem name, ex: '0-0'
+    const _idx = _name.substring(_expr.length);
+    if (isNaN(parseFloat($(this).val()))) {
+      // Mark invalid field entry
+      $(this).addClass('is-invalid');
+      allValid = false;
+    } else {
+      $(this).removeClass('is-invalid');
+      const sfVal = getSigFig($(this).val());
+      const _sigfig = '#sigfig' + _idx;
+      $(_sigfig).val(sfVal); // assign sig fig val to matching hidden field
+    }
   });
+
+  // send if checks pass
+  if (allValid == true) {
+    return; // submit
+  } else {
+    event.preventDefault(); // prevent submission
+  }
 });
+

@@ -1,10 +1,10 @@
 <!-- Requires inclusion of font awesome component in the head of any template using this form. -->
 
-<form method="POST" action="/data-entry/editor" class="align-top mx-auto text-left" id="insert-form">
+<form method="POST" action="/data-entry/insert" class="align-top mx-auto text-left" id="insert-form">
     <div class="form-row">
         <h5 class="pt-1 pr-1 mr-2"><strong>Basic Information</strong></h5>
-        <i class="far fa-save fa-2x save-basic"></i>
-        <i class="far fa-edit fa-2x edit-basic" hidden="true"></i>
+        <i class="fa fa-lock-open fa-lg save-basic"></i>
+        <i class="fa fa-lock fa-lg edit-basic" hidden="true"></i>
     </div>
     <div class="form-row">
         <div class="form-group">
@@ -69,8 +69,8 @@
             <label class="form-check-label" for="singleEntity">Organization</label>
         </div>
         <div class="form-group col-md-1  mt-4">
-            <i class="far fa-save fa-2x save-author"></i>
-            <i class="far fa-edit fa-2x edit-author" hidden="true"></i>
+            <i class="fa fa-lock-open fa-lg save-author"></i>
+            <i class="fa fa-lock fa-lg edit-author" hidden="true"></i>
         </div>
     </div>
 
@@ -96,8 +96,8 @@
             <input type="text" class="form-control" id="class" name="class0">
         </div>
         <div class="form-group col-md-1 mt-4">
-            <i class="far fa-save fa-2x save-meteorite"></i>
-            <i class="far fa-edit fa-2x edit-meteorite" hidden="true"></i>
+            <i class="fa fa-lock-open fa-lg save-meteorite"></i>
+            <i class="fa fa-lock fa-lg edit-meteorite" hidden="true"></i>
         </div>
     </div>
 
@@ -120,14 +120,14 @@
         </div>
         <div class="form-group col-md-2">
             <label for="measurement">Measurement</label>
-            <input type="number" class="form-control" id="measurement" name="measurement0-0" required="true" min="0">
+            <input type="text" class="form-control" id="measurement" name="measurement0-0" required="true" min="0">
         </div>
         <div class="form-group col-md-1">
             <label for="deviation">Deviation</label>
             <input type="number" class="form-control" id="deviation" name="deviation0-0" placeholder=" &plusmn;0">
         </div>
         <div class="form-group col-md-2">
-            <label for="units">units</label>
+            <label for="units">Units</label>
             <select class="form-control" id="units" name="units0-0" required="true">
                 <option>wt%</option>
                 <option>ppm</option>
@@ -146,8 +146,9 @@
             <input type="number" class="form-control" id="page" name="page0-0" min="1" required>
         </div>
         <div class="form-group col-md-1 mt-4">
-            <i class="far fa-save fa-2x save-measurement"></i>
-            <i class="far fa-edit fa-2x edit-measurement" hidden="true"></i>
+            <i class="fa fa-lock-open fa-lg save-measurement"></i>
+            <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
+            <input type="hidden" id="sigfig0-0" name="sigfig0-0" value="0">
         </div>
     </div>
 
@@ -158,8 +159,8 @@
 
     <div class="form-row pt-1">
         <label for="note">Note:
-            <i class="far fa-save fa-lg save-note"></i>
-            <i class="far fa-edit fa-lg edit-note" hidden="true"></i>
+            <i class="fa fa-lock-open fa-lg save-note"></i>
+            <i class="fa fa-lock fa-lg edit-note" hidden="true"></i>
             <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" title="Press to remove note."></i>
         </label>
         <textarea class="form-control" id="note" name="note0" rows="5"></textarea>

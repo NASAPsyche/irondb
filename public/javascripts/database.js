@@ -21,14 +21,14 @@ $( '#reset-btn' ).on( 'click', function( event ) {
 });
 
 // After AJAx, reset stored ids of export button
-// $( document ).ajaxComplete(function() {
-//   $( '#entry-ids' ).empty();
-//   $( 'p:hidden' ).each(function() {
-//     $( '<input>' ).attr({type: 'hidden', name: 'entries'})
-//         .val( $(this).text() )
-//         .appendTo( $( '#entry-ids' ) );
-//   });
-// });
+$( document ).ajaxComplete(function() {
+  $( '#entry-ids' ).empty();
+  $( 'p:hidden' ).each(function() {
+    $( '<input>' ).attr({type: 'hidden', name: 'entries'})
+        .val( $(this).text() )
+        .appendTo( $( '#entry-ids' ) );
+  });
+});
 
 // Form elements:
 $( 'document' ).ready(function() {

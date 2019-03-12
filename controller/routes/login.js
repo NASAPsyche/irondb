@@ -5,10 +5,12 @@ const passport = require('passport');
 
 /* GET login page. */
 router.get('/', function(req, res, next) {
+  let isSignedIn = false;
   if (req.isAuthenticated()) {
-    res.send('You are already logged in as: ' + req.user);
+    isSignedIn = true;
+    res.render('login', {isSignedIn: isSignedIn});
   }
-  res.render('login');
+  res.render('login', {isSignedIn: isSignedIn});
 });
 
 router.post('/', passport.authenticate('local', {

@@ -19,10 +19,11 @@
 
   <div class="container card pt-2 pb-2" id="approval">
     <div>
-      <a class="btn btn-danger btn-large p-2 text-warning " href="../database/unapproved" role="button">Approval
-        Needed
+      <a class="btn btn-danger btn-large p-2 text-warning " href="../database/unapproved" role="button"> <u>Approval
+          Needed</u>
         <span class="h1 badge badge-light">
-          <%= pendingCount %></span>
+          <% let pCount = pendingCount <= 4 ? pendingCount : "4+" %>
+          <%= pCount %></span>
       </a>
     </div>
     <div>
@@ -36,7 +37,8 @@
           </tr>
         </thead>
         <tbody>
-          <% for(var i=0; i < Pending.length; i++) { %>
+          <% let pending = (Pending.length < 4 ? Pending.length : 4) %>
+          <% for(var i=0; i < pending; i++) { %>
           <tr>
             <th>
               <%= Pending[i].nomenclature %>
@@ -48,20 +50,30 @@
               <%= Pending[i].published_year %>
             </th>
             <th>
-              <%= Pending[i].author_name %>
+              <%= Pending[i].authors %>
             </th>
           </tr>
           <% } %>
         </tbody>
       </table>
     </div>
+    <% if (pendingCount > 4) { %>
+    <div class="text-right">
+      <a class="btn btn-danger btn-sm p-2 text-warning " href="../database/unapproved" role="button"> <u>View More
+          Entries
+        </u>
+      </a>
+    </div>
+    <% } %>
   </div>
 
   <div class="container card mt-5 pt-2 pb-2" id="approval">
     <div>
-      <a class="btn btn-danger btn-large p-2 text-warning " href="../database/reported" role="button">Reported Entries
+      <a class="btn btn-danger btn-large p-2 text-warning " href="../database/reported" role="button"><u>Reported
+          Entries</u>
         <span class="badge badge-light">
-          <%= flaggedCount %> </span>
+          <% let fCount = flaggedCount <= 4 ? flaggedCount : "4+" %>
+          <%= fCount %></span>
       </a>
     </div>
     <div>
@@ -75,7 +87,8 @@
           </tr>
         </thead>
         <tbody>
-          <% for(var i=0; i < Flagged.length; i++) { %>
+          <% let flagged = (Flagged.length < 4 ? Flagged.length : 4) %>
+          <% for(var i=0; i < flagged; i++) { %>
           <tr>
             <th>
               <%= Flagged[i].nomenclature %>
@@ -87,13 +100,21 @@
               <%= Flagged[i].published_year %>
             </th>
             <th>
-              <%= Flagged[i].author_name %>
+              <%= Flagged[i].authors %>
             </th>
           </tr>
           <% } %>
         </tbody>
       </table>
     </div>
+    <% if (flaggedCount > 4) { %>
+    <div class="text-right">
+      <a class="btn btn-danger btn-sm p-2 text-warning " href="../database/reported" role="button"> <u>View More
+          Entries
+        </u>
+      </a>
+    </div>
+    <% } %>
   </div>
 
 

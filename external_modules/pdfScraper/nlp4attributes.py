@@ -41,16 +41,14 @@
 ======================================================================================================================
 """
 
-"""
-Just don't touch anything okay.
-"""
+#Just don't touch anything okay.
 
 """
 nlp4metadata.py: Extracts metadata attributes from the text of a pdf using NLP
 Attributes include: title, authors, publishing date, and source
 """
 __authors__ = "Hajar Boughoula"
-__version__ = "2.2"
+__version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
@@ -59,19 +57,20 @@ import nltk
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
 #from nltk.corpus import stopwords
-from nltk.corpus import words
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
+from nltk.corpus import words
+from rake_nltk import Rake, Metric
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
-page_num_title = 1
-page_num_authors = 1
+page_num_title = 1 #shouldn't be global, make it local
+page_num_authors = 1 #shouldn't be global, make it local
 
 
-# retrieves raw text from a chosen pdf
+# retrieves raw text from any given pdf
 def convert_pdf_to_txt(path, pageNo=0):
     text = ""
     rsrcmgr = PDFResourceManager()
@@ -94,15 +93,7 @@ def convert_pdf_to_txt(path, pageNo=0):
     return text
 
 
-# extracts relevant parts of the first page of the pdf using a tagword
-def relevant_text(pdf_name, tagword):
-    page = convert_pdf_to_txt(path + pdf_name, 0)
-    text = page.split(tagword, 1)[0]
-
-    return text
-
-
-# stages the relevant parts of the pdf using NLTK
+# stages the relevant parts of the pdf using NLTK sentence tokenization
 def stage_text(txt):
     #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
 
@@ -121,6 +112,22 @@ def stage_text(txt):
     return sentences
 
 
+# extracts ranked key phrases from any text between two tagwords using RAKE
+def keyword_extract(pdf_name, below=" ", above=" ", pageNo=0):
+    page = convert_pdf_to_txt(path + pdf_name, pageNo)
+    if below == " " and above == " ":
+        relevant_text = page
+    else:
+        relevant_text = (page.split(below)[1]).split(above)[0]
+
+    r = Rake(ranking_metric=Metric.WORD_FREQUENCY)
+    keywords = r.extract_keywords_from_text(relevant_text)
+    ranked_kywrds = r.get_ranked_phrases()
+    scored_kywrds = r.get_ranked_phrases_with_scores()
+
+    return scored_kywrds
+
+
 # extracts truncated title from top of any page in the pdf using magic
 def truncated_title(pdf_name):
     global page_num_title
@@ -134,20 +141,37 @@ def truncated_title(pdf_name):
     return title_trunc.replace('\n', "")
 
 
-# extracts full title from the first page of the pdf using NLTK noun-phrase chunking
-def extract_title(pdf_name):
-
+# extracts full title from the first page of the pdf using RAKE and NLTK
+def title_extract(pdf_name):
     title_full = "Title not found"
-    relevant_data = relevant_text(pdf_name, extract_authors(pdf_name)[0])
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = page.split("Abstract")[0].replace(source_extract(pdf_name), "")
+    kywrd_tagword = " "
+    if "introduction" in page.lower():
+        kywrd_tagword = page[page.find("introduction")]
+    elif "doi" in page.lower():
+        kywrd_tagword = page[page.find("doi")]
+    keywords = keyword_extract(pdf_name, "Abstract", kywrd_tagword)
 
-    pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
-    chunkr = nltk.RegexpParser(pattern)
-    chunks = chunkr.parse(stage_text(relevant_data))
+    for tpl in keywords:
+        for kywrd in tpl[1].split():
+            for line in relevant_text.split('\n\n'):
+                if any(kywrd.lower()==wrd.lower() for wrd in line.split()):
+                    title_full = line
+                    return title_full #find a better way to  exit nested loops
 
-    for chunk in chunks:
-        if type(chunk) == nltk.tree.Tree:
-            if chunk.label() == 'NOUN-PHRASE':
-                title_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
+    #########################################################################
+    #OPTIMIZE: Organze keywords list by most significant instead of frequency
+    #########################################################################
+
+    #pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
+    #chunkr = nltk.RegexpParser(pattern)
+    #chunks = chunkr.parse(stage_text(relevant_data))
+
+    #for chunk in chunks:
+        #if type(chunk) == nltk.tree.Tree:
+            #if chunk.label() == 'NOUN-PHRASE':
+                #title_full =   " ".join([leaf[0] for leaf in chunk.leaves()])
 
     #title_split = truncated_title(pdf_name).split()
     #title_tagword = title_split[0] + ' ' + title_split[1]
@@ -174,29 +198,16 @@ def truncated_authors(pdf_name):
 
 
 # extracts authors from the first page of the pdf using NLTK named entity recognition
-def extract_authors(pdf_name):
+def authors_extract(pdf_name):
     authors_full = ""
-    relevant_data = relevant_text(pdf_name, "Abs")
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = (page.split(title_extract(pdf_name))[1]).split("Abstract")[0]
 
-    for element in relevant_data:
-        if element.isdigit() or element == "*":
-            relevant_data = relevant_data.replace(element, "")
-        if element == "," or element == "and":
-        	relevant_data = relevant_data.replace(element, ",")
-
-    tokenized = stage_text(relevant_data)
+    tokenized = stage_text(relevant_text)
     tagged = nltk.pos_tag(tokenized)
     nerd = nltk.ne_chunk(tagged)
 
-    #pattern = "NOUN-PHRASE: {<NNP><NNP>+}"
-    #chunkr = nltk.RegexpParser(pattern)
-    #chunks = chunkr.parse(stage_text(relevant_data))
-
-    ############################################
-    #OPTIMIZE: SEARCH ONLY AROUND TITLE CONTEXT.
-    ############################################
-
-    for line in relevant_data.split('\n\n'):
+    for line in relevant_text.split('\n\n'):
         for chunk in nerd:
             if type(chunk) == nltk.tree.Tree:
                 if chunk.label() == 'PERSON' and authors_full == "":
@@ -206,57 +217,59 @@ def extract_authors(pdf_name):
         if authors_full == "":
             for word in tagged:
                 if ((word[0] not in words.words()) and (word[1] == 'NNP') and 
-                    (word[0] in chunk) and (word[0] in line) and (len(line.split()) > 1)):
+                    (word[0] in line) and (len(line.split()) > 1)):
                     authors_full = line
 
     if authors_full == "":
     	return "Author(s) not found."
-
+    else:
+        for element in authors_full:
+            if element.isdigit() or element == "*":
+                authors_full = authors_full.replace(element, "")
+            if element == "," or element == "and":
+                authors_full = authors_full.replace(element, ",")
+        authors_full = authors_full.replace(" ,", ",")
 
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
-    #authors_index = (relevant_data.lower()).find(authors_tagword.lower())
-    #authors_full = relevant_data[:authors_index].rsplit('\n\n', 1)[1] + relevant_data[authors_index:].split('\n', 1)[0]
+    #authors_index = (relevant_text.lower()).find(authors_tagword.lower())
+    #authors_full = relevant_text[:authors_index].rsplit('\n\n', 1)[1] + relevant_text[authors_index:].split('\n', 1)[0]
 
-    #for element in authors_full:
-        #if (element.isdigit()) or (element == "*"):
-            #authors_full = authors_full.replace(element, "")
-
-    #if ", and" in authors_full:
-        #authors_full = authors_full.replace("and", "")
-    #elif " and" in authors_full:
-        #authors_full = authors_full.replace(" and", ",")
-    #if " ," in authors_full:
-        #authors_full = authors_full.replace(" ,", ",")
-    #elif ",," in authors_full:
-        #authors_full = authors_full.replace(",,", ",")
-
-    #print(relevant_data)
-    #print(nerd)
     return authors_full
 
 
 # extracts publishing date from the pdf text using RegEx
-def extract_date(pdf_name):
-    relevant_data = relevant_text(pdf_name, "Abs").lower()
-    if "publish" in relevant_data:
-        relevant_data = relevant_data.rsplit("publish", 1)[1]
-    elif "available" in relevant_data:
-        relevant_data = relevant_data.rsplit("available", 1)[1]
-    elif "accept" in relevant_data:
-        relevant_data = relevant_data.rsplit("accept", 1)[1]
+def date_extract(pdf_name):
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = page.split("Abstract")[0].lower()
+    source = source_extract(pdf_name)
+    if "publish" in relevant_text:
+        relevant_text = relevant_text.rsplit("publish", 1)[1]
+    elif "available" in relevant_text:
+        relevant_text = relevant_text.rsplit("available", 1)[1]
+    elif "accept" in relevant_text:
+        relevant_text = relevant_text.rsplit("accept", 1)[1]
 
-    date = re.search(r'[1-3][0-9]{3}', relevant_data)
+    date = re.search(r'[1-3][0-9]{3}', source)
+    while date != None and int(date.group()) < 1665: #make this check in the regex
+        date = re.search(r'[1-3][0-9]{3}', source.replace(date.group(), ""))
+    if date is None:
+        date = re.search(r'[1-3][0-9]{3}', relevant_text)
 
-    return date.group()
+    if date != None:
+        return date.group()
+    else:
+        date = "Date not found."
+        return date
 
 
 # extracts journal source from the pdf text using tagwords
-def extract_source(pdf_name):
-    relevant_data = relevant_text(pdf_name, "Abs")
+def source_extract(pdf_name):
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = page.split("Abstract")[0]
     source_tagword = "Vol"
     source = "Source not found."
 
-    for line in relevant_data.split('\n\n'):
+    for line in relevant_text.split('\n\n'):
         if ((source_tagword in line) or (source_tagword.lower() in line) or
             ("Acta"in line) or ("acta"in line)):
             source = line
@@ -266,17 +279,17 @@ def extract_source(pdf_name):
         (source_tagword.lower() not in source.split("Copyright")[1])):
         source = source.split("Copyright")[0]
 
-    ####################################################
-    #OPTIMIZE: ELIMINATE RUBBISH THAT CONATINS AUTHOR(S)
-    ####################################################
+    ######################################################################
+    #OPTIMIZE: Pull out journal names from online catalogue and find match
+    ######################################################################
 
     return source
 
 
 
-
 paper = input("Enter name of paper with extension (.pdf): ")
-#print(extract_title(paper))
-#print(extract_authors(paper))
-#print(extract_date(paper))
-print(extract_source(paper))
+print()
+print("TITLE: " + title_extract(paper) + '\n')
+print("AUTHOR(S): " + authors_extract(paper) + '\n')
+print("DATE: " + date_extract(paper) + '\n')
+print("SOURCE: " + source_extract(paper) + '\n')
