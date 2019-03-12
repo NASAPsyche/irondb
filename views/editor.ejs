@@ -66,7 +66,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger mt-2 ml-2 pr-4 pl-4">Upload</button>
+                        <!-- even though the id 'modal-upload' is never called, it will break the autosave if you remove it -->
+                        <button type="submit" class="btn btn-danger mt-2 ml-2 pr-4 pl-4" id="modal-upload">Upload</button> 
                         <button type="button" class="btn btn-secondary mt-2" data-dismiss="modal">Cancel</button>
                     </div>
                 </form>
@@ -77,11 +78,11 @@
     <%- include('components/ejs'); %>
     <script>
         const username = "<%= username %>";
-        console.log(username); 
         const filename = "<%= data %>";
-        console.log(filename);
+        const sessionID= '<%= sessionID %>';
     </script>
     <script src="/javascripts/editor.js"></script>
     <script src="/javascripts/editor-modal.js"></script>
+    <script src="/javascripts/editor/save.js"></script>
 </body>
 </html>  
