@@ -61,12 +61,14 @@ router.post('/', isLoggedIn, function(req, res, next) {
           fs.rename(oldpath, newpath, function(err) {
             if (err) next(createError(500));
             if (fields.tool_select === 'true') {
+              req.session.nameOfPdf = newpath.slice(21);
               res.render('data-entry-checklist', {
                 data: newpath.slice(15),
                 username: req.user.username,
                 sessionID: req.sessionID,
               });
             } else if (fields.editor_select === 'true') {
+              req.session.nameOfPdf = newpath.slice(21);
               res.render('editor_with_pdf', {
                 data: newpath.slice(15),
                 username: req.user.username,
@@ -121,6 +123,7 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
         }
         fs.rename(oldpath, newpath, function(err) {
           if (err) throw err;
+          req.session.nameOfPdf = newpath.slice(21);
           res.render('editor_with_pdf', {
             data: newpath.slice(15),
             username: req.user.username,
