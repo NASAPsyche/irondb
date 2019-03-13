@@ -49,6 +49,12 @@ INSERT INTO journals (journal_name, volume, issue, published_year)
     2011
   ),
   (
+    'Geochimica et Cosmochimica Acta', 
+    '59', 
+    '3', 
+    1995
+  ),
+  (
     'Fake Historical Paper',
     '1',
     '1',
@@ -76,6 +82,10 @@ INSERT INTO papers (journal_id,  title)
   (
     (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='7' AND volume='75'),
     'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'
+  ),
+  (
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='3' AND volume='59'),
+    'Classification and origin of IAB and IIICD iron meteorites'
   );
 
 INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
@@ -84,7 +94,9 @@ INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_en
   (DEFAULT, 'Fake', '', '', true),
   (DEFAULT, 'Wasson', 'John', 'T.', DEFAULT),
   (DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT),
-  (DEFAULT, 'Historical','Fake','', DEFAULT);
+  (DEFAULT, 'Historical','Fake','', DEFAULT),
+  (DEFAULT,'Choi','Byeon-Gak','', DEFAULT),
+  (DEFAULT,'Ouyang','Xinwei','', DEFAULT);
 
 INSERT INTO attributions (paper_id, author_id)
   VALUES 
@@ -111,6 +123,18 @@ INSERT INTO attributions (paper_id, author_id)
   (
     (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
     (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    (SELECT author_id FROM authors WHERE primary_name='Choi' AND first_name='Byeon-Gak')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    (SELECT author_id FROM authors WHERE primary_name='Ouyang' AND first_name='Xinwei')
   );
 
 INSERT INTO bodies (nomenclature)
@@ -127,7 +151,8 @@ INSERT INTO bodies (nomenclature)
   ('Zagora'),
   ('NWA 2743'),
   ('Foum Zguid'),
-  ('Tamentit');
+  ('Tamentit'),
+  ('Anoka');
 
 INSERT INTO groups (group_id, body_id, the_group)
   VALUES
@@ -190,6 +215,11 @@ INSERT INTO groups (group_id, body_id, the_group)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
     'IIIAB'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'IIICD'
   ),
   (
     DEFAULT,
@@ -1472,6 +1502,163 @@ INSERT INTO element_entries (
     false,
     'ug_g',
     'INAA'
+  ),
+  /* Anoka */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    21000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    5600000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    118800000,
+    4,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    193000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    17400,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    16000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'RNAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    20600,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    480,
+    3,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    110,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    160,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    1200,
+    2,
+    0,
+    true,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    1580,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
   );
 
 /*
@@ -1555,6 +1742,13 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
   (
     DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='IIIAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Tamentit')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IIICD' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Anoka')),
     'active',
     'Michael',
     NULL
@@ -1721,6 +1915,13 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   ),
   (
     DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
     'historical',
     'Michael',
@@ -1767,6 +1968,13 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
   (
     DEFAULT,
     (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '7' AND volume = '75'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '3' AND volume = '59'),
     'active',
     'Michael',
     NULL
@@ -1825,6 +2033,13 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, pre
   ),
   (
     DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
     'historical',
     'Michael',
@@ -1873,6 +2088,20 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, p
     (SELECT author_id FROM authors WHERE primary_name='Choe' AND first_name='Won-Hie'),
     'active',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Choi' AND first_name='Byeon-Gak'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Ouyang' AND first_name='Xinwei'),
+    'active',
+    'Michael',
     NULL
   ),
   (
@@ -1945,6 +2174,39 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
       SELECT attribution_id FROM attributions
       WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
       AND author_id = (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Ouyang' AND first_name='Xinwei')
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Choi' AND first_name='Byeon-Gak')
     ),
     'active',
     'Michael',
@@ -3206,6 +3468,164 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
       AND element_symbol = 'au'
       AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
       AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  
+  /*Anoka */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
     ),
     'active',
     'Michael',
