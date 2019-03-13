@@ -290,9 +290,9 @@ title="Press to remove measurement."></i></div>
   name="<%- measurementID %>" required="true" min="0">
 </div>
 <div class="form-group col-md-1">
-  <label for="<%- deviationID %>">Deviation</label>
+  <label for="<%- deviationID %>">Deviation (&plusmn;)</label>
   <input type="number" class="form-control" id="<%- deviationID %>" 
-  name="<%- deviationID %>" placeholder=" &plusmn;0" min="0">
+  name="<%- deviationID %>" placeholder="0" min="0">
 </div>
 <div class="form-group col-md-2">
   <label for="<%- unitsID %>">units</label>
