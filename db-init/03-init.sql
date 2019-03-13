@@ -152,7 +152,8 @@ INSERT INTO bodies (nomenclature)
   ('NWA 2743'),
   ('Foum Zguid'),
   ('Tamentit'),
-  ('Anoka');
+  ('Anoka'),
+  ('Elephant Moraine 83333');
 
 INSERT INTO groups (group_id, body_id, the_group)
   VALUES
@@ -220,6 +221,11 @@ INSERT INTO groups (group_id, body_id, the_group)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
     'IIICD'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'IAB'
   ),
   (
     DEFAULT,
@@ -1604,7 +1610,7 @@ INSERT INTO element_entries (
     480,
     3,
     0,
-    true,
+    false,
     'ng_g',
     'INAA'
   ),
@@ -1618,7 +1624,7 @@ INSERT INTO element_entries (
     3,
     0,
     false,
-    'ug_g',
+    'ng_g',
     'INAA'
   ),
   (
@@ -1654,6 +1660,176 @@ INSERT INTO element_entries (
     (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
     595,
     1580,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* Elephant Moraine 83333 */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    19000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    4880000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    80600000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    184000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    74800,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    226000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'RNAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    15700,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    450,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    800,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    280,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    2880,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    6800,
+    2,
+    0,
+    true,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    1750,
     3,
     0,
     false,
@@ -1749,6 +1925,13 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
   (
     DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='IIICD' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Anoka')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')),
     'active',
     'Michael',
     NULL
@@ -1916,6 +2099,13 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   (
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
     'active',
     'Michael',
     NULL
@@ -3623,6 +3813,176 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     (
       SELECT element_id FROM element_entries
       WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  /*Elephant Moraine 83333 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
       AND element_symbol = 'au'
       AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
       AND page_number = 595
