@@ -125,7 +125,8 @@ INSERT INTO bodies (nomenclature)
   ('Historical'),
   ('NWA 0854'),
   ('Zagora'),
-  ('NWA 2743');
+  ('NWA 2743'),
+  ('Foum Zguid');
 
 INSERT INTO groups (group_id, body_id, the_group)
   VALUES
@@ -178,6 +179,11 @@ INSERT INTO groups (group_id, body_id, the_group)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
     'IAB'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'IIAB'
   ),
   (
     DEFAULT,
@@ -951,6 +957,176 @@ INSERT INTO element_entries (
     'ug_g',
     'INAA'
   ),
+  /* Foum Zguid */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    22000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    4970000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    58100000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    113000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    55500,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    153000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    9910,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    200,
+    3,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    720,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    40,
+    2,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    21,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    5300,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    1078,
+    4,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
   /* NWA 2743 */
   (
     DEFAULT,
@@ -1195,6 +1371,13 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
   ),
   (
     DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IIAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='Historical' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Historical')),
     'historical',
     'Michael',
@@ -1335,6 +1518,13 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   (
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
     'active',
     'Michael',
     NULL
@@ -2490,7 +2680,177 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     'active',
     'Michael',
     NULL
-  );
+  ),
+  /* Foum Zguid */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  );;
 
 INSERT INTO element_review (review_id, element_id, note, resolved, email_address, reviewed_by, submission_date)
   VALUES
