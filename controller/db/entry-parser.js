@@ -218,12 +218,12 @@ function getNotes(reqBody, keys) {
 /**
  * @description Converts units from values in form
  * to values expected by database
- * @param  {string} orignalUnit
+ * @param  {string} originalUnit
  * @return {string} converted string
  */
-function convertUnitString(orignalUnit) {
+function convertUnitString(originalUnit) {
   let units;
-  switch (orignalUnit) {
+  switch (originalUnit) {
     case 'wt%':
       units = 'wt_percent';
       break;
@@ -242,6 +242,8 @@ function convertUnitString(orignalUnit) {
     case 'ng/g':
       units = 'ng_g';
       break;
+    default:
+      units = originalUnit;
   }
   return units;
 }
