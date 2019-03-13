@@ -43,6 +43,12 @@ INSERT INTO journals (journal_name, volume, issue, published_year)
     2009
   ),
   (
+    'Geochimica et Cosmochimica Acta', 
+    '75', 
+    '7', 
+    2011
+  ),
+  (
     'Fake Historical Paper',
     '1',
     '1',
@@ -66,6 +72,10 @@ INSERT INTO papers (journal_id,  title)
   (
     (SELECT journal_id FROM journals WHERE journal_name='Fake Historical Paper' AND issue='1'),
     'Fake Historical Paper'
+  ),
+  (
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='7' AND volume='75'),
+    'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'
   );
 
 INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
@@ -97,6 +107,10 @@ INSERT INTO attributions (paper_id, author_id)
   (
     (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
     (SELECT author_id FROM authors WHERE primary_name='Historical' AND first_name='Fake')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
   );
 
 INSERT INTO bodies (nomenclature)
@@ -108,7 +122,8 @@ INSERT INTO bodies (nomenclature)
   ('Bellsbank'),
   ('Twannberg'),
   ('La Primitiva'),
-  ('Historical');
+  ('Historical'),
+  ('NWA 0854');
 
 INSERT INTO groups (group_id, body_id, the_group)
   VALUES
@@ -149,6 +164,11 @@ INSERT INTO groups (group_id, body_id, the_group)
   ),
   (
     DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'IAB'
+  ),
+  (
+    DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
     'Historical'
   );
@@ -159,6 +179,11 @@ INSERT INTO classifications (classification_id, body_id, classification)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
     'Dummy'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'IAB-MG'
   ),
   (
     DEFAULT,
@@ -566,8 +591,178 @@ INSERT INTO element_entries (
     true,
     'ug_g',
     null
-  );
+  ),
 
+/* NWA 0854 */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    30000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    4540000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    67500000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    140000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    89100,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    400000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    10700,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    180,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    120000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    210,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    2070,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    6900,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    1461,
+    4,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  );
 
 /*
   Populating the status tables.
@@ -621,6 +816,13 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
   ),
   (
     DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='Historical' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Historical')),
     'historical',
     'Michael',
@@ -661,6 +863,13 @@ INSERT INTO classification_status (status_id, classification_id, current_status,
     DEFAULT,
     (SELECT classification_id FROM classifications WHERE classification='Historical'),
     'historical',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT classification_id FROM classifications WHERE classification='IAB-MG'),
+    'active',
     'Michael',
     NULL
   );
@@ -732,6 +941,13 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   ),
   (
     DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
     'historical',
     'Michael',
@@ -777,6 +993,13 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
   ),
   (
     DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '7' AND volume = '75'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT journal_id FROM journals WHERE journal_name='Fake Historical Paper' AND issue = '1'),
     'historical',
     'Michael',
@@ -818,6 +1041,13 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, pre
     (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
     'active',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    'active',
+    'Michael',
     NULL
   ),
   (
@@ -934,6 +1164,17 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
     ),
     'active',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+    ),
+    'active',
+    'Michael',
     NULL
   ),
   (
@@ -1345,6 +1586,176 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'active',
     'Ken',
+    NULL
+  ),
+  /* NWA 0854 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
     NULL
   );
 
