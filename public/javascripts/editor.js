@@ -292,7 +292,7 @@ title="Press to remove measurement."></i></div>
 <div class="form-group col-md-1">
   <label for="<%- deviationID %>">Deviation (&plusmn;)</label>
   <input type="number" class="form-control" id="<%- deviationID %>" 
-  name="<%- deviationID %>" placeholder="0" min="0">
+  name="<%- deviationID %>" value="0" min="0">
 </div>
 <div class="form-group col-md-2">
   <label for="<%- unitsID %>">units</label>
@@ -636,6 +636,9 @@ const ONE_BILLION = 1000000000;
  * to the appropriate hidden fields.
  */
 $('#insert-form').submit(function(event) {
+  $('#insert-form').each(() => {
+    $(this).find(':input').removeClass('is-invalid');
+  });
   // flag - are all entries valid?
   let allValid = true;
   // For each field 'measurement*', check that it parses to a number
@@ -660,8 +663,6 @@ $('#insert-form').submit(function(event) {
       if (isNaN(_originalDeviation)) {
         $(_deviationID).addClass('is-invalid');
         allValid = false;
-      } else {
-        $(_deviationID).removeClass('is-invalid');
       }
       // Convert the measurement and deviation to PPB
       let _convertedMeasurement;
@@ -704,7 +705,6 @@ $('#insert-form').submit(function(event) {
           $(this).addClass('is-invalid');
           allValid = false;
         } else {
-          $(this).removeClass('is-invalid');
           const sfVal = getSigFig($(this).val());
           const _sigfig = '#sigfig' + _idx;
           $(_sigfig).val(sfVal); // assign sig fig val to matching hidden field
@@ -724,7 +724,6 @@ $('#insert-form').submit(function(event) {
           $(_deviationID).addClass('is-invalid');
           allValid = false;
         } else {
-          $(_deviationID).removeClass('is-invalid');
           // assign normalized deviation to hidden field
           const convertedDeviationID = '#convertedDeviation' + _idx;
           $(convertedDeviationID).val(_convertedDeviation);
