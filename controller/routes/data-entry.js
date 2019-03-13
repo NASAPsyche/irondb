@@ -97,15 +97,35 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
   form.uploadDir = path.join(__dirname, ('../../public/temp/'));
   form.parse(req, function(err, fields, files) {
     const oldpath = files.filetoupload.path;
+    const fileNameBody = files.filetoupload.name.substring(
+        0, files.filetoupload.name.length - 4
+    );
     // eslint-disable-next-line max-len
-    const newpath = path.join(__dirname, ('../../public/temp/' + files.filetoupload.name));
     try {
-      fs.rename(oldpath, newpath, function(err) {
-        if (err) throw err;
-        res.render('editor_with_pdf', {
-          data: newpath.slice(15),
-          username: req.user.username,
-          sessionID: req.sessionID,
+      let fileNameCounter = 0;
+      fs.readdir(form.uploadDir, (err, filesInDirectory) => {
+        filesInDirectory.forEach((file) => {
+          if (file.includes(fileNameBody)) fileNameCounter++;
+        });
+        let newpath = '';
+        if (fileNameCounter === 0) {
+          newpath = path.join(
+              __dirname, ('../../public/temp/' + files.filetoupload.name)
+          );
+        } else {
+          newpath = path.join(
+              __dirname,
+              ('../../public/temp/' + fileNameBody
+              + '(' + fileNameCounter + ')' + '.pdf')
+          );
+        }
+        fs.rename(oldpath, newpath, function(err) {
+          if (err) throw err;
+          res.render('editor_with_pdf', {
+            data: newpath.slice(15),
+            username: req.user.username,
+            sessionID: req.sessionID,
+          });
         });
       });
     } catch (err) {
@@ -113,6 +133,5 @@ router.post('/editor', isLoggedIn, function(req, res, next) {
     }
   });
 });
-
 
 module.exports = router;
