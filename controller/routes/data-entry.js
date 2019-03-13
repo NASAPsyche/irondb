@@ -36,26 +36,46 @@ router.post('/', isLoggedIn, function(req, res, next) {
       next(createError(500));
     } else {
       const oldpath = files.filetoupload.path;
+      const fileNameBody = files.filetoupload.name.substring(
+          0, files.filetoupload.name.length - 4
+      );
       // eslint-disable-next-line max-len
-      const newpath = path.join(__dirname, ('../../public/temp/' + files.filetoupload.name));
       try {
-        fs.rename(oldpath, newpath, function(err) {
-          if (err) next(createError(500));
-          if (fields.tool_select) {
-            res.render('data-entry-checklist', {
-              data: newpath.slice(15),
-              username: req.user.username,
-              sessionID: req.sessionID,
-            });
-          } else if (fields.editor_select) {
-            res.render('editor_with_pdf', {
-              data: newpath.slice(15),
-              username: req.user.username,
-              sessionID: req.sessionID,
-            });
+        let fileNameCounter = 0;
+        fs.readdir(form.uploadDir, (err, filesInDirectory) => {
+          filesInDirectory.forEach((file) => {
+            if (file.includes(fileNameBody)) fileNameCounter++;
+          });
+          let newpath = '';
+          if (fileNameCounter === 0) {
+            newpath = path.join(
+                __dirname, ('../../public/temp/' + files.filetoupload.name)
+            );
           } else {
-            next(createError(500));
+            newpath = path.join(
+                __dirname,
+                ('../../public/temp/' + fileNameBody
+                + '(' + fileNameCounter + ')' + '.pdf')
+            );
           }
+          fs.rename(oldpath, newpath, function(err) {
+            if (err) next(createError(500));
+            if (fields.tool_select) {
+              res.render('data-entry-checklist', {
+                data: newpath.slice(15),
+                username: req.user.username,
+                sessionID: req.sessionID,
+              });
+            } else if (fields.editor_select) {
+              res.render('editor_with_pdf', {
+                data: newpath.slice(15),
+                username: req.user.username,
+                sessionID: req.sessionID,
+              });
+            } else {
+              next(createError(500));
+            }
+          });
         });
       } catch (err) {
         next(createError(500));
