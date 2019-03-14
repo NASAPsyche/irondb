@@ -48,23 +48,9 @@
                 <label class="sr-only" for="group">group</label>
                 <select class="form-control" name="group">
                   <option>Group</option>
-                  <option value="IAB">IAB</option>
-                  <option value="IA">IA</option>
-                  <option value="IB">IB</option>
-                  <option value="IC">IC</option>
-                  <option value="IIAB">IIAB</option>
-                  <option value="IIA">IIA</option>
-                  <option value="IIB">IIB</option>
-                  <option value="IIC">IIC</option>
-                  <option value="IID">IID</option>
-                  <option value="IIE">IIE</option>
-                  <option value="IIG">IIG</option>
-                  <option value="IIIAB">IIIAB</option>
-                  <option value="IIICD">IIICD</option>
-                  <option value="IIIE">IIIE</option>
-                  <option value="IVA">IVA</option>
-                  <option value="IVB">IVB</option>
-                  <option value="Ungrouped">Ungrouped</option>
+                  <% for(var i=0; i < Groups.length; i++) { %>
+                    <option value="<%= Groups[i].classification_group %>"><%= Groups[i].classification_group %></option>
+                  <% } %>                
                 </select>  
               </div>
             </div>

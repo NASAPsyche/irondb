@@ -1,35 +1,39 @@
-const express = require('express');
-// eslint-disable-next-line new-cap
-const router = express.Router();
 const createError = require('http-errors');
-const path = require('path');
-const fs = require('fs');
-const json2csv = require('json2csv').parse;
 const db = require('../db');
+const fs = require('fs');
 const {isLoggedIn} = require('../middleware/auth');
+const json2csv = require('json2csv').parse;
+const path = require('path');
+const Router = require('express-promise-router');
+const router = new Router();
 
 const singleBodyRouter = require('./database/meteorite');
 router.use('/meteorite', singleBodyRouter);
 
-
 /* GET database page. */
-router.get('/', function(req, res, next) {
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
+router.get('/', async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery('SELECT * FROM complete_table', []);
+    const Groups = db.aQuery(
+        'SELECT DISTINCT classification_group FROM complete_table',
+        []
+    );
+    resObj = await Promise.all([Entries, Groups]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('database', {
+      isSignedIn: req.isAuthenticated(),
+      Entries: resObj[0].rows,
+      Groups: resObj[1].rows,
+    });
   }
-  db.query('SELECT * FROM complete_table',
-      [], (dbErr, dbRes) => {
-        if (dbErr) {
-          return next(dbErr);
-        }
-        res.render('database', {Entries: dbRes.rows, isSignedIn: isSignedIn});
-      });
 });
 
 
 /* POST database page */
-router.post('/', function(req, res, next) {
+router.post('/', async (req, res, next) => {
   if (req.xhr) {
     // eslint-disable-next-line max-len
     let queryString = 'SELECT * FROM complete_table WHERE published_year >1900 ';
@@ -151,25 +155,23 @@ router.post('/', function(req, res, next) {
       }
     }
 
-
-    db.query(queryString, argsArray, (dbErr, dbRes) => {
-      if (dbErr) {
-        return next(dbErr);
-      }
-
-      if (dbRes.rows.length === 0) {
+    let resObj = [];
+    try {
+      const Entries = db.aQuery(queryString, argsArray);
+      resObj = await Promise.all([Entries]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+      if (resObj[0].rows.length === 0) {
         // eslint-disable-next-line max-len
         res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
       } else {
-        res.render('components/database-xhr-response', {Entries: dbRes.rows});
+        res.render('components/database-xhr-response', {
+          Entries: resObj[0].rows,
+        });
       }
-    });
-  } else {
-    let isSignedIn = false;
-    if (req.isAuthenticated()) {
-      isSignedIn = true;
     }
-
+  } else {
     let queryString = 'SELECT * FROM complete_table WHERE published_year >1900';
     const argsArray = [];
     let currentQueryIndex = 1;
@@ -192,17 +194,23 @@ router.post('/', function(req, res, next) {
       currentQueryIndex++;
     }
 
-    db.query(queryString, argsArray, (dbErr, dbRes) => {
-      if (dbErr) {
-        return next(dbErr);
-      }
-
-      if (dbRes.rows.length === 0) {
-        res.render('database', {Entries: [], isSignedIn: isSignedIn});
-      } else {
-        res.render('database', {Entries: dbRes.rows, isSignedIn: isSignedIn});
-      }
-    });
+    let resObj = [];
+    try {
+      const Entries = db.aQuery(queryString, argsArray);
+      const Groups = db.aQuery(
+          'SELECT DISTINCT classification_group FROM complete_table',
+          []
+      );
+      resObj = await Promise.all([Entries, Groups]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+      res.render('database', {
+        isSignedIn: req.isAuthenticated(),
+        Entries: resObj[0].rows,
+        Groups: resObj[1].rows,
+      });
+    }
   }
 });
 
