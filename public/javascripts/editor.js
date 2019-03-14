@@ -221,7 +221,7 @@ function getSigFig(num) {
 /**        EJS Templates for Add        */
 /** ----------------------------------- */
 
-
+/* eslint-disable max-len*/
 const authorTemplate = `
 <div class="form-row">
 <div class="col-md-1">
@@ -290,20 +290,20 @@ title="Press to remove measurement."></i></div>
   name="<%- measurementID %>" required="true" min="0">
 </div>
 <div class="form-group col-md-1">
-  <label for="<%- deviationID %>">Deviation</label>
+  <label for="<%- deviationID %>">Deviation (&plusmn;)</label>
   <input type="number" class="form-control" id="<%- deviationID %>" 
-  name="<%- deviationID %>" placeholder=" &plusmn;0">
+  name="<%- deviationID %>" value="0" min="0">
 </div>
 <div class="form-group col-md-2">
   <label for="<%- unitsID %>">units</label>
   <select class="form-control" id="<%- unitsID %>" 
   name="<%- unitsID %>" required="true">
-    <option>wt%</option>
-    <option>ppm</option>
-    <option>ppb</option>
-    <option>mg/g</option>
-    <option>&micro;g/g</option>
-    <option>ng/g</option>
+  <option value="wt_percent">wt%</option>
+  <option value="ppm">ppm</option>
+  <option value="ppb">ppb</option>
+  <option value="mg_g">mg/g</option>
+  <option value="ug_g">&micro;g/g</option>
+  <option value="ng_g">ng/g</option>
   </select>
 </div>
 <div class="form-group col-md-1">
@@ -320,6 +320,8 @@ title="Press to remove measurement."></i></div>
   <i class="fa fa-lock-open fa-lg save-measurement"></i>
   <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
   <input type="hidden" id="<%- sigfigID %>" name="<%- sigfigID %>" value="0">
+  <input type="hidden" id="<%- convertedMeasurementID %>" name="<%- convertedMeasurementID %>" value="0">
+  <input type="hidden" id="<%- convertedDeviationID %>" name="<%- convertedDeviationID %>" value="0">
 </div>
 </div>
 `;
@@ -362,6 +364,7 @@ const meteoriteTemplate = `
 </div>
 ` + measurementTemplate; // Add single measurement row to meteorite template
 
+/* eslint-enable max-len*/
 
 /** ---------------------------- */
 /**        UI Add Events         */
@@ -383,6 +386,8 @@ let unitsIDCount = 1;
 let techniqueIDCount = 1;
 let pageIDCount = 1;
 let sigfigIDCount = 1;
+let convertedMeasurementIDCount = 1;
+let convertedDeviationIDCount = 1;
 
 let meteoriteIDCount = 1;
 let bodyNameIDCount = 1;
@@ -458,6 +463,10 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteID + '-' + pageIDCount;
   const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const convertedMeasurementID =
+    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  const convertedDeviationID =
+    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -469,6 +478,9 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
   idObj['sigfigID'] = sigfigID;
+  idObj['convertedMeasurementID'] = convertedMeasurementID;
+  idObj['convertedDeviationID'] = convertedDeviationID;
+
 
   // Increment current count
   elementIDCount++;
@@ -479,6 +491,8 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   techniqueIDCount++;
   pageIDCount++;
   sigfigIDCount++;
+  convertedMeasurementIDCount++;
+  convertedDeviationIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -512,6 +526,10 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
   const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const convertedMeasurementID =
+    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  const convertedDeviationID =
+    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
 
 
   // Assign IDs
@@ -528,6 +546,8 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
   idObj['sigfigID'] = sigfigID;
+  idObj['convertedMeasurementID'] = convertedMeasurementID;
+  idObj['convertedDeviationID'] = convertedDeviationID;
 
   // Increment current count
   meteoriteIDCount++;
@@ -542,6 +562,8 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   techniqueIDCount++;
   pageIDCount++;
   sigfigIDCount++;
+  convertedMeasurementIDCount++;
+  convertedDeviationIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -601,39 +623,167 @@ $( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
 /**       Submit the form        */
 /** ---------------------------- */
 
-/**
- * Submit the form.
- * Check that measurements are parseable to numbers & mark invalid fields.
- * Then get significant figures and assign to hidden fields.
- * If valid then submit.
- */
+// the range for PPB
+const ZERO = 0;
+const ONE_BILLION = 1000000000;
 
+/**
+ * @description Performs validation before submitting the form.
+ * If it fails validation, the form is not sent and the offending fields
+ * are highlighted. It also grabs the number of significant figures
+ * for each measure and assigns them to the appropriate hidden fields.
+ * The measurements and deviations are normalized to PPB and assigned
+ * to the appropriate hidden fields.
+ */
 $('#insert-form').submit(function(event) {
+  $('#insert-form').each(() => {
+    $(this).find(':input').removeClass('is-invalid');
+  });
   // flag - are all entries valid?
   let allValid = true;
-  // For each field 'measrement*', check that it parses to a number
+  // For each field 'measurement*', check that it parses to a number
   $('[id^="measure"]').each(function(idx) {
     const _name = $(this).attr('name');
     const _expr = 'measurement';
     // scrape the idx from elem name, ex: '0-0'
     const _idx = _name.substring(_expr.length);
-    if (isNaN(parseFloat($(this).val()))) {
+    // get the original measurement
+    const _originalMeasurement = parseFloat($(this).val());
+    if (isNaN(_originalMeasurement)) {
       // Mark invalid field entry
       $(this).addClass('is-invalid');
       allValid = false;
     } else {
-      $(this).removeClass('is-invalid');
-      const sfVal = getSigFig($(this).val());
-      const _sigfig = '#sigfig' + _idx;
-      $(_sigfig).val(sfVal); // assign sig fig val to matching hidden field
+      // get the current units
+      const _unitID = '#units' + _idx;
+      const _unit = $(_unitID).val();
+      // get the original deviation
+      const _deviationID = '#deviation' + _idx;
+      const _originalDeviation = parseFloat($(_deviationID).val());
+      if (isNaN(_originalDeviation)) {
+        $(_deviationID).addClass('is-invalid');
+        allValid = false;
+      }
+      // Convert the measurement and deviation to PPB
+      let _convertedMeasurement;
+      let _convertedDeviation;
+      switch (_unit) {
+        case 'wt_percent':
+          _convertedMeasurement = percentToPPB(_originalMeasurement);
+          _convertedDeviation = percentToPPB(_originalDeviation);
+          break;
+        case 'ppm':
+          _convertedMeasurement = ppmToPPB(_originalMeasurement);
+          _convertedDeviation = ppmToPPB(_originalDeviation);
+          break;
+        case 'ppb':
+          _convertedMeasurement = _originalMeasurement;
+          _convertedDeviation = _originalDeviation;
+          break;
+        case 'mg_g':
+          _convertedMeasurement = milligramsPerGramToPPB(_originalMeasurement);
+          _convertedDeviation = milligramsPerGramToPPB(_originalDeviation);
+          break;
+        case 'ug_g':
+          _convertedMeasurement = microgramsPerGramToPPB(_originalMeasurement);
+          _convertedDeviation = microgramsPerGramToPPB(_originalDeviation);
+          break;
+        case 'ng_g':
+          _convertedMeasurement = nanogramsPerGramToPPB(_originalMeasurement);
+          _convertedDeviation = nanogramsPerGramToPPB(_originalDeviation);
+          break;
+      }
+      /*
+        Now that the measurement and deviation have been normalized to PPB
+        we can check that they are in range (zero - one billion) and that
+        the deviation is not greater than the measurement.
+        Then assign them to the appropriate hidden fields.
+      */
+      if (typeof _convertedMeasurement === 'number') {
+        if ( _convertedMeasurement < ZERO
+            || _convertedMeasurement > ONE_BILLION) {
+          $(this).addClass('is-invalid');
+          allValid = false;
+        } else {
+          const sfVal = getSigFig($(this).val());
+          const _sigfig = '#sigfig' + _idx;
+          $(_sigfig).val(sfVal); // assign sig fig val to matching hidden field
+
+          // assign normalized measurement to hidden field
+          const convertedMeasurementId = '#convertedMeasurement' + _idx;
+          $(convertedMeasurementId).val(_convertedMeasurement);
+        }
+      } else {
+        $(this).addClass('is-invalid'); // measurement not a number
+        allValid = false;
+      }
+      if ( typeof _convertedDeviation === 'number' ) {
+        if (_convertedDeviation < ZERO
+            || _convertedDeviation > ONE_BILLION
+            || _convertedDeviation > _convertedMeasurement) {
+          $(_deviationID).addClass('is-invalid');
+          allValid = false;
+        } else {
+          // assign normalized deviation to hidden field
+          const convertedDeviationID = '#convertedDeviation' + _idx;
+          $(convertedDeviationID).val(_convertedDeviation);
+        }
+      } else {
+        $(_deviationID).addClass('is-invalid'); // deviation not a number
+        allValid == false;
+      }
     }
   });
 
-  // send if checks pass
-  if (allValid == true) {
+  // Submit if checks pass
+  if (allValid === true) {
     return; // submit
   } else {
     event.preventDefault(); // prevent submission
   }
 });
 
+/** ---------------------------- */
+/**       UNIT CONVERSION        */
+/** ---------------------------- */
+
+/**
+ * @param  {number} num in percent weight
+ * @return {number} in parts per billion
+ */
+function percentToPPB(num) {
+  if (typeof num !== 'number') return;
+  return parseInt(num * 10000000); // num * ten_million
+}
+/**
+ * @param  {number} num in parts per million
+ * @return {number} in parts per billion
+ */
+function ppmToPPB(num) {
+  if (typeof num !== 'number') return;
+  return parseInt(num * 1000); // num * one_thousand
+}
+/**
+ * @param  {number} num in milligrams per gram
+ * @return {number} in parts per billion
+ */
+function milligramsPerGramToPPB(num) {
+  if (typeof num !== 'number') return;
+  return parseInt(num * 1000000); // num * one_million
+}
+/**
+ * @param  {number} num in micrograms per gram
+ * @return {number} in parts per billion
+ */
+function microgramsPerGramToPPB( num ) {
+  if (typeof num !== 'number') return;
+  return parseInt(num * 1000); // num * one_thousand
+}
+/**
+ * @param  {number} num in nanograms per gram
+ * @return {number} in PPB;
+ */
+function nanogramsPerGramToPPB(num) {
+  if (typeof num !== 'number') return;
+  return parseInt(num); // nanograms/gram is equivalent to ppb
+}

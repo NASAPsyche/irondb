@@ -169,8 +169,8 @@ function getBodies(reqBody, keys) {
       if (lessThanKeys.includes(String(lessThan))) {
         lessThanVal = true;
       }
-      const measurement = 'measurement' + String(idx);
-      const deviation = 'deviation' + String(idx);
+      const measurement = 'convertedMeasurement' + String(idx);
+      const deviation = 'convertedDeviation' + String(idx);
       const unit = 'units' + String(idx);
       const technique = 'technique' + String(idx);
       const page = 'page' + String(idx);
@@ -218,12 +218,12 @@ function getNotes(reqBody, keys) {
 /**
  * @description Converts units from values in form
  * to values expected by database
- * @param  {string} orignalUnit
+ * @param  {string} originalUnit
  * @return {string} converted string
  */
-function convertUnitString(orignalUnit) {
+function convertUnitString(originalUnit) {
   let units;
-  switch (orignalUnit) {
+  switch (originalUnit) {
     case 'wt%':
       units = 'wt_percent';
       break;
@@ -242,6 +242,8 @@ function convertUnitString(orignalUnit) {
     case 'ng/g':
       units = 'ng_g';
       break;
+    default:
+      units = originalUnit;
   }
   return units;
 }
