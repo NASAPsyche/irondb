@@ -141,6 +141,13 @@ CREATE TABLE IF NOT EXISTS entry_store (
   last_saved_date timestamp DEFAULT now() NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS ready_entries (
+  entry_id bigserial PRIMARY KEY,
+  user_id integer REFERENCES users(user_id) NOT NULL,
+  collated_ids jsonb NOT NULL,
+  submission_date timestamp DEFAULT now() NOT NULL
+);
+
 -- Status tables --
 
 CREATE TABLE IF NOT EXISTS body_status (
