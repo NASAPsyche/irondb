@@ -43,6 +43,24 @@ INSERT INTO journals (journal_name, volume, issue, published_year)
     2009
   ),
   (
+    'Geochimica et Cosmochimica Acta', 
+    '75', 
+    '7', 
+    2011
+  ),
+  (
+    'Geochimica et Cosmochimica Acta', 
+    '59', 
+    '3', 
+    1995
+  ),
+  (
+    'Geochimica et Cosmochimica Acta', 
+    '65', 
+    '6', 
+    2001
+  ),
+  (
     'Fake Historical Paper',
     '1',
     '1',
@@ -66,6 +84,18 @@ INSERT INTO papers (journal_id,  title)
   (
     (SELECT journal_id FROM journals WHERE journal_name='Fake Historical Paper' AND issue='1'),
     'Fake Historical Paper'
+  ),
+  (
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='7' AND volume='75'),
+    'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'
+  ),
+  (
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='3' AND volume='59'),
+    'Classification and origin of IAB and IIICD iron meteorites'
+  ),
+  (
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='6' AND volume='65'),
+    'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'
   );
 
 INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
@@ -74,7 +104,10 @@ INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_en
   (DEFAULT, 'Fake', '', '', true),
   (DEFAULT, 'Wasson', 'John', 'T.', DEFAULT),
   (DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT),
-  (DEFAULT, 'Historical','Fake','', DEFAULT);
+  (DEFAULT, 'Historical','Fake','', DEFAULT),
+  (DEFAULT,'Choi','Byeon-Gak','', DEFAULT),
+  (DEFAULT,'Ouyang','Xinwei','', DEFAULT),
+  (DEFAULT, 'Richardson', 'J.', 'W.', DEFAULT);
 
 INSERT INTO attributions (paper_id, author_id)
   VALUES 
@@ -97,6 +130,30 @@ INSERT INTO attributions (paper_id, author_id)
   (
     (SELECT paper_id FROM papers WHERE title='Fake Historical Paper'),
     (SELECT author_id FROM authors WHERE primary_name='Historical' AND first_name='Fake')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    (SELECT author_id FROM authors WHERE primary_name='Choi' AND first_name='Byeon-Gak')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    (SELECT author_id FROM authors WHERE primary_name='Ouyang' AND first_name='Xinwei')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    (SELECT author_id FROM authors WHERE primary_name='Richardson')
   );
 
 INSERT INTO bodies (nomenclature)
@@ -108,7 +165,16 @@ INSERT INTO bodies (nomenclature)
   ('Bellsbank'),
   ('Twannberg'),
   ('La Primitiva'),
-  ('Historical');
+  ('Historical'),
+  ('NWA 0854'),
+  ('Zagora'),
+  ('NWA 2743'),
+  ('Foum Zguid'),
+  ('Tamentit'),
+  ('Anoka'),
+  ('Elephant Moraine 83333'),
+  ('Otchinjau'),
+  ('Gan Gan');
 
 INSERT INTO groups (group_id, body_id, the_group)
   VALUES
@@ -149,6 +215,51 @@ INSERT INTO groups (group_id, body_id, the_group)
   ),
   (
     DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'IAB'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'IC'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'IAB'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'IIAB'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'IIIAB'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'IIICD'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'IAB'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'IVA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'IVA'
+  ),
+  (
+    DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
     'Historical'
   );
@@ -159,6 +270,16 @@ INSERT INTO classifications (classification_id, body_id, classification)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
     'Dummy'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'IAB-MG'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'IAB-sLL'
   ),
   (
     DEFAULT,
@@ -566,8 +687,1488 @@ INSERT INTO element_entries (
     true,
     'ug_g',
     null
-  );
+  ),
 
+/* NWA 0854 */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    30000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    4540000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    67500000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    140000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    89100,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    400000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    10700,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    180,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    1200,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    210,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    2070,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    6900,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    1461,
+    4,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+
+  /* Zagora */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    64000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    4830000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    92600000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    267000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    70100,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    226000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    15600,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    250,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    880,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    267,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    2880,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    6300,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    1768,
+    4,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* Foum Zguid */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    22000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    4970000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    58100000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    113000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    55500,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    153000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    9910,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    200,
+    3,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    720,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    40,
+    2,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    21,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    5300,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    1078,
+    4,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* NWA 2743 */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    53000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    4760000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    67500000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    137000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    52600,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    195000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    8280,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    150,
+    3,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    880,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    20,
+    2,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    127,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    5400,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    971,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* Tamentit */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    31000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    5180000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    85200000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    144000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    20800,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    43000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    8290,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    120,
+    3,
+    0,
+    true,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    750,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    203,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    2500,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    8000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    1760,
+    1039,
+    4,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* Anoka */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    21000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    5600000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    118800000,
+    4,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    193000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    17400,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    16000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'RNAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    20600,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    480,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    110,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    160,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    1200,
+    2,
+    0,
+    true,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    1580,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* Elephant Moraine 83333 */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    19000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    4880000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    80600000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    184000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    74800,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    226000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'RNAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    15700,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'sb',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    450,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    800,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    280,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    2880,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    6800,
+    2,
+    0,
+    true,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    595,
+    1750,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+
+  /*Otchinjau */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    165000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    3900000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    78300000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    160000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    2090,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    119,
+    3,
+    0,
+    false,
+    'ug_g',
+    'RNAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    4230,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    690,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    277,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    2460,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    4900,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    983,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* Gan Gan */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    23000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    4130000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    91800000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    116000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    2360,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    12100,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    430,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    117,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    1110,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    5000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    2216,
+    4,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  );
 
 /*
   Populating the status tables.
@@ -621,6 +2222,69 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
   ),
   (
     DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Zagora')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IC' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IIAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IIIAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Tamentit')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IIICD' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Anoka')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IVA' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IVA' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='Historical' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Historical')),
     'historical',
     'Michael',
@@ -661,6 +2325,20 @@ INSERT INTO classification_status (status_id, classification_id, current_status,
     DEFAULT,
     (SELECT classification_id FROM classifications WHERE classification='Historical'),
     'historical',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT classification_id FROM classifications WHERE classification='IAB-MG'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT classification_id FROM classifications WHERE classification='IAB-sLL'),
+    'active',
     'Michael',
     NULL
   );
@@ -732,6 +2410,69 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   ),
   (
     DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Zagora'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Tamentit'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Anoka'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
     'historical',
     'Michael',
@@ -777,6 +2518,27 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
   ),
   (
     DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '7' AND volume = '75'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '3' AND volume = '59'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '6' AND volume = '65'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT journal_id FROM journals WHERE journal_name='Fake Historical Paper' AND issue = '1'),
     'historical',
     'Michael',
@@ -818,6 +2580,27 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, pre
     (SELECT paper_id FROM papers WHERE title='The IIG iron meteorites: Probable formation in the IIAB core'),
     'active',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    'pending',
+    'Michael',
     NULL
   ),
   (
@@ -870,6 +2653,27 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, p
     (SELECT author_id FROM authors WHERE primary_name='Choe' AND first_name='Won-Hie'),
     'active',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Choi' AND first_name='Byeon-Gak'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Ouyang' AND first_name='Xinwei'),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Richardson'),
+    'pending',
+    'Michael',
     NULL
   ),
   (
@@ -934,6 +2738,72 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
     ),
     'active',
     'Ken',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Ouyang' AND first_name='Xinwei')
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Choi' AND first_name='Byeon-Gak')
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Richardson')
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Wasson')
+    ),
+    'pending',
+    'Michael',
     NULL
   ),
   (
@@ -1345,6 +3215,1484 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'active',
     'Ken',
+    NULL
+  ),
+  /* NWA 0854 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 0854')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  /* Zagora */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Zagora')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  /* NWA 2743 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='NWA 2743')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  /* Foum Zguid */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Foum Zguid')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  /* Tamentit */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Tamentit')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Relationship between iron-meteorite composition and size: Compositional distribution of irons from North Africa')
+      AND page_number = 1760
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  
+  /*Anoka */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Anoka')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  /*Elephant Moraine 83333 */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'sb'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Classification and origin of IAB and IIICD iron meteorites')
+      AND page_number = 595
+    ),
+    'active',
+    'Michael',
+    NULL
+  ),
+
+  /* Otchinjau */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),(
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  /* Gan Gan */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),(
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
     NULL
   );
 
