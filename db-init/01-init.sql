@@ -47,7 +47,7 @@ ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFE
 
 CREATE TABLE IF NOT EXISTS bodies (
   body_id serial PRIMARY KEY,
-  nomenclature citext UNIQUE NOT NULL,
+  nomenclature citext NOT NULL,
   status_id bigint
 );
 
