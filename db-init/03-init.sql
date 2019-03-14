@@ -55,6 +55,12 @@ INSERT INTO journals (journal_name, volume, issue, published_year)
     1995
   ),
   (
+    'Geochimica et Cosmochimica Acta', 
+    '65', 
+    '6', 
+    2001
+  ),
+  (
     'Fake Historical Paper',
     '1',
     '1',
@@ -86,6 +92,10 @@ INSERT INTO papers (journal_id,  title)
   (
     (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='3' AND volume='59'),
     'Classification and origin of IAB and IIICD iron meteorites'
+  ),
+  (
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue='6' AND volume='65'),
+    'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'
   );
 
 INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_entity)
@@ -96,7 +106,8 @@ INSERT INTO authors (author_id, primary_name, first_name, middle_name, single_en
   (DEFAULT, 'Choe', 'Won-Hie', '', DEFAULT),
   (DEFAULT, 'Historical','Fake','', DEFAULT),
   (DEFAULT,'Choi','Byeon-Gak','', DEFAULT),
-  (DEFAULT,'Ouyang','Xinwei','', DEFAULT);
+  (DEFAULT,'Ouyang','Xinwei','', DEFAULT),
+  (DEFAULT, 'Richardson', 'J.', 'W.', DEFAULT);
 
 INSERT INTO attributions (paper_id, author_id)
   VALUES 
@@ -135,6 +146,14 @@ INSERT INTO attributions (paper_id, author_id)
   (
     (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
     (SELECT author_id FROM authors WHERE primary_name='Ouyang' AND first_name='Xinwei')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    (SELECT author_id FROM authors WHERE primary_name='Wasson' AND first_name='John')
+  ),
+  (
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    (SELECT author_id FROM authors WHERE primary_name='Richardson')
   );
 
 INSERT INTO bodies (nomenclature)
@@ -153,7 +172,9 @@ INSERT INTO bodies (nomenclature)
   ('Foum Zguid'),
   ('Tamentit'),
   ('Anoka'),
-  ('Elephant Moraine 83333');
+  ('Elephant Moraine 83333'),
+  ('Otchinjau'),
+  ('Gan Gan');
 
 INSERT INTO groups (group_id, body_id, the_group)
   VALUES
@@ -226,6 +247,16 @@ INSERT INTO groups (group_id, body_id, the_group)
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333'),
     'IAB'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'IVA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'IVA'
   ),
   (
     DEFAULT,
@@ -1835,6 +1866,308 @@ INSERT INTO element_entries (
     false,
     'ug_g',
     'INAA'
+  ),
+
+  /*Otchinjau */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    165000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    3900000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    78300000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    160000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    2090,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'ge',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    119,
+    3,
+    0,
+    false,
+    'ug_g',
+    'RNAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    4230,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    690,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    277,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    2460,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    4900,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    983,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  /* Gan Gan */
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'cr',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    23000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'co',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    4130000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'ni',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    91800000,
+    3,
+    0,
+    false,
+    'mg_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'cu',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    116000,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'ga',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    2360,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'as',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    12100,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'w',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    430,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    're',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    117,
+    3,
+    0,
+    false,
+    'ng_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'ir',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    1110,
+    3,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'pt',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    5000,
+    2,
+    0,
+    false,
+    'ug_g',
+    'INAA'
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'au',
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    952,
+    2216,
+    4,
+    0,
+    false,
+    'ug_g',
+    'INAA'
   );
 
 /*
@@ -1933,6 +2266,20 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, pre
     DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='IAB' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Elephant Moraine 83333')),
     'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IVA' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT group_id FROM groups WHERE the_group='IVA' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')),
+    'pending',
     'Michael',
     NULL
   ),
@@ -2112,6 +2459,20 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previ
   ),
   (
     DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Historical'),
     'historical',
     'Michael',
@@ -2171,6 +2532,13 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
   ),
   (
     DEFAULT,
+    (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '6' AND volume = '65'),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
     (SELECT journal_id FROM journals WHERE journal_name='Fake Historical Paper' AND issue = '1'),
     'historical',
     'Michael',
@@ -2225,6 +2593,13 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, pre
     DEFAULT,
     (SELECT paper_id FROM papers WHERE title='Classification and origin of IAB and IIICD iron meteorites'),
     'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
+    'pending',
     'Michael',
     NULL
   ),
@@ -2291,6 +2666,13 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, p
     DEFAULT,
     (SELECT author_id FROM authors WHERE primary_name='Ouyang' AND first_name='Xinwei'),
     'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (SELECT author_id FROM authors WHERE primary_name='Richardson'),
+    'pending',
     'Michael',
     NULL
   ),
@@ -2399,6 +2781,28 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
       AND author_id = (SELECT author_id FROM authors WHERE primary_name='Choi' AND first_name='Byeon-Gak')
     ),
     'active',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Richardson')
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT attribution_id FROM attributions
+      WHERE paper_id = (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND author_id = (SELECT author_id FROM authors WHERE primary_name='Wasson')
+    ),
+    'pending',
     'Michael',
     NULL
   ),
@@ -3988,6 +4392,306 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
       AND page_number = 595
     ),
     'active',
+    'Michael',
+    NULL
+  ),
+
+  /* Otchinjau */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),(
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'ge'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  /* Gan Gan */
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'cr'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'co'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'ni'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'cu'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),(
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'ga'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'as'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'w'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 're'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'ir'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'pt'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
+    'Michael',
+    NULL
+  ),
+  (
+    DEFAULT,
+    (
+      SELECT element_id FROM element_entries
+      WHERE body_id = (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')
+      AND element_symbol = 'au'
+      AND paper_id = (SELECT paper_id FROM papers WHERE title = 'Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends')
+      AND page_number = 952
+    ),
+    'pending',
     'Michael',
     NULL
   );
