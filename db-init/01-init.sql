@@ -141,19 +141,6 @@ CREATE TABLE IF NOT EXISTS entry_store (
   last_saved_date timestamp DEFAULT now() NOT NULL
 );
 
-
-CREATE TABLE IF NOT EXISTS submissions (
-  submission_id bigserial PRIMARY KEY,
-  pdf_path text DEFAULT NULL, 
-  -- save the path to the pdf if one is included in submission
-  pending boolean DEFAULT true NOT NULL,
-  -- when a submission is created, it is pending, after data has been
-  -- verified (accept or reject) pending is set to false
-  -- If some data has been accepted but not all data, the user may
-  -- choose to close out submission or review more later.
-  username citext REFERENCES users(username) NOT NULL
-);
-
 -- Status tables --
 
 CREATE TABLE IF NOT EXISTS body_status (
@@ -164,8 +151,7 @@ CREATE TABLE IF NOT EXISTS body_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES body_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES body_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS body_review (
@@ -188,8 +174,7 @@ CREATE TABLE IF NOT EXISTS journal_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES journal_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES journal_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS journal_review (
@@ -212,8 +197,7 @@ CREATE TABLE IF NOT EXISTS paper_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES paper_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES paper_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS paper_review (
@@ -236,8 +220,7 @@ CREATE TABLE IF NOT EXISTS attribution_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES attribution_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES attribution_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS attribution_review (
@@ -260,8 +243,7 @@ CREATE TABLE IF NOT EXISTS author_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES author_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES author_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS author_review (
@@ -284,8 +266,7 @@ CREATE TABLE IF NOT EXISTS group_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES group_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES group_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS group_review (
@@ -308,8 +289,7 @@ CREATE TABLE IF NOT EXISTS classification_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES classification_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES classification_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS classification_review (
@@ -332,8 +312,7 @@ CREATE TABLE IF NOT EXISTS element_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES element_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES element_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS element_review (
@@ -356,8 +335,7 @@ CREATE TABLE IF NOT EXISTS note_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES note_status(status_id),
-  submission_id bigint REFERENCES submissions(submission_id)
+  previous_entry bigint REFERENCES note_status(status_id)
 );
 
 CREATE TABLE IF NOT EXISTS note_review (
