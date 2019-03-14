@@ -29,6 +29,18 @@ async function insertEntry(
   const client = await pg.pool.connect();
   let journalId = null;
   let paperId = null;
+  let userId = null;
+  const collatedIds = {
+    journal: '',
+    paper: '',
+    authors: [],
+    attributions: [],
+    bodies: [],
+    groups: [],
+    classifications: [],
+    elements: [],
+    notes: [],
+  };
   try {
     await client.query('BEGIN');
     // START JOURNAL TRANSACTION
@@ -63,6 +75,7 @@ async function insertEntry(
         username,
       ];
       rows = await client.query(journalStatusQuery, journalStatusValue);
+      collatedIds.journal = journalId;
 
       const journalUpdateQuery = `
       UPDATE journals
@@ -109,6 +122,8 @@ async function insertEntry(
         username,
       ];
       rows = await client.query(paperStatusQuery, paperStatusValue);
+      collatedIds.paper = paperId;
+
       const statusIdPaper = rows.rows[0].status_id;
       const paperUpdateQuery = `
       UPDATE papers
@@ -155,6 +170,7 @@ async function insertEntry(
         username,
       ];
       rows = await client.query(authorStatusQuery, authorStatusValue);
+      collatedIds.authors.push(authorId);
 
       const statusIdAuthor = rows.rows[0].status_id;
       const authorUpdateQuery = `
@@ -194,6 +210,8 @@ async function insertEntry(
         username,
       ];
       rows = await client.query(attrStatusQuery, attrStatusValue);
+      collatedIds.attributions.push(attrId);
+
       const statusIdAttr = rows.rows[0].status_id;
       const attrUpdateQuery = `
       UPDATE attributions
@@ -234,6 +252,7 @@ async function insertEntry(
         username,
       ];
       rows = await client.query(bodyStatusQuery, bodyStatusValue);
+      collatedIds.bodies.push(bodyId);
 
       const statusIdBody = rows.rows[0].status_id;
       const bodyUpdateQuery = `
@@ -273,6 +292,7 @@ async function insertEntry(
         username,
       ];
       rows = await client.query(groupStatusQuery, groupStatusValue);
+      collatedIds.groups.push(groupId);
 
       const statusIdGroup = rows.rows[0].status_id;
       const groupUpdateQuery = `
@@ -315,6 +335,7 @@ async function insertEntry(
           username,
         ];
         rows = await client.query(classStatusQuery, classStatusValue);
+        collatedIds.classifications.push(classId);
 
         const statusId = rows.rows[0].status_id;
         const classUpdateQuery = `
@@ -395,15 +416,16 @@ async function insertEntry(
           username,
         ];
         rows = await client.query(measureStatusQuery, measureStatusValue);
+        collatedIds.elements.push(elementId);
 
-        const statusIdmeasure = rows.rows[0].status_id;
+        const statusIdMeasure = rows.rows[0].status_id;
         const measureUpdateQuery = `
         UPDATE element_entries
         SET status_id = ($1)
         WHERE element_id = ($2)
         `;
         const measureUpdateValue = [
-          statusIdmeasure,
+          statusIdMeasure,
           elementId,
         ];
         await client.query(measureUpdateQuery, measureUpdateValue);
@@ -438,6 +460,7 @@ async function insertEntry(
         username,
       ];
       rows = await client.query(noteStatusQuery, noteStatusValue);
+      collatedIds.notes.push(noteId);
 
       const statusIdNote = rows.rows[0].status_id;
       const noteUpdateQuery = `
@@ -453,9 +476,29 @@ async function insertEntry(
     }
     // END NOTE TRANSACTIONS
 
+    // START READY_ENTRIES TRANSACTION
+    const userIdQuery = 'SELECT user_id FROM users WHERE username = $1';
+    const userIdValue = [username];
+    const {rows} = await client.query(userIdQuery, userIdValue);
+    userId = rows[0].user_id;
+
+
+    const readyEntryQuery = `
+    INSERT INTO
+    ready_entries(user_id, collated_ids)
+    VALUES($1, $2)
+    `;
+    const readyEntryJson = JSON.stringify(collatedIds);
+    const readyEntryValue = [
+      userId,
+      readyEntryJson,
+    ];
+    await client.query(readyEntryQuery, readyEntryValue);
+    // END READY_ENTRIES TRANSACTION
+
     // COMMIT ALL TRANSACTIONS AS SINGLE TRANSACTION
     await client.query('COMMIT');
-    console.log('Insertion was successful, changes commited');
+    console.log('Insertion was successful, changes committed');
   } catch (error) {
     await client.query('ROLLBACK');
     console.log(error);
