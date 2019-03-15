@@ -29,3 +29,15 @@ describe('Test nanogramPerGramToPPB function', () => {
     expect(convert.nanogramPerGramToPPB(750)).toBe(750);
   });
 });
+
+describe('Test ppbToPercent function', () => {
+  test('convert 44300000 ppb to 4.43 wt%', () => {
+    expect(convert.ppbToPercent(44300000, 3)).toBe(4.43);
+  });
+});
+
+describe('Test ppbToPPM function', () => {
+  test('convert 5080000 ppb to 5080 ppm', () => {
+    expect(convert.ppbToPPM(5080000, 3)).toBe(5080);
+  });
+});
