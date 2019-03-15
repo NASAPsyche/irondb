@@ -1,3 +1,4 @@
+const convert = require('../../utils/unit-conversion');
 const createError = require('http-errors');
 const db = require('../../db');
 const Router = require('express-promise-router');
@@ -45,6 +46,22 @@ router.get('/:id', async (req, res, next) => {
   } catch (err) {
     next(createError(500));
   } finally {
+    // Convert Major Elements from ppb to wt%
+    resObj[2].rows.forEach(function(row) {
+      row.ppb_mean = convert.ppbToPercent(row.ppb_mean, row.sigfig);
+      if (row.deviation !== 0) {
+        row.deviation = convert.ppbToPercent(row.deviation, row.sigfig);
+      }
+    });
+
+    // Convert Minor Elements from ppb to ppm
+    resObj[3].rows.forEach(function(row) {
+      row.ppb_mean = convert.ppbToPPM(row.ppb_mean, row.sigfig);
+      if (row.deviation !== 0) {
+        row.deviation = convert.ppbToPPM(row.deviation, row.sigfig);
+      }
+    });
+
     res.render('single-body', {
       isSignedIn: req.isAuthenticated(),
       PaperID: paperID,
