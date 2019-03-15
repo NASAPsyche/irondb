@@ -1,10 +1,40 @@
 /* eslint-disable no-invalid-this */
-// Remove row when x clicked.
+let numberOfElementColumns = 0;
+$('document').ready(function() {
+  // Get number of element columns
+  numberOfElementColumns = $('thead > tr > th:eq(-7)').attr('class');
+});
+
+// Remove row when x clicked, and column when no remaining values.
 $( 'i' ).click(function() {
+  // Get columns with values by checking row to be removed
+  const columnsWithValues = $( this ).parent().parent().children()
+      .slice(4, (parseInt(numberOfElementColumns) + 5))
+      .map(function() {
+        if ($.trim($(this).text()).length > 0) {
+          return $(this).attr('class');
+        }
+      }).get();
+
+  // Remove row
   $( this ).parent().parent().remove();
   if ($( 'tr' ).length === 1) {
     // eslint-disable-next-line max-len
     $('#entries').append('<a class="btn btn-danger" href="/database">Back to Database</a>');
+  }
+
+  // Remove any column if empty
+  let isEmpty = true;
+  for (let i = 0; i < columnsWithValues.length; i++) {
+    $('.'+columnsWithValues[i]).slice(1).each(function() {
+      if ($.trim($(this).text()).length > 0) {
+        isEmpty = false;
+        return false;
+      }
+    });
+    if (isEmpty) {
+      $('.'+columnsWithValues[i]).remove();
+    }
   }
 });
 
