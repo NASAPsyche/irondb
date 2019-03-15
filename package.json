@@ -33,6 +33,7 @@
     "pdfobject": "^2.1.1",
     "pg": "^7.5.0",
     "popper.js": "^1.14.4",
+    "python-shell": "^1.0.7",
     "tether": "^1.4.5"
   },
   "devDependencies": {
