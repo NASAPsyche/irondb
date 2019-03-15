@@ -17,8 +17,79 @@
 		</div>
 	</div>
 
+	<div class="d-flex flex-row align-items-center justify-content-center pt-3">
+		<form method="POST" action="/data-entry/tool/tables"  class="border border-dark align-top mx-auto bg p-3" id="single-page-form">
+			<!-- This will remain hidden -->
+			<div class="form-group">
+				<label for="fileName" class="sr-only"></label>
+				<input id="fileName" name="fileName" type="hidden" value="">
+			</div>
 
-	<div class="container-fluid mt-5">
+			<!-- This will be a drop down, I'll need some way of grabing the number of pages before rendering this -->
+			<!-- currently giving you 0-20 -->
+			<div class="form-group">
+				<label for="pageNum" class="sr-only"></label>
+				<select class="form-control" name="pageNum" id="pageNum">
+					<option>Page Number</option>
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+				</select>
+			</div>
+
+			<!-- Drop down with the given options -->
+			<div class="form-group">
+				<label for="taskNum" class="sr-only"></label>
+				<input id="taskNum" name="taskNum" type="hidden" value="0">
+			</div>
+
+			<!-- Some form of directional input, probably just number -360 to 360 -->
+			<div class="form-group">
+				<label for="flipDir" class="sr-only"></label>
+				<input id="flipDir" name="flipDir" type="hidden" value="0">
+			</div>
+
+			<!-- will discuss further when/if we get to it -->
+			<div class="form-group">
+				<label for="coordsLeft" class="sr-only"></label>
+				<input id="coordsLeft" name="coordsLeft" type="hidden" value="0">
+			</div>
+			<div class="form-group">
+				<label for="coordsTop" class="sr-only"></label>
+				<input id="coordsTop" name="coordsTop" type="hidden" value="0">
+			</div>
+			<div class="form-group">
+				<label for="coordsWidth" class="sr-only"></label>
+				<input id="coordsWidth" name="coordsWidth" type="hidden" value="0">
+			</div>
+			<div class="form-group">
+				<label for="coordsHeight" class="sr-only"></label>
+				<input id="coordsHeight" name="coordsHeight" type="hidden" value="0">
+			</div>
+			
+			<button type="submit" class="btn btn-secondary float-right">Submit</button>
+		</form>
+	</div>
+
+	<!-- <div class="container-fluid mt-5">
 		<h3>Brand Color examples</h3>
 		<div class="p-3 mb-2 bg-primary text-white">.bg-primary  <div class="p-2" style="background-color: #00A3E0">matches?</div></div>
 		<div class="p-3 mb-2 bg-secondary text-white">.bg-secondary <div class="p-2" style="background-color: #5C6670">matches?</div></div>
@@ -26,7 +97,7 @@
 		<div class="p-3 mb-2 bg-danger text-white">.bg-danger <div class="p-2" style="background-color: #8C1D40">matches?</div></div>
 		<div class="p-3 mb-2 bg-warning text-dark">.bg-warning <div class="p-2" style="background-color: #FFC627">matches?</div></div>
 		<div class="p-3 mb-2 bg-info text-white">.bg-info <div class="p-2" style="background-color: #FF7F32">matches?</div></div>
-	</div>
+	</div> -->
 
 	<%- include('bootstrap/js'); %>
 	<script src="/javascripts/example.js"></script>
