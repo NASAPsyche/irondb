@@ -11,7 +11,17 @@ CREATE EXTENSION IF NOT EXISTS plpythonu;
 CREATE TYPE user_role AS ENUM ('admin', 'data-entry', 'user');
 CREATE TYPE statuses AS ENUM('pending', 'rejected', 'active', 'historical');
 CREATE TYPE units AS ENUM ('wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g');
-
+CREATE TYPE mz AS (
+  nomenclature      text,
+  element_symbol    text,
+  less_than         boolean,
+  ppb_mean          integer,
+  sigfig            integer,
+  deviation         integer,
+  original_unit     units,
+  technique         text,
+  page_number       integer
+);
 
 -------------------
 -- Define tables --
