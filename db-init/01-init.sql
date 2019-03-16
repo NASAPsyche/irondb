@@ -1,9 +1,11 @@
 -- Create and connect to irondb database 
 CREATE DATABASE irondb WITH OWNER = group16; 
-CREATE EXTENSION citext;
+CREATE EXTENSION IF NOT EXISTS citext;
+CREATE EXTENSION IF NOT EXISTS plpythonu;
 
 -------------------
 -- Define enums  --
+-- Create types  --
 -------------------
 
 CREATE TYPE user_role AS ENUM ('admin', 'data-entry', 'user');
