@@ -627,3 +627,30 @@ CREATE VIEW full_attributions_flagged AS (
     FROM flagged_elements_with_bodies_papers_journals AS t1
     INNER JOIN flagged_aggregated_authors_by_paper_id AS t2 ON t1.paper_id = t2.paper_id
 );
+
+
+-- Build monolith views
+
+CREATE VIEW element_measuremeant_csv AS (
+  SELECT 
+    t1.body_id,
+    t2.paper_id,
+    array_agg(
+      t1.nomenclature || ',' || 
+      t2.element_symbol || ',' || 
+      t2.less_than || ',' || 
+      t2.ppb_mean || ',' || 
+      t2.sigfig || ',' || 
+      t2.deviation || ',' || 
+      t2.original_unit  || ',' || 
+      t2.technique  || ',' || 
+      t2.page_number
+    ) as measure
+  FROM bodies_active AS t1
+  INNER JOIN
+  element_entries AS t2 on (t1.body_id = t2.body_id)
+  GROUP BY 
+    t1.body_id,
+    t1.nomenclature,
+    t2.paper_id
+)
