@@ -226,9 +226,8 @@ def authors_extract(pdf_name):
         for element in authors_full:
             if element.isdigit() or element == "*":
                 authors_full = authors_full.replace(element, "")
-            if element == "," or element == "and":
-                authors_full = authors_full.replace(element, ",")
-        authors_full = authors_full.replace(" ,", ",")
+        authors_full = authors_full.replace(" and", ",")
+        authors_full = authors_full.replace(",,", ",")
 
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_text.lower()).find(authors_tagword.lower())
