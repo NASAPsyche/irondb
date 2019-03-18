@@ -52,7 +52,7 @@
           <a class="btn btn-danger btn-large p-2 text-warning " href="../database/unapproved" role="button"> <u>Approval
               Needed</u>
             <span class="h1 badge badge-light">
-              <% let pCount = pendingCount <= 4 ? pendingCount : "4+" %>
+              <% let pCount = pendingCount <= 3 ? pendingCount : "3+" %>
               <%= pCount %></span>
           </a>
         </div>
@@ -67,7 +67,7 @@
               </tr>
             </thead>
             <tbody class='table-light'>
-              <% let pending = (Pending.length < 4 ? Pending.length : 4) %>
+              <% let pending = (Pending.length < 3 ? Pending.length : 3) %>
               <% for(var i=0; i < pending; i++) { %>
               <tr>
                 <th>
@@ -87,7 +87,7 @@
             </tbody>
           </table>
         </div>
-        <% if (pendingCount > 4) { %>
+        <% if (pendingCount > 3) { %>
         <div class="text-right">
           <a class="btn btn-danger btn-sm p-2 text-warning " href="../database/unapproved" role="button"> <u>View More
               Entries
@@ -101,7 +101,7 @@
           <a class="btn btn-danger btn-large p-2 text-warning " href="../database/reported" role="button"><u>Reported
               Entries</u>
             <span class="badge badge-light">
-              <% let fCount = flaggedCount <= 4 ? flaggedCount : "4+" %>
+              <% let fCount = flaggedCount <= 3 ? flaggedCount : "3+" %>
               <%= fCount %></span>
           </a>
         </div>
@@ -116,7 +116,7 @@
               </tr>
             </thead>
             <tbody class='table-light'>
-              <% let flagged = (Flagged.length < 4 ? Flagged.length : 4) %>
+              <% let flagged = (Flagged.length < 3 ? Flagged.length : 3) %>
               <% for(var i=0; i < flagged; i++) { %>
               <tr>
                 <th>
@@ -136,7 +136,7 @@
             </tbody>
           </table>
         </div>
-        <% if (flaggedCount > 4) { %>
+        <% if (flaggedCount > 3) { %>
         <div class="text-right">
           <a class="btn btn-danger btn-sm p-2 text-warning " href="../database/reported" role="button"> <u>View More
               Entries
