@@ -5,11 +5,15 @@ const sPath = path.join(__dirname, ('../../py/'));
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const {isLoggedIn} = require('../../middleware/auth');
+const createError = require('http-errors');
 
 router.post('/', isLoggedIn, function(req, res, next) {
   // Root of tool router i.e. 'localhost:3001/data-entry/tool'
   // Probably where you'd want the get for basic data used elsewhere
-  res.send('basic data requested');
+  // AJAX call from submit on tool flow checklist
+
+  console.log(req.body);
+  res.render('components/tool_panel');
 });
 
 router.get('/tables', isLoggedIn, function(req, res, next) {
@@ -42,5 +46,28 @@ router.post('/tables', isLoggedIn, function(req, res, next) {
   });
   // res.send(req.body);
 });
+
+router.post('/validate', isLoggedIn, function(req, res, next) {
+  if (req.xhr) {
+    // success
+    res.json({
+      'status': 'success',
+    });
+    // failure
+    // res.json({
+    //   'status': 'invalid',
+    // col, row
+    //   'malformed': ['2,3','4,5'],
+    // });
+  } else {
+    // Bad request
+    next(createError(400));
+  }
+});
+
+router.post('/insert', isLoggedIn, function(req, res, next) {
+  res.send('<h1>form submitted</h1>');
+});
+
 
 module.exports = router;
