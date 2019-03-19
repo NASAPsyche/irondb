@@ -1,11 +1,13 @@
 const createError = require('http-errors');
 const db = require('../db');
+const ejsUnitConversion = require('../utils/ejs-unit-conversion');
 const fs = require('fs');
 const {isLoggedIn} = require('../middleware/auth');
 const json2csv = require('json2csv').parse;
 const path = require('path');
 const Router = require('express-promise-router');
 const router = new Router();
+
 
 const singleBodyRouter = require('./database/meteorite');
 router.use('/meteorite', singleBodyRouter);
@@ -27,6 +29,7 @@ router.get('/', async (req, res, next) => {
       isSignedIn: req.isAuthenticated(),
       Entries: resObj[0].rows,
       Groups: resObj[1].rows,
+      _: ejsUnitConversion,
     });
   }
 });
@@ -75,9 +78,9 @@ router.post('/', async (req, res, next) => {
       currentQueryIndex++;
     }
 
-    if (req.body.hasOwnProperty('issue') && req.body.issue !== '') {
-      argsArray.push(req.body.issue);
-      queryString += ('AND issue_number = $' + currentQueryIndex + ' ');
+    if (req.body.hasOwnProperty('volume') && req.body.volume !== '') {
+      argsArray.push(req.body.volume);
+      queryString += ('AND volume = $' + currentQueryIndex + ' ');
       currentQueryIndex++;
     }
 
@@ -168,6 +171,7 @@ router.post('/', async (req, res, next) => {
       } else {
         res.render('components/database-xhr-response', {
           Entries: resObj[0].rows,
+          _: ejsUnitConversion,
         });
       }
     }
@@ -216,6 +220,7 @@ router.post('/', async (req, res, next) => {
         isSignedIn: req.isAuthenticated(),
         Entries: resObj[0].rows,
         Groups: resObj[1].rows,
+        _: ejsUnitConversion,
       });
     }
   }

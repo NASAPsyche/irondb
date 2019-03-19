@@ -64,8 +64,8 @@
                 <input type="text" name="journal_name" id="journal_name" class="form-control" placeholder="journal name" disabled="true">
               </div>
               <div class="form-group col-md-3">
-                <label class="sr-only" for="issue"></label>
-                <input type="text" name="issue" id="issue" class="form-control" placeholder="issue" disabled="true">
+                <label class="sr-only" for="volume"></label>
+                <input type="number" name="volume" id="volume" class="form-control" placeholder="volume" step="1" disabled="true">
               </div>
               <div class="form-group col-md-2">
                 <label class="sr-only" for="page_number"></label>
@@ -543,14 +543,14 @@
             <th>Name</th>
             <th>Group</th>
             <th>Measurement Technique</th>
-            <th>Major Elements</th>
-            <th>Minor Elements</th>
-            <th>Trace Elements</th>
+            <th>Major Elements (wt%)</th>
+            <th>Minor Elements (ppm)</th>
+            <th>Trace Elements (ppb)</th>
             <th>Title</th>
             <th>Authors</th>
             <th>Pg.#</th> 
             <th>Journal</th> 
-            <th>Issue</th>
+            <th>Volume</th>
             <th>Year Published</th> 
           </tr>
         </thead>
@@ -575,15 +575,16 @@
                       var ppb_mean = temp[1];
                       var deviation = temp[2];
                       var less_than = temp[3];
+                      var sigfig = temp[4];
                     %>
                     <p>
-                      <strong><%= element_symbol %>:</strong> 
+                      <strong><%= element_symbol.charAt(0).toUpperCase() + element_symbol.slice(1)%>:</strong>
                       <% if (less_than === 'true') { %>
                         &lt;
                       <% } %>
-                      <%= ppb_mean %>
+                      <%=_.ppbToPercent(ppb_mean, sigfig)%>
                       <% if (deviation !== '0') { %>
-                        &plusmn; <%= deviation %>
+                        &plusmn; <%=_.ppbToPercent(deviation, sigfig)%>
                       <% } %>
                     </p>
                     <% } %>
@@ -600,15 +601,16 @@
                       var ppb_mean = temp[1];
                       var deviation = temp[2];
                       var less_than = temp[3];
+                      var sigfig = temp[4];
                     %>
                     <p>
-                      <strong><%= element_symbol %>:</strong> 
+                      <strong><%= element_symbol.charAt(0).toUpperCase() + element_symbol.slice(1)%>:</strong> 
                       <% if (less_than === 'true') { %>
                         &lt;
                       <% } %>
-                      <%= ppb_mean %>
+                      <%=_.ppbToPPM(ppb_mean, sigfig)%>
                       <% if (deviation !== '0') { %>
-                        &plusmn; <%= deviation %>
+                        &plusmn; <%=_.ppbToPPM(deviation, sigfig)%>
                       <% } %>
                     </p>
                     <% } %>
@@ -627,7 +629,7 @@
                       var less_than = temp[3];
                     %>
                     <p>
-                      <strong><%= element_symbol %>:</strong> 
+                      <strong><%= element_symbol.charAt(0).toUpperCase() + element_symbol.slice(1)%>:</strong> 
                       <% if (less_than === 'true') { %>
                         &lt;
                       <% } %>
@@ -643,7 +645,7 @@
                 <th><%= Entries[i].authors %></th>
                 <th><%= Entries[i].page_number %></th> 
                 <th><%= Entries[i].journal_name %></th> 
-                <th><%= Entries[i].issue_number %></th>
+                <th><%= Entries[i].volume %></th>
                 <th><%= Entries[i].published_year %></th> 
               </tr>
           <% } %>
