@@ -64,8 +64,8 @@
                 <input type="text" name="journal_name" id="journal_name" class="form-control" placeholder="journal name" disabled="true">
               </div>
               <div class="form-group col-md-3">
-                <label class="sr-only" for="issue"></label>
-                <input type="text" name="issue" id="issue" class="form-control" placeholder="issue" disabled="true">
+                <label class="sr-only" for="volume"></label>
+                <input type="number" name="volume" id="volume" class="form-control" placeholder="volume" step="1" disabled="true">
               </div>
               <div class="form-group col-md-2">
                 <label class="sr-only" for="page_number"></label>
@@ -550,7 +550,7 @@
             <th>Authors</th>
             <th>Pg.#</th> 
             <th>Journal</th> 
-            <th>Issue</th>
+            <th>Volume</th>
             <th>Year Published</th> 
           </tr>
         </thead>
@@ -643,7 +643,7 @@
                 <th><%= Entries[i].authors %></th>
                 <th><%= Entries[i].page_number %></th> 
                 <th><%= Entries[i].journal_name %></th> 
-                <th><%= Entries[i].issue_number %></th>
+                <th><%= Entries[i].volume %></th>
                 <th><%= Entries[i].published_year %></th> 
               </tr>
           <% } %>

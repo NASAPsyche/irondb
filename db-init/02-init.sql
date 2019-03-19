@@ -305,7 +305,7 @@ CREATE VIEW complete_table AS (
   t3.authors,
   t1.page_number,
   t2.journal_name AS journal_name,
-  t2.issue AS issue_number,
+  t2.volume,
   t2.published_year
   FROM aggregated_elements_with_bodies_groups_active AS t1 
   INNER JOIN papers_with_journals_active AS t2 ON t1.paper_id = t2.paper_id

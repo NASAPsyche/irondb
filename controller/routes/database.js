@@ -7,6 +7,7 @@ const path = require('path');
 const Router = require('express-promise-router');
 const router = new Router();
 
+
 const singleBodyRouter = require('./database/meteorite');
 router.use('/meteorite', singleBodyRouter);
 
@@ -75,9 +76,9 @@ router.post('/', async (req, res, next) => {
       currentQueryIndex++;
     }
 
-    if (req.body.hasOwnProperty('issue') && req.body.issue !== '') {
-      argsArray.push(req.body.issue);
-      queryString += ('AND issue_number = $' + currentQueryIndex + ' ');
+    if (req.body.hasOwnProperty('volume') && req.body.volume !== '') {
+      argsArray.push(req.body.volume);
+      queryString += ('AND volume = $' + currentQueryIndex + ' ');
       currentQueryIndex++;
     }
 
