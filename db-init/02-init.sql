@@ -659,6 +659,10 @@ CREATE VIEW full_attributions_flagged AS (
 -- Build monolith views --
 --------------------------
 
+------------
+-- ACTIVE --
+------------
+
 -- ACTIVE BODY_GROUP_CLASS
 -- Match bodies to group and classification with possible null values
 -- This is an intermediate view
@@ -749,9 +753,93 @@ CREATE VIEW monolith_paper_active as (
     t4.published_year
 );
 
+-------------
+-- PENDING --
+-------------
 
+-- PENDING BODY_GROUP_CLASS
+-- Match bodies to group and classification with possible null values
+-- This is an intermediate view
+CREATE VIEW pending_body_group_class AS (
+  SELECT 
+    t1.body_id,
+    t1.nomenclature,
+    t2.the_group,
+    t3.classification
+  FROM bodies_pending as t1
+  LEFT OUTER JOIN 
+  groups as t2 on t1.body_id = t2.body_id
+  LEFT OUTER JOIN
+  classifications as t3 on t1.body_id = t3.body_id
+);
 
+-- PENDING AGGREGATE OF MEASUREMENTS
+-- Aggregates the measurements of pending bodies and ties it to a paper
+-- This is an intermediate view
+CREATE VIEW pending_agg_mz AS (
+  SELECT 
+    t2.paper_id,
+    t1.body_id,
+    array_agg(
+      getMz(
+      t3.nomenclature,
+      t3.the_group,
+      t3.classification,
+      t2.element_symbol,
+      t2.less_than,
+      t2.ppb_mean,
+      t2.sigfig,
+      t2.deviation,
+      t2.original_unit,
+      t2.technique,
+      t2.page_number
+    ) )as measure
+  FROM bodies_pending AS t1
+  INNER JOIN
+    elements_pending AS t2 ON (t1.body_id = t2.body_id)
+  INNER JOIN
+    pending_body_group_class AS t3 ON (t2.body_id = t3.body_id)
+  GROUP BY 
+    t2.paper_id,
+    t1.body_id
+);
 
-
-
-
+-- PENDING MONOLITH VIEW OF INFORMATION ASSOCIATED WITH PAPERS
+CREATE VIEW monolith_paper_pending as (
+  SELECT
+    t1.paper_id,
+    t1.title,
+    t1.doi,
+    t3.authors,
+    t4.journal_id,
+    t4.journal_name,
+    t4.volume,
+    t4.issue,
+    t4.series,
+    t4.published_year,
+    array_agg(
+      array_to_string( 
+        t2.measure
+        , ';', '*'
+      ) 
+    ) as measure
+  FROM 
+    papers_pending AS t1
+  LEFT OUTER JOIN 
+    pending_agg_mz AS t2 ON  (t1.paper_id = t2.paper_id)
+  INNER JOIN 
+    pending_aggregated_authors_by_paper_id AS t3 ON (t1.paper_id = t3.paper_id)
+  INNER JOIN 
+    journals_pending AS t4 ON (t1.journal_id = t4.journal_id)
+  GROUP BY
+    t1.paper_id,
+    t1.title,
+    t1.doi,
+    t3.authors,
+    t4.journal_id,
+    t4.journal_name,
+    t4.volume,
+    t4.issue,
+    t4.series,
+    t4.published_year
+);
