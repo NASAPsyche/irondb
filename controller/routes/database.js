@@ -230,10 +230,6 @@ router.post('/', async (req, res, next) => {
 /* GET /database/export */
 router.get('/export', function(req, res, next) {
   // check if signed in
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
-  }
   db.query(
       'SELECT * FROM export_table',
       [],
@@ -267,7 +263,8 @@ router.get('/export', function(req, res, next) {
         res.render('db-export', {
           Entries: dbRes.rows,
           major: major, minor: minor,
-          trace: trace, isSignedIn: isSignedIn,
+          trace: trace, isSignedIn: req.isAuthenticated(),
+          _: ejsUnitConversion,
         });
       });
 });
@@ -275,12 +272,6 @@ router.get('/export', function(req, res, next) {
 
 /* POST /database/export */
 router.post('/export', function(req, res, next) {
-  // check if signed in for navbar
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
-  }
-
   if (req.body.hasOwnProperty('export')) {
     // get arrays from request
     const tableData = JSON.parse(req.body.tableData);
@@ -377,7 +368,8 @@ router.post('/export', function(req, res, next) {
       res.render('db-export', {
         Entries: dbRes.rows,
         major: major, minor: minor,
-        trace: trace, isSignedIn: isSignedIn,
+        trace: trace, isSignedIn: req.isAuthenticated(),
+        _: ejsUnitConversion,
       });
     });
   }

@@ -13,6 +13,15 @@
       <%- include('components/navbar'); %>
     <% } %>
 
+
+
+
+
+
+
+
+
+
     <div class="container-fluid pt-3 ml-3">
       <div class="row">
         <nav aria-label="breadcrumb">
@@ -40,23 +49,23 @@
             <th></th>
             <th>Name</th>
             <th>Group</th>
-            <th>Measurement Technique</th>
+            <th>Analysis Technique</th>
             <% let columnNumber = 0 %>
             <% for(var i=0; i < major.length; i++) { %>
               <th class="<%= columnNumber%>">
-                <%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (major)
+                <%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (wt%)
               </th>
               <% columnNumber++ %>
             <% } %>
             <% for(var i=0; i < minor.length; i++) { %>
               <th class="<%= columnNumber%>">
-                <%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (minor)
+                <%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (ppm)
               </th>
               <% columnNumber++ %>
             <% } %>
             <% for(var i=0; i < trace.length; i++) { %>
               <th class="<%= columnNumber%>">
-                <%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (trace)
+                <%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (ppb)
               </th>
               <% columnNumber++ %>
             <% } %>
@@ -64,7 +73,7 @@
             <th>Authors</th>
             <th>Pg.#</th> 
             <th>Journal</th> 
-            <th>Issue</th>
+            <th>Volume</th>
             <th>Year Published</th> 
           </tr>
         </thead>
@@ -94,9 +103,9 @@
                     <% if (Entries[i].less_than === true) { %>
                       &lt;
                     <% } %>
-                    <%= Entries[i].measurement %>
+                    <%=_.ppbToPercent(Entries[i].measurement, Entries[i].sigfig)%>
                     <% if (Entries[i].deviation !== 0) { %>
-                      &plusmn; <%= Entries[i].deviation %>
+                      &plusmn; <%=_.ppbToPercent(Entries[i].deviation, Entries[i].sigfig)%>
                     <% } %>
                   </th>
                   <% columnNumber++ %>
@@ -120,9 +129,9 @@
                   <% if (Entries[i].less_than === true) { %>
                     &lt;
                   <% } %>
-                  <%= Entries[i].measurement %>
+                  <%=_.ppbToPPM(Entries[i].measurement, Entries[i].sigfig)%>
                   <% if (Entries[i].deviation !== 0) { %>
-                    &plusmn; <%= Entries[i].deviation %>
+                    &plusmn; <%=_.ppbToPPM(Entries[i].deviation, Entries[i].sigfig)%>
                   <% } %>
                 </th>
                 <% columnNumber++ %>
@@ -145,6 +154,9 @@
                     <% if (Entries[i].less_than === true) { %>
                       &lt;
                     <% } %>
+
+
+
                     <%= Entries[i].measurement %>
                     <% if (Entries[i].deviation !== 0) { %>
                       &plusmn; <%= Entries[i].deviation %>
@@ -161,7 +173,7 @@
               <th class="data authors"><%= Entries[i].authors %></th>
               <th class="data page_number"><%= Entries[i].page_number %></th> 
               <th class="data journal_name"><%= Entries[i].journal_name %></th> 
-              <th class="data issue_number"><%= Entries[i].issue_number %></th>
+              <th class="data volume"><%= Entries[i].volume %></th>
               <th class="data published_year"><%= Entries[i].published_year %></th> 
             </tr>
           <% } %>
