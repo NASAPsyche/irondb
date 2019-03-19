@@ -13,6 +13,15 @@
       <%- include('components/navbar'); %>
     <% } %>
 
+
+
+
+
+
+
+
+
+
     <div class="container-fluid pt-3 ml-3">
       <div class="row">
         <nav aria-label="breadcrumb">
@@ -40,27 +49,39 @@
             <th></th>
             <th>Name</th>
             <th>Group</th>
-            <th>Measurement Technique</th>
+            <th>Analysis Technique</th>
+            <% let columnNumber = 0 %>
             <% for(var i=0; i < major.length; i++) { %>
-              <th><%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (major)</th>
+              <th class="<%= columnNumber%>">
+                <%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (wt%)
+              </th>
+              <% columnNumber++ %>
             <% } %>
             <% for(var i=0; i < minor.length; i++) { %>
-              <th><%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (minor)</th>
+              <th class="<%= columnNumber%>">
+                <%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (ppm)
+              </th>
+              <% columnNumber++ %>
             <% } %>
             <% for(var i=0; i < trace.length; i++) { %>
-              <th><%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (trace)</th>
+              <th class="<%= columnNumber%>">
+                <%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (ppb)
+              </th>
+              <% columnNumber++ %>
             <% } %>
             <th>Title</th>
             <th>Authors</th>
             <th>Pg.#</th> 
             <th>Journal</th> 
-            <th>Issue</th>
+            <th>Volume</th>
             <th>Year Published</th> 
           </tr>
         </thead>
         <tbody>
+
           <% var currentRow = 0; %>
           <% for(var i=0; i < Entries.length; i++) { %>
+            <% let columnNumber = 0 %>
             <tr>
               <th>
                 <i class="far fa-times-circle fa-2x row ml-1 mr-1 mt-5"></i>
@@ -70,67 +91,81 @@
               <th class="data technique"><%= Entries[i].technique %></th>
               <% if ( major.indexOf(Entries[i].element_symbol) === -1 ) { %>
                 <% for(var j = 0; j < major.length; j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
+                  <% columnNumber++ %>
                 <% } %>
               <% } else { %>
                 <% for(var j = 0; j < major.indexOf(Entries[i].element_symbol); j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
+                  <% columnNumber++ %>
                 <% } %>
-                <th>
+                <th class="<%= columnNumber%>">
                     <% if (Entries[i].less_than === true) { %>
                       &lt;
                     <% } %>
-                    <%= Entries[i].measurement %>
+                    <%=_.ppbToPercent(Entries[i].measurement, Entries[i].sigfig)%>
                     <% if (Entries[i].deviation !== 0) { %>
-                      &plusmn; <%= Entries[i].deviation %>
+                      &plusmn; <%=_.ppbToPercent(Entries[i].deviation, Entries[i].sigfig)%>
                     <% } %>
                   </th>
+                  <% columnNumber++ %>
                 <% for(var j = major.indexOf(Entries[i].element_symbol) + 1; j < major.length; j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
+                  <% columnNumber++ %>
                 <% } %>
               <% } %>
 
               <% if ( minor.indexOf(Entries[i].element_symbol) === -1 ) { %>
                 <% for(var j = 0; j < minor.length; j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
+                  <% columnNumber++ %>
                 <% } %>
               <% } else { %>
                 <% for(var j = 0; j < minor.indexOf(Entries[i].element_symbol); j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
+                  <% columnNumber++ %>
                 <% } %>
-                <th>
-                    <% if (Entries[i].less_than === true) { %>
-                      &lt;
-                    <% } %>
-                    <%= Entries[i].measurement %>
-                    <% if (Entries[i].deviation !== 0) { %>
-                      &plusmn; <%= Entries[i].deviation %>
-                    <% } %>
-                  </th>
+                <th class="<%= columnNumber%>">
+                  <% if (Entries[i].less_than === true) { %>
+                    &lt;
+                  <% } %>
+                  <%=_.ppbToPPM(Entries[i].measurement, Entries[i].sigfig)%>
+                  <% if (Entries[i].deviation !== 0) { %>
+                    &plusmn; <%=_.ppbToPPM(Entries[i].deviation, Entries[i].sigfig)%>
+                  <% } %>
+                </th>
+                <% columnNumber++ %>
                 <% for(var j = minor.indexOf(Entries[i].element_symbol) + 1; j < minor.length; j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
                 <% } %>
               <% } %>
 
               <% if ( trace.indexOf(Entries[i].element_symbol) === -1 ) { %>
                 <% for(var j = 0; j < trace.length; j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
+                  <% columnNumber++ %>
                 <% } %>
               <% } else { %>
                 <% for(var j = 0; j < trace.indexOf(Entries[i].element_symbol); j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
+                  <% columnNumber++ %>
                 <% } %>
-                <th>
+                <th class="<%= columnNumber%>">
                     <% if (Entries[i].less_than === true) { %>
                       &lt;
                     <% } %>
+
+
+
                     <%= Entries[i].measurement %>
                     <% if (Entries[i].deviation !== 0) { %>
                       &plusmn; <%= Entries[i].deviation %>
                     <% } %>
                   </th>
+                  <% columnNumber++ %>
                 <% for(var j = trace.indexOf(Entries[i].element_symbol) + 1; j < trace.length; j++) { %>
-                  <th></th>
+                  <th class="<%= columnNumber%>"></th>
+                  <% columnNumber++ %>
                 <% } %>
               <% } %>
 
@@ -138,7 +173,7 @@
               <th class="data authors"><%= Entries[i].authors %></th>
               <th class="data page_number"><%= Entries[i].page_number %></th> 
               <th class="data journal_name"><%= Entries[i].journal_name %></th> 
-              <th class="data issue_number"><%= Entries[i].issue_number %></th>
+              <th class="data volume"><%= Entries[i].volume %></th>
               <th class="data published_year"><%= Entries[i].published_year %></th> 
             </tr>
           <% } %>

@@ -70,6 +70,15 @@
               <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name">
             </div>
             <div class="col-md-2">
+              <label class="sr-only" for="group">group</label>
+              <select class="form-control" name="group">
+                <option>Group</option>
+                <% for(var i=0; i < Groups.length; i++) { %>
+                  <option value="<%= Groups[i].classification_group %>"><%= Groups[i].classification_group %></option>
+                <% } %>                
+              </select>  
+            </div>
+            <div class="col-md-2">
               <label class="sr-only" for="title">Paper Title</label>
               <input type="text" name="title" id="title" class="form-control" placeholder="paper title">
             </div>

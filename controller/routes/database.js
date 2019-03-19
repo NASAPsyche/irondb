@@ -1,11 +1,13 @@
 const createError = require('http-errors');
 const db = require('../db');
+const ejsUnitConversion = require('../utils/ejs-unit-conversion');
 const fs = require('fs');
 const {isLoggedIn} = require('../middleware/auth');
 const json2csv = require('json2csv').parse;
 const path = require('path');
 const Router = require('express-promise-router');
 const router = new Router();
+
 
 const singleBodyRouter = require('./database/meteorite');
 router.use('/meteorite', singleBodyRouter);
@@ -27,6 +29,7 @@ router.get('/', async (req, res, next) => {
       isSignedIn: req.isAuthenticated(),
       Entries: resObj[0].rows,
       Groups: resObj[1].rows,
+      _: ejsUnitConversion,
     });
   }
 });
@@ -75,9 +78,9 @@ router.post('/', async (req, res, next) => {
       currentQueryIndex++;
     }
 
-    if (req.body.hasOwnProperty('issue') && req.body.issue !== '') {
-      argsArray.push(req.body.issue);
-      queryString += ('AND issue_number = $' + currentQueryIndex + ' ');
+    if (req.body.hasOwnProperty('volume') && req.body.volume !== '') {
+      argsArray.push(req.body.volume);
+      queryString += ('AND volume = $' + currentQueryIndex + ' ');
       currentQueryIndex++;
     }
 
@@ -168,6 +171,7 @@ router.post('/', async (req, res, next) => {
       } else {
         res.render('components/database-xhr-response', {
           Entries: resObj[0].rows,
+          _: ejsUnitConversion,
         });
       }
     }
@@ -179,6 +183,13 @@ router.post('/', async (req, res, next) => {
     if (req.body.name !== '') {
       argsArray.push(req.body.name);
       queryString += ('AND meteorite_name ~* $' + currentQueryIndex + ' ');
+      currentQueryIndex++;
+    }
+
+    if (req.body.group !== 'Group') {
+      argsArray.push(req.body.group);
+      // eslint-disable-next-line max-len
+      queryString += ('AND classification_group=$' + currentQueryIndex + ' ');
       currentQueryIndex++;
     }
 
@@ -209,6 +220,7 @@ router.post('/', async (req, res, next) => {
         isSignedIn: req.isAuthenticated(),
         Entries: resObj[0].rows,
         Groups: resObj[1].rows,
+        _: ejsUnitConversion,
       });
     }
   }
@@ -218,10 +230,6 @@ router.post('/', async (req, res, next) => {
 /* GET /database/export */
 router.get('/export', function(req, res, next) {
   // check if signed in
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
-  }
   db.query(
       'SELECT * FROM export_table',
       [],
@@ -255,7 +263,8 @@ router.get('/export', function(req, res, next) {
         res.render('db-export', {
           Entries: dbRes.rows,
           major: major, minor: minor,
-          trace: trace, isSignedIn: isSignedIn,
+          trace: trace, isSignedIn: req.isAuthenticated(),
+          _: ejsUnitConversion,
         });
       });
 });
@@ -263,12 +272,6 @@ router.get('/export', function(req, res, next) {
 
 /* POST /database/export */
 router.post('/export', function(req, res, next) {
-  // check if signed in for navbar
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
-  }
-
   if (req.body.hasOwnProperty('export')) {
     // get arrays from request
     const tableData = JSON.parse(req.body.tableData);
@@ -365,7 +368,8 @@ router.post('/export', function(req, res, next) {
       res.render('db-export', {
         Entries: dbRes.rows,
         major: major, minor: minor,
-        trace: trace, isSignedIn: isSignedIn,
+        trace: trace, isSignedIn: req.isAuthenticated(),
+        _: ejsUnitConversion,
       });
     });
   }

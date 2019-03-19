@@ -142,7 +142,7 @@ CREATE VIEW major_elements AS (
   paper_id,
   page_number,
   technique,
-  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than) as major_elements
+  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ',' || sigfig) as major_elements
   FROM elements_with_bodies_groups_active
   WHERE ppb_mean > 10000000
   GROUP BY body_id, paper_id, page_number, technique
@@ -154,7 +154,7 @@ CREATE VIEW minor_elements AS (
   paper_id,
   page_number,
   technique,
-  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than) as minor_elements
+  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ',' || sigfig) as minor_elements
   FROM elements_with_bodies_groups_active
   WHERE ppb_mean <= 10000000 AND ppb_mean >= 1000000
   GROUP BY body_id, paper_id, page_number, technique
@@ -166,7 +166,7 @@ CREATE VIEW trace_elements AS (
   paper_id,
   page_number,
   technique,
-  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than) as trace_elements
+  array_agg(element_symbol || ',' || ppb_mean || ',' || deviation || ',' || less_than || ',' || sigfig) as trace_elements
   FROM elements_with_bodies_groups_active
   WHERE ppb_mean < 1000000
   GROUP BY body_id, paper_id, page_number, technique
@@ -276,6 +276,7 @@ CREATE VIEW elements_with_bodies_papers_journals_active_with_id AS (
   t1.ppb_mean,
   t1.deviation,
   t1.less_than,
+  t1.sigfig,
   t1.original_unit,
   t1.technique,
   t1.note,
@@ -305,7 +306,7 @@ CREATE VIEW complete_table AS (
   t3.authors,
   t1.page_number,
   t2.journal_name AS journal_name,
-  t2.issue AS issue_number,
+  t2.volume,
   t2.published_year
   FROM aggregated_elements_with_bodies_groups_active AS t1 
   INNER JOIN papers_with_journals_active AS t2 ON t1.paper_id = t2.paper_id
@@ -322,6 +323,7 @@ CREATE VIEW export_table AS (
   t1.ppb_mean AS measurement,
   t1.deviation,
   t1.less_than,
+  t1.sigfig,
   t1.title,
   t2.authors,
   t1.page_number,
