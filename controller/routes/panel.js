@@ -31,13 +31,21 @@ router.get('/admin', isAdmin, function(req, res, next) {
                 if (dbErr3) {
                   return next(dbErr3);
                 }
-                res.render('admin-panel', {
-                  Pending: dbRes1.rows,
-                  pendingCount: dbRes1.rowCount,
-                  Flagged: dbRes2.rows,
-                  flaggedCount: dbRes2.rowCount,
-                  Users: dbRes3.rows,
-                  userCount: dbRes3.rowCount,
+                /* eslint-disable-next-line max-len */
+                db.query('SELECT * FROM all_papers_with_authors', [], (dbErr4, dbRes4) => {
+                  if (dbErr4) {
+                    return next(dbErr4);
+                  }
+                  res.render('admin-panel', {
+                    Pending: dbRes1.rows,
+                    pendingCount: dbRes1.rowCount,
+                    Flagged: dbRes2.rows,
+                    flaggedCount: dbRes2.rowCount,
+                    Users: dbRes3.rows,
+                    userCount: dbRes3.rowCount,
+                    Database: dbRes4.rows,
+                    databaseCount: dbRes4.rowCount,
+                  });
                 });
               });
             });
