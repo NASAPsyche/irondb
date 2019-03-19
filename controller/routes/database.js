@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const db = require('../db');
+const ejsUnitConversion = require('../utils/ejs-unit-conversion');
 const fs = require('fs');
 const {isLoggedIn} = require('../middleware/auth');
 const json2csv = require('json2csv').parse;
@@ -28,6 +29,7 @@ router.get('/', async (req, res, next) => {
       isSignedIn: req.isAuthenticated(),
       Entries: resObj[0].rows,
       Groups: resObj[1].rows,
+      _: ejsUnitConversion,
     });
   }
 });
@@ -169,6 +171,7 @@ router.post('/', async (req, res, next) => {
       } else {
         res.render('components/database-xhr-response', {
           Entries: resObj[0].rows,
+          _: ejsUnitConversion,
         });
       }
     }
@@ -210,6 +213,7 @@ router.post('/', async (req, res, next) => {
         isSignedIn: req.isAuthenticated(),
         Entries: resObj[0].rows,
         Groups: resObj[1].rows,
+        _: ejsUnitConversion,
       });
     }
   }
