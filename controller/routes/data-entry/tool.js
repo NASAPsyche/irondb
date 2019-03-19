@@ -41,6 +41,7 @@ router.post('/tables', isLoggedIn, function(req, res, next) {
     res.header('Access-Control-Allow-Headers', 'Origin, ' +
       'X-Requested-With, Content-Type, Accept');
 
+    // Debugging test for pr only, delete immediately in new branch
     req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
 
     res.render('components/table-xhr-response', {
@@ -51,7 +52,7 @@ router.post('/tables', isLoggedIn, function(req, res, next) {
 
 router.post('/validate', isLoggedIn, function(req, res, next) {
   if (req.xhr) {
-    // success
+    // Debugging test for pr only, delete immediately in new branch
     console.log('-----------req---------------------------');
     console.log(JSON.parse(req.body.tableData));
     console.log('---------Session---------------------------');
@@ -59,7 +60,7 @@ router.post('/validate', isLoggedIn, function(req, res, next) {
     if (req.body.tableData === JSON.stringify(req.session.tableJSON)) {
       console.log('JSONS MATCH');
     }
-    
+
     // success
     res.json({
       'status': 'success',
@@ -77,6 +78,18 @@ router.post('/validate', isLoggedIn, function(req, res, next) {
 });
 
 router.post('/insert', isLoggedIn, function(req, res, next) {
+  // Debugging test for pr only, delete immediately in new branch
+  console.log('-----------Req  Body---------------------');
+  console.log(req.body);
+  console.log('-----------Req---------------------------');
+  console.log(JSON.parse(req.body.tableData)[0]);
+  console.log('-----------Session-----------------------');
+  console.log(req.session.tableJSON);
+  if (JSON.stringify(JSON.parse(req.body.tableData)[0])
+  === JSON.stringify(req.session.tableJSON)) {
+    console.log('JSONS MATCH');
+  }
+
   res.send('<h1>form submitted</h1>');
 });
 

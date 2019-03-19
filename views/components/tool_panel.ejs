@@ -16,6 +16,7 @@
                 <h5 class="card-title">Insert Tab</h5>
                 <form method="POST" action="/data-entry/tool/insert" class="align-top mx-auto text-left" id="insert-form">
                     <%- include('insert_form'); %>
+                    <input type="hidden" name="tableData" value="" id="table-data-input">
                 </form>
             </div>
             <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">

@@ -810,6 +810,15 @@ $( '#event-div' ).on('submit', '#insert-form', function(event) {
 
   // Submit if checks pass
   if (allValid === true) {
+    // serialize all tables
+    const tables = [];
+    const tableObjects = $('#table-target').children('div.table-div');
+    $.each( tableObjects, function(tableIndex, table) {
+      const rows = $(table).children('table').children('tbody').children();
+      tables.push(serializeTable(rows));
+    });
+    $('#table-data-input').attr('value', JSON.stringify(tables));
+
     return; // submit
   } else {
     event.preventDefault(); // prevent submission
