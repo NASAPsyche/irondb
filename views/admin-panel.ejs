@@ -16,37 +16,64 @@
   </div>
 
   <div class='container'>
+
+    <!-- Row 1 -->
     <div class="row">
+      <!-- Col 1-->
       <div class="card col-md mr-2 pt-2">
         <h3> Manage Database</h3>
       </div>
-      <div class="card col-md ml-2 pt-2">
-        <h3> Manage Users</h3>
-        <table class='table table-bordered table-hover'>
-          <thead class="thead-dark">
-            <tr>
-              <th>ID</th>
-              <th>Username</th>
-              <th>Role</th>
-            </tr>
-          </thead>
-          <tbody class='table-light'>
-            <tr>
-              <td>1</td>
-              <td>user1</td>
-              <td>admin</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>user2</td>
-              <td>admin</td>
-            </tr>
-          </tbody>
-        </table>
 
+      <!-- Col 2-->
+      <div class="card col-md ml-2 pt-2">
+        <div>
+          <a class="btn btn-danger btn-large p-2 text-warning " href="../users" role="button"> <u>Manage
+              Users</u>
+            <span class="h1 badge badge-light">
+              <% let uCount = userCount <= 3 ? userCount : "3+" %>
+              <%= userCount %></span>
+          </a>
+        </div>
+        <div>
+          <table class="table table-stripd table-bordered">
+            <thead class="thead-dark">
+              <tr>
+                <th>User Id</th>
+                <th>Username</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody class='table-light'>
+              <% let user = (Users.length < 3 ? Users.length : 3) %>
+              <% for(var i=0; i < user; i++) { %>
+              <tr>
+                <th>
+                  <%= Users[i].user_id %>
+                </th>
+                <th>
+                  <%= Users[i].username %>
+                </th>
+                <th>
+                  <%= Users[i].role_of %>
+                </th>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+        <% if (userCount > 3) { %>
+        <div class="text-right">
+          <a class="btn btn-danger btn-sm p-2 text-warning " href="../users" role="button"> <u>More Users
+            </u>
+          </a>
+        </div>
+        <% } %>
       </div>
     </div>
-    <div class="row">
+
+    <!--Row 2 -->
+    <div class="row mt-2 mb-4">
+      <!--Col 1-->
       <div class="card col-md mr-2 mt-2 pt-2">
         <div>
           <a class="btn btn-danger btn-large p-2 text-warning " href="../database/unapproved" role="button"> <u>Approval
@@ -57,7 +84,7 @@
           </a>
         </div>
         <div>
-          <table class="table table-stripd table-bordered table-hover">
+          <table class="table table-stripd table-bordered">
             <thead class="thead-dark">
               <tr>
                 <th>Body</th>
@@ -89,13 +116,16 @@
         </div>
         <% if (pendingCount > 3) { %>
         <div class="text-right">
-          <a class="btn btn-danger btn-sm p-2 text-warning " href="../database/unapproved" role="button"> <u>View More
+          <a class="btn btn-danger btn-sm p-2 text-warning " href="../database/unapproved" role="button"> <u>View
+              More
               Entries
             </u>
           </a>
         </div>
         <% } %>
       </div>
+
+      <!--Col 2-->
       <div class="card col-md ml-2 mt-2 pt-2">
         <div>
           <a class="btn btn-danger btn-large p-2 text-warning " href="../database/reported" role="button"><u>Reported
@@ -106,7 +136,7 @@
           </a>
         </div>
         <div>
-          <table class="table table-stripd table-bordered table-hover">
+          <table class="table table-stripd table-bordered">
             <thead class="thead-dark">
               <tr>
                 <th>Body</th>
