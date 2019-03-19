@@ -13,6 +13,15 @@
       <%- include('components/navbar'); %>
     <% } %>
 
+
+
+
+
+
+
+
+
+
     <div class="container-fluid pt-3 ml-3">
       <div class="row">
         <nav aria-label="breadcrumb">
@@ -64,7 +73,7 @@
             <th>Authors</th>
             <th>Pg.#</th> 
             <th>Journal</th> 
-            <th>Issue</th>
+            <th>Volume</th>
             <th>Year Published</th> 
           </tr>
         </thead>
@@ -161,7 +170,7 @@
               <th class="data authors"><%= Entries[i].authors %></th>
               <th class="data page_number"><%= Entries[i].page_number %></th> 
               <th class="data journal_name"><%= Entries[i].journal_name %></th> 
-              <th class="data issue_number"><%= Entries[i].issue_number %></th>
+              <th class="data volume"><%= Entries[i].volume %></th>
               <th class="data published_year"><%= Entries[i].published_year %></th> 
             </tr>
           <% } %>
