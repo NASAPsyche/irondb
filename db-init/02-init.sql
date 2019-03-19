@@ -17,6 +17,7 @@ CREATE VIEW elements_active AS (
   t1.paper_id,
   t1.page_number,
   t1.ppb_mean,
+  t1.sigfig,
   t1.deviation,
   t1.less_than,
   t1.original_unit,
