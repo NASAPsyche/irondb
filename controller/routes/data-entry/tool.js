@@ -31,15 +31,17 @@ router.post('/tables', isLoggedIn, function(req, res, next) {
     args: [JSON.stringify(req.body)],
   };
   // const result = '';
-  console.log(JSON.stringify(req.body));
+  // console.log(JSON.stringify(req.body));
   PythonShell.run('table_driver_single.py', options, function(err, results) {
     if (err) throw err;
     // results is an array consisting of messages collected during execution
-    console.log('results: %j', results);
+    // console.log('results: %j', results);
 
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, ' +
       'X-Requested-With, Content-Type, Accept');
+
+    req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
 
     res.render('components/table-xhr-response', {
       Results: JSON.parse(results[0].slice(2, -2)),
@@ -50,6 +52,15 @@ router.post('/tables', isLoggedIn, function(req, res, next) {
 router.post('/validate', isLoggedIn, function(req, res, next) {
   if (req.xhr) {
     // success
+    console.log('-----------req---------------------------');
+    console.log(JSON.parse(req.body.tableData));
+    console.log('---------Session---------------------------');
+    console.log(req.session.tableJSON);
+    if (req.body.tableData === JSON.stringify(req.session.tableJSON)) {
+      console.log('JSONS MATCH');
+    }
+    
+    // success
     res.json({
       'status': 'success',
     });
@@ -57,7 +68,7 @@ router.post('/validate', isLoggedIn, function(req, res, next) {
     // res.json({
     //   'status': 'invalid',
     // col, row
-    //   'malformed': ['2,3','4,5'],
+    //   'malformed': ['2,3','4,5'], format tbd?
     // });
   } else {
     // Bad request

@@ -1,3 +1,10 @@
+// Some functions inline on template to avoid import issues.
+// This file used on all editor templates
+/* eslint-disable no-invalid-this */
+/** ----------------------------- */
+/**         Tool Specific         */
+/** ----------------------------- */
+
 // Render pdf
 $('document').ready(function() {
   const fp = $( '#filepath' ).attr('value');
@@ -27,9 +34,51 @@ $( '#event-div' ).on('submit', '#single-page-form', function( event ) {
   });
 });
 
-// Some functions inline on template to avoid import issues.
-// This file used on all editor templates
-/* eslint-disable no-invalid-this */
+$( '#event-div' ).on('click', 'button.table-validate', function() {
+  // Serialize table
+  const rows = $(this).parent().siblings('table').children('tbody').children();
+  const tableData = serializeTable(rows);
+
+  // console.log('~~~~~~~ Table Data ~~~~~~~~');
+  // console.log(JSON.stringify(tableData));
+
+  const postData = {
+    'tableData': JSON.stringify(tableData),
+  };
+
+  // Call Post Request for validation with table data
+  $.post('/data-entry/tool/validate', postData, function( data ) {
+    console.log(data);
+  });
+});
+
+$( '#event-div' ).on('click', 'button.table-edit', function() {
+  console.log('clicked edit');
+});
+
+/**
+ * @param  {object} rows JQuery collection of rows
+ * @return {json} json serialization of table
+ */
+function serializeTable(rows) {
+  // Serialize table
+  const tableData = {};
+  $.each( rows, function(rowIndex, value) {
+    $.each( $(this).children(), function(columnIndex, value) {
+      if (tableData.hasOwnProperty(columnIndex.toString()) === false) {
+        tableData[columnIndex] = {};
+      }
+
+      // Set cell equal to it's value or null if empty
+      tableData[columnIndex][rowIndex] = $(value)
+          .children('input').attr('value') === '' ? null : $(value)
+              .children('input').attr('value');
+    });
+  });
+  return tableData;
+}
+
+
 /** ---------------------------- */
 /**     Remove Hover Toggle      */
 /** ---------------------------- */

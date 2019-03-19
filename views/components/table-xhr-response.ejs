@@ -1,65 +1,36 @@
-
-<p>
-    <p>test</p>
-
-    <% console.log(Results) %>
+<div class="mt-3">
+    <h4 class="table-label">Table</h4>
+    <div class="mb-3">
+        <button type="button" class="btn btn-primary btn-sm table-validate">Validate</button>
+        <button type="button" class="btn btn-primary btn-sm table-edit">Edit</button>
+    </div>
 
     <% var rowCount  = Object.keys(Results[0]).length; %>
     <% var columnCount = Object.keys(Results).length; %>
+
+    <div class="embedded-values">
+        <!-- Emmbedding row and column lengths -->
+        <p class="row-count" hidden="true"><%= rowCount %></p>
+        <p class="col-count" hidden="true"><%= columnCount %></p>
+    </div>
     
     <table class="table table-sm table-responsive">
-    <% for(let i=0; i < rowCount; i++) { %>
+        <tbody>
+            <% for(let i=0; i < rowCount; i++) { %>
 
-        <tr>
-        <% for(let j=0; j < columnCount; j++) { %>
+                <tr>
+                <% for(let j=0; j < columnCount; j++) { %>
 
-            <% if (Results[j][i] === null) { %>
-                <th><input type="text" value=""></th>
-            <% } else { %>
-                <th><input type="text" value="<%= Results[j][i] %>"></th>
+                    <% if (Results[j][i] === null) { %>
+                        <th><input type="text" value=""></th>
+                    <% } else { %>
+                        <th><input type="text" value="<%= Results[j][i] %>"></th>
+                    <% } %>
+                <% } %>
+                </tr>
+
             <% } %>
-        <% } %>
-        </tr>
-
-    <% } %>
+        </tbody>
     </table>
 
-</p>
-
-<div>
-    <div>
-        <button type="button" class="btn btn-primary btn-sm">Validate</button>
-        <button type="button" class="btn btn-primary btn-sm">Edit</button>
-    </div>
 </div>
-
-
-<!-- <table class="table table-sm">
-<thead>
-<tr>
-<th scope="col">#</th>
-<th scope="col">First</th>
-<th scope="col">Last</th>
-<th scope="col">Handle</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th scope="row">1</th>
-<td>Mark</td>
-<td>Otto</td>
-<td>@mdo</td>
-</tr>
-<tr>
-<th scope="row">2</th>
-<td>Jacob</td>
-<td>Thornton</td>
-<td>@fat</td>
-</tr>
-<tr>
-<th scope="row">3</th>
-<td colspan="2">Larry the Bird</td>
-<td>@twitter</td>
-</tr>
-</tbody>
-</table> -->
