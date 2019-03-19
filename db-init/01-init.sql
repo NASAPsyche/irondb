@@ -13,6 +13,8 @@ CREATE TYPE statuses AS ENUM('pending', 'rejected', 'active', 'historical');
 CREATE TYPE units AS ENUM ('wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g');
 CREATE TYPE mz AS (
   nomenclature      text,
+  the_group         text,
+  classification    text,
   element_symbol    text,
   less_than         boolean,
   ppb_mean          integer,
@@ -22,6 +24,46 @@ CREATE TYPE mz AS (
   technique         text,
   page_number       integer
 );
+
+------------------------
+--  Python Functions  --
+------------------------
+
+CREATE OR REPLACE FUNCTION getMz(
+  nomenclature text,
+  the_group text,
+  classification text,
+  element_symbol text,
+  less_than boolean,
+  ppb_mean integer,
+  sigfig integer,
+  deviation integer,
+  original_unit units,
+  technique text,
+  page_number integer
+)
+RETURNS mz 
+AS $$
+  _group = ''
+  _class = ''
+  if (the_group is not None):
+    _group = the_group
+  if (classification is not None):
+    _class = classification
+  return (
+    nomenclature,
+    _group,
+    _class,
+    element_symbol, 
+    less_than, 
+    ppb_mean, 
+    sigfig, 
+    deviation, 
+    original_unit, 
+    technique, 
+    page_number
+  )
+$$ LANGUAGE plpythonu;
 
 -------------------
 -- Define tables --
