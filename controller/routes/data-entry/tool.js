@@ -30,21 +30,21 @@ router.post('/tables', isLoggedIn, function(req, res, next) {
     scriptPath: sPath,
     args: [JSON.stringify(req.body)],
   };
-  let result = '';
+  // const result = '';
   console.log(JSON.stringify(req.body));
   PythonShell.run('table_driver_single.py', options, function(err, results) {
     if (err) throw err;
     // results is an array consisting of messages collected during execution
     console.log('results: %j', results);
 
-    result = results;
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, ' +
       'X-Requested-With, Content-Type, Accept');
-    console.log(result);
-    res.send(result[0]);
+
+    res.render('components/table-xhr-response', {
+      Results: JSON.parse(results[0].slice(2, -2)),
+    });
   });
-  // res.send(req.body);
 });
 
 router.post('/validate', isLoggedIn, function(req, res, next) {

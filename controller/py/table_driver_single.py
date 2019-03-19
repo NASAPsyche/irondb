@@ -48,7 +48,6 @@ elif taskNum == 1:
     tables_rec_from_pages = target_coords()
 
 for ind in range(len(tables_rec_from_pages)):
-    tables_rec_from_pages[ind] = json.loads(tables_rec_from_pages[ind].to_json())
-
+    tables_rec_from_pages[ind] = tables_rec_from_pages[ind].to_json()
 
 print(tables_rec_from_pages)

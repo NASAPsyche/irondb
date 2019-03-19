@@ -17,6 +17,16 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
   });
 });
 
+// Table button ajax post
+$( '#event-div' ).on('submit', '#single-page-form', function( event ) {
+  event.preventDefault();
+  // eslint-disable-next-line no-invalid-this
+  $.post('/data-entry/tool/tables', $(this).serialize(), function( data ) {
+    $('#table-target').append(data);
+    $('#tableModal').modal('hide');
+  });
+});
+
 // Some functions inline on template to avoid import issues.
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
