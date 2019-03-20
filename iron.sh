@@ -226,7 +226,7 @@ function populate_mock_data ()
 ### BEGIN ###
 
 # Read in the options and perform the tasks
-while getopts ":hilpjqafsxbrmw " opt; do
+while getopts ":hilpjqafsxbrm " opt; do
   case ${opt} in
     h )
       show_help
@@ -238,13 +238,6 @@ while getopts ":hilpjqafsxbrmw " opt; do
       install_node_deps
       rm_db
       build_containers
-      start_detached
-      ;;
-    w ) #initial install
-      stop_containers
-      install_global_deps
-      install_node_deps
-      rm_db
       start_detached
       ;;
     l ) #launch
