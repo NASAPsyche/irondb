@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Help</title>
     <%- include('bootstrap/css'); %>
     <link rel='stylesheet' href='/stylesheets/index.css' />
     <link rel='stylesheet' href='/stylesheets/help.css' />
-  </head>
-  <body>
+</head>
+
+<body>
     <% if(isSignedIn){ %>
-        <%- include('components/navbar_signed_in'); %>
+    <%- include('components/navbar_signed_in'); %>
     <% } else { %>
-        <%- include('components/navbar'); %>
+    <%- include('components/navbar'); %>
     <% } %>
 
-  	<div class="container-fluid pt-3 pb-4" id="top-container">
-      <div class="row">
-        <div class="col-md-8 pt-4 ml-5">
-          <div class="row">
-            <div >
-              <h1>Documentation</h1>
+    <div class="container-fluid pt-3 pb-4" id="top-container">
+        <div class="row">
+            <div class="col-md-8 pt-4 ml-5">
+                <div class="row">
+                    <div>
+                        <h1>Documentation</h1>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-  	</div>
+    </div>
 
     <div class="container-fluid pt-3" id="bottom-container">
         <div>
             <div class="row">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
-                <h5> 
-                Welcome to the Iron Meteorite Database, a part of <a href="https://psyche.asu.edu/">
-                Arizona State University's project Psyche</a>. This is the premiere database for curated 
-                information on iron meteorites. We strive to have the most complete and most accurate collection 
-                of data by using a mixture of natural language processing and traditional data entry.
-                </h5>
+                    <h5>
+                        Welcome to the Iron Meteorite Database, a part of <a href="https://psyche.asu.edu/">
+                            Arizona State University's project Psyche</a>. This is the premiere database for curated
+                        information on iron meteorites. We strive to have the most complete and most accurate
+                        collection
+                        of data by using a mixture of natural language processing and traditional data entry.
+                    </h5>
                 </div>
                 <div class="col-sm-1"></div>
             </div>
@@ -45,11 +48,13 @@
                 <div class="col-sm-10">
                     <hr>
                     <center>
-                    <a href="#search">Search</a>&nbsp;&nbsp;&nbsp;
-                    <a href="#exportData">Export Data</a>&nbsp;&nbsp;&nbsp;
-                    <a href="#dataEntry">Data Entry</a>&nbsp;&nbsp;&nbsp;
-                    <a href="#reportError">Report an Error</a>&nbsp;&nbsp;&nbsp;
-                    <a href="#registration">Registration</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#search">Search</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#exportData">Export Data</a>&nbsp;&nbsp;&nbsp;
+                        <% if(isSignedIn){ %>
+                        <a href="#dataEntry">Data Entry</a>&nbsp;&nbsp;&nbsp;
+                        <a href="#reportError">Report an Error</a>&nbsp;&nbsp;&nbsp;
+                        <% } %>
+                        <a href="#registration">Registration</a>&nbsp;&nbsp;&nbsp;
                     </center>
                     <hr>
                 </div>
@@ -59,12 +64,12 @@
             <a id="search"></a><br><br>
             <div class="row">
                 <div class="col-sm-1"></div>
-                <div class="col-sm-10" >
+                <div class="col-sm-10">
                     <h3 class="section-head">Search</h3>
                     <p>
-                        If you know the name of the meteorite you are searching for, 
-                        or you know the name of the paper or author you are looking for, 
-                        you can search for this on the landing page. For more advanced searches, 
+                        If you know the name of the meteorite you are searching for,
+                        or you know the name of the paper or author you are looking for,
+                        you can search for this on the landing page. For more advanced searches,
                         select "Enter the Database".
                     </p>
                     <p>
@@ -74,7 +79,7 @@
                     </p>
                     <!-- TODO: Add information about advanced search. BLOCKING: not yet designed -->
                     <p>
-                        For advanced search, ... 
+                        For advanced search, ...
                     </p>
                 </div>
                 <div class="col-sm-1"></div>
@@ -82,15 +87,16 @@
 
             <a id="exportData"></a><br><br>
             <div class="row">
-                    <div class="col-sm-1"></div>
-                    <div class="col-sm-10">
-                        <h3 class="section-head">Export Data</h3>
-                        <p>... how to export data</p>
-                        <!-- TODO: Add information about exporting data. BLOCKING: feature not implemented -->
-                    </div>
-                    <div class="col-sm-1"></div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-10">
+                    <h3 class="section-head">Export Data</h3>
+                    <p>... how to export data</p>
+                    <!-- TODO: Add information about exporting data. BLOCKING: feature not implemented -->
+                </div>
+                <div class="col-sm-1"></div>
             </div>
 
+            <% if(isSignedIn){ %>
             <a id="dataEntry"></a><br><br>
             <div class="row">
                 <div class="col-sm-1"></div>
@@ -98,26 +104,26 @@
                     <h3 class="section-head">Data Entry</h3>
                     <p>
                         <!-- TODO: add link for request page. BLOCKER: not implemented -->
-                        Data entry is restricted to preapproved users. To request an invitiation, 
-                        go to <a href="/">request page</a>. If you are an approved user, log in and 
+                        Data entry is restricted to preapproved users. To request an invitiation,
+                        go to <a href="/">request page</a>. If you are an approved user, log in and
                         go to the <a href="/data-entry">data entry page</a>.
-                     </p>
-                     <p>
-                         If you would like to use the automated tools to extract information from
-                         the paper, select "Automated Tool" and choose the PDF to upload. If you
-                         do not want to use the automated tools, you may choose to upload a PDF to
-                         work off of, or you may choose to do so later.
-                     </p>
-                     <p>
-                         <center>
-                             <img src="/images/help/dataentry1.png" alt="select entry method">
-                         </center>
-                     </p>
-                     <p>
-                         If you chose not to upload a PDF, you can do so at any time by selecting
-                         "Upload PDF".
-                     </p>
-                     <p>
+                    </p>
+                    <p>
+                        If you would like to use the automated tools to extract information from
+                        the paper, select "Automated Tool" and choose the PDF to upload. If you
+                        do not want to use the automated tools, you may choose to upload a PDF to
+                        work off of, or you may choose to do so later.
+                    </p>
+                    <p>
+                        <center>
+                            <img src="/images/help/dataentry1.png" alt="select entry method">
+                        </center>
+                    </p>
+                    <p>
+                        If you chose not to upload a PDF, you can do so at any time by selecting
+                        "Upload PDF".
+                    </p>
+                    <p>
                         <center>
                             <img src="/images/help/dataentry2.png" alt="select entry method">
                         </center>
@@ -143,7 +149,9 @@
                 </div>
                 <div class="col-sm-1"></div>
             </div>
+            <% } %>
 
+            <% if(isSignedIn){ %>
             <a id="reportError"></a><br><br>
             <div class="row">
                 <div class="col-sm-1"></div>
@@ -153,6 +161,7 @@
                 </div>
                 <div class="col-sm-1"></div>
             </div>
+            <% } %>
 
             <a id="registration"></a><br><br>
             <div class="row">
@@ -160,7 +169,7 @@
                 <div class="col-sm-10">
                     <h3 class="section-head">Registration</h3>
                     <p>
-                        To register a user, go to the <a href="/register">registration page</a> 
+                        To register a user, go to the <a href="/register">registration page</a>
                         and enter a user name and password.
                     </p>
                     <p>
@@ -186,5 +195,6 @@
         </div>
     </div>
     <%- include('bootstrap/js'); %>
-  </body>
+</body>
+
 </html>
