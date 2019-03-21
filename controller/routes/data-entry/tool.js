@@ -12,8 +12,21 @@ router.post('/', isLoggedIn, function(req, res, next) {
   // Probably where you'd want the get for basic data used elsewhere
   // AJAX call from submit on tool flow checklist
 
+  const options = {
+    mode: 'text',
+    // pythonPath: '../py',
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: sPath,
+    args: [JSON.stringify(req.body)],
+  };
+  // const result = '';
+  // console.log(JSON.stringify(req.body));
+  PythonShell.run('pdf_text_import.py', options, function(err, result) {
+    if (err) throw err;
+    req.session.textHolder = result;
+    res.render('components/tool_panel');
+  });
   console.log(req.body);
-  res.render('components/tool_panel');
 });
 
 router.get('/tables', isLoggedIn, function(req, res, next) {
