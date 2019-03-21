@@ -36,7 +36,9 @@
                     <div class="card-body tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
                             <h5 class="card-title">Insert Tab</h5>
-                            <%- include('components/insert_form'); %>
+                            <form method="POST" action="/data-entry/insert" class="align-top mx-auto text-left" id="insert-form">
+                                <%- include('components/insert_form'); %>
+                            </form>
                         </div>
                         <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
                             <h5 class="card-title">Table Tab</h5>

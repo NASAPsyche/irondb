@@ -632,6 +632,82 @@ CREATE VIEW full_attributions_flagged AS (
     INNER JOIN flagged_aggregated_authors_by_paper_id AS t2 ON t1.paper_id = t2.paper_id
 );
 
+CREATE VIEW authors_all AS (
+  SELECT t1.author_id,
+    t1.first_name || ' ' || t1.middle_name || ' ' || t1.primary_name as author_name,
+    t1.single_entity
+    FROM authors as t1 
+    INNER JOIN author_status as t2 on t1.status_id = t2.status_id 
+);
+
+CREATE VIEW attributions_all AS (
+  SELECT t1.attribution_id,
+  t1.paper_id,
+  t1.author_id
+  FROM attributions as t1
+  INNER JOIN attribution_status as t2 on t1.status_id = t2.status_id
+);
+
+
+CREATE VIEW journals_all AS (
+  SELECT t1.journal_id,
+  t1.journal_name,
+  t1.volume,
+  t1.issue,
+  t1.series,
+  t1.published_year
+  FROM journals as t1
+  INNER JOIN journal_status as t2 on t1.status_id = t2.status_id
+);
+
+CREATE VIEW papers_all AS (
+  SELECT t1.paper_id,
+  t1.journal_id,
+  t1.title,
+  t1.doi,
+  t2.current_status
+  FROM papers as t1
+  INNER JOIN paper_status as t2 on t1.status_id = t2.status_id
+);
+
+CREATE VIEW full_attributions_all AS (
+  SELECT t1.journal_id,
+  t1.journal_name,
+  t1.volume,
+  t1.issue,
+  t1.series,
+  t1.published_year,
+  t2.paper_id,
+  t2.title,
+  t2.doi,
+  t2.current_status,
+  t3.author_id,
+  t4.author_name,
+  t4.single_entity
+  FROM journals_all as t1 
+  INNER JOIN papers_all as t2 on t1.journal_id = t2.journal_id
+  INNER JOIN attributions_all as t3 on t2.paper_id = t3.paper_id
+  INNER JOIN authors_all as t4 on t3.author_id = t4.author_id
+);
+
+CREATE VIEW all_aggregated_authors_by_paper_id AS (
+  SELECT string_agg(t1.author_name, ', ') AS authors, 
+  t2.paper_id FROM authors_all AS t1
+  INNER JOIN attributions_all AS t2 ON t1.author_id = t2.author_id
+  GROUP BY paper_id
+);
+
+CREATE VIEW all_papers_with_authors AS (
+ SELECT DISTINCT  t1.paper_id,
+   t1.title,
+   t1.published_year,
+   t2.authors,
+   t1.current_status
+   FROM full_attributions_all as t1
+   INNER JOIN all_aggregated_authors_by_paper_id as t2 on t1.paper_id = t2.paper_id
+   ORDER BY t1.current_status ASC
+);
+
 
 -- aggregates the measures as an array of strings representing csv
 -- CREATE VIEW agg_full_mz AS (
@@ -845,3 +921,4 @@ CREATE VIEW monolith_paper_pending as (
     t4.series,
     t4.published_year
 );
+
