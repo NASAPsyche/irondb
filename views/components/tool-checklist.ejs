@@ -1,0 +1,26 @@
+<form method="POST" action="/data-entry/tool" class="border border-dark bg mx-auto p-3 pl-5" id="checklist-form">
+    <h3 class="pb-1 align-items-center">Options</h3>
+    <div class="form-group">
+        <input class="form-check-input" type="checkbox" name="journal" id="journal">
+        <label class="form-check-label" for="journal">Journal Information</label>
+    </div>
+    <div class="form-group">
+        <input class="form-check-input" type="checkbox" name="paper" id="paper">
+        <label class="form-check-label" for="paper">Paper Information</label>
+    </div>
+    <div class="form-group">
+        <input class="form-check-input" type="checkbox" name="authors" id="authors">
+        <label class="form-check-label" for="authors">Author(s)</label>
+    </div>
+    <div class="form-group">
+        <input class="form-check-input" type="checkbox" name="technique" id="technique">
+        <label class="form-check-label" for="technique">Analysis Technique</label>
+    </div>
+
+    <hr class="text-danger mt-1">
+    <div class="form-group">
+        <input class="form-check-input" type="checkbox" name="tables" id="tables">
+        <label class="form-check-label" for="tables">Table Data</label>
+    </div>
+    <button type="submit" class="btn btn-secondary float-right ml-3 mt-3">Submit</button>
+</form>
