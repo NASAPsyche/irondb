@@ -169,6 +169,14 @@ function delete_containers ()
   esac
 }
 
+# Remove the dangly bits
+function removeDangles ()
+{
+  echo "Remove dangling images and volumes if any exist"
+  docker images -aq -f 'dangling=true' | xargs docker rmi
+  docker volume ls -q -f 'dangling=true' | xargs docker volume rm
+}
+
 # Make a backup of the db to irondb/backup-pg/pg_timestamp.sql
 function make_backup ()
 {
@@ -199,6 +207,7 @@ function populate_mock_data ()
   then 
     pip install psycopg2-binary
   fi
+
   echo "Waiting for the containers to initialize"
   # Check that pg is available from logs of call to wait-for-it.sh
   COUNTER=0
@@ -351,6 +360,7 @@ while getopts ":hilpjqafsxbrm " opt; do
       install_global_deps
       install_node_deps
       rm_db
+      removeDangles
       build_containers
       start_detached
       ;;
@@ -362,11 +372,12 @@ while getopts ":hilpjqafsxbrm " opt; do
     p ) #launch with fresh postgres init
       stop_containers
       rm_db
+      removeDangles
       install_node_deps
       start_detached
       # populate_mock_data
       ;;
-    j ) #launch with fresh postgres init
+    j ) #launch with fresh postgres init and none of the extra staging
       stop_containers
       rm_db
       start_attached
@@ -384,6 +395,7 @@ while getopts ":hilpjqafsxbrm " opt; do
       stop_containers
       install_node_deps
       rm_db
+      removeDangles
       build_containers
       start_detached
       ;;
