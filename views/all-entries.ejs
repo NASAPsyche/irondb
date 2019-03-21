@@ -12,7 +12,7 @@
     <%- include('components/navbar_signed_in'); %>
 
     <div class='container card mt-5 mb-2 pt-3'>
-        <h1>All Entries</h1>
+        <h1>All Papers</h1>
 
         <table class="table table-bordered">
             <thead class="thead-dark">
@@ -25,22 +25,24 @@
                 </tr>
             </thead>
             <tbody class='table-light'>
+                <% for(var i=0; i < Entries.length; i++) { %>
                 <tr>
-                    <td>
-                        1
-                    </td>
-                    <td>
-                        Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends
-                    </td>
-                    <td>
-                        1990
-                    </td>
-                    <td>
-                        John T. Wasson
-                    </td>
-                    <td>
-                        Active
-                    </td>
+                    <th>
+                        <%= Entries[i].paper_id %>
+                    </th>
+                    <th>
+                        <%= Entries[i].title %>
+                    </th>
+                    <th>
+                        <%= Entries[i].published_year %>
+                    </th>
+                    <th>
+                        <%= Entries[i].authors %>
+                    </th>
+                    <th>
+                        <%= Entries[i].current_status %>
+                    </th>
+                    <% } %>
                 </tr>
             </tbody>
         </table>
