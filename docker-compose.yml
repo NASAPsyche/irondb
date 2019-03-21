@@ -17,9 +17,10 @@ services:
     command: ["./wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
 
   pgdb:
+    build: './docker/postgres'
     container_name: postgres
     restart: always
-    image: postgres:11.0-alpine
+    # image: postgres:11.0-alpine
     volumes:
       - ./db-init:/docker-entrypoint-initdb.d/
       - ./pg-data:/var/lib/postgresql/data

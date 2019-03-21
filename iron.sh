@@ -219,7 +219,7 @@ function populate_mock_data ()
 ### BEGIN ###
 
 # Read in the options and perform the tasks
-while getopts ":hilpqafsxbrm " opt; do
+while getopts ":hilpjqafsxbrm " opt; do
   case ${opt} in
     h )
       show_help
@@ -243,6 +243,12 @@ while getopts ":hilpqafsxbrm " opt; do
       rm_db
       install_node_deps
       start_detached
+      # populate_mock_data
+      ;;
+    j ) #launch with fresh postgres init
+      stop_containers
+      rm_db
+      start_attached
       # populate_mock_data
       ;;
     q ) #quick launch
