@@ -921,4 +921,3 @@ CREATE VIEW monolith_paper_pending as (
     t4.series,
     t4.published_year
 );
-
