@@ -200,53 +200,141 @@ function populate_mock_data ()
     pip install psycopg2-binary
   fi
   echo "Waiting for the containers to initialize"
-  # Check that pg is available from logs call to wait-for-it.sh
+  # Check that pg is available from logs of call to wait-for-it.sh
   COUNTER=0
   PGACK="$(docker-compose logs  | grep "is available after")"
   while [[ "$PGACK" = "$NORESP" ]]
   do
     echo -n "."
-    sleep 1
+    sleep 2
     PGACK="$(docker-compose logs  | grep "is available after")"
     COUNTER=$((COUNTER + 1))
-    if [[ "$COUNTER" -ge 45 ]]
+    if [[ "$COUNTER" -ge 30 ]]
     then
+      echo ""
       echo "This operation timed out. Make sure that Postgres is running and try again."
       echo "If you are certain that the containers are running correctly, then run the following command:"
       echo ""
       echo "node docker/mock-users.js && python docker/mock-user-info.py "
-      exit 1;
+      exit 1
     fi
   done
-  # Wait a few seconds to see if a node failure occurs after standup
-  # There is no immediately good solution to avoid an arbitrary wait time
-  # as the success scenario is silent.
-  echo "Postgres is available, waiting for node to return an exit code"
-  COUNTER=0
-  PGACK="$(docker-compose logs  | grep "exited with code 1")"
-  while [[ "$PGACK" = "$NORESP"  ]]
-  do
-    echo -n "."
-    sleep 1
-    PGACK="$(docker-compose logs  | grep "exited with code 1")"
-    COUNTER=$((COUNTER + 1))
-    if [[ "$COUNTER" -ge 10 ]]
-    then
-      break
-    fi
-  done
-  # We have waited, if we get a bad response code then inform users and fail
+
+  # Now that postgres is available, check for anything that delays ready status
+  # Check for 'received fast shutdown request' and wait a bit if found
+  echo " postgres is available, checking for full startup"
+  PGACK="$(docker-compose logs  | grep "received fast shutdown request")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    echo "Node has failed, run `docker-compose logs` for more information"
+    for i in {1..3}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+  # Check postgres for any abnormal exits and wait a bit if found
+  PGACK="$(docker-compose logs  | grep "exited with exit code 1")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..5}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+  # Check for incomplete startup packet and wait a bit if found
+  PGACK="$(docker-compose logs  | grep "incomplete startup packet")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..5}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+
+  PGACK="$(docker-compose logs  | grep "FATAL:  the database system is starting up")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..5}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+
+  PGACK="$(docker-compose logs  | grep "database system was not properly shut down; automatic recovery in progress")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..5}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+  # Check for postgres making corrections
+  PGACK="$(docker-compose logs  | grep "redo starts at")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    PGACK="$(docker-compose logs  | grep "redo done")"
+    COUNTER=0
+    while [[ "$PGACK" = "$NORESP" ]]
+    do
+      echo -n "."
+      sleep 2
+      COUNTER=$((COUNTER + 1))
+      PGACK="$(docker-compose logs  | grep "redo done")"
+      if [[ "$COUNTER" -ge 5 ]]
+      then
+        break
+      fi
+    done
+  fi
+  # Check for a relation error, this is bad, something wasn't initialized correctly
+  PGACK="$(docker-compose logs  | grep "does not exist at character")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    echo " there was a call to a non-existant relation, exiting"
     exit 1
   fi
-  echo "Node appears to be running..."
-  echo "Populating mock data"
-  echo "Adding users"
+  
+
+  echo " checking Node server for availability"
+  COUNTER=0
+  RES="$(curl --write-out %{http_code} --silent --output /dev/null localhost:3001)"
+  GOODRES="200"
+  BADFIVEHUNDRED="500"
+  echo -n "Response code: $RES"
+  while [[ "$RES" != "$GOODRES" ]]
+  do
+    if [[ "$RES" = "$BADFIVEHUNDRED" ]]
+    then
+      echo "Internal server error, exiting"
+      exit 1
+    fi
+    sleep 5
+    echo -n " $RES"
+    RES="$(curl --write-out %{http_code} --silent --output /dev/null localhost:3001)"
+    COUNTER=$((COUNTER + 1))
+    if [[ "$COUNTER" -ge 12 ]]
+    then
+      echo ""
+      echo "Node is not responding on the local network."
+      echo "Run the following command for more information:"
+      echo ""
+      echo "      docker-compose logs -f -t"
+      echo ""
+      exit 1
+    fi
+  done
+  echo ""
+  echo "Node appears to be running"
+
+  echo " "
+  echo "Adding mock users"
   node docker/mock-users.js 
-  echo "Adding user info"
   python docker/mock-user-info.py 
+  exit 0
 }
 
 ### BEGIN ###
