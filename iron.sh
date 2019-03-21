@@ -67,6 +67,13 @@ function install_global_deps ()
     sudo npm install -g jest-cli
   else
     echo "running as su"
+    MYENV="$(uname -s)"
+    LINUXENV="Linux"
+    if [[ "$MYENV" == "$LINUXENV"  ]];
+    then 
+      apt update
+      apt install npm -y
+    fi
     npm install -g gulp-cli
     npm install -g jest-cli
   fi
