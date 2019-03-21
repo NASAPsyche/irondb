@@ -2,7 +2,7 @@ const createError = require('http-errors');
 const db = require('../db');
 const ejsUnitConversion = require('../utils/ejs-unit-conversion');
 const fs = require('fs');
-const {isLoggedIn} = require('../middleware/auth');
+const {isLoggedIn, isAdmin} = require('../middleware/auth');
 const json2csv = require('json2csv').parse;
 const path = require('path');
 const Router = require('express-promise-router');
@@ -411,6 +411,11 @@ router.get('/unapproved', isLoggedIn, function(req, res, next) {
           Entries: dbRes.rows,
         });
       });
+});
+
+/* GET /database/all */
+router.get('/all', isAdmin, function(req, res, next) {
+  res.render('all-entries');
 });
 
 module.exports = router;

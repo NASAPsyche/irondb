@@ -1,0 +1,36 @@
+<div class="table-div mt-3">
+    <h4 class="table-label">Table</h4>
+    <div class="mb-3">
+        <button type="button" class="btn btn-primary btn-sm table-validate">Validate</button>
+        <button type="button" class="btn btn-primary btn-sm table-edit">Edit</button>
+    </div>
+
+    <% var rowCount  = Object.keys(Results[0]).length; %>
+    <% var columnCount = Object.keys(Results).length; %>
+
+    <div class="embedded-values">
+        <!-- Emmbedding row and column lengths -->
+        <p class="row-count" hidden="true"><%= rowCount %></p>
+        <p class="col-count" hidden="true"><%= columnCount %></p>
+    </div>
+    
+    <table class="table table-sm table-responsive">
+        <tbody>
+            <% for(let i=0; i < rowCount; i++) { %>
+
+                <tr>
+                <% for(let j=0; j < columnCount; j++) { %>
+
+                    <% if (Results[j][i] === null) { %>
+                        <th><input type="text" value=""></th>
+                    <% } else { %>
+                        <th><input type="text" value="<%= Results[j][i] %>"></th>
+                    <% } %>
+                <% } %>
+                </tr>
+
+            <% } %>
+        </tbody>
+    </table>
+
+</div>
