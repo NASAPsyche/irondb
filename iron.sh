@@ -196,18 +196,9 @@ function restore_recent ()
   cd ..
 }
 
-# Populate mock data
-function populate_mock_data ()
+# Wait for containers to be available
+function wait_for_containers ()
 {
-  NORESP=""
-  PSYEXISTS="$(pip list | grep "psycopg2-binary")"
- 
-  # install psycopg2-binary if not exists
-  if [[ "$PSYEXISTS" =  "$NORESP" ]]
-  then 
-    pip install psycopg2-binary
-  fi
-
   echo "Waiting for the containers to initialize"
   # Check that pg is available from logs of call to wait-for-it.sh
   COUNTER=0
@@ -338,6 +329,21 @@ function populate_mock_data ()
   done
   echo ""
   echo "Node appears to be running"
+}
+
+# Populate mock data
+function populate_mock_data ()
+{
+  NORESP=""
+  PSYEXISTS="$(pip list | grep "psycopg2-binary")"
+ 
+  # install psycopg2-binary if not exists
+  if [[ "$PSYEXISTS" =  "$NORESP" ]]
+  then 
+    pip install psycopg2-binary
+  fi
+
+  wait_for_containers
 
   echo " "
   echo "Adding mock users"
