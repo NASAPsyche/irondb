@@ -191,35 +191,61 @@ function restore_recent ()
 # Populate mock data
 function populate_mock_data ()
 {
-  echo "Populating mock data"
-  echo "Connecting to postgres, this may take some time"
   NORESP=""
   PSYEXISTS="$(pip list | grep "psycopg2-binary")"
-  PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+ 
   # install psycopg2-binary if not exists
   if [[ "$PSYEXISTS" =  "$NORESP" ]]
   then 
     pip install psycopg2-binary
   fi
-
+  echo "Waiting for the containers to initialize"
+  # Check that pg is available from logs call to wait-for-it.sh
   COUNTER=0
+  PGACK="$(docker-compose logs  | grep "is available after")"
   while [[ "$PGACK" = "$NORESP" ]]
   do
     echo -n "."
     sleep 1
-    PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+    PGACK="$(docker-compose logs  | grep "is available after")"
     COUNTER=$((COUNTER + 1))
-    if [[ "$COUNTER" -ge 30 ]]
+    if [[ "$COUNTER" -ge 45 ]]
     then
       echo "This operation timed out. Make sure that Postgres is running and try again."
+      echo "If you are certain that the containers are running correctly, then run the following command:"
+      echo ""
+      echo "node docker/mock-users.js && python docker/mock-user-info.py "
       exit 1;
     fi
   done
-
-  echo ""
-  echo "adding users"
+  # Wait a few seconds to see if a node failure occurs after standup
+  # There is no immediately good solution to avoid an arbitrary wait time
+  # as the success scenario is silent.
+  echo "Postgres is available, waiting for node to return an exit code"
+  COUNTER=0
+  PGACK="$(docker-compose logs  | grep "exited with code 1")"
+  while [[ "$PGACK" = "$NORESP"  ]]
+  do
+    echo -n "."
+    sleep 1
+    PGACK="$(docker-compose logs  | grep "exited with code 1")"
+    COUNTER=$((COUNTER + 1))
+    if [[ "$COUNTER" -ge 10 ]]
+    then
+      break
+    fi
+  done
+  # We have waited, if we get a bad response code then inform users and fail
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    echo "Node has failed, run `docker-compose logs` for more information"
+    exit 1
+  fi
+  echo "Node appears to be running..."
+  echo "Populating mock data"
+  echo "Adding users"
   node docker/mock-users.js 
-  echo "adding user info"
+  echo "Adding user info"
   python docker/mock-user-info.py 
 }
 
