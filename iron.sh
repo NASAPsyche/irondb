@@ -170,7 +170,7 @@ function delete_containers ()
 }
 
 # Remove the dangly bits
-function removeDangles ()
+function remove_dangles ()
 {
   echo "Remove dangling images and volumes if any exist"
   docker images -aq -f 'dangling=true' | xargs docker rmi
@@ -376,7 +376,7 @@ while getopts ":hilpjqafsxbrm " opt; do
       install_global_deps
       install_node_deps
       rm_db
-      removeDangles
+      remove_dangles
       build_containers
       start_detached
       ;;
@@ -388,7 +388,7 @@ while getopts ":hilpjqafsxbrm " opt; do
     p ) #launch with fresh postgres init
       stop_containers
       rm_db
-      removeDangles
+      remove_dangles
       install_node_deps
       start_detached
       # populate_mock_data
@@ -411,7 +411,7 @@ while getopts ":hilpjqafsxbrm " opt; do
       stop_containers
       install_node_deps
       rm_db
-      removeDangles
+      remove_dangles
       build_containers
       start_detached
       ;;
