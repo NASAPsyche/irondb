@@ -72,7 +72,7 @@ function serializeTable(rows) {
       // Set cell equal to it's value or null if empty
       tableData[columnIndex][rowIndex] = $(value)
           .children('input').attr('value') === '' ? null : $(value)
-              .children('input').attr('value');
+              .children('input').val();
     });
   });
   return tableData;
