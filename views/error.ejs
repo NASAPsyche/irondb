@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Error 404</title>
-    <%- include('bootstrap/css'); %>
-  </head>
-  <body>
-    <% if(isSignedIn){ %>
-      <%- include('components/navbar_signed_in'); %>
-    <% } else { %>
-      <%- include('components/navbar'); %>
-    <% } %>
 
-  	<div class="container-fluid">
-  		<h1 class="text-danger"><%= message %></h1>
-		<h2><%= error.status %></h2>
-		<pre><%= error.stack %></pre>
-  	</div>
+<head>
+  <title>
+    <%= errcode %>
+  </title>
+  <%- include('bootstrap/css'); %>
+</head>
 
-    <%- include('bootstrap/js'); %>
-  </body>
+<body>
+  <% if(isSignedIn){ %>
+  <%- include('components/navbar_signed_in'); %>
+  <% } else { %>
+  <%- include('components/navbar'); %>
+  <% } %>
+
+  <div class="container-fluid">
+    <h1 class="text-danger">
+      <%= message %>
+    </h1>
+
+
+  </div>
+
+  <%- include('bootstrap/js'); %>
+</body>
+
 </html>
