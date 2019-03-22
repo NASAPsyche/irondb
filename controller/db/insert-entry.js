@@ -16,6 +16,7 @@ const pg = require('./index'); // postgres conx
  * @param  {Array} notes
  * @param  {string} username
  * @param  {string} status default 'pending'
+ * @return {number} 0 - normal, 1 - failure
  */
 async function insertEntry(
     journal,
@@ -396,14 +397,14 @@ async function insertEntry(
         ];
         rows = await client.query(measureStatusQuery, measureStatusValue);
 
-        const statusIdmeasure = rows.rows[0].status_id;
+        const statusIdMeasure = rows.rows[0].status_id;
         const measureUpdateQuery = `
         UPDATE element_entries
         SET status_id = ($1)
         WHERE element_id = ($2)
         `;
         const measureUpdateValue = [
-          statusIdmeasure,
+          statusIdMeasure,
           elementId,
         ];
         await client.query(measureUpdateQuery, measureUpdateValue);
@@ -453,15 +454,28 @@ async function insertEntry(
     }
     // END NOTE TRANSACTIONS
 
+    // START REMOVE TEMPORARY JSON STORE
+    {
+      const removeStoreQuery = `
+      DELETE FROM entry_store
+      WHERE entry_store.username = ($1)
+      `;
+      const removeStoreValue = [username];
+      await client.query(removeStoreQuery, removeStoreValue);
+    }
+    // END REMOVE TEMPORARY JSON STORE
+
     // COMMIT ALL TRANSACTIONS AS SINGLE TRANSACTION
     await client.query('COMMIT');
-    console.log('Insertion was successful, changes commited');
+    console.log('Insertion was successful, changes committed');
   } catch (error) {
     await client.query('ROLLBACK');
     console.log(error);
+    return 1;
   } finally {
     client.release();
   }
+  return 0;
 }
 
 module.exports = {insertEntry};
