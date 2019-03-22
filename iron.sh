@@ -214,9 +214,6 @@ function wait_for_containers ()
     then
       echo ""
       echo "This operation timed out. Make sure that Docker is running and try again."
-      echo "If you are certain that the containers are running correctly, then run the following command:"
-      echo ""
-      echo "node docker/mock-users.js && python docker/mock-user-info.py "
       exit 1
     fi
   done
