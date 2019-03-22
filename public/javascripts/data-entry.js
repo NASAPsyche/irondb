@@ -8,11 +8,32 @@ $( 'document' ).ready(function() {
 $( '#tool' ).on( 'click', function() {
   styleButtons($(this));
   setForm($(this).attr('id'));
+  console.log($('#pdf').val());
 });
 
 $( '#editor' ).on( 'click', function() {
   styleButtons($(this));
   setForm($(this).attr('id'));
+});
+
+const alertMessage = `
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Error: </strong>
+  Please upload pdf before attempting to use automated tool.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>`;
+
+
+$( '#pdf-form' ).on( 'submit', function( event ) {
+  if ($('#pdf').val() === '' && $('#tool_select').val() === 'true') {
+    event.preventDefault();
+    // alert($('#tool_select').val());
+    $('#content').prepend( alertMessage);
+  } else {
+    return;
+  }
 });
 
 
