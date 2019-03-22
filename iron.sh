@@ -319,12 +319,12 @@ function wait_for_containers ()
   do
     if [[ "$RES" = "$BADFIVEHUNDRED" ]]
     then
-      echo "Internal server error, exiting"
+      echo " Internal server error, exiting"
       exit 1
     fi
     sleep 5
-    echo -n " $RES"
     RES="$(curl --write-out %{http_code} --silent --output /dev/null localhost:3001)"
+    echo -n " $RES"
     COUNTER=$((COUNTER + 1))
     if [[ "$COUNTER" -ge 12 ]]
     then
