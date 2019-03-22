@@ -519,17 +519,17 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const classID = 'class' + classIDCount;
   const elementID = 'element' + meteoriteIDCount + '-' + elementIDCount;
   const lessThanID = 'lessThan' + meteoriteIDCount + '-' + lessThanIDCount;
-  // eslint-disable-next-line
-  const measurementID = 'measurement' + meteoriteIDCount + '-' + measurementIDCount;
+  const measurementID =
+  'measurement' + meteoriteIDCount + '-' + measurementIDCount;
   const deviationID = 'deviation' + meteoriteIDCount + '-' + deviationIDCount;
   const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const sigfigID = 'sigfig' + meteoriteIDCount + '-' + sigfigIDCount;
   const convertedMeasurementID =
-    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  'convertedMeasurement' + meteoriteIDCount + '-' + convertedMeasurementIDCount;
   const convertedDeviationID =
-    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
+  'convertedDeviation' + meteoriteIDCount + '-' + convertedDeviationIDCount;
 
 
   // Assign IDs
