@@ -26,7 +26,7 @@ router.post('/', isLoggedIn, function(req, res, next) {
     req.session.textHolder = result;
     res.render('components/tool_panel');
   });
-  console.log(req.body);
+  console.log(req.session.textHolder);
 });
 
 router.get('/tables', isLoggedIn, function(req, res, next) {
