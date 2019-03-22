@@ -21,7 +21,8 @@ router.get('/', async (req, res, next) => {
         'SELECT DISTINCT classification_group FROM complete_table',
         []
     );
-    resObj = await Promise.all([Entries, Groups]);
+    const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
+    resObj = await Promise.all([Entries, Groups, Elements]);
   } catch (err) {
     next(createError(500));
   } finally {
@@ -29,6 +30,7 @@ router.get('/', async (req, res, next) => {
       isSignedIn: req.isAuthenticated(),
       Entries: resObj[0].rows,
       Groups: resObj[1].rows,
+      Elements: resObj[2].rows,
       _: ejsUnitConversion,
     });
   }
@@ -212,7 +214,8 @@ router.post('/', async (req, res, next) => {
           'SELECT DISTINCT classification_group FROM complete_table',
           []
       );
-      resObj = await Promise.all([Entries, Groups]);
+      const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
+      resObj = await Promise.all([Entries, Groups, Elements]);
     } catch (err) {
       next(createError(500));
     } finally {
@@ -220,6 +223,7 @@ router.post('/', async (req, res, next) => {
         isSignedIn: req.isAuthenticated(),
         Entries: resObj[0].rows,
         Groups: resObj[1].rows,
+        Elements: resObj[2].rows,
         _: ejsUnitConversion,
       });
     }
@@ -406,7 +410,6 @@ router.get('/unapproved', isLoggedIn, function(req, res, next) {
         if (dbErr) {
           return next(dbErr);
         }
-        console.log(dbRes);
         res.render('db-unapproved', {
           Entries: dbRes.rows,
         });

@@ -1,0 +1,16 @@
+<% 
+let ElementsStr = "";
+for (var i=0; i < Elements.length; i++) {
+    ElementsStr += Elements[i].symbol + ',';
+}
+
+let TechniqueStr = "";
+for (var i=0; i < Technique.length; i++) {
+    TechniqueStr += Technique[i].abbreviation + ',';
+}
+%>
+
+<script>
+    let Elements = '<%= ElementsStr %>';
+    let Technique = '<%= TechniqueStr %>';
+</script>

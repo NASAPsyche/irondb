@@ -1,6 +1,12 @@
 // Some functions inline on template to avoid import issues.
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
+
+// eslint-disable-next-line no-undef
+ElementsArr = Elements.slice(0, -1).split(',');
+// eslint-disable-next-line no-undef
+TechniqueArr = Technique.slice(0, -1).split(',');
+
 /** ---------------------------- */
 /**     Remove Hover Toggle      */
 /** ---------------------------- */
@@ -257,6 +263,7 @@ const noteTemplate = `
 </div>
 `;
 
+
 const measurementTemplate = `
 <div class="form-row">
 <div class="col-md-1">
@@ -264,8 +271,11 @@ const measurementTemplate = `
 title="Press to remove measurement."></i></div>
 <div class="form-group col-md-1 mr-3">
   <label for="<%- elementID %>">Element</label>
-  <input type="text" class="form-control" id="<%- elementID %>" 
-  name="<%- elementID %>" minlength="1" maxlength="3" required="true"> 
+  <select class="form-control p-1" id="<%- elementID %>" name="<%- elementID %>" required="true">
+    <% for(var i=0; i < Elements.length; i++) { %>
+        <option value="<%= Elements[i].toLowerCase()%>"><%= Elements[i] %></option> 
+    <% } %>                   
+  </select>
 </div>
 <div class="form-check-inline col-md-1">
   <input class="form-check-input" type="checkbox" id="<%- lessThanID %>"
@@ -296,8 +306,11 @@ title="Press to remove measurement."></i></div>
 </div>
 <div class="form-group col-md-2">
   <label for="<%- techniqueID %>">Technique</label>
-  <input type="text" class="form-control" id="<%- techniqueID %>"
-  name="<%- techniqueID %>">
+  <select class="form-control p-1" id="<%- techniqueID %>" name="<%- techniqueID %>" required="true">
+      <% for(var i=0; i < Technique.length; i++) { %>
+          <option value="<%= Technique[i]%>"><%= Technique[i] %></option> 
+      <% } %>                   
+  </select>
 </div>
 <div class="form-group col-md-1">
   <label for="<%- pageID %>">Page</label>
@@ -458,6 +471,11 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   idObj['convertedMeasurementID'] = convertedMeasurementID;
   idObj['convertedDeviationID'] = convertedDeviationID;
 
+  // eslint-disable-next-line no-undef
+  idObj['Elements'] = ElementsArr;
+  // eslint-disable-next-line no-undef
+  idObj['Technique'] = TechniqueArr;
+
 
   // Increment current count
   elementIDCount++;
@@ -525,6 +543,11 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   idObj['sigfigID'] = sigfigID;
   idObj['convertedMeasurementID'] = convertedMeasurementID;
   idObj['convertedDeviationID'] = convertedDeviationID;
+
+  // eslint-disable-next-line no-undef
+  idObj['Elements'] = ElementsArr;
+  // eslint-disable-next-line no-undef
+  idObj['Technique'] = TechniqueArr;
 
   // Increment current count
   meteoriteIDCount++;

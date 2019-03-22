@@ -30,7 +30,9 @@ $( '#pdf-form' ).on( 'submit', function( event ) {
   if ($('#pdf').val() === '' && $('#tool_select').val() === 'true') {
     event.preventDefault();
     // alert($('#tool_select').val());
-    $('#content').prepend( alertMessage);
+    if (!$('.alert')[0]) {
+      $('#content').prepend( alertMessage);
+    }
   } else {
     return;
   }

@@ -1,19 +1,33 @@
-const express = require('express');
+const Router = require('express-promise-router');
+const router = new Router();
+const db = require('../../db');
 const {PythonShell} = require('python-shell');
 const path = require('path');
 const sPath = path.join(__dirname, ('../../py/'));
 // eslint-disable-next-line new-cap
-const router = express.Router();
 const {isLoggedIn} = require('../../middleware/auth');
 const createError = require('http-errors');
 
-router.post('/', isLoggedIn, function(req, res, next) {
+router.post('/', isLoggedIn, async function(req, res, next) {
   // Root of tool router i.e. 'localhost:3001/data-entry/tool'
   // Probably where you'd want the get for basic data used elsewhere
   // AJAX call from submit on tool flow checklist
 
   console.log(req.body);
-  res.render('components/tool_panel');
+  let resObj = [];
+  try {
+    const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
+    const Technique = db.aQuery(
+        'SELECT abbreviation FROM analysis_techniques', []);
+    resObj = await Promise.all([Elements, Technique]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('components/tool_panel', {
+      Elements: resObj[0].rows,
+      Technique: resObj[1].rows,
+    });
+  }
 });
 
 router.get('/tables', isLoggedIn, function(req, res, next) {
