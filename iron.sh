@@ -212,7 +212,7 @@ function wait_for_containers ()
     if [[ "$COUNTER" -ge 30 ]]
     then
       echo ""
-      echo "This operation timed out. Make sure that Postgres is running and try again."
+      echo "This operation timed out. Make sure that Docker is running and try again."
       echo "If you are certain that the containers are running correctly, then run the following command:"
       echo ""
       echo "node docker/mock-users.js && python docker/mock-user-info.py "
@@ -236,7 +236,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "exited with exit code 1")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..5}
+    for i in {1..3}
     do
       echo -n "."
       sleep 2
@@ -246,7 +246,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "incomplete startup packet")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..5}
+    for i in {1..3}
     do
       echo -n "."
       sleep 2
@@ -256,7 +256,17 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "FATAL:  the database system is starting up")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..5}
+    for i in {1..3}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+
+  PGACK="$(docker-compose logs  | grep "Failed to prune sessions: the database system is starting up")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..3}
     do
       echo -n "."
       sleep 2
@@ -266,7 +276,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "database system was not properly shut down; automatic recovery in progress")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..5}
+    for i in {1..3}
     do
       echo -n "."
       sleep 2
