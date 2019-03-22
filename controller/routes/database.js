@@ -414,8 +414,16 @@ router.get('/unapproved', isLoggedIn, function(req, res, next) {
 });
 
 /* GET /database/all */
-router.get('/all', isAdmin, function(req, res, next) {
-  res.render('all-entries');
+router.get('/all', isAdmin, async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery('SELECT * FROM all_papers_with_authors', []);
+    resObj = await Promise.all([Entries]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('all-entries', {Entries: resObj[0].rows});
+  }
 });
 
 module.exports = router;
