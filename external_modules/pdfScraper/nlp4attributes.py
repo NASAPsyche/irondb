@@ -228,7 +228,12 @@ def authors_extract(pdf_name):
                 authors_full = authors_full.replace(element, "")
         authors_full = authors_full.replace(" and", ",")
         authors_full = authors_full.replace(",,", ",")
-
+        superscripts = ""
+        for author in authors_full.split(','):
+        	if len(author) > 0: #remove after fixing mutliple line authors
+        		superscripts += author[-1]
+    
+    # using truncated author(s)
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_text.lower()).find(authors_tagword.lower())
     #authors_full = relevant_text[:authors_index].rsplit('\n\n', 1)[1] + relevant_text[authors_index:].split('\n', 1)[0]
