@@ -17,6 +17,9 @@ router.use('/save', dataEntrySaveRouter);
 const insertRouter = require('./data-entry/insert');
 router.use('/insert', insertRouter);
 
+const resumeRouter = require('./data-entry/resume');
+router.use('/resume', resumeRouter);
+
 router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
 });
