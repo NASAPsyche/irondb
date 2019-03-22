@@ -157,3 +157,5 @@ public/temp/*.csv
 public/temp/*.pdf
 public/temp/upload*
 
+# DS Store
+.DS_Store
