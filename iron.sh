@@ -200,6 +200,7 @@ function restore_recent ()
 function wait_for_containers ()
 {
   echo "Waiting for the containers to initialize"
+  NORESP=""
   # Check that pg is available from logs of call to wait-for-it.sh
   COUNTER=0
   PGACK="$(docker-compose logs  | grep "is available after")"
