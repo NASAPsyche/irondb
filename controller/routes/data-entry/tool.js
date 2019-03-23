@@ -23,7 +23,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   };
   // const result = '';
   // console.log(JSON.stringify(req.body));
-  PythonShell.run('pdf_text_import.py', options, function(err, result) {
+  PythonShell.run('pdf_text_import.py', options, async function(err, result) {
     if (err) throw err;
     req.session.textHolder = result;
     let resObj = [];
