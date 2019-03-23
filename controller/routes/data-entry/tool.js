@@ -14,25 +14,59 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   // AJAX call from submit on tool flow checklist
 
   console.log(req.body);
-  let resObj = [];
-  try {
-    const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
-    const Technique = db.aQuery(
-        'SELECT abbreviation FROM analysis_techniques', []);
-    resObj = await Promise.all([Elements, Technique]);
-  } catch (err) {
-    next(createError(500));
-  } finally {
-    res.render('components/tool_panel', {
-      Elements: resObj[0].rows,
-      Technique: resObj[1].rows,
-    });
-  }
+  const options = {
+    mode: 'text',
+    // pythonPath: '../py',
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: sPath,
+    args: [JSON.stringify(req.body)],
+  };
+  // const result = '';
+  // console.log(JSON.stringify(req.body));
+  PythonShell.run('pdf_text_import.py', options, function(err, result) {
+    if (err) throw err;
+    req.session.textHolder = result;
+    let resObj = [];
+    try {
+      // Database queries for information to populate drop downs
+      const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
+      const Technique = db.aQuery(
+          'SELECT abbreviation FROM analysis_techniques', []);
+      resObj = await Promise.all([Elements, Technique]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+      res.render('components/tool_panel', {
+        Elements: resObj[0].rows,
+        Technique: resObj[1].rows,
+      });
+    }
+  });
+  console.log(req.session.textHolder);
 });
 
 router.get('/tables', isLoggedIn, function(req, res, next) {
   // route to request all tables
-  res.send('all pages requested');
+  const options = {
+    mode: 'text',
+    // pythonPath: '../py',
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: sPath,
+    args: [JSON.stringify(req.body)],
+  };
+  // const result = '';
+  // console.log(JSON.stringify(req.body));
+  PythonShell.run('table_driver.py', options, function(err, results) {
+    if (err) throw err;
+    // results is an array consisting of messages collected during execution
+    // Debugging test for pr only, delete immediately in new branch
+    // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
+
+    res.send(results);
+    // res.render('components/table-xhr-response', {
+    //   Results: JSON.parse(results[0].slice(2, -2)),
+    // });
+  });
 });
 
 router.post('/tables', isLoggedIn, function(req, res, next) {
