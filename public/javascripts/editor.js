@@ -27,134 +27,28 @@ $( '#insert-form' ).on('mouseout', 'div.form-row', function( event ) {
 
 
 /** ---------------------------- */
-/**      Save/Edit Events        */
+/**      Validate Button         */
 /** ---------------------------- */
 
-// Bacis section
-$( '#insert-form' ).on( 'click', 'i.save-basic', function( event ) {
-  // Disable all inputs in the basic information section.
-  $(this).parent().siblings().slice(0, 3)
-      .children().children('input').prop('readonly', true);
+$('#insert-form').on('click', '#validate-btn', function() {
+  const formData = $('#insert-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    if (
+      !formData[i].name.includes('convertedDeviation') &&
+      !formData[i].name.includes('convertedMeasurement') &&
+      !formData[i].name.includes('sigfig')
+    ) {
+      postData[formData[i].name] = formData[i].value;
+    }
+  }
 
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
+  console.log(postData);
 
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $( 'i.edit-basic' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-basic', function( event ) {
-  // Enable all inputs in the basic information section.
-  $(this).parent().siblings().slice(0, 3)
-      .children().children('input').prop('readonly', false);
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $( 'i.save-basic' ).prop('hidden', false);
-});
-
-
-// Author(s) Section
-$( '#insert-form' ).on( 'click', 'i.save-author', function( event ) {
-  // Disable inputs
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-author', function( event ) {
-  // Enable inputs
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-author' ).prop('hidden', false);
-});
-
-
-// Meteorite Section
-$( '#insert-form' ).on( 'click', 'i.save-meteorite', function( event ) {
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-meteorite', function( event ) {
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-meteorite' ).prop('hidden', false);
-});
-
-
-// Measurement Section
-$( '#insert-form' ).on( 'click', 'i.save-measurement', function( event ) {
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-measurement', function( event ) {
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
-});
-
-
-// Note Section
-$( '#insert-form' ).on( 'click', 'i.save-note', function( event ) {
-  // Disable textfield
-  $(this).parent().parent().children('textarea').prop('disabled', true);
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-note', function( event ) {
-  // Enable textfield
-  $(this).parent().parent().children('textarea').prop('disabled', false);
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-note' ).prop('hidden', false);
+  // Call Post Request for validation with all data
+  $.post('/data-entry/tool/validate', postData, function( data ) {
+    console.log(data);
+  });
 });
 
 
@@ -162,41 +56,6 @@ $( '#insert-form' ).on( 'click', 'i.edit-note', function( event ) {
 /**    Functions Declarations    */
 /** ---------------------------- */
 
-
-/**
- * @function disableInline
- * @param {Object} element - The clicked element
- * @description Function disables form controls associated with ui.
- */
-function disableInline(element) {
-  // Disable all inputs associated with element
-  element.parent().siblings().children('input').prop('readonly', true);
-
-  // Disable checkboxs associated with element
-  element.parent().siblings().children('select').prop('disabled', true);
-
-  // Disable select groups associated with element
-  element.parent().siblings().children('input[type=checkbox]')
-      .prop('disabled', true);
-}
-
-
-/**
- * @function EnableInline
- * @param {Object} element - The clicked element
- * @description Function Enables form controls associated with ui.
- */
-function enableInline(element) {
-  // Enable all inputs associated with element
-  element.parent().siblings().children('input').prop('readonly', false);
-
-  // Enable checkboxs associated with element
-  element.parent().siblings().children('select').prop('disabled', false);
-
-  // Enable select groups associated with element
-  element.parent().siblings().children('input[type=checkbox]')
-      .prop('disabled', false);
-}
 
 /**
  * @param  {string} num The number that you need

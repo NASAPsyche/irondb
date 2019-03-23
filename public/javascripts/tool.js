@@ -10,7 +10,6 @@ TechniqueArr = Technique.slice(0, -1).split(',');
 /** ----------------------------- */
 /**         Tool Specific         */
 /** ----------------------------- */
-
 // Render pdf
 $('document').ready(function() {
   const fp = $( '#filepath' ).attr('value');
@@ -40,23 +39,34 @@ $( '#event-div' ).on('submit', '#single-page-form', function( event ) {
   });
 });
 
-$( '#event-div' ).on('click', 'button.table-validate', function() {
-  // Serialize table
-  const rows = $(this).parent().siblings('table').children('tbody').children();
-  const tableData = serializeTable(rows);
+$('#event-div').on('click', '#validate-btn', function() {
+  // serialize all tables
+  const tables = [];
+  const tableObjects = $('#table-target').children('div.table-div');
+  $.each( tableObjects, function(tableIndex, table) {
+    const rows = $(table).children('table').children('tbody').children();
+    tables.push(serializeTable(rows));
+  });
+  $('#table-data-input').attr('value', JSON.stringify(tables));
 
-  // console.log('~~~~~~~ Table Data ~~~~~~~~');
-  // console.log(JSON.stringify(tableData));
+  const formData = $('#insert-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    if (
+      !formData[i].name.includes('convertedDeviation') &&
+      !formData[i].name.includes('convertedMeasurement') &&
+      !formData[i].name.includes('sigfig')
+    ) {
+      postData[formData[i].name] = formData[i].value;
+    }
+  }
 
-  const postData = {
-    'tableData': JSON.stringify(tableData),
-  };
-
-  // Call Post Request for validation with table data
+  // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
     console.log(data);
   });
 });
+
 
 $( '#event-div' ).on('click', 'button.table-edit', function() {
   console.log('clicked edit');
@@ -822,6 +832,7 @@ $( '#event-div' ).on('submit', '#insert-form', function(event) {
     event.preventDefault(); // prevent submission
   }
 });
+
 
 /** ---------------------------- */
 /**       UNIT CONVERSION        */
