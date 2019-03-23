@@ -238,7 +238,10 @@ def authors_extract(pdf_name):
         while end <= len(superscripts) and russians != "Detected":
             if superscripts[begin:end].lower() in string.ascii_lowercase:
                 russians = "Detected"
-                #remove superscripts
+                for author in authors_full.split(','):
+                	if len(author) > 0:
+                		authors_full = authors_full.replace(author+',', '')
+                		authors_full += author[:-1] + ','
             else:
                 begin += 1
                 end += 1
