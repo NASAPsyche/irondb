@@ -52,7 +52,7 @@ __version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
-import os, io, re
+import os, io, re, string
 import nltk
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
@@ -229,9 +229,19 @@ def authors_extract(pdf_name):
         authors_full = authors_full.replace(" and", ",")
         authors_full = authors_full.replace(",,", ",")
         superscripts = ""
+        russians = ""
+        begin = 0
+        end = 3
         for author in authors_full.split(','):
         	if len(author) > 0: #remove after fixing mutliple line authors
         		superscripts += author[-1]
+        while end <= len(superscripts) and russians != "Detected":
+            if superscripts[begin:end].lower() in string.ascii_lowercase:
+                russians = "Detected"
+                #remove superscripts
+            else:
+                begin += 1
+                end += 1
     
     # using truncated author(s)
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
