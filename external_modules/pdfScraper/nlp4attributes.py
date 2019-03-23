@@ -153,16 +153,15 @@ def title_extract(pdf_name):
         kywrd_tagword = page[page.find("doi")]
     keywords = keyword_extract(pdf_name, "Abstract", kywrd_tagword)
 
+    ##########################################################################
+    #OPTIMIZE: Organize keywords list by most significant instead of frequency
+    ##########################################################################
     for tpl in keywords:
         for kywrd in tpl[1].split():
             for line in relevant_text.split('\n\n'):
                 if any(kywrd.lower()==wrd.lower() for wrd in line.split()):
                     title_full = line
                     return title_full #find a better way to  exit nested loops
-
-    #########################################################################
-    #OPTIMIZE: Organze keywords list by most significant instead of frequency
-    #########################################################################
 
     #pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
     #chunkr = nltk.RegexpParser(pattern)
@@ -208,6 +207,9 @@ def authors_extract(pdf_name):
     nerd = nltk.ne_chunk(tagged)
     line_index = 0
 
+    ###########################################################################
+    #OPTIMIZE: use recursion of author detection to check for multiline authors
+    ###########################################################################
     for line in relevant_text.split('\n\n'):
         for chunk in nerd:
             if type(chunk) == nltk.tree.Tree:
@@ -233,6 +235,7 @@ def authors_extract(pdf_name):
             if element.isdigit() or element == "*":
                 authors_full = authors_full.replace(element, "")
         authors_full = authors_full.replace(" and", ",")
+        authors_full = authors_full.replace(" ,", ",")
         authors_full = authors_full.replace(",,", ",")
         superscripts = ""
         russians = ""
@@ -292,6 +295,9 @@ def source_extract(pdf_name):
     source_tagword = "Vol"
     source = "Source not found."
 
+    ######################################################################
+    #OPTIMIZE: Pull out journal names from online catalogue and find match
+    ######################################################################
     for line in relevant_text.split('\n\n'):
         if ((source_tagword in line) or (source_tagword.lower() in line) or
             ("Acta"in line) or ("acta"in line)):
@@ -301,10 +307,6 @@ def source_extract(pdf_name):
         (source_tagword not in source.split("Copyright")[1]) and 
         (source_tagword.lower() not in source.split("Copyright")[1])):
         source = source.split("Copyright")[0]
-
-    ######################################################################
-    #OPTIMIZE: Pull out journal names from online catalogue and find match
-    ######################################################################
 
     return source
 
