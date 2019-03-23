@@ -52,7 +52,7 @@ __version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
-import os, io, re
+import os, io, re, string
 import nltk
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
@@ -153,16 +153,15 @@ def title_extract(pdf_name):
         kywrd_tagword = page[page.find("doi")]
     keywords = keyword_extract(pdf_name, "Abstract", kywrd_tagword)
 
+    ##########################################################################
+    #OPTIMIZE: Organize keywords list by most significant instead of frequency
+    ##########################################################################
     for tpl in keywords:
         for kywrd in tpl[1].split():
             for line in relevant_text.split('\n\n'):
                 if any(kywrd.lower()==wrd.lower() for wrd in line.split()):
                     title_full = line
                     return title_full #find a better way to  exit nested loops
-
-    #########################################################################
-    #OPTIMIZE: Organze keywords list by most significant instead of frequency
-    #########################################################################
 
     #pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
     #chunkr = nltk.RegexpParser(pattern)
@@ -206,7 +205,11 @@ def authors_extract(pdf_name):
     tokenized = stage_text(relevant_text)
     tagged = nltk.pos_tag(tokenized)
     nerd = nltk.ne_chunk(tagged)
+    line_index = 0
 
+    ###########################################################################
+    #OPTIMIZE: use recursion of author detection to check for multiline authors
+    ###########################################################################
     for line in relevant_text.split('\n\n'):
         for chunk in nerd:
             if type(chunk) == nltk.tree.Tree:
@@ -214,11 +217,16 @@ def authors_extract(pdf_name):
                     english_author = " ".join([leaf[0] for leaf in chunk.leaves()])
                     if (english_author in line) and (len(line.split()) > 1):
                         authors_full = line
+                    if authors_full.endswith(","):
+                    	authors_full += " " + relevant_text.split('\n\n')[line_index+1]
         if authors_full == "":
             for word in tagged:
                 if ((word[0] not in words.words()) and (word[1] == 'NNP') and 
                     (word[0] in line) and (len(line.split()) > 1)):
                     authors_full = line
+                if authors_full.endswith(","):
+                	authors_full += " " + relevant_text.split('\n\n')[line_index+1]
+        line_index += 1
 
     if authors_full == "":
     	return "Author(s) not found."
@@ -226,10 +234,28 @@ def authors_extract(pdf_name):
         for element in authors_full:
             if element.isdigit() or element == "*":
                 authors_full = authors_full.replace(element, "")
-            if element == "," or element == "and":
-                authors_full = authors_full.replace(element, ",")
+        authors_full = authors_full.replace(" and", ",")
         authors_full = authors_full.replace(" ,", ",")
-
+        authors_full = authors_full.replace(",,", ",")
+        superscripts = ""
+        russians = ""
+        begin = 0
+        end = 3
+        for author in authors_full.split(','):
+        	superscripts += author[-1]
+        while end <= len(superscripts):
+            if superscripts[begin:end].lower() in string.ascii_lowercase:
+                russian_authors = ""
+                for author in authors_full.split(','):
+                	russian_authors += author[:-1] + ','
+                if russian_authors.endswith(","):
+                	russian_authors = russian_authors[:-1]
+                return russian_authors
+            else:
+                begin += 1
+                end += 1
+    
+    # using truncated author(s)
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_text.lower()).find(authors_tagword.lower())
     #authors_full = relevant_text[:authors_index].rsplit('\n\n', 1)[1] + relevant_text[authors_index:].split('\n', 1)[0]
@@ -269,6 +295,9 @@ def source_extract(pdf_name):
     source_tagword = "Vol"
     source = "Source not found."
 
+    ######################################################################
+    #OPTIMIZE: Pull out journal names from online catalogue and find match
+    ######################################################################
     for line in relevant_text.split('\n\n'):
         if ((source_tagword in line) or (source_tagword.lower() in line) or
             ("Acta"in line) or ("acta"in line)):
@@ -278,10 +307,6 @@ def source_extract(pdf_name):
         (source_tagword not in source.split("Copyright")[1]) and 
         (source_tagword.lower() not in source.split("Copyright")[1])):
         source = source.split("Copyright")[0]
-
-    ######################################################################
-    #OPTIMIZE: Pull out journal names from online catalogue and find match
-    ######################################################################
 
     return source
 
