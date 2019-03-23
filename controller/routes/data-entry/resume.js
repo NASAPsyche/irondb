@@ -1,8 +1,3 @@
-
-// const {PythonShell} = require('python-shell');
-// const path = require('path');
-// const sPath = path.join(__dirname, ('../../py/'));
-
 const Router = require('express-promise-router');
 const router = new Router();
 const {isLoggedIn} = require('../../middleware/auth');
