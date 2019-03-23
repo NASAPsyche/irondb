@@ -206,6 +206,7 @@ def authors_extract(pdf_name):
     tokenized = stage_text(relevant_text)
     tagged = nltk.pos_tag(tokenized)
     nerd = nltk.ne_chunk(tagged)
+    line_index = 0
 
     for line in relevant_text.split('\n\n'):
         for chunk in nerd:
@@ -214,11 +215,16 @@ def authors_extract(pdf_name):
                     english_author = " ".join([leaf[0] for leaf in chunk.leaves()])
                     if (english_author in line) and (len(line.split()) > 1):
                         authors_full = line
+                    if authors_full.endswith(","):
+                    	authors_full += " " + relevant_text.split('\n\n')[line_index+1]
         if authors_full == "":
             for word in tagged:
                 if ((word[0] not in words.words()) and (word[1] == 'NNP') and 
                     (word[0] in line) and (len(line.split()) > 1)):
                     authors_full = line
+                if authors_full.endswith(","):
+                	authors_full += " " + relevant_text.split('\n\n')[line_index+1]
+        line_index += 1
 
     if authors_full == "":
     	return "Author(s) not found."
@@ -233,15 +239,15 @@ def authors_extract(pdf_name):
         begin = 0
         end = 3
         for author in authors_full.split(','):
-        	if len(author) > 0: #remove after fixing mutliple line authors
-        		superscripts += author[-1]
-        while end <= len(superscripts) and russians != "Detected":
+        	superscripts += author[-1]
+        while end <= len(superscripts):
             if superscripts[begin:end].lower() in string.ascii_lowercase:
-                russians = "Detected"
+                russian_authors = ""
                 for author in authors_full.split(','):
-                	if len(author) > 0:
-                		authors_full = authors_full.replace(author+',', '')
-                		authors_full += author[:-1] + ','
+                	russian_authors += author[:-1] + ','
+                if russian_authors.endswith(","):
+                	russian_authors = russian_authors[:-1]
+                return russian_authors
             else:
                 begin += 1
                 end += 1
