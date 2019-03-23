@@ -8,12 +8,23 @@ const sPath = path.join(__dirname, ('../../py/'));
 const {isLoggedIn} = require('../../middleware/auth');
 const createError = require('http-errors');
 
-router.post('/', isLoggedIn, async function(req, res, next) {
+router.post('/', isLoggedIn, function(req, res, next) {
   // Root of tool router i.e. 'localhost:3001/data-entry/tool'
   // Probably where you'd want the get for basic data used elsewhere
   // AJAX call from submit on tool flow checklist
 
   console.log(req.body);
+
+  // Hardcoded params for US969 pr, need to modify script or request as needed
+  // Can be addressed when further integrating.
+  req.body.pageNum = 2;
+  req.body.taskNum = 0;
+  req.body.flipDir = 0;
+  req.body.coordsLeft = 0;
+  req.body.coordsTop = 0;
+  req.body.coordsWidth = 0;
+  req.body.coordsHeight = 0;
+
   const options = {
     mode: 'text',
     // pythonPath: '../py',
