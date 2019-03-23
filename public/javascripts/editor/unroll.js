@@ -9,6 +9,7 @@ const dict = savedData; // savedData defined in editor.ejs
 // const lessThanKeys = keys.filter((value) => /^lessThan/.test(value));
 // const noteKeys = keys.filter((value) => /^note/.test(value));
 
+// Single values
 changeValue('journalName', 'journalName', dict);
 changeValue('volume', 'volume', dict);
 changeValue('issue', 'issue', dict);
@@ -16,7 +17,7 @@ changeValue('series', 'series', dict);
 changeValue('pubYear', 'pubYear', dict);
 changeValue('paperTitle', 'paperTitle', dict);
 changeValue('doi', 'doi', dict);
-
+// Dynamic values
 changeValue('primaryName0', 'primaryName0', dict);
 changeValue('firstName0', 'firstName0', dict);
 changeValue('middleName0', 'middleName0', dict);
