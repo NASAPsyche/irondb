@@ -323,13 +323,13 @@ const authorTemplate = `
 <div class="form-group col-md-4">
   <label for="<%- firstNameID %>">First Name</label>
   <input type="text" class="form-control" id="<%- firstNameID %>"
-  name="<%- firstNameID %>">
+  name="<%- firstNameID %>"
+  required="true" placeholder="required">
 </div>
 <div class="form-group col-md-3">
   <label for="<%- middleNameID %>">Middle Name</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
-  name="<%- middleNameID %>"
-  required="true" placeholder="required">
+  name="<%- middleNameID %>">
 </div>
 </div>
 `;
