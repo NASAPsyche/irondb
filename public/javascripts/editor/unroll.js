@@ -1,6 +1,16 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-undef
 const dict = savedData; // savedData defined in editor.ejs
+
+// Populate the single values (there can never be more than one of these)
+changeValue('journalName', 'journalName', dict);
+changeValue('volume', 'volume', dict);
+changeValue('issue', 'issue', dict);
+changeValue('series', 'series', dict);
+changeValue('pubYear', 'pubYear', dict);
+changeValue('paperTitle', 'paperTitle', dict);
+changeValue('doi', 'doi', dict);
+
 // gathering unique keys in preparation for dynamic number of elements
 const keys = Object.keys(dict);
 const primaryNameKeys = keys.filter((value) => /^primaryName/.test(value));
@@ -47,19 +57,35 @@ for ( const note of noteKeys ) {
 }
 // console.dir(uniqueIndex);
 
-// Single values
-changeValue('journalName', 'journalName', dict);
-changeValue('volume', 'volume', dict);
-changeValue('issue', 'issue', dict);
-changeValue('series', 'series', dict);
-changeValue('pubYear', 'pubYear', dict);
-changeValue('paperTitle', 'paperTitle', dict);
-changeValue('doi', 'doi', dict);
-// Dynamic values
-changeValue('primaryName0', 'primaryName0', dict);
-changeValue('firstName0', 'firstName0', dict);
-changeValue('middleName0', 'middleName0', dict);
-changeValue('singleEntity0', 'singleEntity1', dict);
+// Populate author(s)
+for ( const [index, element] of uniqueIndex.authors.entries() ) {
+  // Add additional field for each additional element
+  if ( index > 0 ) {
+    // eslint-disable-next-line no-undef
+    addAuthor('i.add-author');
+  }
+
+  // Build target and key strings
+  const pName = 'primaryName';
+  const pNameTarget = pName + index;
+  const pNameKey = pName + element;
+  const mName = 'middleName';
+  const mNameTarget = mName + index;
+  const mNameKey = mName + element;
+  const fName = 'firstName';
+  const fNameTarget = fName + index;
+  const fNameKey = fName + element;
+  const sEnt = 'singleEntity';
+  const sEntTarget = sEnt + index;
+  const sEntKey = sEnt + element;
+
+  // Populate the fields
+  changeValue(pNameTarget, pNameKey, dict);
+  changeValue(mNameTarget, mNameKey, dict);
+  changeValue(fNameTarget, fNameKey, dict);
+  changeValue(sEntTarget, sEntKey, dict);
+}
+
 changeValue('bodyName0', 'bodyName0', dict);
 changeValue('group0', 'group0', dict);
 changeValue('class0', 'class0', dict);
