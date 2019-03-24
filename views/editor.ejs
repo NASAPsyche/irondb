@@ -89,7 +89,7 @@
     <script src="/javascripts/editor/save.js"></script>
     <%if (typeof savedData !== 'undefined' && savedData !== null ) { %>
         <script>
-        const savedDataStr = String('<%- savedData %>');
+        const savedDataStr = `<%- savedData %>`;
         const savedData = JSON.parse(savedDataStr);
         </script>
         <script src="/javascripts/editor/unroll.js"></script>
