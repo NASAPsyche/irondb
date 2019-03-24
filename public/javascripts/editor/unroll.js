@@ -1,13 +1,51 @@
+/* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-undef
 const dict = savedData; // savedData defined in editor.ejs
 // gathering unique keys in preparation for dynamic number of elements
-// const keys = Object.keys(dict);
-// const primaryNameKeys = keys.filter((value) => /^primaryName/.test(value));
-// const singleEntityKeys = keys.filter((value) => /^singleEntity/.test(value));
-// const bodyNameKeys = keys.filter((value) => /^bodyName/.test(value));
-// const elementKeys = keys.filter((value) => /^element/.test(value));
-// const lessThanKeys = keys.filter((value) => /^lessThan/.test(value));
-// const noteKeys = keys.filter((value) => /^note/.test(value));
+const keys = Object.keys(dict);
+const primaryNameKeys = keys.filter((value) => /^primaryName/.test(value));
+const singleEntityKeys = keys.filter((value) => /^singleEntity/.test(value));
+const bodyNameKeys = keys.filter((value) => /^bodyName/.test(value));
+const elementKeys = keys.filter((value) => /^element/.test(value));
+const lessThanKeys = keys.filter((value) => /^lessThan/.test(value));
+const noteKeys = keys.filter((value) => /^note/.test(value));
+
+const uniqueIndex = {
+  authors: [],
+  bodies: [],
+  elements: [],
+  notes: [],
+};
+
+// Gather the unique indexes as arrays
+for ( const author of primaryNameKeys) {
+  const idx = author.substring('primaryName'.length);
+  if ( !uniqueIndex.authors.includes(idx) ) {
+    uniqueIndex.authors.push(idx);
+  }
+}
+
+for ( const body of bodyNameKeys ) {
+  const idx = body.substring('bodyName'.length);
+  if ( !uniqueIndex.bodies.includes(idx) ) {
+    uniqueIndex.bodies.push(idx);
+  }
+}
+
+for ( const element of elementKeys ) {
+  const idx = element.substring('element'.length);
+  if ( !uniqueIndex.elements.includes(idx) ) {
+    uniqueIndex.elements.push(idx);
+  }
+}
+
+for ( const note of noteKeys ) {
+  const idx = note.substring('note'.length);
+  if ( !uniqueIndex.notes.includes(idx) ) {
+    uniqueIndex.notes.push(idx);
+  }
+}
+// console.dir(uniqueIndex);
 
 // Single values
 changeValue('journalName', 'journalName', dict);
