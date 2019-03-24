@@ -86,6 +86,18 @@ for ( const [index, element] of uniqueIndex.authors.entries() ) {
   changeValue(sEntTarget, sEntKey, dict);
 }
 
+// Populate the notes
+for ( const [index, element] of uniqueIndex.notes.entries() ) {
+  if ( index > 0) {
+    // eslint-disable-next-line no-undef
+    addNote('i.add-note');
+  }
+
+  const noteTarget = 'note' + index;
+  const noteKey = 'note' + element;
+  changeValue(noteTarget, noteKey, dict);
+}
+
 changeValue('bodyName0', 'bodyName0', dict);
 changeValue('group0', 'group0', dict);
 changeValue('class0', 'class0', dict);
@@ -96,7 +108,7 @@ changeValue('deviation0-0', 'deviation0-0', dict);
 changeValue('units0-0', 'units0-0', dict);
 changeValue('technique0-0', 'technique0-0', dict);
 changeValue('page0-0', 'page0-0', dict);
-changeValue('note0', 'note0', dict);
+// changeValue('note0', 'note0', dict);
 
 /**
  * @description Changes the value of the target input.
