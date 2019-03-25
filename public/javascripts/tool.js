@@ -492,7 +492,7 @@ $( '#event-div' ).on('click', 'i.add-author', function( event ) {
 const html = ejs.render(authorTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.meteorite-header').before(html);
+  $(this).parent().siblings('.meteorite-header').first().before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
