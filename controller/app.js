@@ -1,4 +1,3 @@
-const createError = require('http-errors');
 const express = require('express');
 const session = require('express-session');
 const PgSession = require('connect-pg-simple')(session);
@@ -37,9 +36,9 @@ passport.use(new LocalStrategy((username, password, done) => {
       'SELECT user_id, username, password_hash, role_of FROM users WHERE username=$1',
       [username],
       (err, result) => {
-        // Verify callback provides user if credentials accepted.
+      // Verify callback provides user if credentials accepted.
         if (err) {
-          // Return error if username not found in db.
+        // Return error if username not found in db.
           return done(err);
         }
 
@@ -48,10 +47,12 @@ passport.use(new LocalStrategy((username, password, done) => {
           const user = result.rows[0];
           bcrypt.compare(password, user.password_hash, function(err, res) {
             if (res) {
-              // Return user if password is valid.
-              return done(null, {id: user.user_id,
+            // Return user if password is valid.
+              return done(null, {
+                id: user.user_id,
                 username: user.username,
-                role: user.role_of});
+                role: user.role_of,
+              });
             } else {
               return done(null, false);
             }
@@ -74,14 +75,16 @@ passport.deserializeUser(function(id, done) {
       'SELECT user_id, username, password_hash, role_of FROM users WHERE user_id=$1',
       [id],
       (err, result) => {
-        // Get user by id.
+      // Get user by id.
 
         // If query returns result, verify password by unhashing.
         if (result.rows.length > 0) {
           const user = result.rows[0];
-          return done(null, {id: user.user_id,
+          return done(null, {
+            id: user.user_id,
             username: user.username,
-            role: user.role_of});
+            role: user.role_of,
+          });
         } else {
           return done(err, null);
         }
@@ -139,7 +142,13 @@ app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  let isSignedIn = false;
+  if (req.isAuthenticated()) {
+    isSignedIn = true;
+  }
+  // next(createError(404));
+  // eslint-disable-next-line max-len
+  res.render('error', {isSignedIn: isSignedIn, message: 'Page Not Found', errcode: 'Error 404'});
 });
 
 // error handler
@@ -156,7 +165,14 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error', {isSignedIn: isSignedIn});
+  // eslint-disable-next-line max-len
+  if (res.statusCode == 500) {
+    // eslint-disable-next-line max-len
+    res.render('error', {isSignedIn: isSignedIn, message: 'Internal Server Error', errcode: 'Error 500'});
+  } else {
+    // eslint-disable-next-line max-len
+    res.render('error', {isSignedIn: isSignedIn, message: 'Unauthorized', errcode: 'Error 401'});
+  }
 });
 
 module.exports = app;
