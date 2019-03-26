@@ -125,8 +125,6 @@ for ( const [index, element] of uniqueIndex.bodies.entries() ) {
     }
   });
 
-  console.dir(matchedElements);
-
   for ( const [subIndex, subElement] of matchedElements.entries() ) {
     if ( subIndex > 0 ) {
       // eslint-disable-next-line no-undef
@@ -159,6 +157,11 @@ for ( const [index, element] of uniqueIndex.bodies.entries() ) {
     const techniqueTarget = 'technique' + targetIdx;
     const techniqueKey = 'technique' + elementIdx;
     changeValue(techniqueTarget, techniqueKey, dict);
+
+    const pageTarget = 'page' + targetIdx;
+    const pageKey = 'page' + elementIdx;
+    console.log('target:', pageTarget, 'key', pageKey);
+    changeValue(pageTarget, pageKey, dict);
 
     elementCounter++;
   }
