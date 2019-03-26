@@ -1,30 +1,41 @@
 const Router = require('express-promise-router');
 const router = new Router();
 const {isLoggedIn} = require('../../middleware/auth');
-// const createError = require('http-errors');
+const createError = require('http-errors');
 const pg = require('../../db');
 
 router.get('/', isLoggedIn, async (req, res, next) => {
-  const fetchJsonQuery = `
-  SELECT * FROM entry_store 
-  WHERE entry_store.username = ($1)
-  `;
-  const fetchJsonValue = [req.user.username];
-  const {rows} = await pg.aQuery(fetchJsonQuery, fetchJsonValue);
+  try {
+    const Elements = pg.aQuery('SELECT symbol FROM element_symbols', []);
+    // eslint-disable-next-line max-len
+    const Technique = pg.aQuery('SELECT abbreviation FROM analysis_techniques', []);
 
-  let fetchedData;
-  if ( rows === 'undefined' || rows.length == 0) {
-    fetchedData = '';
-  } else {
-    fetchedData = JSON.stringify(rows[0]['savedata']);
+    const fetchJsonQuery = `
+    SELECT savedata FROM entry_store 
+    WHERE entry_store.username = ($1)
+    `;
+    const SavedData = pg.aQuery(fetchJsonQuery, [req.user.username] );
+
+    const resObj = await Promise.all([Elements, SavedData, Technique]);
+
+    let fetchedData;
+    if ( resObj[1].rows === 'undefined' || resObj[1].rows.length == 0) {
+      fetchedData = '';
+    } else {
+      fetchedData = JSON.stringify( resObj[1].rows[0]['savedata'] );
+    }
+
+    res.render('editor', {
+      username: req.user.username,
+      data: null,
+      sessionID: req.sessionID,
+      savedData: fetchedData,
+      Elements: resObj[0].rows,
+      Technique: resObj[2].rows,
+    });
+  } catch (err) {
+    next(createError(500));
   }
-
-  res.render('editor', {
-    username: req.user.username,
-    data: null,
-    sessionID: req.sessionID,
-    savedData: fetchedData,
-  });
 });
 
 module.exports = router;
