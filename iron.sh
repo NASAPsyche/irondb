@@ -177,18 +177,18 @@ function remove_dangles ()
   docker volume ls -q -f 'dangling=true' | xargs docker volume rm
 }
 
-# Make a backup of the db to irondb/backup-pg/pg_timestamp.sql
+# Make a backup of the db to irondb/model/backup-pg/pg_timestamp.sql
 function make_backup ()
 {
   echo ""
-  echo "Making backup to irondb/backup-pg/"
-  docker exec -t postgres pg_dump -c -U group16 -d postgres > backup-pg/pg_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+  echo "Making backup to irondb/model/backup-pg/"
+  docker exec -t postgres pg_dump -c -U group16 -d postgres > model/backup-pg/pg_`date +%d-%m-%Y"_"%H_%M_%S`.sql
 }
 
 # Restore most recent backup of db
 function restore_recent ()
 {
-  cd backup-pg
+  cd model/backup-pg
   STR="$(ls -tr | tail -1)"
   echo "Restoring from $STR"
   sleep 1
@@ -355,8 +355,8 @@ function populate_mock_data ()
 
   echo " "
   echo "Adding mock users"
-  node docker/mock-users.js 
-  python docker/mock-user-info.py 
+  node docker/mock/mock-users.js 
+  python docker/mock/mock-user-info.py 
   exit 0
 }
 
