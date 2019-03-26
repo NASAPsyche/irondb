@@ -393,26 +393,26 @@ ALTER TYPE public.user_role OWNER TO group16;
 
 CREATE FUNCTION public.getmz(nomenclature text, the_group text, classification text, element_symbol text, less_than boolean, ppb_mean integer, sigfig integer, deviation integer, original_unit public.units, technique text, page_number integer) RETURNS public.mz
     LANGUAGE plpythonu
-    AS $$
-  _group = ''
-  _class = ''
-  if (the_group is not None):
-    _group = the_group
-  if (classification is not None):
-    _class = classification
-  return (
-    nomenclature,
-    _group,
-    _class,
-    element_symbol, 
-    less_than, 
-    ppb_mean, 
-    sigfig, 
-    deviation, 
-    original_unit, 
-    technique, 
-    page_number
-  )
+    AS $$
+  _group = ''
+  _class = ''
+  if (the_group is not None):
+    _group = the_group
+  if (classification is not None):
+    _class = classification
+  return (
+    nomenclature,
+    _group,
+    _class,
+    element_symbol, 
+    less_than, 
+    ppb_mean, 
+    sigfig, 
+    deviation, 
+    original_unit, 
+    technique, 
+    page_number
+  )
 $$;
 
 
@@ -3598,7 +3598,7 @@ COPY public.element_status (status_id, element_id, current_status, submitted_by,
 --
 
 COPY public.entry_store (entry_id, username, savedata, pdf_path, pending, last_saved_date) FROM stdin;
-1	user1	{"doi": "10.1080/00111619.1975.10690101", "issue": "22", "note0": "Note 1", "note1": "  NOTE 2", "class0": "A", "class1": "B", "group0": "IIG", "group1": "IIG", "series": "33", "volume": "11", "page0-0": "1", "page0-1": "1", "page1-2": "1", "page1-3": "1", "page1-4": "1", "page1-5": "1", "pubYear": "2019", "units0-0": "wt_percent", "units0-1": "ppm", "units1-2": "ppb", "units1-3": "mg_g", "units1-4": "ug_g", "units1-5": "ng_g", "bodyName0": "Giant Rock", "bodyName1": "Lil Guy", "element0-0": "Fe", "element0-1": "K", "element1-2": "Au", "element1-3": "Ru", "element1-4": "Co", "element1-5": "Zn", "firstName0": "Alex", "firstName1": "", "firstName2": "", "paperTitle": "Super Cool Space Rocks", "journalName": "Popular Journal", "lessThan1-2": "on", "middleName0": "Arty", "middleName1": "", "middleName2": "", "deviation0-0": "1", "deviation0-1": "0", "deviation1-2": "3", "deviation1-3": "0", "deviation1-4": "5", "deviation1-5": "0", "primaryName0": "Anderson", "primaryName1": "Umbrella Corp", "primaryName2": "", "technique0-0": "RNAA", "technique0-1": "RNAA", "technique1-2": "RNAA", "technique1-3": "RNAA", "technique1-4": "RNAA", "technique1-5": "RNAA", "singleEntity1": "on", "measurement0-0": "11", "measurement0-1": "22", "measurement1-2": "33", "measurement1-3": "44", "measurement1-4": "55", "measurement1-5": "666"}		t	2019-03-22 18:36:35.879916
+2	user1	{"doi": "10.1080/00111619.1975.10690101", "issue": "22", "note0": "Note 1", "note1": "  NOTE 2", "class0": "A", "class1": "B", "group0": "IIG", "group1": "IIG", "series": "33", "volume": "11", "page0-0": "", "page0-1": "", "page1-2": "", "page1-3": "", "page1-4": "", "page1-5": "", "pubYear": "2019", "units0-0": "wt_percent", "units0-1": "ppm", "units1-2": "ppb", "units1-3": "mg_g", "units1-4": "ug_g", "units1-5": "ng_g", "bodyName0": "Giant Rock", "bodyName1": "Lil Guy", "element0-0": "Fe", "element0-1": "K", "element1-2": "Au", "element1-3": "Ru", "element1-4": "Co", "element1-5": "Zn", "firstName0": "Alex", "firstName1": "", "paperTitle": "Super Cool Space Rocks", "journalName": "Popular Journal", "middleName0": "Arty", "middleName1": "", "deviation0-0": "1", "deviation0-1": "0", "deviation1-2": "3", "deviation1-3": "0", "deviation1-4": "5", "deviation1-5": "0", "primaryName0": "Anderson", "primaryName1": "Umbrella Corp", "technique0-0": "RNAA", "technique0-1": "RNAA", "technique1-2": "RNAA", "technique1-3": "RNAA", "technique1-4": "RNAA", "technique1-5": "RNAA", "measurement0-0": "11", "measurement0-1": "22", "measurement1-2": "33", "measurement1-3": "44", "measurement1-4": "55", "measurement1-5": "666"}		t	2019-03-25 23:41:58.88491
 \.
 
 
@@ -3768,10 +3768,7 @@ COPY public.papers (paper_id, journal_id, title, doi, status_id) FROM stdin;
 --
 
 COPY public.session (sid, sess, expire) FROM stdin;
-dRaR32Eky_kTafbikRKA8LEzkOthiamE	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-22T19:33:01.215Z","httpOnly":true,"path":"/"},"passport":{"user":3}}	2019-03-22 19:33:02
-OvlJxOiZKTKYtsGHwPI-A9UlV16sPGuV	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-22T19:33:01.261Z","httpOnly":true,"path":"/"},"passport":{"user":2}}	2019-03-22 19:33:02
-3PCnPRoDb8i8vZXpeO68E8s6JKKmtxbA	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-22T19:33:01.294Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-22 19:33:02
-unJjTwSyeLTyA5nFZX2Wegjx1xLirYm5	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-22T19:33:10.558Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-22 19:36:36
+07sm7dBXF3bSLHubAC5y8yYjRNUI8o4G	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-26T00:41:39.124Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-26 00:42:05
 \.
 
 
@@ -3923,7 +3920,7 @@ SELECT pg_catalog.setval('public.element_status_status_id_seq', 141, true);
 -- Name: entry_store_entry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: group16
 --
 
-SELECT pg_catalog.setval('public.entry_store_entry_id_seq', 1, true);
+SELECT pg_catalog.setval('public.entry_store_entry_id_seq', 2, true);
 
 
 --
