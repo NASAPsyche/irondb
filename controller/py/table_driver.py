@@ -17,6 +17,7 @@ pd.options.display.max_rows = 999
 pd.options.display.max_columns = 999
 import json
 import io
+import sys
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
@@ -27,20 +28,18 @@ master_json = ""
 pages_with_tables = []
 pages_with_continue = []
 master_dict_tables = {}
-pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
-       "pdfs/WassonandChoe_GCA_2009.pdf",
-       "pdfs/Wasson_GCA_2017.pdf",
-       "pdfs/WassonandChoi_2003.pdf",
-       "pdfs/Litasov2018_Article_TraceElementCompositionAndClas.pdf",
-       "pdfs/Wasson_2010.pdf",
-       "pdfs/Wasson_2004.pdf",
-       "pdfs/Wassonetal_GCA_2007.pdf",
-       "pdfs/Ruzicka2014.pdf",
-       "pdfs/WassonandKallemeyn_GCA_2002.pdf",
-       "pdfs/RuzickaandHutson2010.pdf",
-       "pdfs/spinTest.pdf"]
 
-chosen_pdf = pdf[1]
+j = json.loads(sys.argv[1])
+# fileName = j['fileName']
+fileName = '/usr/app/controller/py/WassonandChoe_GCA_2009.pdf'
+# pageNum = int(j['pageNum'])
+# taskNum = int(j['taskNum'])
+# flipDir = int(j['flipDir'])
+# coordsLeft = j['coordsLeft']
+# coordsTop = j['coordsTop']
+# coordsWidth = j['coordsWidth']
+# coordsHeight = j['coordsHeight']
+# print(pageNum)
 
 
 # START This function imports raw text import from a chosen pdf request.
@@ -109,11 +108,11 @@ def column_by_column(mdf):
 
 
 # START Get number of Pages
-total_pages = PyPDF2.PdfFileReader(open(chosen_pdf, 'rb')).numPages
+total_pages = PyPDF2.PdfFileReader(open(fileName, 'rb')).numPages
 # START Get number of Pages
 
 # START get text from pdf
-text = convert_pdf_to_txt_looper(chosen_pdf, total_pages)
+text = convert_pdf_to_txt_looper(fileName, total_pages)
 # End get text from pdf.
 
 # START Getting pages that have tables on them. looking for page 15
@@ -129,7 +128,7 @@ if pages_with_tables:
 # END Getting pages that have tables on them.
 
 # START Get tables 1 page at a time.
-tables_rec_from_pages = read_pdf(chosen_pdf, output_format="dataframe", encoding="utf-8", multiple_tables=True,
+tables_rec_from_pages = read_pdf(fileName, output_format="dataframe", encoding="utf-8", multiple_tables=True,
                                  pages=pages_with_tables, silent=True)
 # END Get tables 1 page at a time.
 
