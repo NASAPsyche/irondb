@@ -14,7 +14,7 @@ services:
       - DATABASE_URL=postgres://group16:abc123@pgdb:5432/postgres
     restart: on-failure
     container_name: irondb_web
-    command: ["./wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
+    command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
 
   pgdb:
     build: './docker/postgres'
@@ -22,7 +22,7 @@ services:
     restart: always
     # image: postgres:11.0-alpine
     volumes:
-      - ./db-init:/docker-entrypoint-initdb.d/
+      - ./model/db-init:/docker-entrypoint-initdb.d/
       - ./pg-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: 'group16'
