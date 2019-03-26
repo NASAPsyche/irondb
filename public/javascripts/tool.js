@@ -1,10 +1,15 @@
 // Some functions inline on template to avoid import issues.
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
+
+// eslint-disable-next-line no-undef
+ElementsArr = Elements.slice(0, -1).split(',');
+// eslint-disable-next-line no-undef
+TechniqueArr = Technique.slice(0, -1).split(',');
+
 /** ----------------------------- */
 /**         Tool Specific         */
 /** ----------------------------- */
-
 // Render pdf
 $('document').ready(function() {
   const fp = $( '#filepath' ).attr('value');
@@ -34,23 +39,34 @@ $( '#event-div' ).on('submit', '#single-page-form', function( event ) {
   });
 });
 
-$( '#event-div' ).on('click', 'button.table-validate', function() {
-  // Serialize table
-  const rows = $(this).parent().siblings('table').children('tbody').children();
-  const tableData = serializeTable(rows);
+$('#event-div').on('click', '#validate-btn', function() {
+  // serialize all tables
+  const tables = [];
+  const tableObjects = $('#table-target').children('div.table-div');
+  $.each( tableObjects, function(tableIndex, table) {
+    const rows = $(table).children('table').children('tbody').children();
+    tables.push(serializeTable(rows));
+  });
+  $('#table-data-input').attr('value', JSON.stringify(tables));
 
-  // console.log('~~~~~~~ Table Data ~~~~~~~~');
-  // console.log(JSON.stringify(tableData));
+  const formData = $('#insert-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    if (
+      !formData[i].name.includes('convertedDeviation') &&
+      !formData[i].name.includes('convertedMeasurement') &&
+      !formData[i].name.includes('sigfig')
+    ) {
+      postData[formData[i].name] = formData[i].value;
+    }
+  }
 
-  const postData = {
-    'tableData': JSON.stringify(tableData),
-  };
-
-  // Call Post Request for validation with table data
+  // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
     console.log(data);
   });
 });
+
 
 $( '#event-div' ).on('click', 'button.table-edit', function() {
   console.log('clicked edit');
@@ -72,12 +88,11 @@ function serializeTable(rows) {
       // Set cell equal to it's value or null if empty
       tableData[columnIndex][rowIndex] = $(value)
           .children('input').attr('value') === '' ? null : $(value)
-              .children('input').attr('value');
+              .children('input').val();
     });
   });
   return tableData;
 }
-
 
 /** ---------------------------- */
 /**     Remove Hover Toggle      */
@@ -300,30 +315,21 @@ const authorTemplate = `
 <div class="col-md-1">
   <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" 
   title="Press to remove author."></i></div>
-<div class="form-group col-md-3">
-  <label for="<%- primaryNameID %>">Last Name or Organization</label>
+<div class="form-group col-md-4">
+  <label for="<%- primaryNameID %>">Last Name</label>
   <input type="text" class="form-control" id="<%- primaryNameID %>" 
   name="<%- primaryNameID %>" required="true" placeholder="required">
 </div>
-<div class="form-group col-md-3">
+<div class="form-group col-md-4">
   <label for="<%- firstNameID %>">First Name</label>
   <input type="text" class="form-control" id="<%- firstNameID %>"
-  name="<%- firstNameID %>">
+  name="<%- firstNameID %>"
+  required="true" placeholder="required">
 </div>
-<div class="form-group col-md-2">
+<div class="form-group col-md-3">
   <label for="<%- middleNameID %>">Middle Name</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
   name="<%- middleNameID %>">
-</div>
-<div class="form-check col-md-2">
-  <input class="form-check-input" type="checkbox" id="<%- singleEntityID %>"
-  name="<%- singleEntityID %>">
-  <label class="form-check-label" for="<%- singleEntityID %>">
-  Organization</label>
-</div>
-<div class="form-group col-md-1  mt-4">
-  <i class="fa fa-lock-open fa-lg save-author"></i>
-  <i class="fa fa-lock fa-lg edit-author" hidden="true"></i>
 </div>
 </div>
 `;
@@ -331,8 +337,6 @@ const authorTemplate = `
 const noteTemplate = `
 <div class="form-row mt-2">
   <label for="<%- noteID %>">Note:
-    <i class="fa fa-lock-open fa-lg save-note"></i>
-    <i class="fa fa-lock fa-lg edit-note" hidden="true"></i>
     <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" 
     title="Press to remove note."></i>
   </label>
@@ -347,10 +351,13 @@ const measurementTemplate = `
 <div class="col-md-1">
 <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" 
 title="Press to remove measurement."></i></div>
-<div class="form-group col-md-1">
+<div class="form-group col-md-1 mr-3">
   <label for="<%- elementID %>">Element</label>
-  <input type="text" class="form-control" id="<%- elementID %>" 
-  name="<%- elementID %>" minlength="1" maxlength="3" required="true"> 
+  <select class="form-control p-1" id="<%- elementID %>" name="<%- elementID %>" required="true">
+    <% for(var i=0; i < Elements.length; i++) { %>
+        <option value="<%= Elements[i].toLowerCase()%>"><%= Elements[i] %></option> 
+    <% } %>                   
+  </select>
 </div>
 <div class="form-check-inline col-md-1">
   <input class="form-check-input" type="checkbox" id="<%- lessThanID %>"
@@ -363,7 +370,7 @@ title="Press to remove measurement."></i></div>
   name="<%- measurementID %>" required="true" min="0">
 </div>
 <div class="form-group col-md-1">
-  <label for="<%- deviationID %>">Deviation (&plusmn;)</label>
+  <label for="<%- deviationID %>">(&plusmn;)</label>
   <input type="number" class="form-control" id="<%- deviationID %>" 
   name="<%- deviationID %>" value="0" min="0">
 </div>
@@ -379,19 +386,20 @@ title="Press to remove measurement."></i></div>
   <option value="ng_g">ng/g</option>
   </select>
 </div>
-<div class="form-group col-md-1">
+<div class="form-group col-md-2">
   <label for="<%- techniqueID %>">Technique</label>
-  <input type="text" class="form-control" id="<%- techniqueID %>"
-  name="<%- techniqueID %>">
+  <select class="form-control p-1" id="<%- techniqueID %>" name="<%- techniqueID %>" required="true">
+      <% for(var i=0; i < Technique.length; i++) { %>
+          <option value="<%= Technique[i]%>"><%= Technique[i] %></option> 
+      <% } %>                   
+  </select>
 </div>
 <div class="form-group col-md-1">
   <label for="<%- pageID %>">Page</label>
-  <input type="number" class="form-control" id="<%- pageID %>" 
+  <input type="number" class="form-control p-1" id="<%- pageID %>" 
   name="<%- pageID %>" min="1" required>
 </div>
-<div class="form-group col-md-1 mt-4">
-  <i class="fa fa-lock-open fa-lg save-measurement"></i>
-  <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
+<div class="form-group">
   <input type="hidden" id="<%- sigfigID %>" name="<%- sigfigID %>" value="0">
   <input type="hidden" id="<%- convertedMeasurementID %>" name="<%- convertedMeasurementID %>" value="0">
   <input type="hidden" id="<%- convertedDeviationID %>" name="<%- convertedDeviationID %>" value="0">
@@ -410,28 +418,19 @@ const meteoriteTemplate = `
   <i class="far fa-times-circle fa-lg remove remove-meteorite pt-4 text-danger" 
   title="Press to remove meteorite and all associated measurements."></i>
 </div>
-<div class="form-group col-md-4">
+<div class="form-group col-md-6">
   <label for="<%- bodyNameID %>">Name</label>
   <input type="text" class="form-control" id="<%- bodyNameID %>" 
   name="<%- bodyNameID %>" required>
 </div>
-<div class="form-group col-md-3">
+<div class="form-group col-md-4">
   <label for="<%- groupID %>">Group</label>
   <input type="text" class="form-control" id="<%- groupID %>"
   name="<%- groupID %>" required>
 </div>
-<div class="form-group col-md-3">
-  <label for="<%- classID %>">Class</label>
-  <input type="text" class="form-control" id="<%- classID %>" 
-  name="<%- classID %>">
-</div>
-<div class="form-group col-md-1 mt-4">
-  <i class="fa fa-lock-open fa-lg save-meteorite"></i>
-  <i class="fa fa-lock fa-lg edit-meteorite" hidden="true"></i>
-</div>
 </div>
 <div class="form-row">
-  <h5 class="pt-1 mr-2  pl-3">
+  <h5 class="pt-1 mr-2 pl-3">
   <strong>Measurements</strong></h5>
   <i class="fas fa-plus-circle fa-lg add-measurement mt-2 text-danger"></i>
 </div>
@@ -493,7 +492,7 @@ $( '#event-div' ).on('click', 'i.add-author', function( event ) {
 const html = ejs.render(authorTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.meteorite-header').before(html);
+  $(this).parent().siblings('.meteorite-header').first().before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
@@ -553,6 +552,11 @@ $( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
   idObj['sigfigID'] = sigfigID;
   idObj['convertedMeasurementID'] = convertedMeasurementID;
   idObj['convertedDeviationID'] = convertedDeviationID;
+
+  // eslint-disable-next-line no-undef
+  idObj['Elements'] = ElementsArr;
+  // eslint-disable-next-line no-undef
+  idObj['Technique'] = TechniqueArr;
 
 
   // Increment current count
@@ -621,6 +625,11 @@ const measurementID = 'measurement' + meteoriteIDCount + '-' + measurementIDCoun
   idObj['sigfigID'] = sigfigID;
   idObj['convertedMeasurementID'] = convertedMeasurementID;
   idObj['convertedDeviationID'] = convertedDeviationID;
+
+  // eslint-disable-next-line no-undef
+  idObj['Elements'] = ElementsArr;
+  // eslint-disable-next-line no-undef
+  idObj['Technique'] = TechniqueArr;
 
   // Increment current count
   meteoriteIDCount++;
@@ -824,6 +833,7 @@ $( '#event-div' ).on('submit', '#insert-form', function(event) {
     event.preventDefault(); // prevent submission
   }
 });
+
 
 /** ---------------------------- */
 /**       UNIT CONVERSION        */
