@@ -2,7 +2,10 @@ version: "3.7"
 services:
 
   web:
-    build: './docker/node'
+     
+    build: 
+      context: .
+      dockerfile: ./docker/node/Dockerfile
     volumes:
       - .:/usr/app/
       - /usr/app/node_modules
