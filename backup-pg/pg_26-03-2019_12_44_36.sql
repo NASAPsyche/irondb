@@ -109,6 +109,8 @@ ALTER TABLE ONLY public.groups DROP CONSTRAINT groups_pkey;
 ALTER TABLE ONLY public.group_status DROP CONSTRAINT group_status_pkey;
 ALTER TABLE ONLY public.group_review DROP CONSTRAINT group_review_pkey;
 ALTER TABLE ONLY public.entry_store DROP CONSTRAINT entry_store_pkey;
+ALTER TABLE ONLY public.element_symbols DROP CONSTRAINT element_symbols_symbol_key;
+ALTER TABLE ONLY public.element_symbols DROP CONSTRAINT element_symbols_pkey;
 ALTER TABLE ONLY public.element_status DROP CONSTRAINT element_status_pkey;
 ALTER TABLE ONLY public.element_review DROP CONSTRAINT element_review_pkey;
 ALTER TABLE ONLY public.element_entries DROP CONSTRAINT element_entries_pkey;
@@ -127,6 +129,8 @@ ALTER TABLE ONLY public.attributions DROP CONSTRAINT attributions_pkey;
 ALTER TABLE ONLY public.attributions DROP CONSTRAINT attributions_attribution_id_key;
 ALTER TABLE ONLY public.attribution_status DROP CONSTRAINT attribution_status_pkey;
 ALTER TABLE ONLY public.attribution_review DROP CONSTRAINT attribution_review_pkey;
+ALTER TABLE ONLY public.analysis_techniques DROP CONSTRAINT analysis_techniques_pkey;
+ALTER TABLE ONLY public.analysis_techniques DROP CONSTRAINT analysis_techniques_abbreviation_key;
 ALTER TABLE public.users ALTER COLUMN user_id DROP DEFAULT;
 ALTER TABLE public.submissions ALTER COLUMN submission_id DROP DEFAULT;
 ALTER TABLE public.papers ALTER COLUMN paper_id DROP DEFAULT;
@@ -142,6 +146,7 @@ ALTER TABLE public.groups ALTER COLUMN group_id DROP DEFAULT;
 ALTER TABLE public.group_status ALTER COLUMN status_id DROP DEFAULT;
 ALTER TABLE public.group_review ALTER COLUMN review_id DROP DEFAULT;
 ALTER TABLE public.entry_store ALTER COLUMN entry_id DROP DEFAULT;
+ALTER TABLE public.element_symbols ALTER COLUMN symbol_id DROP DEFAULT;
 ALTER TABLE public.element_status ALTER COLUMN status_id DROP DEFAULT;
 ALTER TABLE public.element_review ALTER COLUMN review_id DROP DEFAULT;
 ALTER TABLE public.element_entries ALTER COLUMN element_id DROP DEFAULT;
@@ -158,6 +163,7 @@ ALTER TABLE public.author_review ALTER COLUMN review_id DROP DEFAULT;
 ALTER TABLE public.attributions ALTER COLUMN attribution_id DROP DEFAULT;
 ALTER TABLE public.attribution_status ALTER COLUMN status_id DROP DEFAULT;
 ALTER TABLE public.attribution_review ALTER COLUMN review_id DROP DEFAULT;
+ALTER TABLE public.analysis_techniques ALTER COLUMN technique_id DROP DEFAULT;
 DROP SEQUENCE public.users_user_id_seq;
 DROP TABLE public.users;
 DROP TABLE public.user_info;
@@ -219,6 +225,8 @@ DROP TABLE public.entry_store;
 DROP VIEW public.elements_with_bodies_papers_journals_active_with_id;
 DROP VIEW public.elements_with_bodies_papers_journals_active_no_id;
 DROP VIEW public.elements_pending;
+DROP SEQUENCE public.element_symbols_symbol_id_seq;
+DROP TABLE public.element_symbols;
 DROP SEQUENCE public.element_status_status_id_seq;
 DROP SEQUENCE public.element_review_review_id_seq;
 DROP TABLE public.element_review;
@@ -249,6 +257,8 @@ DROP SEQUENCE public.attributions_attribution_id_seq;
 DROP SEQUENCE public.attribution_status_status_id_seq;
 DROP SEQUENCE public.attribution_review_review_id_seq;
 DROP TABLE public.attribution_review;
+DROP SEQUENCE public.analysis_techniques_technique_id_seq;
+DROP TABLE public.analysis_techniques;
 DROP VIEW public.all_papers_with_authors;
 DROP VIEW public.full_attributions_all;
 DROP VIEW public.papers_all;
@@ -393,26 +403,26 @@ ALTER TYPE public.user_role OWNER TO group16;
 
 CREATE FUNCTION public.getmz(nomenclature text, the_group text, classification text, element_symbol text, less_than boolean, ppb_mean integer, sigfig integer, deviation integer, original_unit public.units, technique text, page_number integer) RETURNS public.mz
     LANGUAGE plpythonu
-    AS $$
-  _group = ''
-  _class = ''
-  if (the_group is not None):
-    _group = the_group
-  if (classification is not None):
-    _class = classification
-  return (
-    nomenclature,
-    _group,
-    _class,
-    element_symbol, 
-    less_than, 
-    ppb_mean, 
-    sigfig, 
-    deviation, 
-    original_unit, 
-    technique, 
-    page_number
-  )
+    AS $$
+  _group = ''
+  _class = ''
+  if (the_group is not None):
+    _group = the_group
+  if (classification is not None):
+    _class = classification
+  return (
+    nomenclature,
+    _group,
+    _class,
+    element_symbol, 
+    less_than, 
+    ppb_mean, 
+    sigfig, 
+    deviation, 
+    original_unit, 
+    technique, 
+    page_number
+  )
 $$;
 
 
@@ -1121,6 +1131,40 @@ CREATE VIEW public.all_papers_with_authors AS
 ALTER TABLE public.all_papers_with_authors OWNER TO group16;
 
 --
+-- Name: analysis_techniques; Type: TABLE; Schema: public; Owner: group16
+--
+
+CREATE TABLE public.analysis_techniques (
+    technique_id integer NOT NULL,
+    abbreviation text NOT NULL
+);
+
+
+ALTER TABLE public.analysis_techniques OWNER TO group16;
+
+--
+-- Name: analysis_techniques_technique_id_seq; Type: SEQUENCE; Schema: public; Owner: group16
+--
+
+CREATE SEQUENCE public.analysis_techniques_technique_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.analysis_techniques_technique_id_seq OWNER TO group16;
+
+--
+-- Name: analysis_techniques_technique_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: group16
+--
+
+ALTER SEQUENCE public.analysis_techniques_technique_id_seq OWNED BY public.analysis_techniques.technique_id;
+
+
+--
 -- Name: attribution_review; Type: TABLE; Schema: public; Owner: group16
 --
 
@@ -1708,6 +1752,40 @@ ALTER TABLE public.element_status_status_id_seq OWNER TO group16;
 --
 
 ALTER SEQUENCE public.element_status_status_id_seq OWNED BY public.element_status.status_id;
+
+
+--
+-- Name: element_symbols; Type: TABLE; Schema: public; Owner: group16
+--
+
+CREATE TABLE public.element_symbols (
+    symbol_id integer NOT NULL,
+    symbol text NOT NULL
+);
+
+
+ALTER TABLE public.element_symbols OWNER TO group16;
+
+--
+-- Name: element_symbols_symbol_id_seq; Type: SEQUENCE; Schema: public; Owner: group16
+--
+
+CREATE SEQUENCE public.element_symbols_symbol_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.element_symbols_symbol_id_seq OWNER TO group16;
+
+--
+-- Name: element_symbols_symbol_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: group16
+--
+
+ALTER SEQUENCE public.element_symbols_symbol_id_seq OWNED BY public.element_symbols.symbol_id;
 
 
 --
@@ -2878,6 +2956,13 @@ ALTER SEQUENCE public.users_user_id_seq OWNED BY public.users.user_id;
 
 
 --
+-- Name: analysis_techniques technique_id; Type: DEFAULT; Schema: public; Owner: group16
+--
+
+ALTER TABLE ONLY public.analysis_techniques ALTER COLUMN technique_id SET DEFAULT nextval('public.analysis_techniques_technique_id_seq'::regclass);
+
+
+--
 -- Name: attribution_review review_id; Type: DEFAULT; Schema: public; Owner: group16
 --
 
@@ -2990,6 +3075,13 @@ ALTER TABLE ONLY public.element_status ALTER COLUMN status_id SET DEFAULT nextva
 
 
 --
+-- Name: element_symbols symbol_id; Type: DEFAULT; Schema: public; Owner: group16
+--
+
+ALTER TABLE ONLY public.element_symbols ALTER COLUMN symbol_id SET DEFAULT nextval('public.element_symbols_symbol_id_seq'::regclass);
+
+
+--
 -- Name: entry_store entry_id; Type: DEFAULT; Schema: public; Owner: group16
 --
 
@@ -3092,6 +3184,16 @@ ALTER TABLE ONLY public.submissions ALTER COLUMN submission_id SET DEFAULT nextv
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN user_id SET DEFAULT nextval('public.users_user_id_seq'::regclass);
+
+
+--
+-- Data for Name: analysis_techniques; Type: TABLE DATA; Schema: public; Owner: group16
+--
+
+COPY public.analysis_techniques (technique_id, abbreviation) FROM stdin;
+1	INAA
+2	RNAA
+\.
 
 
 --
@@ -3594,11 +3696,137 @@ COPY public.element_status (status_id, element_id, current_status, submitted_by,
 
 
 --
+-- Data for Name: element_symbols; Type: TABLE DATA; Schema: public; Owner: group16
+--
+
+COPY public.element_symbols (symbol_id, symbol) FROM stdin;
+1	H
+2	He
+3	Li
+4	Be
+5	B
+6	C
+7	N
+8	O
+9	F
+10	Ne
+11	Na
+12	Mg
+13	Al
+14	Si
+15	P
+16	S
+17	Cl
+18	Ar
+19	K
+20	Ca
+21	Sc
+22	Ti
+23	V
+24	Cr
+25	Mn
+26	Fe
+27	Co
+28	Ni
+29	Cu
+30	Zn
+31	Ga
+32	Ge
+33	As
+34	Se
+35	Br
+36	Kr
+37	Rb
+38	Sr
+39	Y
+40	Zr
+41	Nb
+42	Mo
+43	Tc
+44	Ru
+45	Rh
+46	Pd
+47	Ag
+48	Cd
+49	In
+50	Sn
+51	Sb
+52	Te
+53	I
+54	Xe
+55	Cs
+56	Ba
+57	La
+58	Ce
+59	Pr
+60	Nd
+61	Pm
+62	Sm
+63	Eu
+64	Gd
+65	Tb
+66	Dy
+67	Ho
+68	Er
+69	Tm
+70	Yb
+71	Lu
+72	Hf
+73	Ta
+74	W
+75	Re
+76	Os
+77	Ir
+78	Pt
+79	Au
+80	Hg
+81	Tl
+82	Pb
+83	Bi
+84	Po
+85	At
+86	Rn
+87	Fr
+88	Ra
+89	Ac
+90	Th
+91	Pa
+92	U
+93	Np
+94	Pu
+95	Am
+96	Cm
+97	Bk
+98	Cf
+99	Es
+100	Fm
+101	Md
+102	No
+103	Lr
+104	Rf
+105	Db
+106	Sg
+107	Bh
+108	Hs
+109	Mt
+110	Ds
+111	Rg
+112	Cn
+113	Nh
+114	Fl
+115	Mc
+116	Lv
+117	Ts
+118	Og
+\.
+
+
+--
 -- Data for Name: entry_store; Type: TABLE DATA; Schema: public; Owner: group16
 --
 
 COPY public.entry_store (entry_id, username, savedata, pdf_path, pending, last_saved_date) FROM stdin;
-3	user1	{"doi": "10.1080/00111619.1975.10690101", "issue": "22", "note0": "Note 1", "note1": "  NOTE 2", "class0": "A", "class1": "B", "group0": "IIG", "group1": "IIG", "series": "33", "volume": "11", "page0-0": "1", "page0-1": "1", "page1-2": "1", "page1-3": "1", "page1-4": "1", "page1-5": "1", "pubYear": "2019", "units0-0": "wt_percent", "units0-1": "ppm", "units1-2": "ppb", "units1-3": "mg_g", "units1-4": "ug_g", "units1-5": "ng_g", "bodyName0": "Giant Rock", "bodyName1": "Lil Guy", "element0-0": "Fe", "element0-1": "K", "element1-2": "Au", "element1-3": "Ru", "element1-4": "Co", "element1-5": "Zn", "firstName0": "Alex", "firstName1": "", "paperTitle": "Super Cool Space Rocks", "journalName": "Popular Journal", "middleName0": "Arty", "middleName1": "", "deviation0-0": "1", "deviation0-1": "0", "deviation1-2": "3", "deviation1-3": "0", "deviation1-4": "5", "deviation1-5": "0", "primaryName0": "Anderson", "primaryName1": "Umbrella Corp", "technique0-0": "RNAA", "technique0-1": "RNAA", "technique1-2": "RNAA", "technique1-3": "RNAA", "technique1-4": "RNAA", "technique1-5": "RNAA", "measurement0-0": "11", "measurement0-1": "22", "measurement1-2": "33", "measurement1-3": "44", "measurement1-4": "55", "measurement1-5": "666"}		t	2019-03-26 01:30:13.842871
+36	user1	{"doi": "10.1080/00111619.1975.10690101", "issue": "22", "note0": "Note 1", "note1": "  NOTE 2", "group0": "IIG", "group1": "IIG", "series": "33", "volume": "11", "page0-0": "1", "page0-1": "1", "page1-2": "1", "page1-3": "1", "page1-4": "1", "page1-5": "1", "pubYear": "2019", "units0-0": "wt_percent", "units0-1": "ppm", "units1-2": "ppb", "units1-3": "mg_g", "units1-4": "ug_g", "units1-5": "ng_g", "bodyName0": "Giant Rock", "bodyName1": "Lil Guy", "element0-0": "fe", "element0-1": "k", "element1-2": "au", "element1-3": "ru", "element1-4": "co", "element1-5": "zn", "firstName0": "Alex", "firstName1": "Betty", "paperTitle": "Super Cool Space Rocks", "journalName": "Popular Journal", "middleName0": "Arty", "middleName1": "Bee", "deviation0-0": "1", "deviation0-1": "0", "deviation1-2": "3", "deviation1-3": "0", "deviation1-4": "5", "deviation1-5": "0", "primaryName0": "Anderson", "primaryName1": "Bravo", "technique0-0": "RNAA", "technique0-1": "RNAA", "technique1-2": "RNAA", "technique1-3": "RNAA", "technique1-4": "RNAA", "technique1-5": "RNAA", "measurement0-0": "11", "measurement0-1": "22", "measurement1-2": "33", "measurement1-3": "44", "measurement1-4": "55", "measurement1-5": "666"}		t	2019-03-26 17:43:33.323191
 \.
 
 
@@ -3768,7 +3996,8 @@ COPY public.papers (paper_id, journal_id, title, doi, status_id) FROM stdin;
 --
 
 COPY public.session (sid, sess, expire) FROM stdin;
-Pd8XMzkEZLvLPDDSkRg9Ognmv2dhEP5T	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-26T02:24:06.356Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-26 02:30:18
+6uk12-Yykx6DL-Zm2yW9SiXBYiTqCE1O	{"cookie":{"originalMaxAge":3599999,"expires":"2019-03-26T16:47:35.759Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-26 17:46:13
+8d1E5uGM9EnHkUX4e85bMevsn_-mYm3q	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-26T17:50:17.569Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-26 18:43:49
 \.
 
 
@@ -3802,6 +4031,13 @@ COPY public.users (user_id, username, password_hash, role_of) FROM stdin;
 3	user2	$2b$10$LKFaCSVAj/7yEySCdZ.jfO2jHk9ctbDflyvjziWHHWfA/b3gyatK2	data-entry
 2	user3	$2b$10$LhQtGNGUeCvMDoDUgACo5e.WlWMSvWDEVa/n91nNoPHKglVU4YzVa	user
 \.
+
+
+--
+-- Name: analysis_techniques_technique_id_seq; Type: SEQUENCE SET; Schema: public; Owner: group16
+--
+
+SELECT pg_catalog.setval('public.analysis_techniques_technique_id_seq', 2, true);
 
 
 --
@@ -3917,10 +4153,17 @@ SELECT pg_catalog.setval('public.element_status_status_id_seq', 141, true);
 
 
 --
+-- Name: element_symbols_symbol_id_seq; Type: SEQUENCE SET; Schema: public; Owner: group16
+--
+
+SELECT pg_catalog.setval('public.element_symbols_symbol_id_seq', 118, true);
+
+
+--
 -- Name: entry_store_entry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: group16
 --
 
-SELECT pg_catalog.setval('public.entry_store_entry_id_seq', 35, true);
+SELECT pg_catalog.setval('public.entry_store_entry_id_seq', 36, true);
 
 
 --
@@ -4019,6 +4262,22 @@ SELECT pg_catalog.setval('public.submissions_submission_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.users_user_id_seq', 4, true);
+
+
+--
+-- Name: analysis_techniques analysis_techniques_abbreviation_key; Type: CONSTRAINT; Schema: public; Owner: group16
+--
+
+ALTER TABLE ONLY public.analysis_techniques
+    ADD CONSTRAINT analysis_techniques_abbreviation_key UNIQUE (abbreviation);
+
+
+--
+-- Name: analysis_techniques analysis_techniques_pkey; Type: CONSTRAINT; Schema: public; Owner: group16
+--
+
+ALTER TABLE ONLY public.analysis_techniques
+    ADD CONSTRAINT analysis_techniques_pkey PRIMARY KEY (technique_id);
 
 
 --
@@ -4163,6 +4422,22 @@ ALTER TABLE ONLY public.element_review
 
 ALTER TABLE ONLY public.element_status
     ADD CONSTRAINT element_status_pkey PRIMARY KEY (status_id);
+
+
+--
+-- Name: element_symbols element_symbols_pkey; Type: CONSTRAINT; Schema: public; Owner: group16
+--
+
+ALTER TABLE ONLY public.element_symbols
+    ADD CONSTRAINT element_symbols_pkey PRIMARY KEY (symbol_id);
+
+
+--
+-- Name: element_symbols element_symbols_symbol_key; Type: CONSTRAINT; Schema: public; Owner: group16
+--
+
+ALTER TABLE ONLY public.element_symbols
+    ADD CONSTRAINT element_symbols_symbol_key UNIQUE (symbol);
 
 
 --
