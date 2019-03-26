@@ -403,26 +403,26 @@ ALTER TYPE public.user_role OWNER TO group16;
 
 CREATE FUNCTION public.getmz(nomenclature text, the_group text, classification text, element_symbol text, less_than boolean, ppb_mean integer, sigfig integer, deviation integer, original_unit public.units, technique text, page_number integer) RETURNS public.mz
     LANGUAGE plpythonu
-    AS $$
-  _group = ''
-  _class = ''
-  if (the_group is not None):
-    _group = the_group
-  if (classification is not None):
-    _class = classification
-  return (
-    nomenclature,
-    _group,
-    _class,
-    element_symbol, 
-    less_than, 
-    ppb_mean, 
-    sigfig, 
-    deviation, 
-    original_unit, 
-    technique, 
-    page_number
-  )
+    AS $$
+  _group = ''
+  _class = ''
+  if (the_group is not None):
+    _group = the_group
+  if (classification is not None):
+    _class = classification
+  return (
+    nomenclature,
+    _group,
+    _class,
+    element_symbol, 
+    less_than, 
+    ppb_mean, 
+    sigfig, 
+    deviation, 
+    original_unit, 
+    technique, 
+    page_number
+  )
 $$;
 
 
@@ -3826,7 +3826,7 @@ COPY public.element_symbols (symbol_id, symbol) FROM stdin;
 --
 
 COPY public.entry_store (entry_id, username, savedata, pdf_path, pending, last_saved_date) FROM stdin;
-36	user1	{"doi": "10.1080/00111619.1975.10690101", "issue": "22", "note0": "Note 1", "note1": "  NOTE 2", "group0": "IIG", "group1": "IIG", "series": "33", "volume": "11", "page0-0": "1", "page0-1": "1", "page1-2": "1", "page1-3": "1", "page1-4": "1", "page1-5": "1", "pubYear": "2019", "units0-0": "wt_percent", "units0-1": "ppm", "units1-2": "ppb", "units1-3": "mg_g", "units1-4": "ug_g", "units1-5": "ng_g", "bodyName0": "Giant Rock", "bodyName1": "Lil Guy", "element0-0": "fe", "element0-1": "k", "element1-2": "au", "element1-3": "ru", "element1-4": "co", "element1-5": "zn", "firstName0": "Alex", "firstName1": "Betty", "paperTitle": "Super Cool Space Rocks", "journalName": "Popular Journal", "middleName0": "Arty", "middleName1": "Bee", "deviation0-0": "1", "deviation0-1": "0", "deviation1-2": "3", "deviation1-3": "0", "deviation1-4": "5", "deviation1-5": "0", "primaryName0": "Anderson", "primaryName1": "Bravo", "technique0-0": "RNAA", "technique0-1": "RNAA", "technique1-2": "RNAA", "technique1-3": "RNAA", "technique1-4": "RNAA", "technique1-5": "RNAA", "measurement0-0": "11", "measurement0-1": "22", "measurement1-2": "33", "measurement1-3": "44", "measurement1-4": "55", "measurement1-5": "666"}		t	2019-03-26 17:43:33.323191
+37	user1	{"doi": "10.1080/00111619.1975.10690101", "issue": "22", "note0": "Note 1", "note1": "  NOTE 2", "group0": "IIG", "group1": "IIG", "series": "33", "volume": "11", "page0-0": "1", "page0-1": "1", "page1-2": "1", "page1-3": "1", "page1-4": "1", "page1-5": "1", "pubYear": "2019", "units0-0": "wt_percent", "units0-1": "ppm", "units1-2": "ppb", "units1-3": "mg_g", "units1-4": "ug_g", "units1-5": "ng_g", "bodyName0": "Giant Rock", "bodyName1": "Lil Guy", "element0-0": "fe", "element0-1": "k", "element1-2": "au", "element1-3": "ru", "element1-4": "co", "element1-5": "zn", "firstName0": "Alex", "firstName1": "Betty", "paperTitle": "Super Cool Space Rocks", "journalName": "Popular Journal", "lessThan0-1": "on", "lessThan1-2": "on", "lessThan1-3": "on", "middleName0": "Arty", "middleName1": "Bee", "deviation0-0": "1", "deviation0-1": "0", "deviation1-2": "3", "deviation1-3": "0", "deviation1-4": "5", "deviation1-5": "0", "primaryName0": "Anderson", "primaryName1": "Bravo", "technique0-0": "RNAA", "technique0-1": "RNAA", "technique1-2": "RNAA", "technique1-3": "RNAA", "technique1-4": "RNAA", "technique1-5": "RNAA", "measurement0-0": "11", "measurement0-1": "22", "measurement1-2": "33", "measurement1-3": "44", "measurement1-4": "55", "measurement1-5": "666"}		t	2019-03-26 18:20:08.467312
 \.
 
 
@@ -3996,8 +3996,8 @@ COPY public.papers (paper_id, journal_id, title, doi, status_id) FROM stdin;
 --
 
 COPY public.session (sid, sess, expire) FROM stdin;
-6uk12-Yykx6DL-Zm2yW9SiXBYiTqCE1O	{"cookie":{"originalMaxAge":3599999,"expires":"2019-03-26T16:47:35.759Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-26 17:46:13
 8d1E5uGM9EnHkUX4e85bMevsn_-mYm3q	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-26T17:50:17.569Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-26 18:43:49
+yJHzsuQymLJaAoJuTnLGhesWn4VwXNyx	{"cookie":{"originalMaxAge":3600000,"expires":"2019-03-26T19:19:57.098Z","httpOnly":true,"path":"/"},"passport":{"user":4}}	2019-03-26 19:20:14
 \.
 
 
@@ -4163,7 +4163,7 @@ SELECT pg_catalog.setval('public.element_symbols_symbol_id_seq', 118, true);
 -- Name: entry_store_entry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: group16
 --
 
-SELECT pg_catalog.setval('public.entry_store_entry_id_seq', 36, true);
+SELECT pg_catalog.setval('public.entry_store_entry_id_seq', 37, true);
 
 
 --
