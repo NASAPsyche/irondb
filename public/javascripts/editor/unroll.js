@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-undef
 const dict = savedData; // savedData defined in editor.ejs
 
