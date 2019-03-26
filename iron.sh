@@ -423,9 +423,11 @@ while getopts ":hilpjqafsxbrm " opt; do
       delete_containers
       ;;
     b ) #backup db
+      wait_for_containers
       make_backup
       ;;
     r ) #restore most recent db backup
+      wait_for_containers
       restore_recent
       ;;
     * ) 

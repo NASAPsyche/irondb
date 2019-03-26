@@ -37,7 +37,8 @@ $(document).ready(async function() {
  * @return {string} returns string with username, form data, and pdf string
  */
 function serializeInsertForm() {
-  const serializedData = $('#insert-form').serializeArray();
+  // eslint-disable-next-line max-len
+  const serializedData = $('#insert-form').find(':input:not(:hidden)').serializeArray();
   const jsondata_ = {};
   // match keys to values
   serializedData.forEach(function(element) {

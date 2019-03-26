@@ -81,7 +81,6 @@ function getSigFig(num) {
   );
 }
 
-
 /** ----------------------------------- */
 /**        EJS Templates for Add        */
 /** ----------------------------------- */
@@ -244,8 +243,31 @@ let bodyNameIDCount = 1;
 let groupIDCount = 1;
 let classIDCount = 1;
 
+
 // Simple Add Event Handlers
-$( '#insert-form' ).on('click', 'i.add-author', function( event ) {
+$( '#insert-form' ).on('click', 'i.add-author', ( event ) => {
+  addAuthor(this);
+});
+
+
+$( '#insert-form' ).on('click', 'i.add-note', function( event ) {
+  addNote(this);
+});
+
+
+$( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
+  addMeasurement(this);
+});
+
+
+$( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
+  addMeteorite(this);
+});
+
+/**
+ * @param  {object} e this
+ */
+function addAuthor( e ) {
   // Dynamically create IDs
   const primaryNameID = 'primaryName' + primaryNameIDCount;
   const firstNameID = 'firstName' + firstNameIDCount;
@@ -270,14 +292,16 @@ $( '#insert-form' ).on('click', 'i.add-author', function( event ) {
   const html = ejs.render(authorTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.meteorite-header').first().before(html);
+  $(e).parent().siblings('.meteorite-header').first().before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
-});
+}
 
-
-$( '#insert-form' ).on('click', 'i.add-note', function( event ) {
+/**
+ * @param  {object} e this
+ */
+function addNote( e ) {
   // Dynamically create IDs
   const noteID = 'note' + noteIDCount;
 
@@ -292,16 +316,18 @@ $( '#insert-form' ).on('click', 'i.add-note', function( event ) {
   const html = ejs.render(noteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('button:submit').before(html);
+  $(e).parent().siblings('button:submit').before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
-});
+}
 
-
-$( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
+/**
+ * @param  {object} e this
+ */
+function addMeasurement( e ) {
   // Get parent meteorite
-  const meteoriteID = $(this).parent()
+  const meteoriteID = $(e).parent()
       .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
 
   // Dynamically create IDs
@@ -358,15 +384,18 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   if ( $( '#' + nextID ).length ) {
     $( '#' + nextID ).before(html);
   } else {
-    $(this).parent().siblings('.notes-header')
+    $(e).parent().siblings('.notes-header')
         .first().before(html);
   }
 
   // Hide remove ui
   $( 'i.remove' ).hide();
-});
+}
 
-$( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
+/**
+ * @param  {object} e this
+ */
+function addMeteorite( e ) {
   // Dynamically create IDs
   const meteoriteID = 'meteorite' + meteoriteIDCount;
   const bodyNameID = 'bodyName' + bodyNameIDCount;
@@ -374,18 +403,17 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const classID = 'class' + classIDCount;
   const elementID = 'element' + meteoriteIDCount + '-' + elementIDCount;
   const lessThanID = 'lessThan' + meteoriteIDCount + '-' + lessThanIDCount;
-  // eslint-disable-next-line
-  const measurementID = 'measurement' + meteoriteIDCount + '-' + measurementIDCount;
+  const measurementID =
+  'measurement' + meteoriteIDCount + '-' + measurementIDCount;
   const deviationID = 'deviation' + meteoriteIDCount + '-' + deviationIDCount;
   const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const sigfigID = 'sigfig' + meteoriteIDCount + '-' + sigfigIDCount;
   const convertedMeasurementID =
-    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  'convertedMeasurement' + meteoriteIDCount + '-' + convertedMeasurementIDCount;
   const convertedDeviationID =
-    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
-
+  'convertedDeviation' + meteoriteIDCount + '-' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -430,11 +458,11 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const html = ejs.render(meteoriteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.notes-header').before(html);
+  $(e).parent().siblings('.notes-header').before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
-});
+}
 
 /** ---------------------------- */
 /**        UI Remove Events      */
