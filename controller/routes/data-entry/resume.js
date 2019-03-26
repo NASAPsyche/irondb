@@ -11,7 +11,14 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   `;
   const fetchJsonValue = [req.user.username];
   const {rows} = await pg.aQuery(fetchJsonQuery, fetchJsonValue);
-  const fetchedData = JSON.stringify(rows[0]['savedata']);
+
+  let fetchedData;
+  if ( rows === 'undefined' || rows.length == 0) {
+    fetchedData = '';
+  } else {
+    fetchedData = JSON.stringify(rows[0]['savedata']);
+  }
+
   res.render('editor', {
     username: req.user.username,
     data: null,
