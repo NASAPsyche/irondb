@@ -224,7 +224,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "received fast shutdown request")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..3}
+    for i in {1..2}
     do
       echo -n "."
       sleep 2
@@ -234,7 +234,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "exited with exit code 1")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..3}
+    for i in {1..2}
     do
       echo -n "."
       sleep 2
@@ -244,7 +244,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "incomplete startup packet")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..3}
+    for i in {1..2}
     do
       echo -n "."
       sleep 2
@@ -254,7 +254,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "FATAL:  the database system is starting up")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..3}
+    for i in {1..2}
     do
       echo -n "."
       sleep 2
@@ -264,7 +264,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "Failed to prune sessions: the database system is starting up")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..3}
+    for i in {1..2}
     do
       echo -n "."
       sleep 2
@@ -274,7 +274,7 @@ function wait_for_containers ()
   PGACK="$(docker-compose logs  | grep "database system was not properly shut down; automatic recovery in progress")"
   if [[ "$PGACK" != "$NORESP" ]]
   then
-    for i in {1..3}
+    for i in {1..2}
     do
       echo -n "."
       sleep 2
