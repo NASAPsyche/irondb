@@ -50,9 +50,11 @@
         </div>
     </div>
 
+
     <div hidden="true" id="filepath" value="<%- data %>"><%- data %></div>
     <%- include('bootstrap/js'); %>
     <%- include('components/ejs'); %>
+    <%- include('components/drop-down-script'); %>
     <script src='/javascripts/pdfobject.min.js'></script>
     <script>
         const fp = $( '#filepath' ).attr('value');
