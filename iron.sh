@@ -58,6 +58,7 @@ fi
 # Install the global dependencies
 function install_global_deps ()
 {
+  install_pip
   echo "Installing global dependencies"
   # Global dependencies for testing node
   if [[ $EUID -ne 0 ]];
@@ -342,6 +343,7 @@ function wait_for_containers ()
 # Populate mock data
 function populate_mock_data ()
 {
+  install_pip
   NORESP=""
   PSYEXISTS="$(pip list | grep "psycopg2-binary")"
  
@@ -401,7 +403,6 @@ while getopts ":hilpjqafsxbrm " opt; do
     i ) #initial install
       stop_containers
       install_global_deps
-      install_pip
       install_node_deps
       rm_db
       remove_dangles
