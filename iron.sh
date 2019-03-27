@@ -372,8 +372,8 @@ function install_pip ()
     MYENV=$(uname -s)
     LINUXENV="Linux"
     MACENV="Darwin"
-    PYTWO=$(python --version | grep "n 2.")
-    PYTHREE=$(python --version | grep "n 3.")
+    PYTWO=$(python --version 2>&1 | grep "n 2.")
+    PYTHREE=$(python --version 2>&1 | grep "n 3.")
     echo "PYTWO is $PYTWO"
     echo "PYTHREE is $PYTHREE"
     echo "myEnv is $MYENV"
