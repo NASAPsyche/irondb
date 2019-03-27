@@ -360,6 +360,35 @@ function populate_mock_data ()
   exit 0
 }
 
+function install_pip ()
+{
+  NORESP=""
+  PIPEXISTS="$(which pip)"
+  if [[ "$PIPEXISTS" == "$NORESP" ]]; then
+    echo "installing pip"
+
+    MYENV="$(uname -s)"
+    LINUXENV="Linux"
+    MACENV="Darwin"
+    PYTWO="$(python --version | grep " 2.")"
+    PYTHREE="$(python --version | grep " 3.")"
+    
+    if [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
+      sudo apt-get install -y python-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]]; then
+      apt-get install -y python-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTHREE" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
+      sudo apt-get install -y python3-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTHREE" != "$NORESP" ]]; then
+      apt-get install -y python3-pip 
+    elif  [[ "$MYENV" == "$MACENV" ]]; then
+      python -m ensurepip
+    fi
+  else
+    echo "pip is already installed"
+  fi
+}
+
 ### BEGIN ###
 
 # Read in the options and perform the tasks
@@ -372,6 +401,7 @@ while getopts ":hilpjqafsxbrm " opt; do
     i ) #initial install
       stop_containers
       install_global_deps
+      install_pip
       install_node_deps
       rm_db
       remove_dangles
