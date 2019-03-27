@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Iron Meteorite Database</title>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/single-entry.css' />
+  </head>
+  <body>
+    <% if(isSignedIn){ %>
+      <%- include('components/navbar_signed_in'); %>
+    <% } else { %>
+      <%- include('components/navbar'); %>
+    <% } %>
+    
+    <div class="container-fluid p-0">
+      <div class="row" id="content-row">
+        <div class="col-md-3 bg-light">
+          <div class="row justify-content-center ml-3 mr-3 mt-5 mb-0">
+              <h2>Body found in these papers:</h2>
+          </div>
+          <div class="row justify-content-center pt-3 ml-3 mr-2">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                  <% for(let i=0; i < PaperList.length; i++) { %>
+                    <% if(PaperID == PaperList[i].paper_id) { %>
+                      <a class="nav-link disabled" href="/database/meteorite/<%= Entries[0].entry_id %>?paper=<%= PaperList[i].paper_id %>">
+                        <%= PaperList[i].title %>
+                      </a>
+                    <% } else { %>
+                      <a class="nav-link"  href="/database/meteorite/<%= Entries[0].entry_id %>?paper=<%= PaperList[i].paper_id %>">
+                        <%= PaperList[i].title %>
+                      </a>
+                    <% } %>
+                  <% } %>
+                </li>
+              </ul>
+          </div>     
+        </div>
+  
+        <div class="col-md-9 ">
+          <div class="row justify-content-center bd-highlight text-light bg-danger pt-3">
+              <h1><%= Entries[0].meteorite_name %></h1>
+          </div>
+          <div  class="row justify-content-center bd-highlight pt-3 mb-3 text-light bg-secondary">
+              <h2>Group: <%= Entries[0].classification_group %></h2>
+          </div>
+
+          <div class="d-flex flex-column justify-content-center  mb-3 p-2" id="paper-info">
+
+            <div class="row ml-3">
+              <h4>Paper</h4>
+              <div class="col-10 offset-1">
+                <div class="row">
+                  <p>Paper Title: <em><%= Entries[0].title %></em></p>
+                </div>
+                <div class="row">
+                  <p>Authors: <%= Entries[0].authors %></p>
+                </div>            
+              </div>
+            </div>
+
+            <div class="row ml-3">
+              <h4>Journal</h4>
+              <div class="col-10 offset-1">
+                <div class="row">
+                  <p><%= Entries[0].journal_name %> Issue:<%= Entries[0].issue_number %></p>
+                </div>
+                <div class="row">
+                  <p>Published: <%= Entries[0].published_year %></p>
+                </div>            
+              </div>
+            </div>
+          </div>
+
+          <!-- Major Elements -->
+          <div class="row mt-5">
+            <div class="col-10 offset-1">
+              <h4>Major Elements</h4>
+              <table class="table table-striped table-bordered table-hover table-sm">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Element</th>
+                    <th>Measurement (wt%)</th>
+                    <th>Measurement Technique</th>
+                    <th>Pg.#</th> 
+                    <th>Note</th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(var i=0; i < MajorElements.length; i++) { %>
+                      <tr>
+                        <th>
+                          <%= MajorElements[i].element_symbol.charAt(0).toUpperCase() + MajorElements[i].element_symbol.slice(1)%>
+                        </th>
+                        <th>
+                          <p>
+                            <% if (MajorElements[i].less_than == true) { %>
+                              &lt;
+                            <% } %>
+                            <%= MajorElements[i].ppb_mean %>
+                            <% if (MajorElements[i].deviation != '0') { %>
+                              &plusmn; <%= MajorElements[i].deviation %>
+                            <% } %>
+                          </p>
+                        </th>
+                        <th>
+                          <%= MajorElements[i].technique%>
+                        </th>
+                        <th>
+                          <%= MajorElements[i].page_number%>
+                        </th>
+                        <th>
+                          <%= MajorElements[i].note%>
+                        </th>
+                      </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Minor Elements -->
+          <div class="row mt-5">
+            <div class="col-10 offset-1">
+              <h4>Minor Elements</h4>
+              <table class="table table-striped table-bordered table-hover table-sm">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Element</th>
+                    <th>Measurement (ppm)</th>
+                    <th>Measurement Technique</th>
+                    <th>Pg.#</th> 
+                    <th>Note</th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(var i=0; i < MinorElements.length; i++) { %>
+                    <tr>
+                      <th>
+                        <%= MinorElements[i].element_symbol.charAt(0).toUpperCase() + MinorElements[i].element_symbol.slice(1)%>
+                      </th>
+                      <th>
+                        <p>
+                          <% if (MinorElements[i].less_than === true) { %>
+                            &lt;
+                          <% } %>
+                          <%= MinorElements[i].ppb_mean %>
+                          <% if (MinorElements[i].deviation != '0') { %>
+                            &plusmn; <%= MinorElements[i].deviation %>
+                          <% } %>
+                        </p>
+                      </th>
+                      <th>
+                        <%= MinorElements[i].technique%>
+                      </th>
+                      <th>
+                        <%= MinorElements[i].page_number%>
+                      </th>
+                      <th>
+                        <%= MinorElements[i].note%>
+                      </th>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Trace Elements -->
+          <div class="row mt-5">
+            <div class="col-10 offset-1">
+              <h4>Trace Elements</h4>
+              <table class="table table-striped table-bordered table-hover table-sm">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Element</th>
+                    <th>Measurement (ppb)</th>
+                    <th>Measurement Technique</th>
+                    <th>Pg.#</th> 
+                    <th>Note</th> 
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(var i=0; i < TraceElements.length; i++) { %>
+                    <tr>
+                      <th>
+                        <%= TraceElements[i].element_symbol.charAt(0).toUpperCase() + TraceElements[i].element_symbol.slice(1)%>
+                      </th>
+                      <th>
+                        <p>
+                          <% if (TraceElements[i].less_than === true) { %>
+                            &lt;
+                          <% } %>
+                          <%= TraceElements[i].ppb_mean %>
+                          <% if (TraceElements[i].deviation != '0') { %>
+                            &plusmn; <%= TraceElements[i].deviation %>
+                          <% } %>
+                        </p>
+                      </th>
+                      <th>
+                        <%= TraceElements[i].technique%>
+                      </th>
+                      <th>
+                        <%= TraceElements[i].page_number%>
+                      </th>
+                      <th>
+                        <%= TraceElements[i].note%>
+                      </th>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <%- include('bootstrap/js'); %>
+  </body>
+</html>

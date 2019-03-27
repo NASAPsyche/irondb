@@ -1,0 +1,21 @@
+.card {
+    background-color: #8c1d40;
+    box-shadow: 8px 8px 6px grey;
+}
+
+h3 {
+    color: #FFC627;
+}
+
+.thead-dark {
+    color:white;
+    background-color: black;
+}
+
+.btn-danger {
+    font-size: 1.67rem;
+}
+
+.badge {
+    margin: .09rem;
+}

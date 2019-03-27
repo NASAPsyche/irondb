@@ -1,0 +1,18 @@
+// Custom overrides to default bootstrap styles
+// ASU Color Palate found at https://brandguide.asu.edu/Elements-of-the-brand/Color-palette
+
+// Primary Color Overrides
+$red:     #8C1D40;
+$yellow:  #FFC627;
+
+
+// Secondary Color Overrides
+$green:   #78BE20;
+$blue:    #00A3E0;
+$orange:  #FF7F32;
+$gray-600: #5C6670;
+
+// Brand Color Overrides
+$info:    $orange;
+
+@import "../../node_modules/bootstrap/scss/bootstrap";

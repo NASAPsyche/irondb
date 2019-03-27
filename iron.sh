@@ -67,6 +67,13 @@ function install_global_deps ()
     sudo npm install -g jest-cli
   else
     echo "running as su"
+    MYENV="$(uname -s)"
+    LINUXENV="Linux"
+    if [[ "$MYENV" == "$LINUXENV"  ]];
+    then 
+      apt update
+      apt install npm -y
+    fi
     npm install -g gulp-cli
     npm install -g jest-cli
   fi
@@ -162,18 +169,26 @@ function delete_containers ()
   esac
 }
 
-# Make a backup of the db to irondb/backup-pg/pg_timestamp.sql
+# Remove the dangly bits
+function remove_dangles ()
+{
+  echo "Remove dangling images and volumes if any exist"
+  docker images -aq -f 'dangling=true' | xargs docker rmi
+  docker volume ls -q -f 'dangling=true' | xargs docker volume rm
+}
+
+# Make a backup of the db to irondb/model/backup-pg/pg_timestamp.sql
 function make_backup ()
 {
   echo ""
-  echo "Making backup to irondb/backup-pg/"
-  docker exec -t postgres pg_dump -c -U group16 -d postgres > backup-pg/pg_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+  echo "Making backup to irondb/model/backup-pg/"
+  docker exec -t postgres pg_dump -c -U group16 -d postgres > model/backup-pg/pg_`date +%d-%m-%Y"_"%H_%M_%S`.sql
 }
 
 # Restore most recent backup of db
 function restore_recent ()
 {
-  cd backup-pg
+  cd model/backup-pg
   STR="$(ls -tr | tail -1)"
   echo "Restoring from $STR"
   sleep 1
@@ -181,45 +196,174 @@ function restore_recent ()
   cd ..
 }
 
+# Wait for containers to be available
+function wait_for_containers ()
+{
+  echo "Waiting for the containers to initialize"
+  NORESP=""
+  # Check that pg is available from logs of call to wait-for-it.sh
+  COUNTER=0
+  PGACK="$(docker-compose logs  | grep "is available after")"
+  while [[ "$PGACK" = "$NORESP" ]]
+  do
+    echo -n "."
+    sleep 2
+    PGACK="$(docker-compose logs  | grep "is available after")"
+    COUNTER=$((COUNTER + 1))
+    if [[ "$COUNTER" -ge 30 ]]
+    then
+      echo ""
+      echo "This operation timed out. Make sure that Docker is running and try again."
+      exit 1
+    fi
+  done
+
+  # Now that postgres is available, check for anything that delays ready status
+  # Check for 'received fast shutdown request' and wait a bit if found
+  echo " postgres is available, checking for full startup"
+  PGACK="$(docker-compose logs  | grep "received fast shutdown request")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..2}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+  # Check postgres for any abnormal exits and wait a bit if found
+  PGACK="$(docker-compose logs  | grep "exited with exit code 1")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..2}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+  # Check for incomplete startup packet and wait a bit if found
+  PGACK="$(docker-compose logs  | grep "incomplete startup packet")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..2}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+
+  PGACK="$(docker-compose logs  | grep "FATAL:  the database system is starting up")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..2}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+
+  PGACK="$(docker-compose logs  | grep "Failed to prune sessions: the database system is starting up")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..2}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+
+  PGACK="$(docker-compose logs  | grep "database system was not properly shut down; automatic recovery in progress")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    for i in {1..2}
+    do
+      echo -n "."
+      sleep 2
+    done
+  fi
+  # Check for postgres making corrections
+  PGACK="$(docker-compose logs  | grep "redo starts at")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    PGACK="$(docker-compose logs  | grep "redo done")"
+    COUNTER=0
+    while [[ "$PGACK" = "$NORESP" ]]
+    do
+      echo -n "."
+      sleep 2
+      COUNTER=$((COUNTER + 1))
+      PGACK="$(docker-compose logs  | grep "redo done")"
+      if [[ "$COUNTER" -ge 5 ]]
+      then
+        break
+      fi
+    done
+  fi
+  # Check for a relation error, this is bad, something wasn't initialized correctly
+  PGACK="$(docker-compose logs  | grep "does not exist at character")"
+  if [[ "$PGACK" != "$NORESP" ]]
+  then
+    echo " there was a call to a non-existant relation, exiting"
+    exit 1
+  fi
+  
+
+  echo " checking Node server for availability"
+  COUNTER=0
+  RES="$(curl --write-out %{http_code} --silent --output /dev/null localhost:3001)"
+  GOODRES="200"
+  BADFIVEHUNDRED="500"
+  echo -n "Response code: $RES"
+  while [[ "$RES" != "$GOODRES" ]]
+  do
+    if [[ "$RES" = "$BADFIVEHUNDRED" ]]
+    then
+      echo " Internal server error, exiting"
+      exit 1
+    fi
+    sleep 5
+    RES="$(curl --write-out %{http_code} --silent --output /dev/null localhost:3001)"
+    echo -n " $RES"
+    COUNTER=$((COUNTER + 1))
+    if [[ "$COUNTER" -ge 12 ]]
+    then
+      echo ""
+      echo "Node is not responding on the local network."
+      echo "Run the following command for more information:"
+      echo ""
+      echo "      docker-compose logs -f -t"
+      echo ""
+      exit 1
+    fi
+  done
+  echo ""
+  echo "Node appears to be running"
+}
+
 # Populate mock data
 function populate_mock_data ()
 {
-  echo "Populating mock data"
-  echo "Connecting to postgres, this may take some time"
   NORESP=""
   PSYEXISTS="$(pip list | grep "psycopg2-binary")"
-  PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
+ 
   # install psycopg2-binary if not exists
   if [[ "$PSYEXISTS" =  "$NORESP" ]]
   then 
     pip install psycopg2-binary
   fi
 
-  COUNTER=0
-  while [[ "$PGACK" = "$NORESP" ]]
-  do
-    echo -n "."
-    sleep 1
-    PGACK="$(docker-compose logs  | grep "PostgreSQL init process complete")"
-    COUNTER=$((COUNTER + 1))
-    if [[ "$COUNTER" -ge 30 ]]
-    then
-      echo "This operation timed out. Make sure that Postgres is running and try again."
-      exit 1;
-    fi
-  done
+  wait_for_containers
 
-  echo ""
-  echo "adding users"
-  node docker/mock-users.js 
-  echo "adding user info"
-  python docker/mock-user-info.py 
+  echo " "
+  echo "Adding mock users"
+  node docker/mock/mock-users.js 
+  python docker/mock/mock-user-info.py 
+  exit 0
 }
 
 ### BEGIN ###
 
 # Read in the options and perform the tasks
-while getopts ":hilpqafsxbrm " opt; do
+while getopts ":hilpjqafsxbrm " opt; do
   case ${opt} in
     h )
       show_help
@@ -230,6 +374,7 @@ while getopts ":hilpqafsxbrm " opt; do
       install_global_deps
       install_node_deps
       rm_db
+      remove_dangles
       build_containers
       start_detached
       ;;
@@ -241,8 +386,15 @@ while getopts ":hilpqafsxbrm " opt; do
     p ) #launch with fresh postgres init
       stop_containers
       rm_db
+      remove_dangles
       install_node_deps
       start_detached
+      # populate_mock_data
+      ;;
+    j ) #launch with fresh postgres init and none of the extra staging
+      stop_containers
+      rm_db
+      start_attached
       # populate_mock_data
       ;;
     q ) #quick launch
@@ -257,6 +409,7 @@ while getopts ":hilpqafsxbrm " opt; do
       stop_containers
       install_node_deps
       rm_db
+      remove_dangles
       build_containers
       start_detached
       ;;
@@ -270,9 +423,11 @@ while getopts ":hilpqafsxbrm " opt; do
       delete_containers
       ;;
     b ) #backup db
+      wait_for_containers
       make_backup
       ;;
     r ) #restore most recent db backup
+      wait_for_containers
       restore_recent
       ;;
     * ) 

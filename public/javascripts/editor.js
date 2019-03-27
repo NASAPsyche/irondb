@@ -1,6 +1,12 @@
 // Some functions inline on template to avoid import issues.
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
+
+// eslint-disable-next-line no-undef
+ElementsArr = Elements.slice(0, -1).split(',');
+// eslint-disable-next-line no-undef
+TechniqueArr = Technique.slice(0, -1).split(',');
+
 /** ---------------------------- */
 /**     Remove Hover Toggle      */
 /** ---------------------------- */
@@ -21,134 +27,28 @@ $( '#insert-form' ).on('mouseout', 'div.form-row', function( event ) {
 
 
 /** ---------------------------- */
-/**      Save/Edit Events        */
+/**      Validate Button         */
 /** ---------------------------- */
 
-// Bacis section
-$( '#insert-form' ).on( 'click', 'i.save-basic', function( event ) {
-  // Disable all inputs in the basic information section.
-  $(this).parent().siblings().slice(0, 3)
-      .children().children('input').prop('readonly', true);
+$('#insert-form').on('click', '#validate-btn', function() {
+  const formData = $('#insert-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    if (
+      !formData[i].name.includes('convertedDeviation') &&
+      !formData[i].name.includes('convertedMeasurement') &&
+      !formData[i].name.includes('sigfig')
+    ) {
+      postData[formData[i].name] = formData[i].value;
+    }
+  }
 
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
+  console.log(postData);
 
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $( 'i.edit-basic' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-basic', function( event ) {
-  // Enable all inputs in the basic information section.
-  $(this).parent().siblings().slice(0, 3)
-      .children().children('input').prop('readonly', false);
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $( 'i.save-basic' ).prop('hidden', false);
-});
-
-
-// Author(s) Section
-$( '#insert-form' ).on( 'click', 'i.save-author', function( event ) {
-  // Disable inputs
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-author', function( event ) {
-  // Enable inputs
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-author' ).prop('hidden', false);
-});
-
-
-// Meteorite Section
-$( '#insert-form' ).on( 'click', 'i.save-meteorite', function( event ) {
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-meteorite', function( event ) {
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-meteorite' ).prop('hidden', false);
-});
-
-
-// Measurement Section
-$( '#insert-form' ).on( 'click', 'i.save-measurement', function( event ) {
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-measurement', function( event ) {
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
-});
-
-
-// Note Section
-$( '#insert-form' ).on( 'click', 'i.save-note', function( event ) {
-  // Disable textfield
-  $(this).parent().parent().children('textarea').prop('disabled', true);
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
-});
-
-$( '#insert-form' ).on( 'click', 'i.edit-note', function( event ) {
-  // Enable textfield
-  $(this).parent().parent().children('textarea').prop('disabled', false);
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-note' ).prop('hidden', false);
+  // Call Post Request for validation with all data
+  $.post('/data-entry/tool/validate', postData, function( data ) {
+    console.log(data);
+  });
 });
 
 
@@ -156,41 +56,6 @@ $( '#insert-form' ).on( 'click', 'i.edit-note', function( event ) {
 /**    Functions Declarations    */
 /** ---------------------------- */
 
-
-/**
- * @function disableInline
- * @param {Object} element - The clicked element
- * @description Function disables form controls associated with ui.
- */
-function disableInline(element) {
-  // Disable all inputs associated with element
-  element.parent().siblings().children('input').prop('readonly', true);
-
-  // Disable checkboxs associated with element
-  element.parent().siblings().children('select').prop('disabled', true);
-
-  // Disable select groups associated with element
-  element.parent().siblings().children('input[type=checkbox]')
-      .prop('disabled', true);
-}
-
-
-/**
- * @function EnableInline
- * @param {Object} element - The clicked element
- * @description Function Enables form controls associated with ui.
- */
-function enableInline(element) {
-  // Enable all inputs associated with element
-  element.parent().siblings().children('input').prop('readonly', false);
-
-  // Enable checkboxs associated with element
-  element.parent().siblings().children('select').prop('disabled', false);
-
-  // Enable select groups associated with element
-  element.parent().siblings().children('input[type=checkbox]')
-      .prop('disabled', false);
-}
 
 /**
  * @param  {string} num The number that you need
@@ -216,41 +81,31 @@ function getSigFig(num) {
   );
 }
 
-
 /** ----------------------------------- */
 /**        EJS Templates for Add        */
 /** ----------------------------------- */
 
-
+/* eslint-disable max-len*/
 const authorTemplate = `
 <div class="form-row">
 <div class="col-md-1">
   <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" 
   title="Press to remove author."></i></div>
-<div class="form-group col-md-3">
-  <label for="<%- primaryNameID %>">Last Name or Organization</label>
+<div class="form-group col-md-4">
+  <label for="<%- primaryNameID %>">Last Name</label>
   <input type="text" class="form-control" id="<%- primaryNameID %>" 
   name="<%- primaryNameID %>" required="true" placeholder="required">
 </div>
-<div class="form-group col-md-3">
+<div class="form-group col-md-4">
   <label for="<%- firstNameID %>">First Name</label>
   <input type="text" class="form-control" id="<%- firstNameID %>"
-  name="<%- firstNameID %>">
+  name="<%- firstNameID %>"
+  required="true" placeholder="required">
 </div>
-<div class="form-group col-md-2">
+<div class="form-group col-md-3">
   <label for="<%- middleNameID %>">Middle Name</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
   name="<%- middleNameID %>">
-</div>
-<div class="form-check col-md-2">
-  <input class="form-check-input" type="checkbox" id="<%- singleEntityID %>"
-  name="<%- singleEntityID %>">
-  <label class="form-check-label" for="<%- singleEntityID %>">
-  Organization</label>
-</div>
-<div class="form-group col-md-1  mt-4">
-  <i class="fa fa-lock-open fa-lg save-author"></i>
-  <i class="fa fa-lock fa-lg edit-author" hidden="true"></i>
 </div>
 </div>
 `;
@@ -258,8 +113,6 @@ const authorTemplate = `
 const noteTemplate = `
 <div class="form-row mt-2">
   <label for="<%- noteID %>">Note:
-    <i class="fa fa-lock-open fa-lg save-note"></i>
-    <i class="fa fa-lock fa-lg edit-note" hidden="true"></i>
     <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" 
     title="Press to remove note."></i>
   </label>
@@ -269,15 +122,19 @@ const noteTemplate = `
 </div>
 `;
 
+
 const measurementTemplate = `
 <div class="form-row">
 <div class="col-md-1">
 <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" 
 title="Press to remove measurement."></i></div>
-<div class="form-group col-md-1">
+<div class="form-group col-md-1 mr-3">
   <label for="<%- elementID %>">Element</label>
-  <input type="text" class="form-control" id="<%- elementID %>" 
-  name="<%- elementID %>" minlength="1" maxlength="3" required="true"> 
+  <select class="form-control p-1" id="<%- elementID %>" name="<%- elementID %>" required="true">
+    <% for(var i=0; i < Elements.length; i++) { %>
+        <option value="<%= Elements[i].toLowerCase()%>"><%= Elements[i] %></option> 
+    <% } %>                   
+  </select>
 </div>
 <div class="form-check-inline col-md-1">
   <input class="form-check-input" type="checkbox" id="<%- lessThanID %>"
@@ -290,36 +147,39 @@ title="Press to remove measurement."></i></div>
   name="<%- measurementID %>" required="true" min="0">
 </div>
 <div class="form-group col-md-1">
-  <label for="<%- deviationID %>">Deviation</label>
+  <label for="<%- deviationID %>">(&plusmn;)</label>
   <input type="number" class="form-control" id="<%- deviationID %>" 
-  name="<%- deviationID %>" placeholder=" &plusmn;0">
+  name="<%- deviationID %>" value="0" min="0">
 </div>
 <div class="form-group col-md-2">
   <label for="<%- unitsID %>">units</label>
   <select class="form-control" id="<%- unitsID %>" 
   name="<%- unitsID %>" required="true">
-    <option>wt%</option>
-    <option>ppm</option>
-    <option>ppb</option>
-    <option>mg/g</option>
-    <option>&micro;g/g</option>
-    <option>ng/g</option>
+  <option value="wt_percent">wt%</option>
+  <option value="ppm">ppm</option>
+  <option value="ppb">ppb</option>
+  <option value="mg_g">mg/g</option>
+  <option value="ug_g">&micro;g/g</option>
+  <option value="ng_g">ng/g</option>
+  </select>
+</div>
+<div class="form-group col-md-2">
+  <label for="<%- techniqueID %>">Technique</label>
+  <select class="form-control p-1" id="<%- techniqueID %>" name="<%- techniqueID %>" required="true">
+      <% for(var i=0; i < Technique.length; i++) { %>
+          <option value="<%= Technique[i]%>"><%= Technique[i] %></option> 
+      <% } %>                   
   </select>
 </div>
 <div class="form-group col-md-1">
-  <label for="<%- techniqueID %>">Technique</label>
-  <input type="text" class="form-control" id="<%- techniqueID %>"
-  name="<%- techniqueID %>">
-</div>
-<div class="form-group col-md-1">
   <label for="<%- pageID %>">Page</label>
-  <input type="number" class="form-control" id="<%- pageID %>" 
+  <input type="number" class="form-control p-1" id="<%- pageID %>" 
   name="<%- pageID %>" min="1" required>
 </div>
-<div class="form-group col-md-1 mt-4">
-  <i class="fa fa-lock-open fa-lg save-measurement"></i>
-  <i class="fa fa-lock fa-lg edit-measurement" hidden="true"></i>
+<div class="form-group">
   <input type="hidden" id="<%- sigfigID %>" name="<%- sigfigID %>" value="0">
+  <input type="hidden" id="<%- convertedMeasurementID %>" name="<%- convertedMeasurementID %>" value="0">
+  <input type="hidden" id="<%- convertedDeviationID %>" name="<%- convertedDeviationID %>" value="0">
 </div>
 </div>
 `;
@@ -335,33 +195,25 @@ const meteoriteTemplate = `
   <i class="far fa-times-circle fa-lg remove remove-meteorite pt-4 text-danger" 
   title="Press to remove meteorite and all associated measurements."></i>
 </div>
-<div class="form-group col-md-4">
+<div class="form-group col-md-6">
   <label for="<%- bodyNameID %>">Name</label>
   <input type="text" class="form-control" id="<%- bodyNameID %>" 
   name="<%- bodyNameID %>" required>
 </div>
-<div class="form-group col-md-3">
+<div class="form-group col-md-4">
   <label for="<%- groupID %>">Group</label>
   <input type="text" class="form-control" id="<%- groupID %>"
   name="<%- groupID %>" required>
 </div>
-<div class="form-group col-md-3">
-  <label for="<%- classID %>">Class</label>
-  <input type="text" class="form-control" id="<%- classID %>" 
-  name="<%- classID %>">
-</div>
-<div class="form-group col-md-1 mt-4">
-  <i class="fa fa-lock-open fa-lg save-meteorite"></i>
-  <i class="fa fa-lock fa-lg edit-meteorite" hidden="true"></i>
-</div>
 </div>
 <div class="form-row">
-  <h5 class="pt-1 mr-2  pl-3">
+  <h5 class="pt-1 mr-2 pl-3">
   <strong>Measurements</strong></h5>
   <i class="fas fa-plus-circle fa-lg add-measurement mt-2 text-danger"></i>
 </div>
 ` + measurementTemplate; // Add single measurement row to meteorite template
 
+/* eslint-enable max-len*/
 
 /** ---------------------------- */
 /**        UI Add Events         */
@@ -383,14 +235,39 @@ let unitsIDCount = 1;
 let techniqueIDCount = 1;
 let pageIDCount = 1;
 let sigfigIDCount = 1;
+let convertedMeasurementIDCount = 1;
+let convertedDeviationIDCount = 1;
 
 let meteoriteIDCount = 1;
 let bodyNameIDCount = 1;
 let groupIDCount = 1;
 let classIDCount = 1;
 
+
 // Simple Add Event Handlers
-$( '#insert-form' ).on('click', 'i.add-author', function( event ) {
+$( '#insert-form' ).on('click', 'i.add-author', ( event ) => {
+  addAuthor(this);
+});
+
+
+$( '#insert-form' ).on('click', 'i.add-note', function( event ) {
+  addNote(this);
+});
+
+
+$( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
+  addMeasurement(this);
+});
+
+
+$( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
+  addMeteorite(this);
+});
+
+/**
+ * @param  {object} e this
+ */
+function addAuthor( e ) {
   // Dynamically create IDs
   const primaryNameID = 'primaryName' + primaryNameIDCount;
   const firstNameID = 'firstName' + firstNameIDCount;
@@ -415,14 +292,16 @@ $( '#insert-form' ).on('click', 'i.add-author', function( event ) {
   const html = ejs.render(authorTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.meteorite-header').before(html);
+  $(e).parent().siblings('.meteorite-header').first().before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
-});
+}
 
-
-$( '#insert-form' ).on('click', 'i.add-note', function( event ) {
+/**
+ * @param  {object} e this
+ */
+function addNote( e ) {
   // Dynamically create IDs
   const noteID = 'note' + noteIDCount;
 
@@ -437,16 +316,18 @@ $( '#insert-form' ).on('click', 'i.add-note', function( event ) {
   const html = ejs.render(noteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('button:submit').before(html);
+  $(e).parent().siblings('button:submit').before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
-});
+}
 
-
-$( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
+/**
+ * @param  {object} e this
+ */
+function addMeasurement( e ) {
   // Get parent meteorite
-  const meteoriteID = $(this).parent()
+  const meteoriteID = $(e).parent()
       .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
 
   // Dynamically create IDs
@@ -458,6 +339,10 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteID + '-' + pageIDCount;
   const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const convertedMeasurementID =
+    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  const convertedDeviationID =
+    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -469,6 +354,14 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
   idObj['sigfigID'] = sigfigID;
+  idObj['convertedMeasurementID'] = convertedMeasurementID;
+  idObj['convertedDeviationID'] = convertedDeviationID;
+
+  // eslint-disable-next-line no-undef
+  idObj['Elements'] = ElementsArr;
+  // eslint-disable-next-line no-undef
+  idObj['Technique'] = TechniqueArr;
+
 
   // Increment current count
   elementIDCount++;
@@ -479,6 +372,8 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   techniqueIDCount++;
   pageIDCount++;
   sigfigIDCount++;
+  convertedMeasurementIDCount++;
+  convertedDeviationIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
@@ -489,15 +384,18 @@ $( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
   if ( $( '#' + nextID ).length ) {
     $( '#' + nextID ).before(html);
   } else {
-    $(this).parent().siblings('.notes-header')
+    $(e).parent().siblings('.notes-header')
         .first().before(html);
   }
 
   // Hide remove ui
   $( 'i.remove' ).hide();
-});
+}
 
-$( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
+/**
+ * @param  {object} e this
+ */
+function addMeteorite( e ) {
   // Dynamically create IDs
   const meteoriteID = 'meteorite' + meteoriteIDCount;
   const bodyNameID = 'bodyName' + bodyNameIDCount;
@@ -505,14 +403,17 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   const classID = 'class' + classIDCount;
   const elementID = 'element' + meteoriteIDCount + '-' + elementIDCount;
   const lessThanID = 'lessThan' + meteoriteIDCount + '-' + lessThanIDCount;
-  // eslint-disable-next-line
-  const measurementID = 'measurement' + meteoriteIDCount + '-' + measurementIDCount;
+  const measurementID =
+  'measurement' + meteoriteIDCount + '-' + measurementIDCount;
   const deviationID = 'deviation' + meteoriteIDCount + '-' + deviationIDCount;
   const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
   const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
   const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
-
+  const sigfigID = 'sigfig' + meteoriteIDCount + '-' + sigfigIDCount;
+  const convertedMeasurementID =
+  'convertedMeasurement' + meteoriteIDCount + '-' + convertedMeasurementIDCount;
+  const convertedDeviationID =
+  'convertedDeviation' + meteoriteIDCount + '-' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -528,6 +429,13 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   idObj['techniqueID'] = techniqueID;
   idObj['pageID'] = pageID;
   idObj['sigfigID'] = sigfigID;
+  idObj['convertedMeasurementID'] = convertedMeasurementID;
+  idObj['convertedDeviationID'] = convertedDeviationID;
+
+  // eslint-disable-next-line no-undef
+  idObj['Elements'] = ElementsArr;
+  // eslint-disable-next-line no-undef
+  idObj['Technique'] = TechniqueArr;
 
   // Increment current count
   meteoriteIDCount++;
@@ -542,17 +450,19 @@ $( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
   techniqueIDCount++;
   pageIDCount++;
   sigfigIDCount++;
+  convertedMeasurementIDCount++;
+  convertedDeviationIDCount++;
 
   // Render note template with current ID
   // eslint-disable-next-line
   const html = ejs.render(meteoriteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.notes-header').before(html);
+  $(e).parent().siblings('.notes-header').before(html);
 
   // Hide remove ui
   $( 'i.remove' ).hide();
-});
+}
 
 /** ---------------------------- */
 /**        UI Remove Events      */
@@ -601,39 +511,167 @@ $( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
 /**       Submit the form        */
 /** ---------------------------- */
 
-/**
- * Submit the form.
- * Check that measurements are parseable to numbers & mark invalid fields.
- * Then get significant figures and assign to hidden fields.
- * If valid then submit.
- */
+// the range for PPB
+const ZERO = 0;
+const ONE_BILLION = 1000000000;
 
+/**
+ * @description Performs validation before submitting the form.
+ * If it fails validation, the form is not sent and the offending fields
+ * are highlighted. It also grabs the number of significant figures
+ * for each measure and assigns them to the appropriate hidden fields.
+ * The measurements and deviations are normalized to PPB and assigned
+ * to the appropriate hidden fields.
+ */
 $('#insert-form').submit(function(event) {
+  $('#insert-form').each(() => {
+    $(this).find(':input').removeClass('is-invalid');
+  });
   // flag - are all entries valid?
   let allValid = true;
-  // For each field 'measrement*', check that it parses to a number
+  // For each field 'measurement*', check that it parses to a number
   $('[id^="measure"]').each(function(idx) {
     const _name = $(this).attr('name');
     const _expr = 'measurement';
     // scrape the idx from elem name, ex: '0-0'
     const _idx = _name.substring(_expr.length);
-    if (isNaN(parseFloat($(this).val()))) {
+    // get the original measurement
+    const _originalMeasurement = parseFloat($(this).val());
+    if (isNaN(_originalMeasurement)) {
       // Mark invalid field entry
       $(this).addClass('is-invalid');
       allValid = false;
     } else {
-      $(this).removeClass('is-invalid');
-      const sfVal = getSigFig($(this).val());
-      const _sigfig = '#sigfig' + _idx;
-      $(_sigfig).val(sfVal); // assign sig fig val to matching hidden field
+      // get the current units
+      const _unitID = '#units' + _idx;
+      const _unit = $(_unitID).val();
+      // get the original deviation
+      const _deviationID = '#deviation' + _idx;
+      const _originalDeviation = parseFloat($(_deviationID).val());
+      if (isNaN(_originalDeviation)) {
+        $(_deviationID).addClass('is-invalid');
+        allValid = false;
+      }
+      // Convert the measurement and deviation to PPB
+      let _convertedMeasurement;
+      let _convertedDeviation;
+      switch (_unit) {
+        case 'wt_percent':
+          _convertedMeasurement = percentToPPB(_originalMeasurement);
+          _convertedDeviation = percentToPPB(_originalDeviation);
+          break;
+        case 'ppm':
+          _convertedMeasurement = ppmToPPB(_originalMeasurement);
+          _convertedDeviation = ppmToPPB(_originalDeviation);
+          break;
+        case 'ppb':
+          _convertedMeasurement = _originalMeasurement;
+          _convertedDeviation = _originalDeviation;
+          break;
+        case 'mg_g':
+          _convertedMeasurement = milligramsPerGramToPPB(_originalMeasurement);
+          _convertedDeviation = milligramsPerGramToPPB(_originalDeviation);
+          break;
+        case 'ug_g':
+          _convertedMeasurement = microgramsPerGramToPPB(_originalMeasurement);
+          _convertedDeviation = microgramsPerGramToPPB(_originalDeviation);
+          break;
+        case 'ng_g':
+          _convertedMeasurement = nanogramsPerGramToPPB(_originalMeasurement);
+          _convertedDeviation = nanogramsPerGramToPPB(_originalDeviation);
+          break;
+      }
+      /*
+        Now that the measurement and deviation have been normalized to PPB
+        we can check that they are in range (zero - one billion) and that
+        the deviation is not greater than the measurement.
+        Then assign them to the appropriate hidden fields.
+      */
+      if (typeof _convertedMeasurement === 'number') {
+        if ( _convertedMeasurement < ZERO
+            || _convertedMeasurement > ONE_BILLION) {
+          $(this).addClass('is-invalid');
+          allValid = false;
+        } else {
+          const sfVal = getSigFig($(this).val());
+          const _sigfig = '#sigfig' + _idx;
+          $(_sigfig).val(sfVal); // assign sig fig val to matching hidden field
+
+          // assign normalized measurement to hidden field
+          const convertedMeasurementId = '#convertedMeasurement' + _idx;
+          $(convertedMeasurementId).val(_convertedMeasurement);
+        }
+      } else {
+        $(this).addClass('is-invalid'); // measurement not a number
+        allValid = false;
+      }
+      if ( typeof _convertedDeviation === 'number' ) {
+        if (_convertedDeviation < ZERO
+            || _convertedDeviation > ONE_BILLION
+            || _convertedDeviation > _convertedMeasurement) {
+          $(_deviationID).addClass('is-invalid');
+          allValid = false;
+        } else {
+          // assign normalized deviation to hidden field
+          const convertedDeviationID = '#convertedDeviation' + _idx;
+          $(convertedDeviationID).val(_convertedDeviation);
+        }
+      } else {
+        $(_deviationID).addClass('is-invalid'); // deviation not a number
+        allValid == false;
+      }
     }
   });
 
-  // send if checks pass
-  if (allValid == true) {
+  // Submit if checks pass
+  if (allValid === true) {
     return; // submit
   } else {
     event.preventDefault(); // prevent submission
   }
 });
 
+/** ---------------------------- */
+/**       UNIT CONVERSION        */
+/** ---------------------------- */
+
+/**
+ * @param  {number} num in percent weight
+ * @return {number} in parts per billion
+ */
+function percentToPPB(num) {
+  if (typeof num !== 'number') return;
+  return parseInt(num * 10000000); // num * ten_million
+}
+/**
+ * @param  {number} num in parts per million
+ * @return {number} in parts per billion
+ */
+function ppmToPPB(num) {
+  if (typeof num !== 'number') return;
+  return parseInt(num * 1000); // num * one_thousand
+}
+/**
+ * @param  {number} num in milligrams per gram
+ * @return {number} in parts per billion
+ */
+function milligramsPerGramToPPB(num) {
+  if (typeof num !== 'number') return;
+  return parseInt(num * 1000000); // num * one_million
+}
+/**
+ * @param  {number} num in micrograms per gram
+ * @return {number} in parts per billion
+ */
+function microgramsPerGramToPPB( num ) {
+  if (typeof num !== 'number') return;
+  return parseInt(num * 1000); // num * one_thousand
+}
+/**
+ * @param  {number} num in nanograms per gram
+ * @return {number} in PPB;
+ */
+function nanogramsPerGramToPPB(num) {
+  if (typeof num !== 'number') return;
+  return parseInt(num); // nanograms/gram is equivalent to ppb
+}

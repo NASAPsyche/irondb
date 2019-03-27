@@ -1,35 +1,44 @@
-const express = require('express');
-// eslint-disable-next-line new-cap
-const router = express.Router();
 const createError = require('http-errors');
-const path = require('path');
-const fs = require('fs');
-const json2csv = require('json2csv').parse;
 const db = require('../db');
-const {isLoggedIn} = require('../middleware/auth');
+const ejsUnitConversion = require('../utils/ejs-unit-conversion');
+const fs = require('fs');
+const {isLoggedIn, isAdmin} = require('../middleware/auth');
+const json2csv = require('json2csv').parse;
+const path = require('path');
+const Router = require('express-promise-router');
+const router = new Router();
+
 
 const singleBodyRouter = require('./database/meteorite');
 router.use('/meteorite', singleBodyRouter);
 
-
 /* GET database page. */
-router.get('/', function(req, res, next) {
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
+router.get('/', async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery('SELECT * FROM complete_table', []);
+    const Groups = db.aQuery(
+        'SELECT DISTINCT classification_group FROM complete_table',
+        []
+    );
+    const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
+    resObj = await Promise.all([Entries, Groups, Elements]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('database', {
+      isSignedIn: req.isAuthenticated(),
+      Entries: resObj[0].rows,
+      Groups: resObj[1].rows,
+      Elements: resObj[2].rows,
+      _: ejsUnitConversion,
+    });
   }
-  db.query('SELECT * FROM complete_table',
-      [], (dbErr, dbRes) => {
-        if (dbErr) {
-          return next(dbErr);
-        }
-        res.render('database', {Entries: dbRes.rows, isSignedIn: isSignedIn});
-      });
 });
 
 
 /* POST database page */
-router.post('/', function(req, res, next) {
+router.post('/', async (req, res, next) => {
   if (req.xhr) {
     // eslint-disable-next-line max-len
     let queryString = 'SELECT * FROM complete_table WHERE published_year >1900 ';
@@ -71,9 +80,9 @@ router.post('/', function(req, res, next) {
       currentQueryIndex++;
     }
 
-    if (req.body.hasOwnProperty('issue') && req.body.issue !== '') {
-      argsArray.push(req.body.issue);
-      queryString += ('AND issue_number = $' + currentQueryIndex + ' ');
+    if (req.body.hasOwnProperty('volume') && req.body.volume !== '') {
+      argsArray.push(req.body.volume);
+      queryString += ('AND volume = $' + currentQueryIndex + ' ');
       currentQueryIndex++;
     }
 
@@ -151,25 +160,24 @@ router.post('/', function(req, res, next) {
       }
     }
 
-
-    db.query(queryString, argsArray, (dbErr, dbRes) => {
-      if (dbErr) {
-        return next(dbErr);
-      }
-
-      if (dbRes.rows.length === 0) {
+    let resObj = [];
+    try {
+      const Entries = db.aQuery(queryString, argsArray);
+      resObj = await Promise.all([Entries]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+      if (resObj[0].rows.length === 0) {
         // eslint-disable-next-line max-len
         res.send('<h2 class=\'text-center\' id=\'results\'>No results found.</h2>');
       } else {
-        res.render('components/database-xhr-response', {Entries: dbRes.rows});
+        res.render('components/database-xhr-response', {
+          Entries: resObj[0].rows,
+          _: ejsUnitConversion,
+        });
       }
-    });
-  } else {
-    let isSignedIn = false;
-    if (req.isAuthenticated()) {
-      isSignedIn = true;
     }
-
+  } else {
     let queryString = 'SELECT * FROM complete_table WHERE published_year >1900';
     const argsArray = [];
     let currentQueryIndex = 1;
@@ -177,6 +185,13 @@ router.post('/', function(req, res, next) {
     if (req.body.name !== '') {
       argsArray.push(req.body.name);
       queryString += ('AND meteorite_name ~* $' + currentQueryIndex + ' ');
+      currentQueryIndex++;
+    }
+
+    if (req.body.group !== 'Group') {
+      argsArray.push(req.body.group);
+      // eslint-disable-next-line max-len
+      queryString += ('AND classification_group=$' + currentQueryIndex + ' ');
       currentQueryIndex++;
     }
 
@@ -192,17 +207,26 @@ router.post('/', function(req, res, next) {
       currentQueryIndex++;
     }
 
-    db.query(queryString, argsArray, (dbErr, dbRes) => {
-      if (dbErr) {
-        return next(dbErr);
-      }
-
-      if (dbRes.rows.length === 0) {
-        res.render('database', {Entries: [], isSignedIn: isSignedIn});
-      } else {
-        res.render('database', {Entries: dbRes.rows, isSignedIn: isSignedIn});
-      }
-    });
+    let resObj = [];
+    try {
+      const Entries = db.aQuery(queryString, argsArray);
+      const Groups = db.aQuery(
+          'SELECT DISTINCT classification_group FROM complete_table',
+          []
+      );
+      const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
+      resObj = await Promise.all([Entries, Groups, Elements]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+      res.render('database', {
+        isSignedIn: req.isAuthenticated(),
+        Entries: resObj[0].rows,
+        Groups: resObj[1].rows,
+        Elements: resObj[2].rows,
+        _: ejsUnitConversion,
+      });
+    }
   }
 });
 
@@ -210,10 +234,6 @@ router.post('/', function(req, res, next) {
 /* GET /database/export */
 router.get('/export', function(req, res, next) {
   // check if signed in
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
-  }
   db.query(
       'SELECT * FROM export_table',
       [],
@@ -247,7 +267,8 @@ router.get('/export', function(req, res, next) {
         res.render('db-export', {
           Entries: dbRes.rows,
           major: major, minor: minor,
-          trace: trace, isSignedIn: isSignedIn,
+          trace: trace, isSignedIn: req.isAuthenticated(),
+          _: ejsUnitConversion,
         });
       });
 });
@@ -255,12 +276,6 @@ router.get('/export', function(req, res, next) {
 
 /* POST /database/export */
 router.post('/export', function(req, res, next) {
-  // check if signed in for navbar
-  let isSignedIn = false;
-  if (req.isAuthenticated()) {
-    isSignedIn = true;
-  }
-
   if (req.body.hasOwnProperty('export')) {
     // get arrays from request
     const tableData = JSON.parse(req.body.tableData);
@@ -357,7 +372,8 @@ router.post('/export', function(req, res, next) {
       res.render('db-export', {
         Entries: dbRes.rows,
         major: major, minor: minor,
-        trace: trace, isSignedIn: isSignedIn,
+        trace: trace, isSignedIn: req.isAuthenticated(),
+        _: ejsUnitConversion,
       });
     });
   }
@@ -394,11 +410,23 @@ router.get('/unapproved', isLoggedIn, function(req, res, next) {
         if (dbErr) {
           return next(dbErr);
         }
-        console.log(dbRes);
         res.render('db-unapproved', {
           Entries: dbRes.rows,
         });
       });
+});
+
+/* GET /database/all */
+router.get('/all', isAdmin, async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery('SELECT * FROM all_papers_with_authors', []);
+    resObj = await Promise.all([Entries]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('all-entries', {Entries: resObj[0].rows});
+  }
 });
 
 module.exports = router;

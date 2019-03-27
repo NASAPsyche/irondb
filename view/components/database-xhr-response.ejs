@@ -1,0 +1,118 @@
+<div class="container-fluid p-0" id="results">
+  <table class="table table-striped table-bordered table-hover ">
+    <thead class="thead-dark">
+      <tr>
+        <th>Name</th>
+        <th>Group</th>
+        <th>Measurement Technique</th>
+        <th>Major Elements (wt%)</th>
+        <th>Minor Elements (ppm)</th>
+        <th>Trace Elements (ppb)</th>
+        <th>Title</th>
+        <th>Authors</th>
+        <th>Pg.#</th> 
+        <th>Journal</th> 
+        <th>Volume</th>
+        <th>Year Published</th> 
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i=0; i < Entries.length; i++) { %>
+          <tr>
+            <!-- storing id to update export inputs -->
+            <p hidden="true"><%= Entries[i].entry_id %></p>
+            <th>
+              <a href="/database/meteorite/<%= Entries[i].entry_id %>?paper=<%= Entries[i].paper_id %>">
+                <%= Entries[i].meteorite_name %>
+              </a>
+            </th>
+            <th><%= Entries[i].classification_group %></th>
+            <th><%= Entries[i].technique %></th>
+            <th>
+              <% 
+              if (Entries[i].major_elements !== null) {
+              %>
+                <%
+                for(var j = 0; j < Entries[i].major_elements.length; j++) {
+                  var temp = Entries[i].major_elements[j].split(',');
+                  var element_symbol = temp[0];
+                  var ppb_mean = temp[1];
+                  var deviation = temp[2];
+                  var less_than = temp[3];
+                  var sigfig = temp[4];
+                %>
+                <p>
+                  <strong><%= element_symbol.charAt(0).toUpperCase() + element_symbol.slice(1)%>:</strong> 
+                  <% if (less_than === 'true') { %>
+                    &lt;
+                  <% } %>
+                  <%=_.ppbToPercent(ppb_mean, sigfig)%>
+                  <% if (deviation !== '0') { %>
+                    &plusmn; <%=_.ppbToPercent(deviation, sigfig)%>
+                  <% } %>
+                </p>
+                <% } %>
+              <% } %>
+            </th>
+            <th>
+              <% 
+              if (Entries[i].minor_elements !== null) {
+              %>
+                <%
+                for(var j = 0; j < Entries[i].minor_elements.length; j++) {
+                  var temp = Entries[i].minor_elements[j].split(',');
+                  var element_symbol = temp[0];
+                  var ppb_mean = temp[1];
+                  var deviation = temp[2];
+                  var less_than = temp[3];
+                  var sigfig = temp[4];
+                %>
+                <p>
+                  <strong><%= element_symbol.charAt(0).toUpperCase() + element_symbol.slice(1)%>:</strong> 
+                  <% if (less_than === 'true') { %>
+                    &lt;
+                  <% } %>
+                  <%=_.ppbToPPM(ppb_mean, sigfig)%>
+                  <% if (deviation !== '0') { %>
+                    &plusmn; <%=_.ppbToPPM(deviation, sigfig)%>
+                  <% } %>
+                </p>
+                <% } %>
+              <% } %>
+            </th>
+            <th>
+              <% 
+              if (Entries[i].trace_elements !== null) {
+              %>
+                <%
+                for(var j = 0; j < Entries[i].trace_elements.length; j++) {
+                  var temp = Entries[i].trace_elements[j].split(',');
+                  var element_symbol = temp[0];
+                  var ppb_mean = temp[1];
+                  var deviation = temp[2];
+                  var less_than = temp[3];
+                %>
+                <p>
+                  <strong><%= element_symbol.charAt(0).toUpperCase() + element_symbol.slice(1)%>:</strong> 
+                  <% if (less_than === 'true') { %>
+                    &lt;
+                  <% } %>
+                  <%= ppb_mean %>
+                  <% if (deviation !== '0') { %>
+                    &plusmn; <%= deviation %>
+                  <% } %>
+                </p>
+                <% } %>
+              <% } %>
+            </th>
+            <th><%= Entries[i].title %></th>
+            <th><%= Entries[i].authors %></th>
+            <th><%= Entries[i].page_number %></th> 
+            <th><%= Entries[i].journal_name %></th> 
+            <th><%= Entries[i].volume %></th>
+            <th><%= Entries[i].published_year %></th> 
+          </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
