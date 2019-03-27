@@ -345,7 +345,7 @@ function populate_mock_data ()
 {
   install_pip
   NORESP=""
-  PSYEXISTS="$(pip list | grep "psycopg2-binary")"
+  PSYEXISTS="$(pip list --format=columns | grep "psycopg2-binary")"
  
   # install psycopg2-binary if not exists
   if [[ "$PSYEXISTS" =  "$NORESP" ]]
