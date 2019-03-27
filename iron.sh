@@ -364,11 +364,10 @@ function populate_mock_data ()
 
 function install_pip ()
 {
+  echo "checking if pip is installed"
   NORESP=""
   PIPEXISTS="$(which pip)"
   if [[ "$PIPEXISTS" == "$NORESP" ]]; then
-    echo "installing pip"
-
     MYENV="$(uname -s)"
     LINUXENV="Linux"
     MACENV="Darwin"
@@ -376,15 +375,24 @@ function install_pip ()
     PYTHREE="$(python --version | grep " 3.")"
     
     if [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
+      echo "sudo python2 pip installing"
       sudo apt-get install -y python-pip
     elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]]; then
+      echo "root python2 pip installing"
       apt-get install -y python-pip
     elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTHREE" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
+      echo "sudo python3 pip installing"
       sudo apt-get install -y python3-pip
     elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTHREE" != "$NORESP" ]]; then
+      echo "root python3 pip installing"
       apt-get install -y python3-pip 
     elif  [[ "$MYENV" == "$MACENV" ]]; then
+      echo "macOS python pip installing"
       python -m ensurepip
+    else 
+      echo "unable to install pip automatically, install manually:"
+      echo ""
+      echo "      https://pip.pypa.io/en/stable/installing/ "
     fi
   else
     echo "pip is already installed"
