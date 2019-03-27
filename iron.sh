@@ -367,17 +367,14 @@ function install_pip ()
   echo "checking if pip is installed"
   NORESP=""
   PIPEXISTS="$(which pip)"
+
   if [[ "$PIPEXISTS" == "$NORESP" ]]; then
-    MYENV="$(uname -s)"
+    MYENV=$(uname -s)
     LINUXENV="Linux"
     MACENV="Darwin"
-    PYTWO=$(python --version | grep " 2.")
-    PYTHREE=$(python --version | grep " 3.")
-    echo "PYTWO is $PYTWO"
-    echo "PYTHREE is $PYTHREE"
-    echo "myEnv is $MYENV"
-    echo "noresp is $NORESP"
-    echo "euid is $EUID"
+    PYTWO=$(python --version | grep "n 2.")
+    PYTHREE=$(python --version | grep "n 3.")
+
     
     if [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
       echo "sudo python2 pip installing"
