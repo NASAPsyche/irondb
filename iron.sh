@@ -368,7 +368,7 @@ function install_pip ()
   NORESP=""
   PIPEXISTS="$(which pip)"
 
-  if [[ "$PIPEXISTS" != "$NORESP" ]]; then
+  if [[ "$PIPEXISTS" == "$NORESP" ]]; then
     MYENV=$(uname -s)
     LINUXENV="Linux"
     MACENV="Darwin"
