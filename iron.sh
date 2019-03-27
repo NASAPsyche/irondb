@@ -58,7 +58,6 @@ fi
 # Install the global dependencies
 function install_global_deps ()
 {
-  install_pip
   echo "Installing global dependencies"
   # Global dependencies for testing node
   if [[ $EUID -ne 0 ]];
