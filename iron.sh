@@ -374,7 +374,11 @@ function install_pip ()
     MACENV="Darwin"
     PYTWO=$(python --version | grep "n 2.")
     PYTHREE=$(python --version | grep "n 3.")
-
+    echo "PYTWO is $PYTWO"
+    echo "PYTHREE is $PYTHREE"
+    echo "myEnv is $MYENV"
+    echo "noresp is $NORESP"
+    echo "euid is $EUID"
     
     if [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
       echo "sudo python2 pip installing"
