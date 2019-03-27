@@ -52,7 +52,6 @@ for ( const note of noteKeys ) {
     uniqueIndex.notes.push(idx);
   }
 }
-// console.dir(uniqueIndex);
 
 // Populate author(s)
 for ( const [index, element] of uniqueIndex.authors.entries() ) {
@@ -76,11 +75,6 @@ for ( const [index, element] of uniqueIndex.authors.entries() ) {
   const fNameTarget = fName + index;
   const fNameKey = fName + element;
   changeValue(fNameTarget, fNameKey, dict);
-
-  const sEnt = 'singleEntity';
-  const sEntTarget = sEnt + index;
-  const sEntKey = sEnt + element;
-  changeValue(sEntTarget, sEntKey, dict);
 }
 
 // Populate the notes
@@ -105,12 +99,14 @@ for ( const [index, element] of uniqueIndex.bodies.entries() ) {
 
   const bodyTarget = 'bodyName' + index;
   const bodyKey = 'bodyName' + element;
+  changeValue(bodyTarget, bodyKey, dict);
+
   const groupTarget = 'group' + index;
   const groupKey = 'group' + element;
+  changeValue(groupTarget, groupKey, dict);
+
   const classTarget = 'class' + index;
   const classKey = 'class' + element;
-  changeValue(bodyTarget, bodyKey, dict);
-  changeValue(groupTarget, groupKey, dict);
   changeValue(classTarget, classKey, dict);
 
   // Gather indices of measurements that belong to this body
@@ -139,7 +135,7 @@ for ( const [index, element] of uniqueIndex.bodies.entries() ) {
 
     const lessThanTarget = 'lessThan' + targetIdx;
     const lessThanKey = 'lessThan' + elementIdx;
-    changeValue(lessThanTarget, lessThanKey, dict);
+    changeValue(lessThanTarget, lessThanKey, dict, true);
 
     const measurementTarget = 'measurement' + targetIdx;
     const measurementKey = 'measurement' + elementIdx;
@@ -159,7 +155,6 @@ for ( const [index, element] of uniqueIndex.bodies.entries() ) {
 
     const pageTarget = 'page' + targetIdx;
     const pageKey = 'page' + elementIdx;
-    console.log('target:', pageTarget, 'key', pageKey);
     changeValue(pageTarget, pageKey, dict);
 
     elementCounter++;
@@ -171,11 +166,18 @@ for ( const [index, element] of uniqueIndex.bodies.entries() ) {
  * @param  {string} target id of targeted input.
  * @param  {string} key the key to fetch the value
  * @param  {object} dict the dictionary of key-value pairs
+ * @param  {boolean} isCheckBox true - the target is a checkbox
  */
-function changeValue(target, key, dict ) {
+function changeValue(target, key, dict, isCheckBox = false ) {
   if (typeof target !== 'string') return; // invalid parameter type
   if (typeof dict !== 'object') return; // invalid parameter type
-  if (Object.keys(dict).includes(target)) {
-    $('#' + target).val(dict[key]);
+  if ( Object.keys(dict).includes(target) ) {
+    if (isCheckBox) {
+      if ( dict[key] == 'on' ) {
+        $('#' + target).prop('checked', true);
+      }
+    } else {
+      $('#' + target).val(dict[key]);
+    }
   }
 }
