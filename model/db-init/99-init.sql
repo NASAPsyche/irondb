@@ -2176,7 +2176,7 @@ INSERT INTO element_entries (
   has not been reviewed for accuracy yet. It is set to 'active' so that the data can be called
   during a search query.
 */
-INSERT INTO group_status (status_id, group_id, current_status, submitted_by, previous_entry)
+INSERT INTO group_status (status_id, group_id, current_status, submitted_by, submission_id)
   VALUES
   (
     DEFAULT,
@@ -2312,7 +2312,7 @@ INSERT INTO group_review (review_id, group_id, note, resolved, email_address, re
     DEFAULT
   );
 
-INSERT INTO classification_status (status_id, classification_id, current_status, submitted_by, previous_entry)
+INSERT INTO classification_status (status_id, classification_id, current_status, submitted_by, submission_id)
   VALUES
   (
     DEFAULT,
@@ -2364,7 +2364,7 @@ INSERT INTO classification_review (review_id, classification_id, note, resolved,
     DEFAULT
   );
 
-INSERT INTO body_status (status_id, body_id, current_status, submitted_by, previous_entry)
+INSERT INTO body_status (status_id, body_id, current_status, submitted_by, submission_id)
   VALUES
   (
     DEFAULT,
@@ -2500,7 +2500,7 @@ INSERT INTO body_review (review_id, body_id, note, resolved, email_address, revi
     DEFAULT
   );
 
-INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by, previous_entry)
+INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by, submission_id)
   VALUES
   (
     DEFAULT,
@@ -2566,7 +2566,7 @@ INSERT INTO journal_review (review_id, journal_id, note, resolved, email_address
     DEFAULT
   );
 
-INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, previous_entry)
+INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, submission_id)
   VALUES
   (
     DEFAULT,
@@ -2632,7 +2632,7 @@ INSERT INTO paper_review (review_id, paper_id, note, resolved, email_address, re
     DEFAULT
   );
 
-INSERT INTO author_status (status_id, author_id, current_status, submitted_by, previous_entry)
+INSERT INTO author_status (status_id, author_id, current_status, submitted_by, submission_id)
   VALUES
   (
     DEFAULT,
@@ -2705,7 +2705,7 @@ INSERT INTO author_review (review_id, author_id, note, resolved, email_address, 
     DEFAULT
   );
 
-INSERT INTO attribution_status (status_id, attribution_id, current_status, submitted_by, previous_entry)
+INSERT INTO attribution_status (status_id, attribution_id, current_status, submitted_by, submission_id)
   VALUES
   (
     DEFAULT,
@@ -2847,7 +2847,7 @@ INSERT INTO attribution_review (review_id, attribution_id, note, resolved, email
     DEFAULT
   );
 
-INSERT INTO element_status (status_id, element_id, current_status, submitted_by, previous_entry)
+INSERT INTO element_status (status_id, element_id, current_status, submitted_by, submission_id)
   VALUES
   /* Dummy */
   (
