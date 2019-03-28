@@ -333,7 +333,28 @@ CREATE VIEW export_table AS (
   t1.published_year
   FROM elements_with_bodies_papers_journals_active_with_id as t1 
   INNER JOIN aggregated_authors_by_paper_id as t2 on t1.paper_id = t2.paper_id
-  ORDER BY body_id, title, page_number, measurement DESC
+  ORDER BY body_id ASC, technique DESC, measurement DESC, element_symbol ASC, title, page_number
+);
+
+CREATE VIEW export_major_element_symbols AS (
+  SELECT DISTINCT element_symbol
+  FROM export_table
+  WHERE measurement > 10000000
+  ORDER BY element_symbol
+);
+
+CREATE VIEW export_minor_element_symbols AS (
+  SELECT DISTINCT element_symbol
+  FROM export_table
+  WHERE measurement <= 10000000 AND measurement >= 1000000
+  ORDER BY element_symbol
+);
+
+CREATE VIEW export_trace_element_symbols AS (
+  SELECT DISTINCT element_symbol
+  FROM export_table
+  WHERE measurement < 1000000
+  ORDER BY element_symbol
 );
 
 CREATE VIEW papers_pending AS (
