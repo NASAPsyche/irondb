@@ -61,10 +61,13 @@ function set_creds ()
   echo "Set username and password for Postgres"
   NORESP=""
   while true; do
-   echo -n "Select a username: "
-   read name
+    echo -n "Select a username: "
+    read name
+    size=${#name}
     if [[ "$name" =~ [^a-zA-Z0-9\_] ]] || [[ "$name" == "$NORESP" ]] || [[ "${name:0:1}" =~ [^a-zA-Z] ]] ; then
       echo "Must start with a letter. Only letters, numbers, and underscore allowed"
+    elif [[ $size < 3 ]]; then
+      echo "${name} is too short, minimum of 3 characters"
     else 
       break
     fi
@@ -76,12 +79,15 @@ function set_creds ()
     echo -n "Re-enter the password: "
     read -s pass2
     echo ""
+    size=${#pass1}
     if [[ "$pass1" != "$pass2" ]]; then
       echo "The passwords did not match. Try again..."
     elif [[ "$pass1" == "$NORESP" ]]; then
       echo "You must enter a password"
     elif [[ "$pass1" =~ [\ \\\/\'\"\%\;] ]]; then
       echo "Illegal character: whitespace ' \" ; / \\ %"
+    elif [[ $size < 6 ]]; then
+      echo "password is too short, minimum 6 characters"
     else
       nameHolder="%%user%%"
       passHolder="%%password%%"
