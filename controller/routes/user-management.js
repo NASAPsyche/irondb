@@ -1,4 +1,3 @@
-// const express = require('express');
 // eslint-disable-next-line new-cap
 const Router = require('express-promise-router');
 const router = new Router();
