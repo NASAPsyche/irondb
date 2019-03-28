@@ -932,4 +932,5 @@ CREATE VIEW users_with_info AS (
   t1.role_of
   FROM users AS t1
   INNER JOIN user_info as t2 ON t1.user_id = t2.user_id
+  ORDER BY t1.role_of ASC
 );
