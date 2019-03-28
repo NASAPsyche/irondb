@@ -232,50 +232,66 @@ router.post('/', async (req, res, next) => {
 
 
 /* GET /database/export */
-router.get('/export', function(req, res, next) {
-  // check if signed in
-  db.query(
-      'SELECT * FROM export_table',
-      [],
-      (dbErr, dbRes) => {
-        if (dbErr) {
-          return next(dbErr);
-        }
+router.get('/export', async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery('SELECT * FROM export_table', []);
+    const BodyIDs = db.aQuery('SELECT DISTINCT body_id FROM export_table', []);
+    const Major = db.aQuery('SELECT * FROM export_major_element_symbols', []);
+    const Minor = db.aQuery('SELECT * FROM export_minor_element_symbols', []);
+    const Trace = db.aQuery('SELECT * FROM export_trace_element_symbols', []);
+    resObj = await Promise.all([Entries, BodyIDs, Major, Minor, Trace]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    const major = resObj[2].rows;
+    const minor = resObj[3].rows;
+    const trace = resObj[4].rows;
 
-        // element symbols with categories
-        // Refactor to db queries
-        const major = [];
-        const minor = [];
-        const trace = [];
-        for (const row in dbRes.rows) {
-          if (dbRes.rows[row].measurement > 10000000) {
-            if (!major.includes(dbRes.rows[row].element_symbol)) {
-              major.push(dbRes.rows[row].element_symbol);
-            }
-          } else if (dbRes.rows[row].measurement <= 10000000
-          && dbRes.rows[row].measurement >= 1000000) {
-            if (!minor.includes(dbRes.rows[row].element_symbol)) {
-              minor.push(dbRes.rows[row].element_symbol);
-            }
-          } else if (dbRes.rows[row].measurement < 1000000) {
-            if (!trace.includes(dbRes.rows[row].element_symbol)) {
-              trace.push(dbRes.rows[row].element_symbol);
-            }
-          }
-        }
+    // separate entries into rows by meteorite and analysis technique
+    const Entries = resObj[0].rows;
+    const Rows = [];
+    let temp = [];
+    let currentTechnique = '';
+    let currentID = -1;
+    for (let i = 0; i < Entries.length; i++) {
+      if (i === 0) {
+        currentTechnique = Entries[i].technique;
+        currentID = Entries[i].body_id;
+      }
 
-        res.render('db-export', {
-          Entries: dbRes.rows,
-          major: major, minor: minor,
-          trace: trace, isSignedIn: req.isAuthenticated(),
-          _: ejsUnitConversion,
-        });
-      });
+      if (Entries[i].body_id === currentID
+        && Entries[i].technique === currentTechnique) {
+        temp.push(Entries[i]);
+      } else {
+        Rows.push(temp);
+        temp = [];
+        currentTechnique = Entries[i].technique;
+        currentID = Entries[i].body_id;
+        temp.push(Entries[i]);
+      }
+
+      if (i === Entries.length - 1) {
+        Rows.push(temp);
+      }
+    }
+
+    res.render('db-export', {
+      Rows: Rows,
+      Body_IDs: resObj[1].rows,
+      major: major.map((row) => row.element_symbol),
+      minor: minor.map((row) => row.element_symbol),
+      trace: trace.map((row) => row.element_symbol),
+      numColumns: major.length + minor.length + trace.length,
+      isSignedIn: req.isAuthenticated(),
+      _: ejsUnitConversion,
+    });
+  }
 });
 
 
 /* POST /database/export */
-router.post('/export', function(req, res, next) {
+router.post('/export', async (req, res, next) => {
   if (req.body.hasOwnProperty('export')) {
     // get arrays from request
     const tableData = JSON.parse(req.body.tableData);
@@ -342,40 +358,62 @@ router.post('/export', function(req, res, next) {
       queryString += ('AND body_id=$' + currentQueryIndex + ' ');
     }
 
-    db.query(queryString, argsArray, (dbErr, dbRes) => {
-      if (dbErr) {
-        return next(dbErr);
-      }
 
-      // element symbols with categories
-      // Refactor to db queries
-      const major = [];
-      const minor = [];
-      const trace = [];
-      for (const row in dbRes.rows) {
-        if (dbRes.rows[row].measurement > 10000000) {
-          if (!major.includes(dbRes.rows[row].element_symbol)) {
-            major.push(dbRes.rows[row].element_symbol);
-          }
-        } else if (dbRes.rows[row].measurement <= 10000000
-          && dbRes.rows[row].measurement >= 1000000) {
-          if (!minor.includes(dbRes.rows[row].element_symbol)) {
-            minor.push(dbRes.rows[row].element_symbol);
-          }
-        } else if (dbRes.rows[row].measurement < 1000000) {
-          if (!trace.includes(dbRes.rows[row].element_symbol)) {
-            trace.push(dbRes.rows[row].element_symbol);
-          }
+    let resObj = [];
+    try {
+      const Entries = db.aQuery(queryString, argsArray);
+      const BodyIDs = db.aQuery(
+          'SELECT DISTINCT body_id FROM export_table', []);
+      const Major = db.aQuery('SELECT * FROM export_major_element_symbols', []);
+      const Minor = db.aQuery('SELECT * FROM export_minor_element_symbols', []);
+      const Trace = db.aQuery('SELECT * FROM export_trace_element_symbols', []);
+      resObj = await Promise.all([Entries, BodyIDs, Major, Minor, Trace]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+      const major = resObj[2].rows;
+      const minor = resObj[3].rows;
+      const trace = resObj[4].rows;
+
+      // separate entries into rows by meteorite and analysis technique
+      const Entries = resObj[0].rows;
+      const Rows = [];
+      let temp = [];
+      let currentTechnique = '';
+      let currentID = -1;
+      for (let i = 0; i < Entries.length; i++) {
+        if (i === 0) {
+          currentTechnique = Entries[i].technique;
+          currentID = Entries[i].body_id;
+        }
+
+        if (Entries[i].body_id === currentID
+          && Entries[i].technique === currentTechnique) {
+          temp.push(Entries[i]);
+        } else {
+          Rows.push(temp);
+          temp = [];
+          currentTechnique = Entries[i].technique;
+          currentID = Entries[i].body_id;
+          temp.push(Entries[i]);
+        }
+
+        if (i === Entries.length - 1) {
+          Rows.push(temp);
         }
       }
 
       res.render('db-export', {
-        Entries: dbRes.rows,
-        major: major, minor: minor,
-        trace: trace, isSignedIn: req.isAuthenticated(),
+        Rows: Rows,
+        Body_IDs: resObj[1].rows,
+        major: major.map((row) => row.element_symbol),
+        minor: minor.map((row) => row.element_symbol),
+        trace: trace.map((row) => row.element_symbol),
+        numColumns: major.length + minor.length + trace.length,
+        isSignedIn: req.isAuthenticated(),
         _: ejsUnitConversion,
       });
-    });
+    }
   }
 });
 

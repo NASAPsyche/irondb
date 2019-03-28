@@ -157,6 +157,10 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  if (req.app.get('env') === 'development') {
+    console.log(err);
+  }
+
   // check if logged in
   let isSignedIn = false;
   if (req.isAuthenticated()) {
