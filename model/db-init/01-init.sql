@@ -1,5 +1,4 @@
--- Create and connect to irondb database 
-CREATE DATABASE irondb WITH OWNER = group16; 
+-- add extensions
 CREATE EXTENSION IF NOT EXISTS citext;
 CREATE EXTENSION IF NOT EXISTS plpythonu;
 

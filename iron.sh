@@ -55,6 +55,65 @@ fi
 
 #### Declare functions for manipulating server and database ###
 
+# Add credentials
+function set_creds () 
+{
+  echo "Set username and password for Postgres"
+  NORESP=""
+  while true; do
+   echo -n "Select a username: "
+   read name
+    if [[ "$name" =~ [^a-zA-Z0-9\_] ]] || [[ "$name" == "$NORESP" ]] || [[ "${name:0:1}" =~ [^a-zA-Z] ]] ; then
+      echo "Must start with a letter. Only letters, numbers, and underscore allowed"
+    else 
+      break
+    fi
+  done
+  while true; do
+    echo -n "Enter a password: "
+    read -s pass1
+    echo ""
+    echo -n "Re-enter the password: "
+    read -s pass2
+    echo ""
+    if [[ "$pass1" != "$pass2" ]]; then
+      echo "The passwords did not match. Try again..."
+    elif [[ "$pass1" == "$NORESP" ]]; then
+      echo "You must enter a password"
+    elif [[ "$pass1" =~ [\ \\\/\'\"\%\;] ]]; then
+      echo "Illegal character: whitespace ' \" ; / \\ %"
+    else
+      nameHolder="%%user%%"
+      passHolder="%%password%%"
+
+      # copy over docker-compose with template and change placeholders
+      if [ -f "./docker-compose.yml" ]; then
+        rm -f ./docker-compose.yml
+      fi
+      cp ./docker/template/docker-compose.yml ./docker-compose.yml
+      sed -i '' -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
+      sed -i '' -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
+
+
+      # add those credentials to the mock user info generator
+      if [ -f "./docker/mock/mock-user-info.py" ]; then
+        rm -f ./docker/mock/mock-user-info.py
+      fi
+      cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
+      sed -i '' -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
+      sed -i '' -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+
+      #  set user in sql init
+      if [ -f "./model/db-init/00-init.sql" ]; then
+        rm -f ./model/db-init/00-init.sql
+      fi 
+      cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
+      sed -i '' -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
+      break
+    fi
+  done
+}
+
 # Install the global dependencies
 function install_global_deps ()
 {
@@ -410,6 +469,7 @@ while getopts ":hilpjqafsxbrm " opt; do
       exit 0
       ;;
     i ) #initial install
+      set_creds
       stop_containers
       install_global_deps
       install_node_deps
