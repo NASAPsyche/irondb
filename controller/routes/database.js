@@ -342,7 +342,12 @@ router.post('/export', async (req, res, next) => {
       next(createError(400));
     }
 
-    if (req.body.entries.length >= 2) {
+    console.log(typeof req.body.entries);
+    console.log( req.body.entries);
+    if (typeof req.body.entries == 'string') {
+      argsArray.push(parseInt(req.body.entries));
+      queryString += ('AND body_id=$' + currentQueryIndex + ' ');
+    } else {
       req.body.entries.forEach(function(element) {
         argsArray.push(element);
         if (currentQueryIndex === 1) {
@@ -353,9 +358,6 @@ router.post('/export', async (req, res, next) => {
         }
         currentQueryIndex++;
       });
-    } else if (req.body.entries.length === 1) {
-      argsArray.push(req.body.entries[0]);
-      queryString += ('AND body_id=$' + currentQueryIndex + ' ');
     }
 
 

@@ -74,7 +74,6 @@
               <% columnData.push(tempCol); %>
               <% columnNumber++ %>
             <% } %>
-            <% console.log(columnData);%>
             <th>Title</th>
             <th>Authors</th>
             <th>Pg.#</th> 
@@ -182,7 +181,6 @@
 
     <script>
       const numColumns = '<%- numColumns %>';
-      console.log(numColumns);
     </script>
     <%- include('bootstrap/js'); %>
     <script src="/javascripts/db-export.js"></script>
