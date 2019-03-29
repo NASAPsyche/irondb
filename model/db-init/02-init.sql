@@ -942,3 +942,16 @@ CREATE VIEW monolith_paper_pending as (
     t4.series,
     t4.published_year
 );
+
+-- Joining 'users' and 'user_info' table without password
+CREATE VIEW users_with_info AS (
+  SELECT t1.user_id,
+  t1.username,
+  t2.first_name,
+  t2.last_name,
+  t2.email_address,
+  t1.role_of
+  FROM users AS t1
+  INNER JOIN user_info as t2 ON t1.user_id = t2.user_id
+  ORDER BY t1.role_of ASC
+);
