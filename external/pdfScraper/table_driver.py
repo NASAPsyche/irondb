@@ -12,7 +12,6 @@ import PyPDF2
 from tabula import read_pdf
 import pandas as pd
 import re
-import copy
 pd.options.display.max_rows = 999
 pd.options.display.max_columns = 999
 import json
@@ -25,6 +24,7 @@ from pdfminer.pdfpage import PDFPage
 
 master_json = ""
 pages_with_tables = []
+text_pages_with_tables = []
 pages_with_continue = []
 master_dict_tables = {}
 pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
@@ -40,8 +40,7 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/RuzickaandHutson2010.pdf",
        "pdfs/spinTest.pdf"]
 
-chosen_pdf = pdf[1]
-
+chosen_pdf = pdf[0]
 
 # START This function imports raw text import from a chosen pdf request.
 def convert_pdf_to_txt(path, pageNo=0):
@@ -69,6 +68,7 @@ def convert_pdf_to_txt_looper(path, total_pages):
         individual_pages.append(convert_pdf_to_txt(path, check))
     return individual_pages
 # END This function puts each page of text in its own slot in an array of strings
+
 
 
 
@@ -116,21 +116,43 @@ total_pages = PyPDF2.PdfFileReader(open(chosen_pdf, 'rb')).numPages
 text = convert_pdf_to_txt_looper(chosen_pdf, total_pages)
 # End get text from pdf.
 
+# Reading text on each page to find page number.
+list_of_text_pages = []
+for page in range(total_pages):
+    test = re.findall(r'^\d+', text[page], re.IGNORECASE)
+    if len(test) == 0:
+        list_of_text_pages.append(int(0))
+    else:
+        list_of_text_pages.append(int(test[0]))
+print(list_of_text_pages)
+
+# Filling in the pages that are 0s
+for text_page in range(len(list_of_text_pages)):
+    if list_of_text_pages[text_page] == 0:
+        if list_of_text_pages[text_page + 1]:
+            list_of_text_pages[text_page] = list_of_text_pages[text_page + 1] - 1
+
+print(list_of_text_pages)
+
 # START Getting pages that have tables on them. looking for page 15
 for iterate in range(total_pages):
     splitted = text[iterate].split()
     if splitted[0] == "Table" or text[iterate].find('\nTable ') > 0 or bool(re.search(r'\w\n\w\n\w\n', text[iterate])):
         pages_with_tables.append(iterate + 1)
+        text_pages_with_tables.append(list_of_text_pages[iterate + 1])
 
+print(text_pages_with_tables)
 if pages_with_tables:
     for page in pages_with_tables:
-        if re.search(r'Continued\S\n', text[page], re.IGNORECASE):
-            pages_with_continue.append(page + 1)
+        print(page)
+        if re.search(r'Continued\S\n', text[page - 1], re.IGNORECASE):
+            pages_with_continue.append(page)
 # END Getting pages that have tables on them.
 
 # START Get tables 1 page at a time.
 tables_rec_from_pages = []
 pages_confirmed_with_tables = []
+text_pages_confirmed_with_tables = []
 for page in range(len(pages_with_tables)):
     one_page_of_tables = read_pdf(chosen_pdf, output_format="dataframe", encoding="utf-8", multiple_tables=True,
                                   pages=pages_with_tables[page], silent=True)
@@ -139,7 +161,8 @@ for page in range(len(pages_with_tables)):
         for table in one_page_of_tables:
             tables_rec_from_pages.append(table)
             pages_confirmed_with_tables.append(pages_with_tables[page])
-            print(tables_rec_from_pages)
+            text_pages_confirmed_with_tables.append(text_pages_with_tables[page])
+            # print(tables_rec_from_pages)
 # END Get tables 1 page at a time.
 
 # Start Marking the fields for removal
@@ -155,27 +178,27 @@ if len(tables_rec_from_pages) > 0:
 for ind in range(len(tables_rec_from_pages)):
     tables_rec_from_pages[ind] = row_by_row(tables_rec_from_pages[ind])
 
-# Remove dead tables from list after row by row
-temp_tables = copy.copy(tables_rec_from_pages)
-for remover in range(len(temp_tables)):
-    if temp_tables[remover].empty:
-        print("Testing page remover: " + str(pages_with_tables[remover]) + " index: " + str(remover))
+
+for remover in reversed(range(len(tables_rec_from_pages))):
+    print(len(tables_rec_from_pages))
+    # print("Testing page remover: " + str(pages_with_tables[remover]) + " index: " + str(remover))
+    if tables_rec_from_pages[remover].empty:
         del tables_rec_from_pages[remover]
         del pages_confirmed_with_tables[remover]
+        del text_pages_confirmed_with_tables[remover]
 
 for ind in range(len(tables_rec_from_pages)):
     tables_rec_from_pages[ind] = column_by_column(tables_rec_from_pages[ind])
 
 # Remove dead tables from list after col by col
-temp_tables = copy.copy(tables_rec_from_pages)
-for remover in range(len(temp_tables)):
-    if temp_tables[remover].empty:
+for remover in reversed(range(len(tables_rec_from_pages))):
+    print(len(tables_rec_from_pages))
+    if tables_rec_from_pages[remover].empty:
         del tables_rec_from_pages[remover]
         del pages_confirmed_with_tables[remover]
+        del text_pages_confirmed_with_tables[remover]
 
 for ind in range(len(tables_rec_from_pages)):
-    tables_rec_from_pages[ind] = '{Page: ' + str(pages_confirmed_with_tables[ind]) + ', ' + tables_rec_from_pages[ind].to_json() + '}'
+    tables_rec_from_pages[ind] = '{\"actual_page\":' + str(text_pages_confirmed_with_tables[ind]) + ',\"pdf_page\": ' + str(pages_confirmed_with_tables[ind]) + ', \"Table\":' + tables_rec_from_pages[ind].to_json() + '}'
     # print(tables_rec_from_pages[ind])
 print(tables_rec_from_pages)
-
-
