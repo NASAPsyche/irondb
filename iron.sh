@@ -342,8 +342,9 @@ function wait_for_containers ()
 # Populate mock data
 function populate_mock_data ()
 {
+  install_pip
   NORESP=""
-  PSYEXISTS="$(pip list | grep "psycopg2-binary")"
+  PSYEXISTS="$(pip list --format=columns | grep "psycopg2-binary")"
  
   # install psycopg2-binary if not exists
   if [[ "$PSYEXISTS" =  "$NORESP" ]]
@@ -358,6 +359,45 @@ function populate_mock_data ()
   node docker/mock/mock-users.js 
   python docker/mock/mock-user-info.py 
   exit 0
+}
+
+function install_pip ()
+{
+  echo "looking for pip"
+  NORESP=""
+  PIPEXISTS="$(which pip)"
+
+  if [[ "$PIPEXISTS" == "$NORESP" ]]; then
+    MYENV=$(uname -s)
+    LINUXENV="Linux"
+    MACENV="Darwin"
+    PYTWO=$(python --version 2>&1 | grep "n 2.")
+    PYTHREE=$(python --version 2>&1 | grep "n 3.")
+    
+    if [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
+      echo "install python2 pip as sudo"
+      sudo apt-get install -y python-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]]; then
+      echo "install python2 pip as root"
+      apt-get install -y python-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTHREE" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
+      echo "install python3 pip as sudo"
+      sudo apt-get install -y python3-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTHREE" != "$NORESP" ]]; then
+      echo "install python3 pip as root"
+      apt-get install -y python3-pip 
+    elif  [[ "$MYENV" == "$MACENV" ]]; then
+      echo "installing pip as user:$EDUID for macOS"
+      python -m ensurepip
+    else 
+      echo "unable to install pip automatically, install manually:"
+      echo ""
+      echo "      https://pip.pypa.io/en/stable/installing/ "
+      exit 1
+    fi
+  else
+    echo "pip is already installed"
+  fi
 }
 
 ### BEGIN ###
