@@ -257,8 +257,10 @@ router.get('/export', async (req, res, next) => {
     const minor = resObj[3].rows;
     const trace = resObj[4].rows;
 
-    // separate entries into rows by meteorite and analysis technique
     const Entries = resObj[0].rows;
+    const Entries2 = resObj[0].rows;
+
+    // separate entries into rows by meteorite and analysis technique
     const Rows = [];
     let temp = [];
     let currentTechnique = '';
@@ -285,8 +287,34 @@ router.get('/export', async (req, res, next) => {
       }
     }
 
+    // separate entries into rows by meteorite and analysis technique
+    const Rows2 = [];
+    temp = [];
+    currentTechnique = '';
+    currentID = -1;
+    for (let i = 0; i < Entries2.length; i++) {
+      if (i === 0) {
+        currentID = Entries2[i].body_id;
+      }
+
+      if (Entries2[i].body_id === currentID) {
+        temp.push(Entries2[i]);
+      } else {
+        Rows2.push(temp);
+        temp = [];
+        currentID = Entries2[i].body_id;
+        temp.push(Entries2[i]);
+      }
+
+      if (i === Entries2.length - 1) {
+        Rows2.push(temp);
+      }
+    }
+
+
     res.render('db-export', {
       Rows: Rows,
+      Rows2: Rows2,
       Body_IDs: resObj[1].rows,
       major: major.map((row) => row.element_symbol),
       minor: minor.map((row) => row.element_symbol),
@@ -393,8 +421,10 @@ router.post('/export', async (req, res, next) => {
       const minor = resObj[3].rows;
       const trace = resObj[4].rows;
 
-      // separate entries into rows by meteorite and analysis technique
       const Entries = resObj[0].rows;
+      const Entries2 = resObj[0].rows;
+
+      // separate entries into rows by meteorite and analysis technique
       const Rows = [];
       let temp = [];
       let currentTechnique = '';
@@ -421,8 +451,34 @@ router.post('/export', async (req, res, next) => {
         }
       }
 
+      // separate entries into rows by meteorite and analysis technique
+      const Rows2 = [];
+      temp = [];
+      currentTechnique = '';
+      currentID = -1;
+      for (let i = 0; i < Entries2.length; i++) {
+        if (i === 0) {
+          currentID = Entries2[i].body_id;
+        }
+
+        if (Entries2[i].body_id === currentID) {
+          temp.push(Entries2[i]);
+        } else {
+          Rows2.push(temp);
+          temp = [];
+          currentID = Entries2[i].body_id;
+          temp.push(Entries2[i]);
+        }
+
+        if (i === Entries2.length - 1) {
+          Rows2.push(temp);
+        }
+      }
+
+
       res.render('db-export', {
         Rows: Rows,
+        Rows2: Rows2,
         Body_IDs: resObj[1].rows,
         major: major.map((row) => row.element_symbol),
         minor: minor.map((row) => row.element_symbol),

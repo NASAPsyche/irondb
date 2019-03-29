@@ -1,4 +1,17 @@
 /* eslint-disable no-invalid-this */
+
+$('#format-select').on('change', function(event) {
+  // Hide none selected table
+  if ($('#format-select option:selected').val() === 'without-analysis') {
+    $( '#with-analysis').prop('hidden', true);
+    $('#without-analysis').prop('hidden', false);
+  } else {
+    $( '#with-analysis').prop('hidden', false);
+    $('#without-analysis').prop('hidden', true);
+  }
+});
+
+
 // let numberOfElementColumns = 0;
 // $('document').ready(function() {
 // Get number of element columns
@@ -43,6 +56,7 @@ $('#top-btn').on('click', function() {
 });
 
 $( '#export-form' ).submit( function( event ) {
+
   // Get fields
   const fields = $( 'thead > tr > th' ).map(function() {
     if (this.innerText !== '') {

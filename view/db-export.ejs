@@ -31,141 +31,273 @@
       <div class="row align-right">
         <button class="btn btn-warning" id="top-btn">Export Data</button>
       </div>
+      <div class="row align-right pt-2">
+        <label class="pl-2 pr-2" for="format-select">Select table format:</label>
+        <select class="form-control" id="format-select" name="format-select">
+          <option value="with-analysis">With Analysis Technique</option>
+          <option value="without-analysis">Single Row</option>
+        </select>      
+      </div>
     </div>
 
     <div class="container-fluid pt-3" id="entries">
-      <table class="table table-striped table-bordered table-hover table-responsive">
-        <thead class="thead-dark">
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Group</th>
-            <th>Analysis Technique</th>
-            <% let columnNumber = 0; %>
-            <% let columnData = []; %>
-            <% let tempCol = {}; %>
-            <% for(var i=0; i < major.length; i++) { %>
-              <th class="<%= columnNumber%>">
-                <%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (wt%)
-              </th>
-              <% tempCol = {}; %>
-              <% tempCol.category = 'major'; %>
-              <% tempCol.symbol = major[i]; %>
-              <% columnData.push(tempCol); %>
-              <% columnNumber++ %>
-            <% } %>
-            <% for(var i=0; i < minor.length; i++) { %>
-              <th class="<%= columnNumber%>">
-                <%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (ppm)
-              </th>
-              <% tempCol = {}; %>
-              <% tempCol.category = 'minor'; %>
-              <% tempCol.symbol = minor[i]; %>
-              <% columnData.push(tempCol); %>
-              <% columnNumber++ %>
-            <% } %>
-            <% for(var i=0; i < trace.length; i++) { %>
-              <th class="<%= columnNumber%>">
-                <%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (ppb)
-              </th>
-              <% tempCol = {}; %>
-              <% tempCol.category = 'trace'; %>
-              <% tempCol.symbol = trace[i]; %>
-              <% columnData.push(tempCol); %>
-              <% columnNumber++ %>
-            <% } %>
-            <th>Title</th>
-            <th>Authors</th>
-            <th>Pg.#</th> 
-            <th>Journal</th> 
-            <th>Volume</th>
-            <th>Year Published</th> 
-          </tr>
-        </thead>
-        <tbody>
-          <% for (let i = 0; i < Rows.length; i++) { %>
-            <tr>
-              <th>
-                <i class="far fa-times-circle fa-2x row ml-1 mr-1 mt-5"></i>
-              </th>
-              <th class="data meteorite_name"><%= Rows[i][0].meteorite_name %></th>
-              <th class="data classification_group"><%= Rows[i][0].classification_group %></th>
-              <th class="data technique"><%= Rows[i][0].technique %></th>
-
-              <!-- Elemental Data -->
-              <% emptyCol = true; %>
-              <% let currentCategory = ''; %>
-              <% let currentSymbol = ''; %>
-              <% for (let k = 0; k < numColumns; k++ )  { %>
-                <!-- for each column get column data -->
-                <% currentCategory = columnData[k].category %>
-                <% currentSymbol = columnData[k].symbol %>
-                <!-- iterate over remaining entries for current row -->
-                <% for (let j = 0; j < Rows[i].length; j++) { %>
-                  <% if (currentCategory === 'major' && currentSymbol === Rows[i][j].element_symbol &&
-                  Rows[i][j].measurement > 10000000) { %>
-                    <!-- is major element print value -->
-                    <th class="<%= k %>">
-                      <% if (Rows[i][j].less_than === true) { %>
-                        &lt;
+      <table class="table table-striped table-bordered table-hover table-responsive" id="with-analysis">
+            <thead class="thead-dark">
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Group</th>
+                <th>Analysis Technique</th>
+                <% let columnNumber = 0; %>
+                <% let columnData = []; %>
+                <% let tempCol = {}; %>
+                <% for(var i=0; i < major.length; i++) { %>
+                  <th class="<%= columnNumber%>">
+                    <%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (wt%)
+                  </th>
+                  <% tempCol = {}; %>
+                  <% tempCol.category = 'major'; %>
+                  <% tempCol.symbol = major[i]; %>
+                  <% columnData.push(tempCol); %>
+                  <% columnNumber++ %>
+                <% } %>
+                <% for(var i=0; i < minor.length; i++) { %>
+                  <th class="<%= columnNumber%>">
+                    <%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (ppm)
+                  </th>
+                  <% tempCol = {}; %>
+                  <% tempCol.category = 'minor'; %>
+                  <% tempCol.symbol = minor[i]; %>
+                  <% columnData.push(tempCol); %>
+                  <% columnNumber++ %>
+                <% } %>
+                <% for(var i=0; i < trace.length; i++) { %>
+                  <th class="<%= columnNumber%>">
+                    <%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (ppb)
+                  </th>
+                  <% tempCol = {}; %>
+                  <% tempCol.category = 'trace'; %>
+                  <% tempCol.symbol = trace[i]; %>
+                  <% columnData.push(tempCol); %>
+                  <% columnNumber++ %>
+                <% } %>
+                <th>Title</th>
+                <th>Authors</th>
+                <th>Pg.#</th> 
+                <th>Journal</th> 
+                <th>Volume</th>
+                <th>Year Published</th> 
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let i = 0; i < Rows.length; i++) { %>
+                <tr>
+                  <th>
+                    <i class="far fa-times-circle fa-2x row ml-1 mr-1 mt-5"></i>
+                  </th>
+                  <th class="data meteorite_name"><%= Rows[i][0].meteorite_name %></th>
+                  <th class="data classification_group"><%= Rows[i][0].classification_group %></th>
+                  <th class="data technique"><%= Rows[i][0].technique %></th>
+                  <!-- Elemental Data -->
+                  <% emptyCol = true; %>
+                  <% let currentCategory = ''; %>
+                  <% let currentSymbol = ''; %>
+                  <% for (let k = 0; k < numColumns; k++ )  { %>
+                    <!-- for each column get column data -->
+                    <% currentCategory = columnData[k].category %>
+                    <% currentSymbol = columnData[k].symbol %>
+                    <!-- iterate over remaining entries for current row -->
+                    <% for (let j = 0; j < Rows[i].length; j++) { %>
+                      <% if (currentCategory === 'major' && currentSymbol === Rows[i][j].element_symbol &&
+                      Rows[i][j].measurement > 10000000) { %>
+                        <!-- is major element print value -->
+                        <th class="<%= k %>">
+                          <% if (Rows[i][j].less_than === true) { %>
+                            &lt;
+                          <% } %>
+                          <%= _.ppbToPercent(Rows[i][j].measurement, Rows[i][j].sigfig) %>
+                          <% if (Rows[i][j].deviation !== 0) { %>
+                            &plusmn; <%= _.ppbToPercent(Rows[i][j].deviation, Rows[i][j].sigfig) %>
+                          <% } %>
+                        </th>
+                        <% emptyCol = false; %>
+                      <% } else if (currentCategory === 'minor' && currentSymbol === Rows[i][j].element_symbol &&
+                      Rows[i][j].measurement <= 10000000 && Rows[i][j].measurement >= 1000000) { %>
+                        <!-- is minor element print value -->
+                        <th class="<%= k %>">
+                          <% if (Rows[i][j].less_than === true) { %>
+                            &lt;
+                          <% } %>
+                          <%= _.ppbToPPM(Rows[i][j].measurement, Rows[i][j].sigfig) %>
+                          <% if (Rows[i][j].deviation !== 0) { %>
+                            &plusmn; <%= _.ppbToPPM(Rows[i][j].deviation, Rows[i][j].sigfig) %>
+                          <% } %>
+                        </th>
+                        <% emptyCol = false; %>
+                      <% } else if (currentCategory === 'trace' && currentSymbol === Rows[i][j].element_symbol &&
+                       Rows[i][j].measurement < 1000000) { %>
+                        <!-- is trace element print value -->
+                        <th class="<%= k %>">
+                          <% if (Rows[i][j].less_than === true) { %>
+                            &lt;
+                          <% } %>
+                          <%= Rows[i][j].measurement %>
+                          <% if (Rows[i][j].deviation !== 0) { %>
+                            &plusmn; <%= Rows[i][j].deviation %>
+                          <% } %>
+                        </th>
+                        <% emptyCol = false; %>
+                      <% } %> 
+                      <% if (emptyCol === false) { %>
+                        <% break; %>
                       <% } %>
-                      <%= _.ppbToPercent(Rows[i][j].measurement, Rows[i][j].sigfig) %>
-                      <% if (Rows[i][j].deviation !== 0) { %>
-                        &plusmn; <%= _.ppbToPercent(Rows[i][j].deviation, Rows[i][j].sigfig) %>
-                      <% } %>
-                    </th>
-                    <% emptyCol = false; %>
-                  <% } else if (currentCategory === 'minor' && currentSymbol === Rows[i][j].element_symbol &&
-                  Rows[i][j].measurement <= 10000000 && Rows[i][j].measurement >= 1000000) { %>
-                    <!-- is minor element print value -->
-                    <th class="<%= k %>">
-                      <% if (Rows[i][j].less_than === true) { %>
-                        &lt;
-                      <% } %>
-                      <%= _.ppbToPPM(Rows[i][j].measurement, Rows[i][j].sigfig) %>
-                      <% if (Rows[i][j].deviation !== 0) { %>
-                        &plusmn; <%= _.ppbToPPM(Rows[i][j].deviation, Rows[i][j].sigfig) %>
-                      <% } %>
-                    </th>
-                    <% emptyCol = false; %>
-                  <% } else if (currentCategory === 'trace' && currentSymbol === Rows[i][j].element_symbol &&
-                   Rows[i][j].measurement < 1000000) { %>
-                    <!-- is trace element print value -->
-                    <th class="<%= k %>">
-                      <% if (Rows[i][j].less_than === true) { %>
-                        &lt;
-                      <% } %>
-                      <%= Rows[i][j].measurement %>
-                      <% if (Rows[i][j].deviation !== 0) { %>
-                        &plusmn; <%= Rows[i][j].deviation %>
-                      <% } %>
-                    </th>
-                    <% emptyCol = false; %>
-                  <% } %> 
-
-                  <% if (emptyCol === false) { %>
-                    <% break; %>
+                    <% } %>
+                    <% if (emptyCol === true) { %>
+                      <!-- else print empty -->
+                      <th class="<%= k %>"></th>
+                    <% } %>
+                    <% emptyCol = true; %>
                   <% } %>
-                <% } %>
-
-                <% if (emptyCol === true) { %>
-                  <!-- else print empty -->
-                  <th class="<%= k %>"></th>
-                <% } %>
-                <% emptyCol = true; %>
+                  <!-- End -->
+                  <th class="data title"><%= Rows[i][0].title %></th>
+                  <th class="data authors"><%= Rows[i][0].authors %></th>
+                  <th class="data page_number"><%= Rows[i][0].page_number %></th> 
+                  <th class="data journal_name"><%= Rows[i][0].journal_name %></th> 
+                  <th class="data volume"><%= Rows[i][0].volume %></th>
+                  <th class="data published_year"><%= Rows[i][0].published_year %></th> 
+                </tr>
               <% } %>
+              
+            </tbody>
+      </table>
 
-              <!-- End -->
-              <th class="data title"><%= Rows[i][0].title %></th>
-              <th class="data authors"><%= Rows[i][0].authors %></th>
-              <th class="data page_number"><%= Rows[i][0].page_number %></th> 
-              <th class="data journal_name"><%= Rows[i][0].journal_name %></th> 
-              <th class="data volume"><%= Rows[i][0].volume %></th>
-              <th class="data published_year"><%= Rows[i][0].published_year %></th> 
+      <table class="table table-striped table-bordered table-hover table-responsive" id="without-analysis" hidden="true">
+          <thead class="thead-dark">
+            <tr>
+              <th></th>
+              <th>Name</th>
+              <th>Group</th>
+              <% columnNumber = 0; %>
+              <% columnData = []; %>
+              <% tempCol = {}; %>
+              <% for(var i=0; i < major.length; i++) { %>
+                <th class="<%= columnNumber%>">
+                  <%= major[i].charAt(0).toUpperCase() + major[i].slice(1)%> (wt%)
+                </th>
+                <% tempCol = {}; %>
+                <% tempCol.category = 'major'; %>
+                <% tempCol.symbol = major[i]; %>
+                <% columnData.push(tempCol); %>
+                <% columnNumber++ %>
+              <% } %>
+              <% for(var i=0; i < minor.length; i++) { %>
+                <th class="<%= columnNumber%>">
+                  <%= minor[i].charAt(0).toUpperCase() + minor[i].slice(1)%> (ppm)
+                </th>
+                <% tempCol = {}; %>
+                <% tempCol.category = 'minor'; %>
+                <% tempCol.symbol = minor[i]; %>
+                <% columnData.push(tempCol); %>
+                <% columnNumber++ %>
+              <% } %>
+              <% for(var i=0; i < trace.length; i++) { %>
+                <th class="<%= columnNumber%>">
+                  <%= trace[i].charAt(0).toUpperCase() + trace[i].slice(1)%> (ppb)
+                </th>
+                <% tempCol = {}; %>
+                <% tempCol.category = 'trace'; %>
+                <% tempCol.symbol = trace[i]; %>
+                <% columnData.push(tempCol); %>
+                <% columnNumber++ %>
+              <% } %>
+              <th>Title</th>
+              <th>Authors</th>
+              <th>Pg.#</th> 
+              <th>Journal</th> 
+              <th>Volume</th>
+              <th>Year Published</th> 
             </tr>
-          <% } %>
-          
-        </tbody>
+          </thead>
+          <tbody>
+            <% for (let i = 0; i < Rows2.length; i++) { %>
+              <tr>
+                <th>
+                  <i class="far fa-times-circle fa-2x row ml-1 mr-1 mt-5"></i>
+                </th>
+                <th class="data meteorite_name"><%= Rows2[i][0].meteorite_name %></th>
+                <th class="data classification_group"><%= Rows2[i][0].classification_group %></th>
+                <th class="data technique"><%= Rows2[i][0].technique %></th>
+                <!-- Elemental Data -->
+                <% emptyCol = true; %>
+                <% currentCategory = ''; %>
+                <% currentSymbol = ''; %>
+                <% for (let k = 0; k < numColumns; k++ )  { %>
+                  <!-- for each column get column data -->
+                  <% currentCategory = columnData[k].category %>
+                  <% currentSymbol = columnData[k].symbol %>
+                  <!-- iterate over remaining entries for current row -->
+                  <% for (let j = 0; j < Rows2[i].length; j++) { %>
+                    <% if (currentCategory === 'major' && currentSymbol === Rows2[i][j].element_symbol &&
+                    Rows2[i][j].measurement > 10000000) { %>
+                      <!-- is major element print value -->
+                      <th class="<%= k %>">
+                        <% if (Rows2[i][j].less_than === true) { %>
+                          &lt;
+                        <% } %>
+                        <%= _.ppbToPercent(Rows2[i][j].measurement, Rows2[i][j].sigfig) %>
+                        <% if (Rows2[i][j].deviation !== 0) { %>
+                          &plusmn; <%= _.ppbToPercent(Rows2[i][j].deviation, Rows2[i][j].sigfig) %>
+                        <% } %>
+                      </th>
+                      <% emptyCol = false; %>
+                    <% } else if (currentCategory === 'minor' && currentSymbol === Rows2[i][j].element_symbol &&
+                    Rows2[i][j].measurement <= 10000000 && Rows2[i][j].measurement >= 1000000) { %>
+                      <!-- is minor element print value -->
+                      <th class="<%= k %>">
+                        <% if (Rows2[i][j].less_than === true) { %>
+                          &lt;
+                        <% } %>
+                        <%= _.ppbToPPM(Rows2[i][j].measurement, Rows2[i][j].sigfig) %>
+                        <% if (Rows2[i][j].deviation !== 0) { %>
+                          &plusmn; <%= _.ppbToPPM(Rows[i][j].deviation, Rows2[i][j].sigfig) %>
+                        <% } %>
+                      </th>
+                      <% emptyCol = false; %>
+                    <% } else if (currentCategory === 'trace' && currentSymbol === Rows2[i][j].element_symbol &&
+                     Rows2[i][j].measurement < 1000000) { %>
+                      <!-- is trace element print value -->
+                      <th class="<%= k %>">
+                        <% if (Rows2[i][j].less_than === true) { %>
+                          &lt;
+                        <% } %>
+                        <%= Rows2[i][j].measurement %>
+                        <% if (Rows2[i][j].deviation !== 0) { %>
+                          &plusmn; <%= Rows2[i][j].deviation %>
+                        <% } %>
+                      </th>
+                      <% emptyCol = false; %>
+                    <% } %> 
+                    <% if (emptyCol === false) { %>
+                      <% break; %>
+                    <% } %>
+                  <% } %>
+                  <% if (emptyCol === true) { %>
+                    <!-- else print empty -->
+                    <th class="<%= k %>"></th>
+                  <% } %>
+                  <% emptyCol = true; %>
+                <% } %>
+                <!-- End -->
+                <th class="data title"><%= Rows2[i][0].title %></th>
+                <th class="data authors"><%= Rows2[i][0].authors %></th>
+                <th class="data page_number"><%= Rows2[i][0].page_number %></th> 
+                <th class="data journal_name"><%= Rows2[i][0].journal_name %></th> 
+                <th class="data volume"><%= Rows2[i][0].volume %></th>
+                <th class="data published_year"><%= Rows2[i][0].published_year %></th> 
+              </tr>
+            <% } %>
+            
+          </tbody>
       </table>
     </div>
 
