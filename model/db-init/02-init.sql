@@ -337,21 +337,21 @@ CREATE VIEW export_table AS (
 );
 
 CREATE VIEW export_major_element_symbols AS (
-  SELECT DISTINCT element_symbol
+  SELECT body_id, element_symbol
   FROM export_table
   WHERE measurement > 10000000
   ORDER BY element_symbol
 );
 
 CREATE VIEW export_minor_element_symbols AS (
-  SELECT DISTINCT element_symbol
+  SELECT body_id, element_symbol
   FROM export_table
   WHERE measurement <= 10000000 AND measurement >= 1000000
   ORDER BY element_symbol
 );
 
 CREATE VIEW export_trace_element_symbols AS (
-  SELECT DISTINCT element_symbol
+  SELECT body_id, element_symbol
   FROM export_table
   WHERE measurement < 1000000
   ORDER BY element_symbol
