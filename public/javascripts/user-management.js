@@ -24,6 +24,7 @@ $(document).ready(function() {
     }
     alert(str);
     postData(data);
+    location.reload();
   });
 });
 
@@ -46,7 +47,6 @@ $(document).ready(function() {
     console.log(newRole);
 
     if (currentRole != newRole) {
-      alert(userID + '\'s role changed from ' + currentRole + ' to ' + newRole);
       data.push({'user': userID, 'current': currentRole, 'role': newRole});
     }
   });
