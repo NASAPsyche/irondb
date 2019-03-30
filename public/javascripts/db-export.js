@@ -55,10 +55,33 @@ $('#top-btn').on('click', function() {
   $('#export-btn').trigger('click');
 });
 
+const alertMessage = `
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Warning: </strong>
+  One or more rows export may be missing attribution of analysis technique.
+   See paper for more information.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>`;
 
 $( '#export-form' ).submit( function( event ) {
   // Get selected table id
   const selectedTable = '#' + $('#format-select option:selected').val();
+
+  // Alert
+  let isEmptyCell = false;
+  if (selectedTable == '#with-analysis') {
+    $(selectedTable + ' > tbody > tr > th.technique').map(function(cell) {
+      if (this.innerHTML === '') {
+        isEmptyCell = true;
+      }
+    });
+
+    if (isEmptyCell === true) {
+      $('#alert').prepend(alertMessage);
+    }
+  }
 
   // Get fields
   const fields = $(selectedTable + ' > thead > tr > th' ).map(function() {
