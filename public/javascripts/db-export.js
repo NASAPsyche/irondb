@@ -79,7 +79,9 @@ $( '#export-form' ).submit( function( event ) {
     });
 
     if (isEmptyCell === true) {
-      $('#alert').prepend(alertMessage);
+      if (!$('.alert')[0]) {
+        $('#alert').prepend(alertMessage);
+      }
     }
   }
 
