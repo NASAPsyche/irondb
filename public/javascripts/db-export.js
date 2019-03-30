@@ -55,10 +55,13 @@ $('#top-btn').on('click', function() {
   $('#export-btn').trigger('click');
 });
 
+
 $( '#export-form' ).submit( function( event ) {
+  // Get selected table id
+  const selectedTable = '#' + $('#format-select option:selected').val();
 
   // Get fields
-  const fields = $( 'thead > tr > th' ).map(function() {
+  const fields = $(selectedTable + ' > thead > tr > th' ).map(function() {
     if (this.innerText !== '') {
       return this.innerText;
     }
@@ -68,8 +71,8 @@ $( '#export-form' ).submit( function( event ) {
   const data = [];
   let currentRow = {};
   let isFirstRow = true;
-  const numRows = $('tbody > tr').length;
-  $('tbody > tr').map(function() {
+  const numRows = $(selectedTable + ' > tbody > tr').length;
+  $(selectedTable + ' > tbody > tr').map(function() {
     $.each( this.children, function(index, value) {
       if (index === 0 && !isFirstRow) {
         data.push(currentRow);
