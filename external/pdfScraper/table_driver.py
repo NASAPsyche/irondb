@@ -127,10 +127,16 @@ for page in range(total_pages):
 print(list_of_text_pages)
 
 # Filling in the pages that are 0s
-for text_page in range(len(list_of_text_pages)):
-    if list_of_text_pages[text_page] == 0:
-        if list_of_text_pages[text_page + 1]:
-            list_of_text_pages[text_page] = list_of_text_pages[text_page + 1] - 1
+zero_test = True
+zero_loop_count = 0
+while zero_test and zero_loop_count < len(list_of_text_pages):
+    zero_test = False
+    for text_page in range(len(list_of_text_pages)):
+        if list_of_text_pages[text_page] == 0:
+            zero_test = True
+            if list_of_text_pages[text_page + 1]:
+                list_of_text_pages[text_page] = list_of_text_pages[text_page + 1] - 1
+        zero_loop_count += 1
 
 print(list_of_text_pages)
 
