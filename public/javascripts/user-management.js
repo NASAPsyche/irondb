@@ -65,7 +65,6 @@ async function postData(jsonString) {
     dataType: 'json',
     async: true,
     success: function(data, status, jqXHR) {
-      alert(status);
       return true;
     },
     error: function(jqXHR, status) {
