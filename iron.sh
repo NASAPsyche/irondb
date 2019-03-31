@@ -27,7 +27,8 @@ The Iron Shell accepts chains of options, for example:
 This will (l)aunch the containers, after (p)opulating the database by the
 init files, reseting the node (e)nvironment, in an attached shell and run
 (a)ttached. While running in attached mode, it is not possible to perform
-operations such as making database backups.
+operations such as making database backups. When leaving the attached
+shell, the Iron Shell will exit and no further operations will be done.
 --------------
 -i    Initial install: If this is your first time, or you need to rebuild 
       your containers, then select this option. The containers will launch
@@ -40,7 +41,7 @@ operations such as making database backups.
       specified by Gulp.
 -p    Populate database: Will delete the local database and then populate
       it from the init files (./model/db-init/)
--s    Stop containers: Stops the containers.
+-s    Stop containers: Stops the containers. This is always executed last.
 --------------
 -b    Backup database: creates a dump of the current database
 -r    Restore database: restore the database from the most recent backup.
@@ -591,8 +592,9 @@ if [[ "$launchContainers" = true ]] ; then
   else
     start_detached
   fi
+fi
 
-else
+if [[ "$launchContainers" = false ]] ; then
   if [[ "$populateData" = true ]] ; then
     rm_db
   fi
