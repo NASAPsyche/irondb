@@ -45,7 +45,7 @@ Iron Shell will exit and no further operations will be done.
       it from the init files (./model/db-init/)
 -s    Stop containers: Stops the containers. This is always executed last.
 --------------
--b    Backup database: creates a dump of the current database
+-b    Backup database: creates a backup of the current database
 -r    Restore database: restore the database from the most recent backup.
       For more advanced database manipulation, refer to Postgresql docs. 
 --------------
