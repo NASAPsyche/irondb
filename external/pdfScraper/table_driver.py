@@ -145,11 +145,17 @@ print(list_of_text_pages)
 
 # START Getting pages that have tables on them. looking for page 15
 for iterate in range(total_pages):
-    print("NEW WAY:" + str(bool(re.search(r'\nTable ', text[iterate]))))
-    print("OLD WAY:" + str(bool(text[iterate].find('\nTable ') > 0)))
-    if bool(re.search(r'^Table|\nTable |\w\n\w\n\w\n', text[iterate])):
+    print("PAGE START " + str(iterate + 1))
+    print("^Table:" + str(bool(re.search(r'^Table ', text[iterate]))))
+    print("SPACETable :" + str(bool(re.search(r'\nTable ', text[iterate]))))
+    print("WSWSWSWS:" + str(bool(re.search('\w\n\w\n\w\n', text[iterate]))))
+    print("PAGE END " + str(iterate + 1) + "\n")
+
+    if bool(re.search(r'^Table|\nTable |\w\n\w\n\w\n', text[iterate])) and \
+            bool(re.search(r'\d+\n\d+\n|\d+\n\n\d+\n\n\d+', text[iterate])):
         pages_with_tables.append(iterate + 1)
         text_pages_with_tables.append(list_of_text_pages[iterate])
+    print(text[iterate])
 
 print(text_pages_with_tables)
 print(pages_with_tables)
