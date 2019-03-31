@@ -1,6 +1,6 @@
 """
 table_driver.py: The purpose of this file is to develop the entire journal scraper functionality with the touch of a button. This
-is simply meant to help devlop python parts of the web application. This is not shipable code.
+is simply meant to help develop python parts of the web application. This is not ship-able code.
 
 __authors__ = "Joshua Johnson"
 __version__ = "1.0"
@@ -40,7 +40,8 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/RuzickaandHutson2010.pdf",
        "pdfs/spinTest.pdf"]
 
-chosen_pdf = pdf[0]
+chosen_pdf = pdf[10]
+print(chosen_pdf)
 
 # START This function imports raw text import from a chosen pdf request.
 def convert_pdf_to_txt(path, pageNo=0):
@@ -61,6 +62,7 @@ def convert_pdf_to_txt(path, pageNo=0):
     return text
 # END This function imports raw text import from a chosen pdf request.
 
+
 # START This function puts each page of text in its own slot in an array of strings
 def convert_pdf_to_txt_looper(path, total_pages):
     individual_pages = []
@@ -68,9 +70,6 @@ def convert_pdf_to_txt_looper(path, total_pages):
         individual_pages.append(convert_pdf_to_txt(path, check))
     return individual_pages
 # END This function puts each page of text in its own slot in an array of strings
-
-
-
 
 
 def row_by_row(mdf):
@@ -91,6 +90,7 @@ def row_by_row(mdf):
                 return emptyDF
     return mdf
 
+
 def column_by_column(mdf):
     for col in reversed(range(mdf.shape[1])):
         col_remove = 0
@@ -103,8 +103,8 @@ def column_by_column(mdf):
         if mdf.shape[0] - (col_remove + col_null) < 2 or(col_remove + col_null)/ mdf.shape[0] > .85:
             mdf = mdf.drop(mdf.columns[col], axis=1)
             if mdf.empty:
-                emptyDF = pd.DataFrame()
-                return emptyDF
+                empty_df = pd.DataFrame()
+                return empty_df
     return mdf
 
 
@@ -126,33 +126,38 @@ for page in range(total_pages):
         list_of_text_pages.append(int(test[0]))
 print(list_of_text_pages)
 
+
 # Filling in the pages that are 0s
 zero_test = True
 zero_loop_count = 0
 while zero_test and zero_loop_count < len(list_of_text_pages):
     zero_test = False
     for text_page in range(len(list_of_text_pages)):
-        if list_of_text_pages[text_page] == 0:
+        if list_of_text_pages[text_page] <= 0:
             zero_test = True
-            if list_of_text_pages[text_page + 1]:
+            if text_page + 1 < len(list_of_text_pages):
                 list_of_text_pages[text_page] = list_of_text_pages[text_page + 1] - 1
-        zero_loop_count += 1
+            else:
+                list_of_text_pages[text_page] = list_of_text_pages[text_page - 1] + 1
+    zero_loop_count += 1
 
 print(list_of_text_pages)
 
 # START Getting pages that have tables on them. looking for page 15
 for iterate in range(total_pages):
-    splitted = text[iterate].split()
-    if splitted[0] == "Table" or text[iterate].find('\nTable ') > 0 or bool(re.search(r'\w\n\w\n\w\n', text[iterate])):
+    print("NEW WAY:" + str(bool(re.search(r'\nTable ', text[iterate]))))
+    print("OLD WAY:" + str(bool(text[iterate].find('\nTable ') > 0)))
+    if bool(re.search(r'^Table|\nTable |\w\n\w\n\w\n', text[iterate])):
         pages_with_tables.append(iterate + 1)
-        text_pages_with_tables.append(list_of_text_pages[iterate + 1])
+        text_pages_with_tables.append(list_of_text_pages[iterate])
 
 print(text_pages_with_tables)
-if pages_with_tables:
-    for page in pages_with_tables:
-        print(page)
-        if re.search(r'Continued\S\n', text[page - 1], re.IGNORECASE):
-            pages_with_continue.append(page)
+print(pages_with_tables)
+# if pages_with_tables:
+#     for page in pages_with_tables:
+#         print(page)
+#         if re.search(r'Continued\S\n', text[page - 1], re.IGNORECASE):
+#             pages_with_continue.append(page)
 # END Getting pages that have tables on them.
 
 # START Get tables 1 page at a time.
@@ -186,8 +191,6 @@ for ind in range(len(tables_rec_from_pages)):
 
 
 for remover in reversed(range(len(tables_rec_from_pages))):
-    print(len(tables_rec_from_pages))
-    # print("Testing page remover: " + str(pages_with_tables[remover]) + " index: " + str(remover))
     if tables_rec_from_pages[remover].empty:
         del tables_rec_from_pages[remover]
         del pages_confirmed_with_tables[remover]
@@ -198,7 +201,6 @@ for ind in range(len(tables_rec_from_pages)):
 
 # Remove dead tables from list after col by col
 for remover in reversed(range(len(tables_rec_from_pages))):
-    print(len(tables_rec_from_pages))
     if tables_rec_from_pages[remover].empty:
         del tables_rec_from_pages[remover]
         del pages_confirmed_with_tables[remover]
@@ -206,5 +208,5 @@ for remover in reversed(range(len(tables_rec_from_pages))):
 
 for ind in range(len(tables_rec_from_pages)):
     tables_rec_from_pages[ind] = '{\"actual_page\":' + str(text_pages_confirmed_with_tables[ind]) + ',\"pdf_page\": ' + str(pages_confirmed_with_tables[ind]) + ', \"Table\":' + tables_rec_from_pages[ind].to_json() + '}'
-    # print(tables_rec_from_pages[ind])
-print(tables_rec_from_pages)
+    print(tables_rec_from_pages[ind])
+# print(tables_rec_from_pages)
