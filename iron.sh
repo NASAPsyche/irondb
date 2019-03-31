@@ -622,7 +622,7 @@ fi
 
 
 if [[ "$openLogs" = true ]] ; then
-  docker-compose -f -t
+  docker-compose logs -f -t
   exit 0
 fi
 
