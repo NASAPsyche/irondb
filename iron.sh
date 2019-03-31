@@ -558,12 +558,10 @@ shift $((OPTIND -1))
 
 if [[ "$cleanDocker" = true ]] ; then
   remove_dangles
-  exit 0;
 fi
 
 if [[ "$deleteDocker" = true ]] ; then
   delete_containers
-  exit 0;
 fi
 
 if [[ "$initInstall" = true ]] ; then
