@@ -59,6 +59,7 @@ Iron Shell will exit and no further operations will be done.
   echo "${helpString}"
 }
 
+hasWaited=false
 
 # No args given, display help
 if [[ $# -eq 0 ]] ; then
@@ -286,6 +287,10 @@ function restore_recent ()
 function wait_for_containers ()
 {
   echo "Waiting for the containers to initialize"
+  if [[ "$hasWaited" = true ]] ; then
+    return
+  fi
+  
   NORESP=""
   # Check that pg is available from logs of call to wait-for-it.sh
   COUNTER=0
@@ -423,6 +428,7 @@ function wait_for_containers ()
   done
   echo ""
   echo "Node appears to be running"
+  hasWaited=true
 }
 
 # Populate mock data
