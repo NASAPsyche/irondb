@@ -26,10 +26,10 @@ The Iron Shell accepts chains of options, for example:
     ./iron.sh -lpea
 The order of the flags is not important. -lpae is the same as -aepl.
 This will (l)aunch the containers, after (p)opulating the database by the
-init files, reseting the node (e)nvironment, in an attached shell and run
-(a)ttached. While running in attached mode, it is not possible to perform
-operations such as making database backups. When leaving the attached
-shell, the Iron Shell will exit and no further operations will be done.
+init files, reseting the node (e)nvironment, using an (a)ttached shell.
+While running in attached mode, it is not possible to perform operations
+such as making database backups. When leaving the attached shell, the 
+Iron Shell will exit and no further operations will be done.
 --------------
 -i    Initial install: If this is your first time, or you need to rebuild 
       your containers, then select this option. The containers will launch
