@@ -24,6 +24,7 @@ Make sure Docker is running before performing any operations
 --------------
 The Iron Shell accepts chains of options, for example:
     ./iron.sh -lpea
+The order of the flags is not important. -lpae is the same as -aepl.
 This will (l)aunch the containers, after (p)opulating the database by the
 init files, reseting the node (e)nvironment, in an attached shell and run
 (a)ttached. While running in attached mode, it is not possible to perform
@@ -36,7 +37,8 @@ shell, the Iron Shell will exit and no further operations will be done.
 -l    Launch containers: Launches the containers, by default the shell is 
       detached from the containers.
 -a    Attach shell: When launching the containers, attach the shell to the
-      Node server. CTRL+C to quit, this shuts down the server.
+      Node server. CTRL+C to quit, this shuts down the server. This is for
+      diagnostic purposes only and should not be used in production.
 -e    Reset environment: Install the local Node dependencies and runs tasks
       specified by Gulp.
 -p    Populate database: Will delete the local database and then populate
@@ -499,46 +501,46 @@ openLogs=false
 cleanDocker=false
 
 
-while getopts ":hilpaemsxbrgc " opt; do
+while getopts ":hilpaemsxbrgcHILPAEMSXBRGC " opt; do
   case ${opt} in
-    h )
+    h | H)
       show_help
       exit 0
       ;;
-    i ) #initial install
+    i | I) #initial install
       initInstall=true
       ;;
-    l ) #launch
+    l | L) #launch
       launchContainers=true
       ;;
-    p ) #launch with fresh postgres init
+    p | P) #launch with fresh postgres init
       populateData=true
       ;;
-    a ) #attached quick launch
+    a | A) #attached quick launch
       attachShell=true
       ;;
-    e )
+    e | E)
       resetEnv=true
       ;;
-    m )
+    m | M)
       mockUsers=true
       ;;
-    s )
+    s | S)
       stopContainers=true
       ;;
-    x )
+    x | X)
       deleteDocker=true
       ;;
-    b ) #backup db
+    b | B) #backup db
       backupData=true
       ;;
-    r ) #restore most recent db backup
+    r | R) #restore most recent db backup
       restoreData=true
       ;;
-    g )
+    g | G)
       openLogs=true
       ;;
-    c )
+    c | C)
       cleanDocker=true
       ;;
     * ) 
