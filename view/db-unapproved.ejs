@@ -1,72 +1,58 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Unapproved Database Entries</title>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/db-unapproved.css' />
+  </head>
+  <body>
+    <%- include('components/navbar_signed_in'); %>
 
-<head>
-  <title>Unapproved Database Entries</title>
-  <%- include('bootstrap/css'); %>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <link rel='stylesheet' href='/stylesheets/db-unapproved.css' />
-</head>
+    <div class="container pb-3" id="bottom-container">
+      <div class="d-flex flex-row align-items-center justify-content-left mt-5 mb-2 pl-1 pt-4 pb-2">
+        <h3 class="h2">Unapproved Database Entries</h3>
+      </div>
 
-<body>
-  <div>
-    <br>
-    <br>
-  </div>
-  <%- include('components/navbar_signed_in'); %>
-
-  <div class="container pt-1 pb-3" id="bottom-container">
-    <div class="d-flex flex-row align-items-center justify-content-left mt-5 mb-2">
-      <h3 class="h2">Unapproved Database Entries</h3>
-      <br>
+      <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Paper ID</th>
+            <th>Paper Title</th>
+            <th>Date Imported</th>
+            <th>Imported by</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0; i < Entries.length; i++) { %>
+          <tr>
+            <th>
+              <%= Entries[i].paper_id %>
+            </th>
+            <th>
+              <%= Entries[i].title %>
+            </th>
+            <th>
+              <%= Entries[i].submission_date %>
+            </th>
+            <th>
+              <%= Entries[i].submitted_by %>
+            </th>
+            <th>
+              <form action="/data-entry/approve" method="POST">
+                <label class="sr-only" for="paperID">entry ids of currently viewed entries</label>
+                <input type="hidden" name="paperID" value=<%= Entries[i].paper_id %>>
+                <button class="btn btn-warning" type="submit">Load Approval</button>
+              </form>
+            </th>
+            <% } %>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div>
-      <h2 class="h3">Click entry to review import</h2>
-    </div>
 
-
-
-
-    <table class="table table-bordered table-hover">
-      <thead class="thead-dark">
-        <tr>
-          <th>Body ID</th>
-          <th>Body Name</th>
-          <th>Paper Title</th>
-          <th>Date Imported</th>
-          <th>Imported by</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(var i=0; i < Entries.length; i++) { %>
-        <tr>
-          <th>
-            <%= Entries[i].body_id %>
-          </th>
-          <th>
-            <%= Entries[i].nomenclature %>
-          </th>
-          <th>
-            <%= Entries[i].title %>
-          </th>
-          <th>
-            <%= Entries[i].submission_date %>
-          </th>
-          <th>
-            <%= Entries[i].submitted_by %>
-          </th>
-          <th>
-            button
-          </th>
-          <% } %>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-
-  <%- include('bootstrap/js'); %>
-</body>
-
+    <div class="m-5"></div>
+    <%- include('bootstrap/js'); %>
+  </body>
 </html>

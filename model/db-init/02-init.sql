@@ -556,6 +556,7 @@ CREATE VIEW full_attributions_pending AS (
 CREATE VIEW pending_entries_panel AS (
   select t1.body_id,
   t1.nomenclature,
+  t1.paper_id,
   t1.title,
   t2.submission_date,
   t2.submitted_by
