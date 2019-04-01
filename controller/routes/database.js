@@ -447,7 +447,10 @@ router.get('/reported', isLoggedIn, function(req, res, next) {
 router.get('/unapproved', isLoggedIn, async function(req, res, next) {
   let resObj = [];
   try {
-    const Entries = db.aQuery('SELECT DISTINCT ON (paper_id) * FROM pending_entries_panel', []);
+    const Entries = db.aQuery(
+        'SELECT DISTINCT ON (paper_id) * FROM pending_entries_panel',
+        []
+    );
     resObj = await Promise.all([Entries]);
   } catch (err) {
     next(createError(500));
