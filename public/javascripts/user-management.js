@@ -46,8 +46,32 @@ $(document).ready(function() {
     console.log(userID);
     console.log(newRole);
 
-    if (currentRole != newRole) {
-      data.push({'user': userID, 'current': currentRole, 'role': newRole});
+    // Check that role doesn't equal previous role and it's not empty
+    if (newRole != '') {
+      let exists = false;
+      let count = 0;
+
+      // iterate through all existing objects
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].user == userID) {
+          exists = true;
+          count = i;
+          break;
+        }
+      } if (!exists) {
+        if (currentRole != newRole) {
+          // push to array only if it doesn't exist
+          data.push({'user': userID, 'current': currentRole, 'role': newRole});
+        }
+      } else {
+        if (currentRole != newRole) {
+          // if it exists then update the newRole and do not push
+          data[count].role = newRole;
+        } else {
+          // if current is new role then remove from array
+          data.splice(count, 1);
+        }
+      }
     }
   });
 });
