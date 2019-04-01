@@ -33,7 +33,7 @@ $(document).ready(function() {
     alert(str);
     const jsonData = JSON.stringify(data);
     postData(jsonData);
-    location.reload();
+    window.location.reload();
   });
 });
 
@@ -55,6 +55,7 @@ $(document).ready(function() {
     console.log(userID);
     console.log(newRole);
 
+    let pos = 0;
     // Check that role doesn't equal previous role and it's not empty
     if (newRole != '') {
       let exists = false;
@@ -65,6 +66,7 @@ $(document).ready(function() {
         if (data[i].user == userID) {
           exists = true;
           count = i;
+          pos = count;
           break;
         }
       } if (!exists) {
@@ -81,6 +83,8 @@ $(document).ready(function() {
           data.splice(count, 1);
         }
       }
+    } else {
+      data.splice(pos, 1);
     }
   });
 });
@@ -101,7 +105,6 @@ async function postData(jsonString) {
       return true;
     },
     error: function(jqXHR, status) {
-      event.preventDefault();
       return false;
     },
   });
