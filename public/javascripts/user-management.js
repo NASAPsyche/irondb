@@ -20,22 +20,25 @@ $(document).on('change', function() {
   }
 });
 
-/**
- * @description button clicked
- */
-$(document).ready(function() {
-  $('#confirm').on('click', function() {
-    let str = 'Making the following changes: \n';
-    for (let i = 0; i < data.length; i++) {
-      // eslint-disable-next-line max-len
-      str += `user ${data[i].user} from ${data[i].current} to ${data[i].role} \n`;
-    }
-    alert(str);
-    const jsonData = JSON.stringify(data);
-    postData(jsonData);
-    location.reload();
-  });
-});
+// /**
+//  * @description button clicked
+//  */
+// $(document).ready(function() {
+//   $('#confirm').on('click', function() {
+//     let str = 'Making the following changes: \n';
+//     for (let i = 0; i < data.length; i++) {
+//       // eslint-disable-next-line max-len
+//       str +=
+// `user ${data[i].user} from ${data[i].current} to ${data[i].role} \n`;
+//     }
+//     alert(str);
+//     const jsonData = JSON.stringify(data);
+//     console.dir(jsonData);
+//     console.log('json', jsonData);
+//     postData(jsonData);
+//     window.location.reload();
+//   });
+// });
 
 
 const data = [];
@@ -55,6 +58,7 @@ $(document).ready(function() {
     console.log(userID);
     console.log(newRole);
 
+    let pos = 0;
     // Check that role doesn't equal previous role and it's not empty
     if (newRole != '') {
       let exists = false;
@@ -65,6 +69,7 @@ $(document).ready(function() {
         if (data[i].user == userID) {
           exists = true;
           count = i;
+          pos = count;
           break;
         }
       } if (!exists) {
@@ -81,6 +86,8 @@ $(document).ready(function() {
           data.splice(count, 1);
         }
       }
+    } else {
+      data.splice(pos, 1);
     }
   });
 });
@@ -101,9 +108,40 @@ async function postData(jsonString) {
       return true;
     },
     error: function(jqXHR, status) {
-      event.preventDefault();
       return false;
     },
   });
 }
 
+/**
+ * @description When on the manual editor, and you choose to upload a PDF, this
+ * saves your work before continuing on.
+ */
+$(document).ready(async function() {
+  $('#user-update-form').submit(async function(event) {
+    // const jsonString = serializeInsertForm();
+    event.preventDefault();
+    let str = 'Making the following changes: \n';
+    for (let i = 0; i < data.length; i++) {
+      // eslint-disable-next-line max-len
+      str += `user ${data[i].user} from ${data[i].current} to ${data[i].role} \n`;
+    }
+    alert(str);
+    const jsonData = JSON.stringify(data);
+    console.dir(jsonData);
+    console.log('json', jsonData);
+    // postData(jsonData);
+    window.location.reload();
+    if (await postData(jsonData) === true) {
+      // event.preventDefault(); // do not submit
+      // window.location.reload();
+      console.dir(jsonData);
+      event.preventDefault(); // do not submit
+
+      // return; // submit
+    } else {
+      alert('failed to save');
+      event.preventDefault(); // do not submit
+    }
+  });
+});
