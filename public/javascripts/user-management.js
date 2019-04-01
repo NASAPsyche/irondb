@@ -12,6 +12,14 @@ $(document).ready(function() {
   });
 });
 
+$(document).on('change', function() {
+  if (data.length > 0) {
+    $('#confirm').prop('disabled', false);
+  } else {
+    $('#confirm').prop('disabled', true);
+  }
+});
+
 /**
  * @description button clicked
  */
@@ -23,7 +31,8 @@ $(document).ready(function() {
       str += `user ${data[i].user} from ${data[i].current} to ${data[i].role} \n`;
     }
     alert(str);
-    postData(data);
+    const jsonData = JSON.stringify(data);
+    postData(jsonData);
     location.reload();
   });
 });
@@ -84,7 +93,7 @@ async function postData(jsonString) {
   await $.ajax({
     url: '/users/update',
     type: 'POST',
-    data: JSON.stringify(jsonString),
+    data: jsonString,
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',
     async: true,
@@ -92,6 +101,7 @@ async function postData(jsonString) {
       return true;
     },
     error: function(jqXHR, status) {
+      event.preventDefault();
       return false;
     },
   });
