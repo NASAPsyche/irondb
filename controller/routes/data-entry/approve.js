@@ -12,7 +12,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   console.log(req.body.paperID);
   // Setup
   let pdfPath = 'null';
-  let submissionID = '';
+  // let submissionID = '';
   let pending = false;
   let username = '';
   let resObj = [];
@@ -31,8 +31,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   } catch (err) {
     next(createError(500));
   } finally {
-
-
     console.log(resObj[0].rows);
 
 
@@ -42,7 +40,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
         resObj[0].rows[0].hasOwnProperty('pending') &&
         resObj[0].rows[0].hasOwnProperty('username')
     ) {
-      submissionID = resObj[0].rows[0].submission_id;
+    //   submissionID = resObj[0].rows[0].submission_id;
       pdfPath = resObj[0].rows[0].pdf_path;
       pending = resObj[0].rows[0].pending;
       username = resObj[0].rows[0].username;
