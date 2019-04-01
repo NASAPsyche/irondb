@@ -67,13 +67,6 @@ if [[ $# -eq 0 ]] ; then
   exit 1
 fi 
 
-DOCKEROFF="$(docker info 2>&1 | grep "Cannot connect")"
-NORESP=""
-if [[ "$DOCKEROFF" != "$NORESP" ]] ; then 
-  echo "Docker does not appear to be running"
-  exit 1
-fi
-
 
 #### Declare functions for manipulating server and database ###
 
@@ -555,6 +548,13 @@ while getopts ":hilpaemsxbrgcHILPAEMSXBRGC " opt; do
   esac
 done
 shift $((OPTIND -1))
+
+DOCKEROFF="$(docker info 2>&1 | grep "Cannot connect")"
+NORESP=""
+if [[ "$DOCKEROFF" != "$NORESP" ]] ; then 
+  echo "Docker does not appear to be running"
+  exit 1
+fi
 
 if [[ "$cleanDocker" = true ]] ; then
   remove_dangles
