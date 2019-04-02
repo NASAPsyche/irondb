@@ -31,6 +31,12 @@ router.post('/', async (req, res, next) => {
       journal, paper, authors, bodies, notes, username, pdfPath, 'pending'
   );
 
+  // remove attribute
+  if (req.session.hasOwnProperty('fileName')
+  && req.session.fileName.length > 0) {
+    req.session.fileName = 'null';
+  }
+
   // Redirect to panel when done
   res.redirect('/panel');
 });
