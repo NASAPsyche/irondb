@@ -28,25 +28,34 @@
                     <% } %>
 
                     <h5 class="pt-1 pr-1 mr-2">
-                        <form class="form-inline" action="/data-entry/approve/update" method="POST">
+                        <% if (Paper.current_status === 'pending') { %>
+                            <form class="form-inline" action="/data-entry/approve/update" method="POST">
+                                <strong>Basic Information</strong>
+
+                                <label class="sr-only" for="type">request type</label>
+                                <input type="hidden" name="type" value="basic">
+
+                                <label class="sr-only" for="submissionID">ID of submission</label>
+                                <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+
+                                <label class="sr-only" for="paperID">ID of current paper</label>
+                                <input type="hidden" name="paperID" value=<%= Paper.paper_id %>>
+
+                                <label class="sr-only" for="paperStatus">ID of status entry for paper</label>
+                                <input type="hidden" name="paperStatus" value=<%= Paper.status_id %>>
+
+                                <label class="sr-only" for="journalID">ID of current journal</label>
+                                <input type="hidden" name="journalID" value=<%= Journal.journal_id %>>
+
+                                <label class="sr-only" for="journalStatus">ID of status entry for journal</label>
+                                <input type="hidden" name="journalStatus" value=<%= Journal.status_id %>>
+                                
+                                <button class="btn btn-primary btn-sm ml-1" type="submit" id="basic-approve">Approve</button>
+                            </form>
+                        <% } else { %>
                             <strong>Basic Information</strong>
-                            <label class="sr-only" for="type">request type</label>
-                            <input type="hidden" name="type" value="basic">
-
-                            <label class="sr-only" for="paperID">ID of current paper</label>
-                            <input type="hidden" name="paperID" value=<%= Paper.paper_id %>>
-
-                            <label class="sr-only" for="paperStatus">ID of status entry for paper</label>
-                            <input type="hidden" name="paperStatus" value=<%= Paper.status_id %>>
-
-                            <label class="sr-only" for="journalID">ID of current journal</label>
-                            <input type="hidden" name="journalID" value=<%= Journal.journal_id %>>
-
-                            <label class="sr-only" for="journalStatus">ID of status entry for journal</label>
-                            <input type="hidden" name="journalStatus" value=<%= Journal.status_id %>>
-
-                            <button class="btn btn-primary btn-sm ml-1" type="submit" id="basic-approve">Approve</button>
-                        </form>
+                            <em>(Basic information already approved, but shown for reference)</em>
+                        <% } %>
                     </h5>
 
                     <div class="form-row">
@@ -93,6 +102,9 @@
                                 <label class="sr-only" for="type">request type</label>
                                 <input type="hidden" name="type" value="author">
 
+                                <label class="sr-only" for="submissionID">ID of submission</label>
+                                <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+
                                 <label class="sr-only" for="authorID">ID of current author</label>
                                 <input type="hidden" name="authorID" value=<%= AuthorsWithAttribution[i].author_id %>>
 
@@ -104,6 +116,9 @@
 
                                 <label class="sr-only" for="attributionStatus">ID of status entry for attribution</label>
                                 <input type="hidden" name="attributionStatus" value=<%= AuthorsWithAttribution[i].attribution_status_id %>>
+
+                                <label class="sr-only" for="paperStatus">ID of status entry for paper</label>
+                                <input type="hidden" name="paperStatus" value=<%= Paper.status_id %>>
 
                                 <button class="btn btn-primary btn-sm ml-1" type="submit">Approve</button>
                             </form>
@@ -137,6 +152,9 @@
                                 <form class="form-inline" action="/data-entry/approve/update" method="POST">
                                     <label class="sr-only" for="type">request type</label>
                                     <input type="hidden" name="type" value="meteorite">
+
+                                    <label class="sr-only" for="submissionID">ID of submission</label>
+                                    <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
 
                                     <label class="sr-only" for="bodyID">ID of current body</label>
                                     <input type="hidden" name="bodyID" value=<%= Bodies[i].body_id %>>
@@ -175,6 +193,9 @@
                                         <form class="form-inline pt-4 pr-2" action="/data-entry/approve/update" method="POST">
                                             <label class="sr-only" for="type">request type</label>
                                             <input type="hidden" name="type" value="element">
+
+                                            <label class="sr-only" for="submissionID">ID of submission</label>
+                                            <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
         
                                             <label class="sr-only" for="elementID">ID of current element</label>
                                             <input type="hidden" name="elementID" value=<%= ElementEntries[k].element_id %>>
@@ -294,6 +315,9 @@
                                 <form class="form-inline" action="/data-entry/approve/update" method="POST">
                                     <label class="sr-only" for="type">request type</label>
                                     <input type="hidden" name="type" value="note">
+
+                                    <label class="sr-only" for="submissionID">ID of submission</label>
+                                    <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
 
                                     <label class="sr-only" for="noteID">ID of current note</label>
                                     <input type="hidden" name="noteID" value=<%= Notes[i].note_id %>>
