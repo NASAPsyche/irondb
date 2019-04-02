@@ -12,6 +12,9 @@ $(document).ready(function() {
   });
 });
 
+/**
+ * @description toggle on and off confirm changes button
+ */
 $(document).on('change', function() {
   if (data.length > 0) {
     $('#confirm').prop('disabled', false);
@@ -19,24 +22,6 @@ $(document).on('change', function() {
     $('#confirm').prop('disabled', true);
   }
 });
-
-/**
- * @description button clicked
- */
-$(document).ready(function() {
-  $('#confirm').on('click', function() {
-    let str = 'Making the following changes: \n';
-    for (let i = 0; i < data.length; i++) {
-      // eslint-disable-next-line max-len
-      str += `user ${data[i].user} from ${data[i].current} to ${data[i].role} \n`;
-    }
-    alert(str);
-    const jsonData = JSON.stringify(data);
-    postData(jsonData);
-    window.location.reload();
-  });
-});
-
 
 const data = [];
 
@@ -102,6 +87,7 @@ async function postData(jsonString) {
     dataType: 'json',
     async: true,
     success: function(data, status, jqXHR) {
+      alert(status);
       return true;
     },
     error: function(jqXHR, status) {
@@ -110,3 +96,30 @@ async function postData(jsonString) {
   });
 }
 
+/**
+ * @description submit form
+ */
+$(document).ready(async function() {
+  $('#user-update-form').submit(async function(event) {
+    // const jsonString = serializeInsertForm();
+    event.preventDefault();
+    let str = 'Making the following changes: \n';
+    for (let i = 0; i < data.length; i++) {
+      // eslint-disable-next-line max-len
+      str += `user ${data[i].user} from ${data[i].current} to ${data[i].role} \n`;
+    }
+    alert(str);
+    const jsonData = JSON.stringify(data);
+    console.dir(jsonData);
+    console.log('json', jsonData);
+    // postData(jsonData);
+    window.location.reload();
+    if (await postData(jsonData) === true) {
+      console.dir(jsonData);
+    } else {
+      console.log(await postData(jsonData) === true);
+      alert('failed to save');
+      event.preventDefault(); // do not submit
+    }
+  });
+});
