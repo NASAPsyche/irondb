@@ -87,7 +87,7 @@ async function postData(jsonString) {
     dataType: 'json',
     async: true,
     success: function(data, status, jqXHR) {
-      alert(status);
+      console.log();
       return true;
     },
     error: function(jqXHR, status) {
@@ -101,7 +101,6 @@ async function postData(jsonString) {
  */
 $(document).ready(async function() {
   $('#user-update-form').submit(async function(event) {
-    // const jsonString = serializeInsertForm();
     event.preventDefault();
     let str = 'Making the following changes: \n';
     for (let i = 0; i < data.length; i++) {
@@ -110,16 +109,8 @@ $(document).ready(async function() {
     }
     alert(str);
     const jsonData = JSON.stringify(data);
-    console.dir(jsonData);
-    console.log('json', jsonData);
-    // postData(jsonData);
+    await postData(jsonData);
     window.location.reload();
-    if (await postData(jsonData) === true) {
-      console.dir(jsonData);
-    } else {
-      console.log(await postData(jsonData) === true);
-      alert('failed to save');
-      event.preventDefault(); // do not submit
-    }
   });
 });
+
