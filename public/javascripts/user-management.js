@@ -20,27 +20,6 @@ $(document).on('change', function() {
   }
 });
 
-// /**
-//  * @description button clicked
-//  */
-// $(document).ready(function() {
-//   $('#confirm').on('click', function() {
-//     let str = 'Making the following changes: \n';
-//     for (let i = 0; i < data.length; i++) {
-//       // eslint-disable-next-line max-len
-//       str +=
-// `user ${data[i].user} from ${data[i].current} to ${data[i].role} \n`;
-//     }
-//     alert(str);
-//     const jsonData = JSON.stringify(data);
-//     console.dir(jsonData);
-//     console.log('json', jsonData);
-//     postData(jsonData);
-//     window.location.reload();
-//   });
-// });
-
-
 const data = [];
 
 /**
@@ -128,20 +107,8 @@ $(document).ready(async function() {
     }
     alert(str);
     const jsonData = JSON.stringify(data);
-    console.dir(jsonData);
-    console.log('json', jsonData);
-    // postData(jsonData);
+    await postData(jsonData);
     window.location.reload();
-    if (await postData(jsonData) === true) {
-      // event.preventDefault(); // do not submit
-      // window.location.reload();
-      console.dir(jsonData);
-      event.preventDefault(); // do not submit
-
-      // return; // submit
-    } else {
-      alert('failed to save');
-      event.preventDefault(); // do not submit
-    }
+    // }
   });
 });
