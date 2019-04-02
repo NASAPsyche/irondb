@@ -545,7 +545,8 @@ CREATE VIEW pending_elements_with_bodies_papers_journals AS (
 );
 
 CREATE VIEW full_attributions_pending AS (
-  SELECT t1.nomenclature,
+  SELECT t1.paper_id,
+    t1.nomenclature,
     t1.title,
     t1.published_year,
     t2.authors
@@ -554,14 +555,21 @@ CREATE VIEW full_attributions_pending AS (
 );
 
 CREATE VIEW pending_entries_panel AS (
-  select t1.body_id,
-  t1.nomenclature,
-  t1.paper_id,
+  -- All papers associated with a pending submission
+  -- Currently in use
+  SELECT t1.paper_id,
   t1.title,
   t2.submission_date,
-  t2.submitted_by
-  from pending_elements_with_bodies_papers_journals as t1
-  inner join body_status as t2 on t1.body_id = t2.body_id and t2.current_status='pending'
+  t2.submitted_by,
+  t2.submission_id
+  FROM papers AS t1
+  JOIN (SELECT submission_date, submitted_by, t3.submission_id, paper_id 
+        FROM paper_status AS t3
+        JOIN (SELECT submission_id 
+              FROM submissions
+              WHERE pending = true) AS t4
+        ON t3.submission_id = t4.submission_id) AS t2
+ON t1.paper_id = t2.paper_id
 );
 
 CREATE VIEW flagged_entries_panel AS ( 
