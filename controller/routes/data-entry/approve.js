@@ -135,7 +135,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
     }
   } else {
     // Cannot approve own entries or edits
-    res.send('no');
+    res.render('approve-own-entry-error');
   }
 });
 

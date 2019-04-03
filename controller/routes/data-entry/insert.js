@@ -34,7 +34,7 @@ router.post('/', async (req, res, next) => {
   // remove attribute
   if (req.session.hasOwnProperty('fileName')
   && req.session.fileName.length > 0) {
-    req.session.fileName = 'null';
+    req.session.fileName = '';
   }
 
   // Redirect to panel when done
