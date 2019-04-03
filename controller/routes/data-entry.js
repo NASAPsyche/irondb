@@ -47,7 +47,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
         res.render('editor', {
           username: req.user.username,
           data: null,
-          sessionID: req.sessionID,
           Elements: resObj[0].rows,
           Technique: resObj[1].rows,
         });
@@ -95,7 +94,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
                 res.render('tool', {
                   data: newpath.slice(15),
                   username: req.user.username,
-                  sessionID: req.sessionID,
                   Elements: resObj[0].rows,
                   Technique: resObj[1].rows,
                 });
@@ -115,7 +113,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
                 res.render('editor_with_pdf', {
                   data: newpath.slice(15),
                   username: req.user.username,
-                  sessionID: req.sessionID,
                   Elements: resObj[0].rows,
                   Technique: resObj[1].rows,
                 });
@@ -145,7 +142,6 @@ router.get('/editor', isLoggedIn, async function(req, res, next) {
     res.render('editor', {
       username: req.user.username,
       data: null,
-      sessionID: req.sessionID,
       Elements: resObj[0].rows,
       Technique: resObj[1].rows,
     });
@@ -195,7 +191,6 @@ router.post('/editor', isLoggedIn, async function(req, res, next) {
             res.render('editor_with_pdf', {
               data: newpath.slice(15),
               username: req.user.username,
-              sessionID: req.sessionID,
               Elements: resObj[0].rows,
               Technique: resObj[1].rows,
             });
