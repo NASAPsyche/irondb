@@ -13,8 +13,8 @@
     <div class="container-fluid mt-5">
         <div class="row p-2">
             <% if (pdfPath !== 'null') { %>
-                <div class="col-sm-12 col-md-5 pl-1 mb-3">
-                    <div id="pdf-panel"></div>
+                <div class="col-sm-12 col-md-5 pl-1 mb-3 mt-5">
+                    <div class="sticky-top" id="pdf-panel"></div>
                 </div>
                 <div class="col-sm-11 col-md-7 border border-dark rounded pb-2" id="event-div">
             <% } else { %>
@@ -352,5 +352,6 @@
         </script>
     <% } %>
     <script src="/javascripts/approve.js"></script>
+    <script src="/javascripts/editor/pdf.js"></script>
   </body>
 </html>
