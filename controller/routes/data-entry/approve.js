@@ -363,7 +363,7 @@ router.post('/update', isLoggedIn, async function(req, res, next) {
         );
         const pdfPath = Submission.rows[0].pdf_path;
         console.log(pdfPath);
-        if (pdfPath !== 'null') {
+        if (pdfPath !== 'null' && pdfPath !== null) {
           const fullPath = path.join( __dirname, ('../../../public' + pdfPath));
           console.log('FULL PATH: ');
           console.log(fullPath);
@@ -414,11 +414,13 @@ router.post('/update', isLoggedIn, async function(req, res, next) {
       } finally {
         res.json({
           status: 'success',
+          count: pendingCount,
         });
       }
     } else {
       res.json({
         status: 'success',
+        count: pendingCount,
       });
     }
   }
