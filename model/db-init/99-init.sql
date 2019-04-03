@@ -8,9 +8,12 @@
 */
 
 -- DUMMY DATA
+-- added Ken and Michael to meet summbissions username constraint
 INSERT INTO users (username, password_hash, role_of)
   VALUES 
-  ('dummy', 'digest', 'user');
+  ('dummy', 'digest', 'user'),
+  ('Ken', 'digest', 'user'),
+  ('Michael', 'digest', 'user');
 
 
 INSERT INTO user_info (user_id, first_name, last_name, email_address)
@@ -2171,6 +2174,26 @@ INSERT INTO element_entries (
   );
 
 /*
+  Populating the submissions table for pending entries
+  Two mock submissions added for testing of the pending page. No pdf in mock submissions.
+*/
+INSERT INTO submissions (submission_id, pdf_path, pending, username)
+  VALUES
+  (
+    1,
+    DEFAULT,
+    DEFAULT,
+    'Ken'
+  ),
+  (
+    2,
+    DEFAULT,
+    DEFAULT,
+    'Michael'
+  );
+
+
+/*
   Populating the status tables.
   The submission date is left as default now(), and the reviewer is left blank since my data
   has not been reviewed for accuracy yet. It is set to 'active' so that the data can be called
@@ -2183,7 +2206,7 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, sub
     (SELECT group_id FROM groups WHERE the_group='Dummy'),
     'pending',
     'Ken',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Ken')
   ),
   (
     DEFAULT,
@@ -2274,14 +2297,14 @@ INSERT INTO group_status (status_id, group_id, current_status, submitted_by, sub
     (SELECT group_id FROM groups WHERE the_group='IVA' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Otchinjau')),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
     (SELECT group_id FROM groups WHERE the_group='IVA' AND body_id=(SELECT body_id FROM bodies WHERE nomenclature='Gan Gan')),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -2319,7 +2342,7 @@ INSERT INTO classification_status (status_id, classification_id, current_status,
     (SELECT classification_id FROM classifications WHERE classification='Dummy'),
     'pending',
     'Ken',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Ken')
   ),
   (
     DEFAULT,
@@ -2371,7 +2394,7 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, submi
     (SELECT body_id FROM bodies WHERE nomenclature='Dummy'),
     'pending',
     'Ken',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Ken')
   ),
   (
     DEFAULT,
@@ -2462,14 +2485,14 @@ INSERT INTO body_status (status_id, body_id, current_status, submitted_by, submi
     (SELECT body_id FROM bodies WHERE nomenclature='Otchinjau'),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
     (SELECT body_id FROM bodies WHERE nomenclature='Gan Gan'),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -2507,7 +2530,7 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
     (SELECT journal_id FROM journals WHERE journal_name='Dummy'),
     'pending',
     'Ken',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Ken')
   ),
   (
     DEFAULT,
@@ -2535,7 +2558,7 @@ INSERT INTO journal_status (status_id, journal_id, current_status, submitted_by,
     (SELECT journal_id FROM journals WHERE journal_name='Geochimica et Cosmochimica Acta' AND issue = '6' AND volume = '65'),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -2573,7 +2596,7 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, sub
     (SELECT paper_id FROM papers WHERE title='Dummy'),
     'pending',
     'Ken',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Ken')
   ),
   (
     DEFAULT,
@@ -2601,7 +2624,7 @@ INSERT INTO paper_status (status_id, paper_id, current_status, submitted_by, sub
     (SELECT paper_id FROM papers WHERE title='Fractionation trends among IVA iron meteorites: Contrasts with IIIAB trends'),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -2639,7 +2662,7 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, s
     (SELECT author_id FROM authors WHERE primary_name='Dummy'),
     'pending',
     'Ken',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Ken')
   ),
   (
     DEFAULT,
@@ -2674,7 +2697,7 @@ INSERT INTO author_status (status_id, author_id, current_status, submitted_by, s
     (SELECT author_id FROM authors WHERE primary_name='Richardson'),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -2716,7 +2739,7 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
     ),
     'pending',
     'Ken',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Ken')
   ),
   (
     DEFAULT,
@@ -2793,7 +2816,7 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -2804,7 +2827,7 @@ INSERT INTO attribution_status (status_id, attribution_id, current_status, submi
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -2861,7 +2884,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Ken',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Ken')
   ),
   /* Guanaco */
   (
@@ -4408,7 +4431,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4421,7 +4444,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4434,7 +4457,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4447,7 +4470,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),(
     DEFAULT,
     (
@@ -4459,7 +4482,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4472,7 +4495,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4485,7 +4508,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4498,7 +4521,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4511,7 +4534,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4524,7 +4547,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4537,7 +4560,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4550,7 +4573,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   /* Gan Gan */
   (
@@ -4564,7 +4587,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4577,7 +4600,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4590,7 +4613,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4603,7 +4626,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),(
     DEFAULT,
     (
@@ -4615,7 +4638,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4628,7 +4651,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4641,7 +4664,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4654,7 +4677,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4667,7 +4690,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4680,7 +4703,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   ),
   (
     DEFAULT,
@@ -4693,7 +4716,7 @@ INSERT INTO element_status (status_id, element_id, current_status, submitted_by,
     ),
     'pending',
     'Michael',
-    NULL
+    (SELECT submission_id FROM submissions WHERE username='Michael')
   );
 
 INSERT INTO element_review (review_id, element_id, note, resolved, email_address, reviewed_by, submission_date)
