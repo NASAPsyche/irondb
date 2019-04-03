@@ -6,52 +6,67 @@
 # Displays the help contents
 function show_help ()
 {
-  echo "                                        "
-  echo "    ██╗██████╗  ██████╗ ███╗   ██╗      "
-  echo "    ██║██╔══██╗██╔═══██╗████╗  ██║      "
-  echo "    ██║██████╔╝██║   ██║██╔██╗ ██║      "
-  echo "    ██║██╔══██╗██║   ██║██║╚██╗██║      "
-  echo "    ██║██║  ██║╚██████╔╝██║ ╚████║      "
-  echo "    ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝      "
-  echo "███████╗██╗  ██╗███████╗██╗     ██╗     "
-  echo "██╔════╝██║  ██║██╔════╝██║     ██║     "
-  echo "███████╗███████║█████╗  ██║     ██║     "
-  echo "╚════██║██╔══██║██╔══╝  ██║     ██║     "
-  echo "███████║██║  ██║███████╗███████╗███████╗"
-  echo "╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
-  echo "                                        "
-  echo "Welcome to the Iron Meteorite Database Manager." 
-  echo "Make sure Docker is running before performing any operations."
-  echo "-h    Help: Displays the command options"
-  echo "--------"
-  echo "-i    Initial install: Install dependencies, build the containers, and launch"
-  echo "      the server. This can take 15+ minutes and will download several GB of data."
-  echo "--------"
-  echo "-l    Launch: Installs node dependencies and then launches the server."
-  echo "-p    Populate and launch: Launches the servers with the database populated"
-  echo "      only from init script. Deletes local data."
-  echo "-q    Quick launch: Launches the server without installing node dependencies."
-  echo "      SELECT this if there have been no changes to the server since it last ran."
-  echo "-a    Attached quick launch: Launches the server with node output to shell."
-  echo "-f    Fresh build: Rebuild containers and launch."
-  echo "--------"
-  echo "-m    Mock data - add some mock data."
-  echo "-s    Stop the server."
-  echo "-x    Reset Docker Environment - Stops the server and clear the docker environment."
-  echo "      Consider this the factory refresh of your Docker environment. Frees up space " 
-  echo "      in your virtual drive. This does NOT uninstall Docker. "
-  echo "--------"
-  echo "Postgress must be running for backup operations."
-  echo "-b    Backup: Makes a backup of the database."
-  echo "-r    Restore: Restore the database from the most recent backup."
-  echo ""
+  helpString='                                     
+            ██╗██████╗  ██████╗ ███╗   ██╗      
+            ██║██╔══██╗██╔═══██╗████╗  ██║      
+            ██║██████╔╝██║   ██║██╔██╗ ██║      
+            ██║██╔══██╗██║   ██║██║╚██╗██║      
+            ██║██║  ██║╚██████╔╝██║ ╚████║      
+            ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝      
+        ███████╗██╗  ██╗███████╗██╗     ██╗     
+        ██╔════╝██║  ██║██╔════╝██║     ██║     
+        ███████╗███████║█████╗  ██║     ██║     
+        ╚════██║██╔══██║██╔══╝  ██║     ██║     
+        ███████║██║  ██║███████╗███████╗███████╗
+        ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
+Welcome to the Iron Meteorite Database Manager.
+Make sure Docker is running before performing any operations
+--------------
+The Iron Shell accepts chains of options, for example:
+    ./iron.sh -lpea
+The order of the flags is not important. -lpae is the same as -aepl.
+This will (l)aunch the containers, after (p)opulating the database by the
+init files, reseting the node (e)nvironment, using an (a)ttached shell.
+While running in attached mode, it is not possible to perform operations
+such as making database backups. When leaving the attached shell, the 
+Iron Shell will exit and no further operations will be done.
+--------------
+-i    Initial install: If this is your first time, or you need to rebuild 
+      your containers, then select this option. The containers will launch
+      once they are built.
+-l    Launch containers: Launches the containers, by default the shell is 
+      detached from the containers.
+-a    Attach shell: When launching the containers, attach the shell to the
+      Node server. CTRL+C to quit, this shuts down the server. This is for
+      diagnostic purposes only and should not be used in production.
+-e    Reset environment: Install the local Node dependencies and runs tasks
+      specified by Gulp.
+-p    Populate database: Will delete the local database and then populate
+      it from the init files (./model/db-init/)
+-s    Stop containers: Stops the containers. This is always executed last.
+--------------
+-b    Backup database: creates a backup of the current database
+-r    Restore database: restore the database from the most recent backup.
+      For more advanced database manipulation, refer to Postgresql docs. 
+--------------
+-m    Mock users: Adds the mock users.
+-g    Open logs: Opens the docker-compose logs, CTRL+C to exit logs.
+-c    Clean Docker environment: Removes dangling containers and volumes.
+-x    Reset Docker environment: Delete all containers. This is essentially
+      a factory refresh of your Docker environment.
+-h    Help: Displays the help message
+  '
+  echo "${helpString}"
 }
+
+hasWaited=false
 
 # No args given, display help
 if [[ $# -eq 0 ]] ; then
   show_help
   exit 1
 fi 
+
 
 #### Declare functions for manipulating server and database ###
 
@@ -238,8 +253,8 @@ function delete_containers ()
 function remove_dangles ()
 {
   echo "Remove dangling images and volumes if any exist"
-  docker images -aq -f 'dangling=true' | xargs docker rmi
-  docker volume ls -q -f 'dangling=true' | xargs docker volume rm
+  docker images -aq -f 'dangling=true' | xargs docker rmi > /dev/null 2>&1
+  docker volume ls -q -f 'dangling=true' | xargs docker volume rm > /dev/null 2>&1
 }
 
 # Make a backup of the db to irondb/model/backup-pg/pg_timestamp.sql
@@ -265,6 +280,10 @@ function restore_recent ()
 function wait_for_containers ()
 {
   echo "Waiting for the containers to initialize"
+  if [[ "$hasWaited" = true ]] ; then
+    return
+  fi
+  
   NORESP=""
   # Check that pg is available from logs of call to wait-for-it.sh
   COUNTER=0
@@ -402,6 +421,7 @@ function wait_for_containers ()
   done
   echo ""
   echo "Node appears to be running"
+  hasWaited=true
 }
 
 # Populate mock data
@@ -423,7 +443,6 @@ function populate_mock_data ()
   echo "Adding mock users"
   node docker/mock/mock-users.js 
   python docker/mock/mock-user-info.py 
-  exit 0
 }
 
 function install_pip ()
@@ -467,74 +486,61 @@ function install_pip ()
 
 ### BEGIN ###
 
-# Read in the options and perform the tasks
-while getopts ":hilpjqafsxbrm " opt; do
+initInstall=false
+attachShell=false
+launchContainers=false
+stopContainers=false
+resetEnv=false
+populateData=false
+mockUsers=false
+restoreData=false
+backupData=false
+deleteDocker=false
+openLogs=false
+cleanDocker=false
+
+
+while getopts ":hilpaemsxbrgcHILPAEMSXBRGC " opt; do
   case ${opt} in
-    h )
+    h | H)
       show_help
       exit 0
       ;;
-    i ) #initial install
-      set_creds
-      stop_containers
-      install_global_deps
-      install_node_deps
-      rm_db
-      remove_dangles
-      build_containers
-      start_detached
+    i | I) #initial install
+      initInstall=true
       ;;
-    l ) #launch
-      stop_containers
-      install_node_deps
-      start_detached
+    l | L) #launch
+      launchContainers=true
       ;;
-    p ) #launch with fresh postgres init
-      stop_containers
-      rm_db
-      remove_dangles
-      install_node_deps
-      start_detached
-      # populate_mock_data
+    p | P) #launch with fresh postgres init
+      populateData=true
       ;;
-    j ) #launch with fresh postgres init and none of the extra staging
-      stop_containers
-      rm_db
-      start_attached
-      # populate_mock_data
+    a | A) #attached quick launch
+      attachShell=true
       ;;
-    q ) #quick launch
-      stop_containers
-      start_detached
+    e | E)
+      resetEnv=true
       ;;
-    a ) #attached quick launch
-      stop_containers
-      start_attached
+    m | M)
+      mockUsers=true
       ;;
-    f ) #rebuild containers
-      stop_containers
-      install_node_deps
-      rm_db
-      remove_dangles
-      build_containers
-      start_detached
+    s | S)
+      stopContainers=true
       ;;
-    m )
-      populate_mock_data
+    x | X)
+      deleteDocker=true
       ;;
-    s )
-      stop_containers
+    b | B) #backup db
+      backupData=true
       ;;
-    x )
-      delete_containers
+    r | R) #restore most recent db backup
+      restoreData=true
       ;;
-    b ) #backup db
-      wait_for_containers
-      make_backup
+    g | G)
+      openLogs=true
       ;;
-    r ) #restore most recent db backup
-      wait_for_containers
-      restore_recent
+    c | C)
+      cleanDocker=true
       ;;
     * ) 
       echo "Invalid selection"
@@ -542,5 +548,90 @@ while getopts ":hilpjqafsxbrm " opt; do
   esac
 done
 shift $((OPTIND -1))
+
+DOCKEROFF="$(docker info 2>&1 | grep "Cannot connect")"
+NORESP=""
+if [[ "$DOCKEROFF" != "$NORESP" ]] ; then 
+  echo "Docker does not appear to be running"
+  exit 1
+fi
+
+if [[ "$cleanDocker" = true ]] ; then
+  remove_dangles
+fi
+
+if [[ "$deleteDocker" = true ]] ; then
+  delete_containers
+fi
+
+if [[ "$initInstall" = true ]] ; then
+  set_creds
+  stop_containers
+  install_global_deps
+  install_node_deps
+  rm_db
+  remove_dangles
+  build_containers
+  if [[ "$attachShell" = true ]] ; then
+    start_attached
+    exit 0
+  else
+    start_detached
+  fi
+fi
+
+if [[ "$launchContainers" = true ]] ; then
+  stop_containers
+  remove_dangles
+
+  if [[ "$populateData" = true ]] ; then
+    rm_db
+  fi
+
+  if [[ "$resetEnv" = true ]] ; then
+    install_node_deps
+  fi
+
+  if [[ "$attachShell" = true ]] ; then
+    start_attached
+    exit 0
+  else
+    start_detached
+  fi
+fi
+
+if [[ "$launchContainers" = false ]] ; then
+  if [[ "$populateData" = true ]] ; then
+    rm_db
+  fi
+
+  if [[ "$resetEnv" = true ]] ; then
+    install_node_deps
+  fi
+fi
+
+if [[ "$mockUsers" = true ]] ; then
+  populate_mock_data
+fi
+
+if [[ "$backupData" = true ]] ; then
+  wait_for_containers
+  make_backup
+fi
+
+if [[ "$restoreData" = true ]] ; then
+  wait_for_containers
+  restore_recent
+fi
+
+
+if [[ "$openLogs" = true ]] ; then
+  docker-compose logs -f -t
+  exit 0
+fi
+
+if [[ "$stopContainers" = true ]] ; then
+  stop_containers
+fi
 
 exit 0
