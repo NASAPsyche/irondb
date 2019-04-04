@@ -49,7 +49,7 @@
                         <input type="text" class="form-control" id="role" value="<%= User[0].role_of %>" readonly>
                     </div>
                     <div class="form-group">
-                        <label>Password</label>
+                        <label id="passwordLabel">Password</label>
                         <input type="password" class="form-control" id="password" placeholder="************" readonly>
                     </div>
 
@@ -57,7 +57,7 @@
                         <label hidden="true" id="confirmLabel">Confirm Password</label>
                         <input type="password" class="form-control" id="confirm-password" readonly hidden=true>
                     </div>
-                    <div class="form-group" id="passCheckBox">
+                    <div class="form-group" id="passCheckBox" hidden="true">
                         <input type="checkbox" id="updatepassword">
                         <label class="control-label" id="updateLabel" for="updatepassword">Update Password?</label>
                     </div>
@@ -67,8 +67,10 @@
                         <button class='btn btn-warning' type='submit' id='save-btn' hidden="true">Save</button>
                     </div>
 
-                </form>
+                    <!-- Hidden user id-->
+                    <input type="hidden" hidden=true id="userID" value=" <%= User[0].user_id %>">
 
+                </form>
             </div>
         </div>
 
