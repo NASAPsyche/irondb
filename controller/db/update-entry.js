@@ -50,7 +50,9 @@ async function parseAction( obj ) {
         break;
 
       case 'element':
-        //
+        if ( (await validateSingleElement(obj)) == false ) {
+          return false;
+        }
         break;
 
       case 'note':
@@ -270,6 +272,35 @@ async function validateNote( obj ) {
       return false;
   }
   // json is valid
+  return true;
+}
+
+/**
+ * @param  {object} obj
+ * @return {Promise} boolean
+ */
+async function validateSingleElement( obj ) {
+  // Example obj
+  // obj = {
+  //   type: 'element',
+  //   command: 'delete',
+  //   elementID: '123',
+  // };
+  if ( obj.command == 'delete' ) {
+    if ( !obj.hasOwnProperty('elementID') ) {
+      console.error('Single Element Delete: missing element ID');
+      return false;
+    }
+    if ( obj.elementID == '' || isNaN(parseInt(obj.elementID)) ) {
+      console.error('Single Element Delete: invalid element ID');
+      return false;
+    }
+    // Checks passed
+  } else {
+    console.error('Single Element Delete: invalid command '+obj.command);
+    return false;
+  }
+  // Valid json
   return true;
 }
 
