@@ -33,7 +33,9 @@ async function parseAction( obj ) {
     const command = obj.command;
     switch (type) {
       case 'basic':
-        //
+        if ( (await validateBasic(obj)) == false ) {
+          return false;
+        }
         break;
 
       case 'author':
@@ -60,5 +62,72 @@ async function parseAction( obj ) {
   }
 }
 
+/**
+ * @param  {object} obj
+ * @return {Promise} boolean
+ */
+async function validateBasic( obj ) {
+  // Example object
+  // obj ={
+  //   paperID: '2',
+  //   paperTitle: 'title',
+  //   doi: '',
+  //   journalID: '3',
+  //   journalName: 'name',
+  //   pub_year: '1998',
+  //   volume: '12',
+  //   issue: '11',
+  //   series: '3',
+  // };
+  if ( obj.command == 'update' ) { // valid command
+    if ( // has all the required properties
+      obj.hasOwnProperty('paperID') &&
+      obj.hasOwnProperty('paperTitle') &&
+      obj.hasOwnProperty('doi') &&
+      obj.hasOwnProperty('journalID') &&
+      obj.hasOwnProperty('journalName') &&
+      obj.hasOwnProperty('pub_year') &&
+      obj.hasOwnProperty('volume') &&
+      obj.hasOwnProperty('issues') &&
+      obj.hasOwnProperty('series')
+    ) {
+      if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
+        console.error('Basic: invalid paper ID');
+        return false;
+      }
+      if ( obj.paperTitle == '' ) {
+        console.error('Basic: invalid paper title');
+        return false;
+      }
+      if ( obj.journalID == '' || isNaN(parseInt(obj.journalID)) ) {
+        console.error('Basic: invalid journal ID');
+        return false;
+      }
+      if ( obj.journalName == '' ) {
+        console.error('Basic: invalid journal name');
+        return false;
+      }
+      if ( obj.pub_year = '' || isNaN(parseInt(obj.pub_year)) ) {
+        console.error('Basic: invalid publication year');
+        return false;
+      }
+      if ( parseInt(obj.pub_year) < 1900 ) {
+        console.error('Basic: invalid publication year < 1900');
+        return false;
+      }
+      if ( obj.volume == '' ) {
+        console.error('Basic: invalid journal volume');
+        return false;
+      }
+      // All checks passed
+      return true;
+    } else {
+      console.error('Basic: invalid command '+obj.command);
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
 
 module.exports = {updateEntry, parseAction};
