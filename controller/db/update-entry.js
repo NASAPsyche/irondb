@@ -50,7 +50,7 @@ async function parseAction( obj ) {
         break;
 
       case 'element':
-        if ( (await validateSingleElement(obj)) == false ) {
+        if ( (await validateSingleElementDelete(obj)) == false ) {
           return false;
         }
         break;
@@ -279,7 +279,7 @@ async function validateNote( obj ) {
  * @param  {object} obj
  * @return {Promise} boolean
  */
-async function validateSingleElement( obj ) {
+async function validateSingleElementDelete( obj ) {
   // Example obj
   // obj = {
   //   type: 'element',
@@ -304,4 +304,121 @@ async function validateSingleElement( obj ) {
   return true;
 }
 
-module.exports = {updateEntry, parseAction};
+/**
+ * @param  {object} obj
+ * @return {Promise} boolean
+ */
+async function validateElement( obj ) {
+  // Example element object
+  // obj = {
+  //   element: 'Fe',
+  //   lessThan: 'true',
+  //   units: 'ppb',
+  //   technique: 'INAA',
+  //   page: '12',
+  //   sigfig: '3',
+  //   convertedMeasurement: '200',
+  //   convertedDeviation: '121',
+  // };
+
+  if (
+    obj.hasOwnProperty('element') &&
+    obj.hasOwnProperty('lessThan') &&
+    obj.hasOwnProperty('units') &&
+    obj.hasOwnProperty('technique') &&
+    obj.hasOwnProperty('page') &&
+    obj.hasOwnProperty('sigfig') &&
+    obj.hasOwnProperty('convertedMeasurement') &&
+    obj.hasOwnProperty('convertedDeviation')
+  ) {
+    // Element symbol
+    if (
+      typeof obj.element != 'string' ||
+      obj.element.length < 2 ||
+      obj.element.length > 3
+    ) {
+      console.error('Element: element symbol invalid');
+      return false;
+    }
+
+    // Less than
+    if ( typeof obj.lessThan == 'string' ) {
+      if ( obj.lessThan != 'true' && obj.lessThan != 'false' ) {
+        console.error('Element: lessThan must be either true or false');
+        return false;
+      }
+    } else {
+      console.error('Element: lessThan invalid type');
+      return false;
+    }
+
+    // Units
+    const validUnits = ['wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g'];
+    if ( typeof obj.units == 'string' ) {
+      if ( !validUnits.contains(obj.units) ) {
+        console.error('Element: units not matching expected values');
+        return false;
+      }
+    } else {
+      console.error('Element: units invalid type');
+      return false;
+    }
+
+    // Technique
+    if ( typeof obj.technique != 'string' ) {
+      console.error('Element: technique must be a string');
+      return false;
+    }
+
+    // Page
+    if ( isNaN(parseInt(obj.page)) ) {
+      console.error('Element: page did not parse to a number');
+      return false;
+    } else if ( parseInt(obj.page) < 1 ) {
+      console.error('Element: page number out of range < 1');
+      return false;
+    }
+
+    // Significant Figures
+    if ( isNaN(parseInt(obj.sigfig)) ) {
+      console.error('Element: Significant Figures did not parse to a number');
+      return false;
+    } else if ( parseInt(obj.sigfig) < 0 ) {
+      console.error('Element: Significant Figures out of range < 0');
+      return false;
+    }
+
+    // Measurement
+    if ( isNaN(parseInt(obj.convertedMeasurement)) ) {
+      console.error('Element: Measurement did not parse to a number');
+      return false;
+    } else if (
+      parseInt(obj.convertedMeasurement) < 0 ||
+      parseInt(obj.convertedMeasurement) > 1000000000
+    ) {
+      console.error('Element: measurement out of range');
+      return false;
+    }
+
+    // Deviation
+    if ( isNaN(parseInt(obj.convertedDeviation)) ) {
+      console.error('Element: Deviation did not parse to a number');
+      return false;
+    } else if (
+      parseInt(obj.convertedDeviation) < 0 ||
+      parseInt(obj.convertedDeviation) > 1000000000
+    ) {
+      console.error('Element: measurement out of range');
+      return false;
+    }
+
+    // All checks pass
+  } else {
+    console.error('Element: one or more missing fields');
+  }
+
+  // Valid json
+  return true;
+}
+
+module.exports = {updateEntry, parseAction, validateElement};
