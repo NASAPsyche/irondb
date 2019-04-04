@@ -1,3 +1,4 @@
 .card {
-    background-color: lightgray;
+    background-color:lightgrey;
+    box-shadow: 8px 8px 6px grey;
 }

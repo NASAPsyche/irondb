@@ -12,29 +12,41 @@
     <%- include('components/navbar_signed_in'); %>
 
     <div class='container-fluid mt-5 col-8'>
-        <div class='card mt-5 pb-5'>
+        <div class='card mt-5'>
             <div class="container-fluid">
-                <div class="row pt-3">
-                    <div class="col">
-                        <h1>User </h1>
-                    </div>
-                    <div class="col">
-                        <h1>
-                            <%= User[0].username %>
-                        </h1>
-                    </div>
+                <div class="pt-3 h1">
+                    <label>User:
+                        <%= User[0].first_name %>
+                        <%= User[0].last_name %></label>
                 </div>
+
                 <form action="/profile/update" method="post" id="user-update-form">
                     <div class="form-group">
-                        <label>Email address</label>
-                        <input type="email" class="form-control" id="email" placeholder="<%= User[0].email_address %>"
-                            readonly>
+                        <label>Username</label>
+                        <input type="text" class="form-control" id="username" value=" <%= User[0].username %>" readonly>
+                    </div>
 
+                    <div class="form-row form-group">
+                        <div class="col">
+                            <label>First Name</label>
+                            <input type="text" class="form-control" id="firstname" value="<%= User[0].first_name %>"
+                                readonly>
+                        </div>
+                        <div class="col">
+                            <label>Last Name</label>
+                            <input type="text" class="form-control" id="lastname" value="<%= User[0].last_name %>"
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email address</label>
+                        <input type="email" class="form-control" id="email" value=" <%= User[0].email_address %>"
+                            readonly>
                     </div>
                     <div class="
                             form-group">
                         <label>Role</label>
-                        <input type="text" class="form-control" id="role" placeholder="<%= User[0].role_of %>" readonly>
+                        <input type="text" class="form-control" id="role" value="<%= User[0].role_of %>" readonly>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
@@ -42,14 +54,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label hidden="true">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirm-password" placeholder="Password"
-                            readonly hidden=true>
+                        <label hidden="true" id="confirmLabel">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm-password" readonly hidden=true>
+                    </div>
+                    <div class="form-group" id="passCheckBox">
+                        <input type="checkbox" id="updatepassword">
+                        <label class="control-label" id="updateLabel" for="updatepassword">Update Password?</label>
                     </div>
 
-                    <div class="text-right pt-3">
-                        <button class='btn btn-warning' type='submit' id='update' disabled='true'>Update</button>
-                        <button class='btn btn-warning' type='submit' id='save' hidden="true" disabled='true'>Save</button>
+                    <div class="text-right form-group pb-2">
+                        <button class='btn btn-warning' type="button" id='update-btn'>Update</button>
+                        <button class='btn btn-warning' type='submit' id='save-btn' hidden="true">Save</button>
                     </div>
 
                 </form>
@@ -60,6 +75,7 @@
     </div>
 
     <%- include('bootstrap/js'); %>
+    <script src="/javascripts/profile.js"></script>
 </body>
 
 </html>
