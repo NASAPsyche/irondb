@@ -4,10 +4,9 @@ channels:
   - defaults
 dependencies:
   - asn1crypto=0.24.0=py36_1003
-  - blas=1.1=openblas
   - bzip2=1.0.6=h470a237_2
-  - ca-certificates=2018.10.15=ha4d7672_0
-  - certifi=2018.10.15=py36_1000
+  - ca-certificates=2019.3.9=hecc5488_0
+  - certifi=2019.3.9=py36_0
   - cffi=1.11.5=py36h5e8e0c9_1
   - chardet=3.0.4=py36_1003
   - clangdev=7.0.0=h94d2629_0
@@ -19,7 +18,6 @@ dependencies:
   - libcxx=7.0.0=h2d50403_2
   - libedit=3.1.20170329=haf1bffa_1
   - libffi=3.2.1=hfc679d8_5
-  - libgcc-ng=7.2.0=hdf63c60_3
   - libgfortran=3.0.0=1
   - libgfortran-ng=7.2.0=hdf63c60_3
   - libiconv=1.15=h470a237_3
@@ -27,16 +25,19 @@ dependencies:
   - libxml2=2.9.8=h422b904_5
   - llvm-meta=7.0.0=0
   - llvmdev=7.0.0=h2d50403_0
+  - mkl_fft=1.0.11=py36h14c3975_0
+  - mkl_random=1.0.2=py36_0
   - ncurses=6.1=hfc679d8_1
-  - numpy=1.15.4=py36_blas_openblashb06ca3d_0
   - openblas=0.3.3=ha44fe06_1
-  - openssl=1.0.2p=h470a237_1
+  - openssl=1.0.2r=h14c3975_0
   - pandas=0.23.4=py36hf8a1672_0
   - pdfminer.six=20170720=py36_0
+  - periodictable=1.5.0=py_1
   - pip=18.1=py36_1000
   - pycparser=2.19=py_0
   - pycrypto=2.6.1=py36h470a237_2
   - pyopenssl=18.0.0=py36_1000
+  - pyparsing=2.3.1=py_0
   - pysocks=1.6.8=py36_1002
   - python=3.6.6=h5001a0f_3
   - python-dateutil=2.7.5=py_0
@@ -52,9 +53,13 @@ dependencies:
   - wheel=0.32.3=py36_0
   - xz=5.2.4=h470a237_1
   - zlib=1.2.11=h470a237_3
+  - blas=1.0=mkl
   - intel-openmp=2019.1=144
+  - libgcc-ng=8.2.0=hdf63c60_1
   - libopenblas=0.2.20=h9ac9557_7
-  - numpy-base=1.14.3=py36h0ea5e3f_1
+  - mkl=2019.3=199
+  - numpy=1.16.2=py36h7e9f1db_0
+  - numpy-base=1.16.2=py36hde5b4d6_0
   - openjdk=8.0.152=h46b5887_1
   - system=5.8=2
   - pip:
@@ -63,8 +68,6 @@ dependencies:
     - matplotlib==3.0.2
     - nltk==3.4
     - opencv-python==3.4.3.18
-    - pyparsing==2.3.1
     - pypdf2==1.26.0
     - singledispatch==3.4.0.3
-    - rake_nltk==1.0.3
-prefix: ~/anaconda3/envs/journalImport
+
