@@ -46,7 +46,9 @@ async function parseAction( obj ) {
         break;
 
       case 'body':
-        //
+        if ( (await validateBody(obj)) == false ) {
+          return false;
+        }
         break;
 
       case 'element':
@@ -296,12 +298,12 @@ async function validateSingleElementDelete( obj ) {
       return false;
     }
     // Checks passed
+    // Valid json
+    return true;
   } else {
     console.error('Single Element Delete: invalid command '+obj.command);
     return false;
   }
-  // Valid json
-  return true;
 }
 
 /**
@@ -413,12 +415,127 @@ async function validateElement( obj ) {
     }
 
     // All checks pass
+    // Valid json
+    return true;
   } else {
     console.error('Element: one or more missing fields');
+    return false;
+  }
+}
+
+
+/**
+ * @param  {object} obj
+ */
+async function validateBody( obj ) {
+  // Example body
+  obj = {
+    type: 'body',
+    command: 'update',
+    bodyName: 'Alt',
+    bodyID: '3',
+    group: 'IIG',
+    groupID: '4',
+    measurements: [{
+      elementID: '123',
+      element: 'Fe',
+      lessThan: 'true',
+      units: 'ppb',
+      technique: 'INAA',
+      page: '12',
+      sigfig: '3',
+      convertedMeasurement: '200',
+      convertedDeviation: '121',
+    }],
+  };
+  // {
+  //     type: 'body',
+  //     command: 'insert',
+  //     bodyName: 'Alt',
+  //     group: 'IIG',
+  //     measurements: [{
+  //         element: 'Fe',
+  //         lessThan: 'true',
+  //         units: 'ppb',
+  //         technique: 'INAA',
+  //         page: '12',
+  //         sigfig: '3',
+  //         convertedMeasurement: '200',
+  //         convertedDeviation: '121'
+  //     }] // array for if more than one element
+  // }
+  // {
+  //     type: 'body',
+  //     command: 'delete',
+  //     bodyID: '3',
+  //     groupID: '4',
+  // }
+  switch (obj.command) {
+    case 'insert':
+      // intentional fallthrough
+    case 'update':
+      if (
+        !obj.hasOwnProperty('bodyName') ||
+        !obj.hasOwnProperty('group') ||
+        !obj.hasOwnProperty('measurements')
+      ) {
+        console.error('Body: missing fields on command '+obj.command);
+        return false;
+      }
+
+      if (
+        typeof obj.bodyName == 'undefined' ||
+        obj.bodyName == null ||
+        obj.bodyName == ''
+      ) {
+        console.error('Body: invalid body name');
+        return false;
+      }
+
+      if ( typeof obj.group == 'undefined' || obj.group == null ) {
+        console.error('Body: invalid group');
+        return false;
+      }
+
+      if ( !Array.isArray(obj.measurements) ) {
+        console.error('Body: measurement must be an array');
+        return false;
+      }
+
+      for ( const ms of obj.measurements ) {
+        if ( !validateElement(ms) ) {
+          console.error('Body: Invalid measurement');
+          return false;
+        }
+      }
+      // intentional fallthrough
+
+    case 'delete':
+      if (
+        !obj.hasOwnProperty('bodyID') ||
+        !obj.hasOwnProperty('groupID')
+      ) {
+        console.error('Body: missing fields on command '+obj.command);
+        return false;
+      }
+      if ( obj.bodyID == '' || isNaN(parseInt(obj.bodyID)) ) {
+        console.error('Body: invalid body ID');
+        return false;
+      }
+      if ( obj.groupID == '' || isNaN(parseInt(obj.groupID)) ) {
+        console.error('Body: invalid body ID');
+        return false;
+      }
+      // Passed all checks
+      break;
+
+    default:
+      console.error('Body: invalid command');
+      return false;
   }
 
   // Valid json
   return true;
 }
 
-module.exports = {updateEntry, parseAction, validateElement};
+module.exports = {updateEntry, parseAction};
