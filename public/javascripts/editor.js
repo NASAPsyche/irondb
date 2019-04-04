@@ -245,7 +245,7 @@ let classIDCount = 1;
 
 
 // Simple Add Event Handlers
-$( '#insert-form' ).on('click', 'i.add-author', ( event ) => {
+$( '#insert-form' ).on('click', 'i.add-author', function( event ) {
   addAuthor(this);
 });
 
