@@ -40,7 +40,9 @@ async function parseAction( obj ) {
         break;
 
       case 'author':
-        //
+        if ( (await validateAuthor(obj)) == false ) {
+          return false;
+        }
         break;
 
       case 'body':
@@ -131,6 +133,82 @@ async function validateBasic( obj ) {
   } else {
     return false;
   }
+}
+
+/**
+ * @param  {object} obj
+ */
+async function validateAuthor( obj ) {
+  // Example author
+  // obj = {
+  //   type: 'author',
+  //   command: 'update',
+  //   paperID: '3',
+  //   authorID: '2',
+  //   primaryName: 'Wasson',
+  //   firstName: 'John',
+  //   middleName: 'T',
+  // };
+  // {
+  //     type: 'author',
+  //     command: 'insert',
+  //     paperID: '3',
+  //     primaryName: 'Wasson',
+  //     firstName: 'John',
+  //     middleName: 'T'
+  // }
+  // {
+  //     type: 'author',
+  //     command: 'delete',
+  //     paperID: '3',
+  //     authorID: '2',
+  // }
+  switch (obj.command) {
+    case 'update':
+      // intentional fallthrough
+    case 'insert':
+      if (
+        !obj.hasOwnProperty('primaryName') ||
+        !obj.hasOwnProperty('firstName') ||
+        !obj.hasOwnProperty('middleName')
+      ) {
+        console.error('Author: missing one or more name fields');
+        return false;
+      }
+      if ( obj.primaryName == '' || obj.primaryName == null ) {
+        console.error('Author: invalid primary name');
+        return false;
+      }
+      if ( obj.firstName == '' || obj.firstName == null ) {
+        console.error('Author: invalid first name');
+        return false;
+      }
+      // intentional fallthrough
+    case 'delete':
+      if ( !obj.hasOwnProperty('paperID') ) {
+        console.error('Author: missing paper id');
+        return false;
+      }
+      if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
+        console.error('Author: invalid paper id');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('authorID') ) {
+        console.error('Author: missing author id');
+        return false;
+      }
+      if ( obj.authorID == '' || isNaN(parseInt(obj.authorID)) ) {
+        console.error('Author: invalid author id');
+        return false;
+      }
+      // All tests pass
+      break;
+
+    default:
+      break;
+  }
+  // json is valid
+  return true;
 }
 
 /**
