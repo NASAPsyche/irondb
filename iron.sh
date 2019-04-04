@@ -67,6 +67,9 @@ if [[ $# -eq 0 ]] ; then
   exit 1
 fi 
 
+MYENV="$(uname -s)"
+LINUXENV="Linux"
+MACENV="Darwin"
 
 #### Declare functions for manipulating server and database ###
 
@@ -111,26 +114,46 @@ function set_creds ()
       if [ -f "./docker-compose.yml" ]; then
         rm -f ./docker-compose.yml
       fi
+
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
       cp ./docker/template/docker-compose.yml ./docker-compose.yml
       sed -i '' -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
       sed -i '' -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/docker-compose.yml ./docker-compose.yml
+      sed -i -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
+      sed -i -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
+      fi
 
 
       # add those credentials to the mock user info generator
       if [ -f "./docker/mock/mock-user-info.py" ]; then
         rm -f ./docker/mock/mock-user-info.py
       fi
+
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
       cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
       sed -i '' -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
       sed -i '' -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
+      sed -i -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
+      sed -i -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+      fi
 
       #  set user in sql init
       if [ -f "./model/db-init/00-init.sql" ]; then
         rm -f ./model/db-init/00-init.sql
       fi 
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
       cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
       sed -i '' -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
       break
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
+      sed -i -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
+      break
+      fi
     fi
   done
 }
@@ -279,11 +302,12 @@ function restore_recent ()
 # Wait for containers to be available
 function wait_for_containers ()
 {
-  echo "Waiting for the containers to initialize"
+  echo " "
   if [[ "$hasWaited" = true ]] ; then
     return
   fi
   
+  echo "Waiting for the containers to initialize"
   NORESP=""
   # Check that pg is available from logs of call to wait-for-it.sh
   COUNTER=0
