@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS user_info (
 
 CREATE TABLE IF NOT EXISTS bodies (
   body_id serial PRIMARY KEY,
-  nomenclature citext UNIQUE NOT NULL,
+  nomenclature citext NOT NULL,
   status_id bigint
 );
 
