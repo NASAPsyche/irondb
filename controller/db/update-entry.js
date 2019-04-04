@@ -21,4 +21,44 @@ async function updateEntry() {
   return 0;
 }
 
-module.exports = {updateEntry};
+
+/**
+ * @param  {object} obj
+ * @return {Promise} boolean
+ */
+async function parseAction( obj ) {
+  if ( obj.hasOwnProperty('type') && obj.hasOwnProperty('command') ) {
+    const type = obj.type;
+    // eslint-disable-next-line no-unused-vars
+    const command = obj.command;
+    switch (type) {
+      case 'basic':
+        //
+        break;
+
+      case 'author':
+        //
+        break;
+
+      case 'body':
+        //
+        break;
+
+      case 'element':
+        //
+        break;
+
+      case 'note':
+        //
+        break;
+
+      default:
+        return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+
+module.exports = {updateEntry, parseAction};
