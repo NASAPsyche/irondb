@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Profile</title>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/profile.css' />
+</head>
+
+<body>
+    <%- include('components/navbar_signed_in'); %>
+
+    <div class='container-fluid mt-5 col-8'>
+        <div class='card mt-5 pb-5'>
+            <div class="container-fluid">
+                <div class="row pt-3">
+                    <div class="col">
+                        <h1>User </h1>
+                    </div>
+                    <div class="col">
+                        <h1>
+                            <%= User[0].username %>
+                        </h1>
+                    </div>
+                </div>
+                <form action="/profile/update" method="post" id="user-update-form">
+                    <div class="form-group">
+                        <label>Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="<%= User[0].email_address %>"
+                            readonly>
+
+                    </div>
+                    <div class="
+                            form-group">
+                        <label>Role</label>
+                        <input type="text" class="form-control" id="role" placeholder="<%= User[0].role_of %>" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="************" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label hidden="true">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm-password" placeholder="Password"
+                            readonly hidden=true>
+                    </div>
+
+                    <div class="text-right pt-3">
+                        <button class='btn btn-warning' type='submit' id='update' disabled='true'>Update</button>
+                        <button class='btn btn-warning' type='submit' id='save' hidden="true" disabled='true'>Save</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <%- include('bootstrap/js'); %>
+</body>
+
+</html>
