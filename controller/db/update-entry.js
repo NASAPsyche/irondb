@@ -1,5 +1,6 @@
 const pg = require('./index');
 /**
+ * @return {Promise} boolean
  */
 async function updateEntry() {
   const client = await pg.pool.connect();
@@ -14,11 +15,11 @@ async function updateEntry() {
     //
     await client.query('ROLLBACK');
     console.log(error);
-    return 1;
+    return false;
   } finally {
     client.release();
   }
-  return 0;
+  return true;
 }
 
 
@@ -51,7 +52,9 @@ async function parseAction( obj ) {
         break;
 
       case 'note':
-        //
+        if ( (await validateNote(obj)) == false ) {
+          return false;
+        }
         break;
 
       default:
@@ -128,6 +131,68 @@ async function validateBasic( obj ) {
   } else {
     return false;
   }
+}
+
+/**
+ * @param  {object} obj
+ */
+async function validateNote( obj ) {
+  // Example note
+  // obj = {
+  //   type: 'note',
+  //   command: 'update',
+  //   noteID: '12',
+  //   paperID: '2',
+  //   note: 'this is a note',
+  // };
+  // {
+  //     type: 'note',
+  //     command: 'insert',
+  //     noteID: '12',
+  //     paperID: '2',
+  //     note: 'this is a note'
+  // }
+
+  // {
+  //     type: 'note',
+  //     command: 'delete',
+  //     noteID: '12'
+  // }
+  switch (obj.command) {
+    case 'update':
+      // intentional fallthrough
+    case 'insert':
+      if ( !obj.hasOwnProperty('paperID') ) {
+        console.error('Note: no paperID field');
+        return false;
+      }
+      if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
+        console.error('Note: Invalid paper ID');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('note') ) {
+        console.error('Note: no note field');
+        return false;
+      }
+      // intentional fallthrough
+    case 'delete':
+      if ( !obj.hasOwnProperty('noteID') ) {
+        console.error('Note: no noteID field');
+        return false;
+      }
+      if ( obj.noteID == '' || isNaN(parseInt(obj.noteID)) ) {
+        console.error('Note: Invalid note ID');
+        return false;
+      }
+      // all checks passed
+      break;
+
+    default:
+      console.error('Note: Invalid command '+obj.command);
+      return false;
+  }
+  // json is valid
+  return true;
 }
 
 module.exports = {updateEntry, parseAction};
