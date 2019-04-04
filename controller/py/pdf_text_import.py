@@ -17,17 +17,16 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
-
-j = json.loads(sys.argv[1])
-# fileName = j['fileName']
-fileName = '/usr/app/controller/py/WassonandChoe_GCA_2009.pdf'
-pageNum = int(j['pageNum'])
-taskNum = int(j['taskNum'])
-flipDir = int(j['flipDir'])
-coordsLeft = j['coordsLeft']
-coordsTop = j['coordsTop']
-coordsWidth = j['coordsWidth']
-coordsHeight = j['coordsHeight']
+# j = json.loads(sys.argv[1])
+# # fileName = j['fileName']
+# fileName = '/usr/app/controller/py/WassonandChoe_GCA_2009.pdf'
+# pageNum = int(j['pageNum'])
+# taskNum = int(j['taskNum'])
+# flipDir = int(j['flipDir'])
+# coordsLeft = j['coordsLeft']
+# coordsTop = j['coordsTop']
+# coordsWidth = j['coordsWidth']
+# coordsHeight = j['coordsHeight']
 
 
 # START This function imports raw text import from a chosen pdf request.
@@ -54,18 +53,12 @@ def convert_pdf_to_txt_looper(path, total_pages):
     individual_pages = []
     for check in range(total_pages):
         individual_pages.append(convert_pdf_to_txt(path, check))
-        print(individual_pages[check])
+        # print(individual_pages[check])
     return individual_pages
 # END This function puts each page of text in its own slot in an array of strings
 
 
-# START Get number of Pages
-total_pages = PyPDF2.PdfFileReader(open(fileName, 'rb')).numPages
-# START Get number of Pages
 
-# START get text from pdf
-text = convert_pdf_to_txt_looper(fileName, total_pages)
-# End get text from pdf.
 
 
 
