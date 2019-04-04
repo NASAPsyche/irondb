@@ -142,7 +142,6 @@
 
                     <% } %>
 
-
                     <% for(var i=0; i < Bodies.length; i++) { %>
                         <div class="form-row meteorite-header">
                             <h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>
@@ -308,6 +307,131 @@
 
                             <% } %>
                         <% } %>
+                    <% } %>
+
+                    <% var currentName = ''; %>
+                    <% for(var k=0; k < UnattachedElementEntries.length; k++) { %>
+                        <% if (UnattachedElementEntries[k].nomenclature !== currentName) { %>
+                            <h3>Measurements for: <%= UnattachedElementEntries[k].nomenclature %></h3>
+                            <% var currentName = UnattachedElementEntries[k].nomenclature; %>
+                        
+                        <% } %>
+                            <div class="form-row">
+                                <div class="col-md-2">
+                                    <form class="form-inline pt-4 pr-2" action="/data-entry/approve/update" method="POST">
+                                        <label class="sr-only" for="type">request type</label>
+                                        <input type="hidden" name="type" value="element">
+
+                                        <label class="sr-only" for="submissionID">ID of submission</label>
+                                        <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+    
+                                        <label class="sr-only" for="elementID">ID of current element</label>
+                                        <input type="hidden" name="elementID" value=<%= UnattachedElementEntries[k].element_id %>>
+    
+                                        <label class="sr-only" for="elementStatus">ID of status entry for element</label>
+                                        <input type="hidden" name="elementStatus" value=<%= UnattachedElementEntries[k].status_id %>>
+    
+                                        <button class="btn btn-primary btn-sm ml-1" type="submit">Approve</button>
+                                    </form>
+                                </div>
+                                <div class="form-group col-md-1 mr-3">
+                                    <label for="element">Element</label>
+                                    <input type="text" class="form-control" name="element" readonly value="<%= UnattachedElementEntries[k].element_symbol.charAt(0).toUpperCase() + UnattachedElementEntries[k].element_symbol.slice(1) %>">
+                                </div>
+                                <div class="form-check-inline col-auto">
+                                    <input class="form-check-input" type="checkbox" <% if (UnattachedElementEntries[k].less_than == 'true') { %> checked <% } %> disabled >
+                                    <label class="form-check-label" for="lessThan">&lt;</label>
+                                </div>
+
+                                <% if (UnattachedElementEntries[k].original_unit === "wt_percent") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToPercent(UnattachedElementEntries[k].ppb_mean, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToPercent(UnattachedElementEntries[k].deviation, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="wt%">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "ppm") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToPPM(UnattachedElementEntries[k].ppb_mean, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToPPM(UnattachedElementEntries[k].deviation, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="ppm">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "ppb") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= UnattachedElementEntries[k].ppb_mean %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= UnattachedElementEntries[k].deviation %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="ppb">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "mg_g") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToMilligramsPerGram(UnattachedElementEntries[k].ppb_mean, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToMilligramsPerGram(UnattachedElementEntries[k].deviation, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="mg/g">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "ug_g") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToMicrogramsPerGram(UnattachedElementEntries[k].ppb_mean, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToMicrogramsPerGram(UnattachedElementEntries[k].deviation, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="&micro;g/g">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "ng_g") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= UnattachedElementEntries[k].ppb_mean %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= UnattachedElementEntries[k].deviation %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="ng/g">
+                                    </div>
+                                <% } %>
+
+                                <div class="form-group col-md-2">
+                                    <label for="technique">Technique</label>
+                                    <input type="text" class="form-control"  name="technique" readonly value="<%= UnattachedElementEntries[k].technique %>">
+                                </div>
+                                <div class="form-group col-md-1">
+                                    <label for="page">Page</label>
+                                    <input type="number" class="form-control p-1" name="page" readonly value="<%= UnattachedElementEntries[k].page_number %>">
+                                </div>
+                            </div>
                     <% } %>
 
                     <% for(var i=0; i < Notes.length; i++) { %>

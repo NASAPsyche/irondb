@@ -108,6 +108,20 @@ router.post('/', isLoggedIn, async function(req, res, next) {
             AS t2 ON t1.element_id = t2.element_id`,
           [submissionID]
       );
+      const UnattachedElementEntries = await db.aQuery(
+          `SELECT t5.nomenclature, t1.* FROM element_entries AS t1 
+           JOIN (SELECT element_id FROM element_status
+                 WHERE  submission_id = $1 
+                 AND current_status = 'pending') AS t2 
+           ON t1.element_id = t2.element_id
+           JOIN (SELECT t3.* FROM bodies AS t3
+                 JOIN (SELECT body_id 
+                       FROM body_status 
+                       WHERE submission_id = $1 AND current_status != 'pending')
+                  AS t4 ON t3.body_id = t4.body_id) AS t5 
+           ON t1.body_id = t5.body_id;`,
+          [submissionID]
+      );
       const Notes = await db.aQuery(
           `SELECT t1.* FROM notes AS t1 JOIN 
             (SELECT note_id FROM note_status WHERE submission_id = $1
@@ -116,7 +130,8 @@ router.post('/', isLoggedIn, async function(req, res, next) {
           [submissionID]
       );
       resObj = await Promise.all([Bodies, Journal, Paper,
-        AuthorsWithAttribution, Groups, ElementEntries, Notes]);
+        AuthorsWithAttribution, Groups, ElementEntries,
+        UnattachedElementEntries, Notes]);
     } catch (err) {
       next(createError(500));
     } finally {
@@ -129,7 +144,8 @@ router.post('/', isLoggedIn, async function(req, res, next) {
         AuthorsWithAttribution: resObj[3].rows,
         Groups: resObj[4].rows,
         ElementEntries: resObj[5].rows,
-        Notes: resObj[6].rows,
+        UnattachedElementEntries: resObj[6].rows,
+        Notes: resObj[7].rows,
         _: ejsUnitConversion,
       });
     }
