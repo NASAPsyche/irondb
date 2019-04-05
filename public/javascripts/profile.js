@@ -91,7 +91,6 @@ $(document).ready(async function() {
     data.email = $('#email').val();
     data.password = $('#password').val();
     data.user_id = parseInt($('#userID').val());
-    alert(`sending the following ${JSON.stringify(data)}`);
     const jsonData = JSON.stringify(data);
     await postData(jsonData);
     window.location.reload();
