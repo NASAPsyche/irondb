@@ -9,6 +9,11 @@ const {isLoggedIn, isAdmin} = require('../middleware/auth');
 
 /* GET example page. */
 router.get('/', function(req, res, next) {
+  console.log('DEBUG------');
+  console.log(req.session);
+  console.log(req.session.fileName);
+  console.log('DEBUG END --------');
+
   if (req.xhr === true) {
     // If ajax request return information.
     db.query('SELECT username FROM Users', [], (dbErr, dbRes) => {

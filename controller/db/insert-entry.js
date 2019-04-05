@@ -15,6 +15,7 @@ const pg = require('./index'); // postgres conx
  * @param  {Array} bodies
  * @param  {Array} notes
  * @param  {string} username
+ * @param  {string} pdfPath
  * @param  {string} status default 'pending'
  * @return {number} 0 - normal, 1 - failure
  */
@@ -25,6 +26,7 @@ async function insertEntry(
     bodies,
     notes,
     username,
+    pdfPath,
     status = 'pending'
 ) {
   const client = await pg.pool.connect();
@@ -41,7 +43,7 @@ async function insertEntry(
       VALUES($1, $2)
       RETURNING submission_id
       `;
-      const submissionValue = ['null', username];
+      const submissionValue = [pdfPath, username];
       const {rows} = await client.query(submissionQuery, submissionValue);
       submissionId = rows[0].submission_id;
       if ( submissionId == null || submissionId == '') {

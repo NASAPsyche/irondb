@@ -1,6 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-const PgSession = require('connect-pg-simple')(session);
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -109,9 +108,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(session({
-  store: new PgSession({
-    pool: db.pool,
-  }),
   secret: 'Temporary_Example_Secret_Hide_Real_Secret_When_in_Production',
   resave: false,
   saveUninitialized: false,

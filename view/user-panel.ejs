@@ -30,10 +30,10 @@
       <table class="table table-stripd table-bordered table-hover">
         <thead class="thead-dark">
           <tr>
-            <th>Body</th>
-            <th>Title</th>
-            <th>Year</th>
-            <th>Author(s)</th>
+            <th>Paper ID</th>
+            <th>Paper Title</th>
+            <th>Date Imported</th>
+            <th>Imported by</th>
           </tr>
         </thead>
         <tbody>
@@ -41,16 +41,16 @@
           <% for(var i=0; i < pending; i++) { %>
           <tr>
             <th>
-              <%= Pending[i].nomenclature %>
+              <%= Pending[i].paper_id %>
             </th>
             <th>
               <%= Pending[i].title %>
             </th>
             <th>
-              <%= Pending[i].published_year %>
+              <%= Pending[i].submission_date %>
             </th>
             <th>
-              <%= Pending[i].authors %>
+              <%= Pending[i].submitted_by %>
             </th>
           </tr>
           <% } %>
