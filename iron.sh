@@ -3,10 +3,37 @@
 # Iron Shell - Iron Meteorite Database Manager
 # For deploying and managing the docker composition.
 
+
+
+############################
+# Functions
+############################
+
+# Displays a brief help message
+function show_short_help() {
+  helpString= helpString='Make sure Docker is running before performing any operations.
+Common commands:
+
+Initial/Clean install
+  ./iron.sh -i
+
+Launch/start the containers
+  ./iron.sh -l
+  
+Stop the containers
+  ./iron.sh -s
+
+--------------
+For advanced options or more information
+  ./iron.sh -h
+'
+  echo "${helpString}"
+
+}
 # Displays the help contents
 function show_help ()
 {
-  helpString='                                     
+  helpString='
             ██╗██████╗  ██████╗ ███╗   ██╗      
             ██║██╔══██╗██╔═══██╗████╗  ██║      
             ██║██████╔╝██║   ██║██╔██╗ ██║      
@@ -19,54 +46,79 @@ function show_help ()
         ╚════██║██╔══██║██╔══╝  ██║     ██║     
         ███████║██║  ██║███████╗███████╗███████╗
         ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
-Welcome to the Iron Meteorite Database Manager.
-Make sure Docker is running before performing any operations
---------------
+          Iron Meteorite Database Manager
+
+Make sure Docker is running before performing any operations.
+
+Initial/Clean install
+  ./iron.sh -i
+
+To launch/start the containers
+  ./iron.sh -l
+  
+To stop the containers
+  ./iron.sh -s
+
 The Iron Shell accepts chains of options, for example:
     ./iron.sh -lpea
-The order of the flags is not important. -lpae is the same as -aepl.
+
 This will (l)aunch the containers, after (p)opulating the database by the
 init files, reseting the node (e)nvironment, using an (a)ttached shell.
-While running in attached mode, it is not possible to perform operations
-such as making database backups. When leaving the attached shell, the 
-Iron Shell will exit and no further operations will be done.
+
+While running in attached mode, it is not possible to backup or restore the
+database, or to generate mock users. 
+When exiting the attached shell, the containers will stop.
+Use -g instead to simulate an attached Shell.
+
+The order of the flags is not important. -lpae is the same as -aepl.
 --------------
--i    Initial install: If this is your first time, or you need to rebuild 
-      your containers, then select this option. The containers will launch
-      once they are built.
--l    Launch containers: Launches the containers, by default the shell is 
-      detached from the containers.
+--------------
+Advanced Options: can be used with -l flag in chain ( e.g., ./iron.sh -lp ).
+-g    Attach logs: Opens a live feed of the docker logs, CTRL+C to exit 
+      logs. This simulates an attached shell, but will not close the servers 
+      when exited.
 -a    Attach shell: When launching the containers, attach the shell to the
       Node server. CTRL+C to quit, this shuts down the server. This is for
-      diagnostic purposes only and should not be used in production.
+      diagnostic purposes only and should not be used in production. Cannot
+      generate mock users if using this option.
 -e    Reset environment: Install the local Node dependencies and runs tasks
       specified by Gulp.
--p    Populate database: Will delete the local database and then populate
-      it from the init files (./model/db-init/)
--s    Stop containers: Stops the containers. This is always executed last.
+-p    Reset/populate database: This will DELETE the local database. When the
+      containers are launched the database will be populated from the init
+      files ( ./model/db-init/*.sql ).
+-m    Mock users: Adds the mock users. Cannot be used with -a in chain.
+      NOT for production.
+-c    Clean Docker environment: Removes dangling containers and volumes to
+      free up space. This is done automatically when launching the containers.
+-x    Reset Docker environment: A complete refresh of your Docker environment.
+      -x and -c are always executed first
 --------------
+Database operations: the containers must be running.
 -b    Backup database: creates a backup of the current database
 -r    Restore database: restore the database from the most recent backup.
       For more advanced database manipulation, refer to Postgresql docs. 
 --------------
--m    Mock users: Adds the mock users.
--g    Open logs: Opens the docker-compose logs, CTRL+C to exit logs.
--c    Clean Docker environment: Removes dangling containers and volumes.
--x    Reset Docker environment: Delete all containers. This is essentially
-      a factory refresh of your Docker environment.
+--------------
+Initial install
+-i    Initial/Clean install: If this is your first time, or you need to 
+      rebuild your containers, then select this option. The containers will
+      launch once they are built.
+--------------
+
+-l    Launch containers: Launches the containers, by default the shell is 
+      detached from the containers.
+-s    Stop containers: Stops the containers after executing all other
+      commands. This is always executed last.
 -h    Help: Displays the help message
   '
   echo "${helpString}"
 }
 
-hasWaited=false
-
 # No args given, display help
 if [[ $# -eq 0 ]] ; then
-  show_help
+  show_short_help
   exit 1
 fi 
-
 
 #### Declare functions for manipulating server and database ###
 
@@ -74,7 +126,12 @@ fi
 function set_creds () 
 {
   echo "Set username and password for Postgres"
+  
   NORESP=""
+  MYENV="$(uname -s)"
+  LINUXENV="Linux"
+  MACENV="Darwin"
+
   while true; do
     echo -n "Select a username: "
     read name
@@ -111,26 +168,46 @@ function set_creds ()
       if [ -f "./docker-compose.yml" ]; then
         rm -f ./docker-compose.yml
       fi
+
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
       cp ./docker/template/docker-compose.yml ./docker-compose.yml
       sed -i '' -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
       sed -i '' -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/docker-compose.yml ./docker-compose.yml
+      sed -i -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
+      sed -i -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
+      fi
 
 
       # add those credentials to the mock user info generator
       if [ -f "./docker/mock/mock-user-info.py" ]; then
         rm -f ./docker/mock/mock-user-info.py
       fi
+
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
       cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
       sed -i '' -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
       sed -i '' -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
+      sed -i -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
+      sed -i -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+      fi
 
       #  set user in sql init
       if [ -f "./model/db-init/00-init.sql" ]; then
         rm -f ./model/db-init/00-init.sql
       fi 
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
       cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
       sed -i '' -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
       break
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
+      sed -i -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
+      break
+      fi
     fi
   done
 }
@@ -276,14 +353,17 @@ function restore_recent ()
   cd ..
 }
 
+# if a chain of parameters. only wait once to check if containers are started
+hasWaited=false
 # Wait for containers to be available
 function wait_for_containers ()
 {
-  echo "Waiting for the containers to initialize"
+  echo " "
   if [[ "$hasWaited" = true ]] ; then
     return
   fi
   
+  echo "Waiting for the containers to initialize"
   NORESP=""
   # Check that pg is available from logs of call to wait-for-it.sh
   COUNTER=0
@@ -484,7 +564,12 @@ function install_pip ()
   fi
 }
 
-### BEGIN ###
+
+############################
+#         START
+############################
+
+# Parameter flags
 
 initInstall=false
 attachShell=false
@@ -499,7 +584,7 @@ deleteDocker=false
 openLogs=false
 cleanDocker=false
 
-
+# Read in options and set flags
 while getopts ":hilpaemsxbrgcHILPAEMSXBRGC " opt; do
   case ${opt} in
     h | H)
@@ -549,6 +634,11 @@ while getopts ":hilpaemsxbrgcHILPAEMSXBRGC " opt; do
 done
 shift $((OPTIND -1))
 
+############################
+# Perform operations
+############################
+
+# Exit if docker is not running
 DOCKEROFF="$(docker info 2>&1 | grep "Cannot connect")"
 NORESP=""
 if [[ "$DOCKEROFF" != "$NORESP" ]] ; then 
