@@ -1,4 +1,8 @@
-
+/**
+ * Hides the update button and shows the save button
+ * which is the submit for the form. Remove readonly from
+ * editable fields
+ */
 $(document).ready(function() {
   $(':button').click(function() {
     $(':button').attr('hidden', 'true');
@@ -11,6 +15,10 @@ $(document).ready(function() {
   });
 });
 
+/**
+ * Update fields when "Update Password?" checkbox is
+ * selected and deselected.
+ */
 $(document).ready(function() {
   $('#updatepassword').on('change', function() {
     if ($('#updatepassword').is(':checked')) {
@@ -34,6 +42,9 @@ $(document).ready(function() {
   });
 });
 
+/**
+ * data object to be sent to server
+ */
 const data = {
   'first_name': '',
   'last_name': '',
@@ -59,8 +70,11 @@ function validatePassword() {
   });
 }
 
+/**
+ * @description check for matching passwords on keyup for password inputs
+ */
 $(document).ready(function() {
-  $('#confirm_password').keyup(function() {
+  $(':password').keyup(function() {
     validatePassword();
   });
 });

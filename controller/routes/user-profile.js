@@ -22,6 +22,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   }
 });
 
+/* POST /profile/update */
 router.post('/update', isLoggedIn, async (req, res, next) => {
   const client = await db.pool.connect();
 
@@ -39,11 +40,12 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   let hasPassword = false;
   console.log(JSON.stringify(req.body));
   let hashed = '';
+
+  // check if the request has a password
   if (req.body.password) {
+    // salt and hash password
     const saltRounds = 10;
     hasPassword = true;
-    console.log('HAS PASSWORD');
-
     const hashedPassword = await new Promise((resolve, reject) => {
       bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
         if (err) reject(err);
@@ -53,7 +55,6 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
     hashed = hashedPassword;
   }
 
-  console.log(`HASHED IS ${hashed}`);
   // eslint-disable-next-line max-len
   const updatePassword = `UPDATE users SET password_hash = $1 WHERE user_id = $2`;
   const insertPassword = [hashed, req.body.user_id];
