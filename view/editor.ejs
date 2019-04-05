@@ -12,10 +12,6 @@
         <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
             <h1>Data Entry Editor  </h1>
         </div>
-        <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#uploadModal" hidden="true">Upload pdf</button>
-        </div>
     </div>
 
     <div class="container-fluid pt-1 pb-1">
@@ -39,42 +35,13 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Upload PDF</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form method="POST" action="/data-entry/editor" enctype="multipart/form-data" class=" align-top mx-auto" id="pdf-form">
-                    <div class="modal-body">
-                        <small><strong>Warning:</strong> Uploading pdf may interupt previously entered work.</small>
-                        <div class="form-group">
-                            <label for="filetoupload">Choose file to upload</label>
-                            <input type="file" id="pdf" name="filetoupload" accept=".pdf">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <!-- even though the id 'modal-upload' is never called, it will break the autosave if you remove it -->
-                        <button type="submit" class="btn btn-danger mt-2 ml-2 pr-4 pl-4" id="modal-upload">Upload</button> 
-                        <button type="button" class="btn btn-secondary mt-2" data-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
     <%- include('bootstrap/js'); %>
     <%- include('components/ejs'); %>
     <%- include('components/drop-down-script'); %>
     <script>
         const username = '<%- username %>';
-        const filename = '<%- data %>';
     </script>
     <script src="/javascripts/editor.js"></script>
-    <script src="/javascripts/editor-modal.js"></script>
     <script src="/javascripts/editor/save.js"></script>
     <%if (typeof savedData !== 'undefined' && savedData !== null ) { %>
         <script>

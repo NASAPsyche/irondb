@@ -178,7 +178,7 @@ const meteoriteTemplate = `
   title="Press to remove meteorite and all associated measurements."></i>
 </div>
 <div class="form-group col-md-6">
-  <label for="<%- bodyNameID %>">Name</label>
+  <label for="<%- bodyNameID %>">Meteorite</label>
   <input type="text" class="form-control" id="<%- bodyNameID %>" 
   name="<%- bodyNameID %>" required>
 </div>
@@ -296,9 +296,6 @@ function addNote( e ) {
 
   // Insert template into DOM
   $(e).parent().siblings('button:submit').before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /**
@@ -366,9 +363,6 @@ function addMeasurement( e ) {
     $(e).parent().siblings('.notes-header')
         .first().before(html);
   }
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /**
@@ -438,9 +432,6 @@ function addMeteorite( e ) {
 
   // Insert template into DOM
   $(e).parent().siblings('.notes-header').before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /** ---------------------------- */
