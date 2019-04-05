@@ -48,14 +48,17 @@
                         <label>Role</label>
                         <input type="text" class="form-control" id="role" value="<%= User[0].role_of %>" readonly>
                     </div>
+
                     <div class="form-group">
                         <label id="passwordLabel">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="************" readonly>
+                        <input type="password" class="form-control" id="password" placeholder="************" readonly
+                            minlength="6" maxlength="25">
                     </div>
 
                     <div class="form-group">
                         <label hidden="true" id="confirmLabel">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirm-password" readonly hidden=true>
+                        <input type="password" class="form-control" id="confirm_password" readonly hidden=true
+                            minlength="6" maxlength="25">
                     </div>
                     <div class="form-group" id="passCheckBox" hidden="true">
                         <input type="checkbox" id="updatepassword">
@@ -64,7 +67,7 @@
 
                     <div class="text-right form-group pb-2">
                         <button class='btn btn-warning' type="button" id='update-btn'>Update</button>
-                        <button class='btn btn-warning' type='submit' id='save-btn' hidden="true">Save</button>
+                        <button class='btn btn-warning' type='submit' id='save-btn' disabled="false" hidden="true">Save</button>
                     </div>
 
                     <!-- Hidden user id-->
@@ -78,6 +81,8 @@
 
     <%- include('bootstrap/js'); %>
     <script src="/javascripts/profile.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js"></script>
+
 </body>
 
 </html>

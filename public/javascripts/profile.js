@@ -7,24 +7,29 @@ $(document).ready(function() {
     $('#lastname').removeAttr('readonly');
     $('#email').removeAttr('readonly');
     $('#passCheckBox').removeAttr('hidden');
+    $('#save-btn').attr('disabled', false);
   });
 });
 
 $(document).ready(function() {
   $('#updatepassword').on('change', function() {
     if ($('#updatepassword').is(':checked')) {
-      $('#confirm-password').removeAttr('hidden');
-      $('#confirm-password').removeAttr('readonly');
+      $('#confirm_password').removeAttr('hidden');
+      $('#confirm_password').removeAttr('readonly');
       $('#confirmLabel').removeAttr('hidden');
       $('#password').removeAttr('readonly');
       $('#password').attr('placeholder', '');
       $('#password').removeAttr('hidden');
       $('#passwordLabel').removeAttr('hidden');
+      $('#save-btn').attr('disabled', true);
     } else {
-      $('#confirm-password').attr('hidden', true);
+      $('#confirm_password').attr('hidden', true);
       $('#confirmLabel').attr('hidden', true);
       $('#password').attr('hidden', true);
       $('#passwordLabel').attr('hidden', true);
+      $('#password').val('');
+      $('#confirm_password').val('');
+      $('#save-btn').attr('disabled', false);
     }
   });
 });
@@ -38,8 +43,34 @@ const data = {
   'password': '',
 };
 
+/**
+ * @description Validate password and enable save button
+ */
+function validatePassword() {
+  $('#confirm_password').on('keyup', function() {
+    const pwd = $('#password').val();
+    const cnfm = $('#confirm_password').val();
+
+    if (pwd === cnfm) {
+      if (pwd.length >= 6) {
+        $('#save-btn').attr('disabled', false);
+      }
+    }
+  });
+}
+
+$(document).ready(function() {
+  $('#confirm_password').keyup(function() {
+    validatePassword();
+  });
+});
+
+/**
+ * @description submit information
+ */
 $(document).ready(async function() {
   $('#user-update-form').submit(async function(event) {
+    event.preventDefault();
     data.first_name = $('#firstname').val();
     data.last_name = $('#lastname').val();
     data.username = $('#username').val();
@@ -47,7 +78,6 @@ $(document).ready(async function() {
     data.password = $('#password').val();
     data.user_id = parseInt($('#userID').val());
     alert(`sending the following ${JSON.stringify(data)}`);
-
     const jsonData = JSON.stringify(data);
     await postData(jsonData);
     window.location.reload();
