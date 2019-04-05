@@ -7,24 +7,6 @@ ElementsArr = Elements.slice(0, -1).split(',');
 // eslint-disable-next-line no-undef
 TechniqueArr = Technique.slice(0, -1).split(',');
 
-/** ---------------------------- */
-/**     Remove Hover Toggle      */
-/** ---------------------------- */
-$( 'document' ).ready(function() {
-  // All remove icons hidden on load.
-  $( 'i.remove' ).hide();
-});
-
-$( '#insert-form' ).on('mouseover', 'div.form-row', function( event ) {
-  // Show remove ui on mouseover of parent div
-  $(this).children().children( 'i.remove' ).show();
-});
-
-$( '#insert-form' ).on('mouseout', 'div.form-row', function( event ) {
-  // Hide remove ui on mouseout of parent div
-  $(this).children().children( 'i.remove' ).hide();
-});
-
 
 /** ---------------------------- */
 /**      Validate Button         */
@@ -245,7 +227,7 @@ let classIDCount = 1;
 
 
 // Simple Add Event Handlers
-$( '#insert-form' ).on('click', 'i.add-author', ( event ) => {
+$( '#insert-form' ).on('click', 'i.add-author', function( event ) {
   addAuthor(this);
 });
 
@@ -293,9 +275,6 @@ function addAuthor( e ) {
 
   // Insert template into DOM
   $(e).parent().siblings('.meteorite-header').first().before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /**
