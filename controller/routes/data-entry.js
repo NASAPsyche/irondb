@@ -78,7 +78,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
               res.render('tool', {
                 data: newpath.slice(15),
                 username: req.user.username,
-                sessionID: req.sessionID,
                 Elements: resObj[0].rows,
                 Technique: resObj[1].rows,
               });

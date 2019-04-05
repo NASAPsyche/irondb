@@ -47,12 +47,12 @@ function serializeInsertForm() {
   // eslint-disable-next-line no-undef
   const username_ = username; // username defined in ejs from route
   // eslint-disable-next-line no-undef
-  const filename_ = filename; // filename defined in ejs from route
+  // const filename_ = filename; // filename defined in ejs from route
 
   const fullJson = {
     username: username_,
     data: jsondata_,
-    pdf_path: filename_,
+    // pdf_path: filename_,
   };
   return (JSON.stringify(fullJson));
 }
