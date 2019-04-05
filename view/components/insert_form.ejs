@@ -4,6 +4,7 @@
 <%- include('meteorites-form-group'); %>
 <%- include('notes-form-group'); %>
 
-<button type="submit" class="btn btn-warning mt-2 float-right">Submit</button>
+<button type="submit" class="btn btn-warning mt-2 float-right" disabled="true" title="Validate or override to enable" id="submit-btn">Submit</button>
 <button type="button" class="btn btn-danger mt-2 mr-3 float-right" id="validate-btn">Validate</button>
-<button type="button" class="btn btn-secondary mt-2 mr-5 float-left" id="save-btn">Save</button>
+<button type="button" class="btn btn-danger mt-2 mr-3 float-right" id="override-btn">Override Validation</button>
+<button type="button" class="btn btn-secondary mt-2 mr-2 float-left" id="save-btn">Save</button>

@@ -40,14 +40,16 @@ $( '#event-div' ).on('submit', '#single-page-form', function( event ) {
 });
 
 $('#event-div').on('click', '#validate-btn', function() {
-  // serialize all tables
-  const tables = [];
-  const tableObjects = $('#table-target').children('div.table-div');
-  $.each( tableObjects, function(tableIndex, table) {
-    const rows = $(table).children('table').children('tbody').children();
-    tables.push(serializeTable(rows));
-  });
-  $('#table-data-input').attr('value', JSON.stringify(tables));
+  if ($('#table-data-input').length) {
+    // serialize all tables
+    const tables = [];
+    const tableObjects = $('#table-target').children('div.table-div');
+    $.each( tableObjects, function(tableIndex, table) {
+      const rows = $(table).children('table').children('tbody').children();
+      tables.push(serializeTable(rows));
+    });
+    $('#table-data-input').attr('value', JSON.stringify(tables));
+  }
 
   const formData = $('#insert-form').serializeArray();
   const postData = {};
@@ -65,6 +67,10 @@ $('#event-div').on('click', '#validate-btn', function() {
   $.post('/data-entry/tool/validate', postData, function( data ) {
     console.log(data);
   });
+});
+
+$('#event-div').on('click', '#override-btn', function() {
+  $('#submit-btn').prop('disabled', false);
 });
 
 

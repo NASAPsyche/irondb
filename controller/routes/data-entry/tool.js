@@ -13,6 +13,12 @@ router.post('/', isLoggedIn, function(req, res, next) {
   // Probably where you'd want the get for basic data used elsewhere
   // AJAX call from submit on tool flow checklist
 
+  // set tables flag if tables selected from checklist
+  let hasTables = false;
+  if (req.body.hasOwnProperty('tables') && req.body.tables === 'on') {
+    hasTables = true;
+  }
+
   console.log(req.body);
 
   // Hardcoded params for US969 pr, need to modify script or request as needed
@@ -50,6 +56,7 @@ router.post('/', isLoggedIn, function(req, res, next) {
       res.render('components/tool_panel', {
         Elements: resObj[0].rows,
         Technique: resObj[1].rows,
+        hasTables: hasTables,
       });
     }
   });

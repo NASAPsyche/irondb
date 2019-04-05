@@ -12,7 +12,7 @@ TechniqueArr = Technique.slice(0, -1).split(',');
 /**      Validate Button         */
 /** ---------------------------- */
 
-$('#insert-form').on('click', '#validate-btn', function() {
+$('#event-div').on('click', '#validate-btn', function() {
   const formData = $('#insert-form').serializeArray();
   const postData = {};
   for (let i = 0; i < formData.length; i++) {
@@ -31,6 +31,10 @@ $('#insert-form').on('click', '#validate-btn', function() {
   $.post('/data-entry/tool/validate', postData, function( data ) {
     console.log(data);
   });
+});
+
+$('#event-div').on('click', '#override-btn', function() {
+  $('#submit-btn').prop('disabled', false);
 });
 
 
@@ -227,22 +231,22 @@ let classIDCount = 1;
 
 
 // Simple Add Event Handlers
-$( '#insert-form' ).on('click', 'i.add-author', function( event ) {
+$( '#event-div' ).on('click', 'i.add-author', function( event ) {
   addAuthor(this);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-note', function( event ) {
+$( '#event-div' ).on('click', 'i.add-note', function( event ) {
   addNote(this);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
+$( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
   addMeasurement(this);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
+$( '#event-div' ).on('click', 'i.add-meteorite', function( event ) {
   addMeteorite(this);
 });
 
@@ -438,19 +442,19 @@ function addMeteorite( e ) {
 /**        UI Remove Events      */
 /** ---------------------------- */
 
-$( '#insert-form' ).on('click', 'i.remove-note', function() {
+$( '#event-div' ).on('click', 'i.remove-note', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === false ) {
     $(this).parent().parent().remove();
   }
 });
 
-$( '#insert-form' ).on('click', 'i.remove-inline', function() {
+$( '#event-div' ).on('click', 'i.remove-inline', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === false ) {
     $(this).parent().parent().remove();
   }
 });
 
-$( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
+$( '#event-div' ).on('click', 'i.remove-meteorite', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === true ) {
     // Do not remove if saved
   } else {
