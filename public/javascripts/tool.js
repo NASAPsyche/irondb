@@ -36,11 +36,12 @@ $( '#event-div' ).on('submit', '#single-page-form', function( event ) {
 
   $('#modal-table').prop('disabled', true);
   // eslint-disable-next-line no-invalid-this
-  $.post('/data-entry/tool/tables', $(this).serialize(), function( data ) {
-    $('#table-target').append(data);
-    $('#tableModal').modal('hide');
-    $('#modal-table').prop('disabled', false);
-  });
+  $.post('/data-entry/tool/onePageTables',
+      $(this).serialize(), function( data ) {
+        $('#table-target').append(data);
+        $('#tableModal').modal('hide');
+        $('#modal-table').prop('disabled', false);
+      });
 });
 
 $('#event-div').on('click', '#validate-btn', function() {
