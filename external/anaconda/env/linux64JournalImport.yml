@@ -28,6 +28,7 @@ dependencies:
   - mkl_fft=1.0.11=py36h14c3975_0
   - mkl_random=1.0.2=py36_0
   - ncurses=6.1=hfc679d8_1
+  - nltk_data=2017.10.22=py_0
   - openblas=0.3.3=ha44fe06_1
   - openssl=1.0.2r=h14c3975_0
   - pandas=0.23.4=py36hf8a1672_0
@@ -42,6 +43,7 @@ dependencies:
   - python=3.6.6=h5001a0f_3
   - python-dateutil=2.7.5=py_0
   - pytz=2018.7=py_0
+  - rake_nltk=1.0.3=py36_1000
   - readline=7.0=haf1bffa_1
   - requests=2.20.1=py36_1000
   - setuptools=40.6.2=py36_0
@@ -58,6 +60,7 @@ dependencies:
   - libgcc-ng=8.2.0=hdf63c60_1
   - libopenblas=0.2.20=h9ac9557_7
   - mkl=2019.3=199
+  - nltk=3.4=py36_1
   - numpy=1.16.2=py36h7e9f1db_0
   - numpy-base=1.16.2=py36hde5b4d6_0
   - openjdk=8.0.152=h46b5887_1
@@ -66,7 +69,6 @@ dependencies:
     - cycler==0.10.0
     - kiwisolver==1.0.1
     - matplotlib==3.0.2
-    - nltk==3.4
     - opencv-python==3.4.3.18
     - pypdf2==1.26.0
     - singledispatch==3.4.0.3
