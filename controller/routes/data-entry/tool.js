@@ -63,8 +63,8 @@ router.post('/', isLoggedIn, function(req, res, next) {
   console.log(req.session.textHolder);
 });
 
-router.get('/tables', isLoggedIn, function(req, res, next) {
-  // route to request all tables
+router.get('/allPagesTables', isLoggedIn, function(req, res, next) {
+  // route to request all tables from all pages
   const options = {
     mode: 'text',
     // pythonPath: '../py',
@@ -87,7 +87,31 @@ router.get('/tables', isLoggedIn, function(req, res, next) {
   });
 });
 
-router.post('/tables', isLoggedIn, function(req, res, next) {
+router.post('/attributes', isLoggedIn, function(req, res, next) {
+  // route to request all non-table attributes from all pages.
+  const options = {
+    mode: 'text',
+    // pythonPath: '../py',
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: sPath,
+    args: [JSON.stringify(req.body)],
+  };
+    // const result = '';
+    // console.log(JSON.stringify(req.body));
+  PythonShell.run('nlp4attributes.py', options, function(err, results) {
+    if (err) throw err;
+    // results is an array consisting of messages collected during execution
+    // Debugging test for pr only, delete immediately in new branch
+    // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
+
+    res.send(results);
+    // res.render('components/table-xhr-response', {
+    //   Results: JSON.parse(results[0].slice(2, -2)),
+    // });
+  });
+});
+
+router.post('/onePageTables', isLoggedIn, function(req, res, next) {
   // route to request tables on given page
   const options = {
     mode: 'text',
