@@ -98,22 +98,35 @@ router.post('/tables', isLoggedIn, function(req, res, next) {
   };
   // const result = '';
   // console.log(JSON.stringify(req.body));
-  PythonShell.run('table_driver_single.py', options, function(err, results) {
-    if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    // console.log('results: %j', results);
 
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, ' +
-      'X-Requested-With, Content-Type, Accept');
 
-    // Debugging test for pr only, delete immediately in new branch
-    req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
+  PythonShell.run('table_driver_single.py',
+      options, async function(err, results) {
+        if (err) throw err;
+        // results is an array consisting of messages collected during execution
+        // console.log('results: %j', results);
 
-    res.render('components/table-xhr-response', {
-      Results: JSON.parse(results[0].slice(2, -2)),
-    });
-  });
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Origin, ' +
+          'X-Requested-With, Content-Type, Accept');
+
+        // Debugging test for pr only, delete immediately in new branch
+        // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
+
+        let resObj = [];
+        try {
+          const Technique = db.aQuery(
+              'SELECT abbreviation FROM analysis_techniques', []);
+          resObj = await Promise.all([Technique]);
+        } catch (err) {
+          next(createError(500));
+        } finally {
+          res.render('components/table-xhr-response', {
+            Results: JSON.parse(results[0].slice(2, -2)),
+            Technique: resObj[0].rows,
+          });
+        }
+      });
 });
 
 router.post('/validate', isLoggedIn, function(req, res, next) {
