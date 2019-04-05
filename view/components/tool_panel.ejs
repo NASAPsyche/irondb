@@ -59,7 +59,7 @@
                         <!-- This will be a drop down, I'll need some way of grabing the number of pages before rendering this -->
                         <!-- currently giving you 0-20 -->
                         <div class="form-group">
-                            <label for="pageNum" class="sr-only"></label>
+                            <label for="pageNum" class="sr-only">Page Number</label>
                             <select class="form-control" name="pageNum" id="pageNum">
                                 <option>Page Number</option>
                                 <option value="0">0</option>
@@ -88,14 +88,14 @@
             
                         <!-- Drop down with the given options -->
                         <div class="form-group">
-                            <label for="taskNum" class="sr-only"></label>
-                            <input id="taskNum" name="taskNum" type="hidden" value="0">
+                            <label for="taskNum" class="sr-only">Task Number</label>
+                            <input id="taskNum" name="taskNum" type="number" value="0">
                         </div>
             
                         <!-- Some form of directional input, probably just number -360 to 360 -->
                         <div class="form-group">
-                            <label for="flipDir" class="sr-only"></label>
-                            <input id="flipDir" name="flipDir" type="hidden" value="0">
+                            <label for="flipDir" class="sr-only">Flip Direction (Degree from -360 to 360)</label>
+                            <input id="flipDir" name="flipDir" type="number" value="0" min="-360" max="360" step="10">
                         </div>
             
                         <!-- will discuss further when/if we get to it -->

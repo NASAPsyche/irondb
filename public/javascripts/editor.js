@@ -7,7 +7,6 @@ ElementsArr = Elements.slice(0, -1).split(',');
 // eslint-disable-next-line no-undef
 TechniqueArr = Technique.slice(0, -1).split(',');
 
-
 /** ---------------------------- */
 /**      Validate Button         */
 /** ---------------------------- */
