@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const pg = require('./index');
 /**
  * @return {Promise} boolean
@@ -25,10 +26,12 @@ async function updateEntry() {
 
 /**
  * @param  {object} obj
- * @return {Promise} success: {queries: [], values: []},
- * failure: false
+ * @param  {object} client pg client
+ * @param  {int} submissionID
+ * @param  {string} username
+ * @return {Promise} boolean
  */
-async function parseAction( obj ) {
+async function parseAction( obj, client, submissionID, username ) {
   if ( obj.hasOwnProperty('type') && obj.hasOwnProperty('command') ) {
     const type = obj.type;
     // eslint-disable-next-line no-unused-vars
@@ -38,13 +41,13 @@ async function parseAction( obj ) {
         if ( (await validateBasic(obj)) == false ) {
           return false;
         }
-        return buildQueryBasic(obj);
+        return execBasic(obj);
 
       case 'author':
         if ( (await validateAuthor(obj)) == false ) {
           return false;
         }
-        break;
+        return execAuthor( obj, client, submissionID, username );
 
       case 'body':
         if ( (await validateBody(obj)) == false ) {
@@ -71,6 +74,10 @@ async function parseAction( obj ) {
     return false;
   }
 }
+
+/** ******************
+ * JSON VALIDATORS
+****************** */
 
 /**
  * @param  {object} obj
@@ -541,12 +548,17 @@ async function validateBody( obj ) {
   return true;
 }
 
+
+/** ******************
+ * EXECUTE ACTIONS
+****************** */
+
 /**
  * @param  {object} obj
- * @return {Promise} success: {queries: [], values: []},
- * failure: false
+ * @param  {object} client pg client
+ * @return {Promise}
  */
-async function buildQueryBasic( obj ) {
+async function execBasic( obj, client ) {
   // Example object
   // obj ={
   //   type: 'basic',
@@ -564,41 +576,259 @@ async function buildQueryBasic( obj ) {
 
   switch (obj.command) {
     case 'update': {
-      const queries = [];
-      const values = [];
-      queries.push(`
+      let query = `
       UPDATE journals
       SET (journal_name, volume, issue, series, published_year)
       = ($1, $2, $3, $4, $5) 
       WHERE journal_id = ($6)
-      `);
-      const journalValues = [];
-      journalValues.push(obj.journalName);
-      journalValues.push(obj.volume);
-      journalValues.push(obj.issue);
-      journalValues.push(obj.series);
-      journalValues.push(parseInt(obj.pub_year));
-      journalValues.push(parseInt(obj.journalID));
-      values.push(journalValues);
+      `;
+      let values = [
+        obj.journalName,
+        obj.volume,
+        obj.issue,
+        obj.series,
+        parseInt(obj.pub_year),
+        parseInt(obj.journalID),
+      ];
 
-      queries.push(`
+      await client.query(query, values);
+
+      query = `
       UPDATE papers
       SET (title, doi)
       = ($1, $2)
       WHERE paper_id = ($3)
-      `);
-      const paperValues = [];
-      paperValues.push(obj.paperTitle);
-      paperValues.push(obj.doi);
-      paperValues.push(obj.paperID);
-      values.push(paperValues);
+      `;
+      values = [
+        obj.paperTitle,
+        obj.doi,
+        obj.paperID,
+      ];
 
-      return {queries: queries, values: values};
+      await client.query(query, values);
+
+      break;
     }
 
     default:
       return false;
   }
+
+  return true;
+}
+
+/**
+ * @param  {object} obj
+ * @param  {object} client pg client
+ * @param  {int} submissionID
+ * @param  {string} username
+ */
+async function execAuthor( obj, client, submissionID, username ) {
+  // Example obj
+  obj = {
+    type: 'author',
+    command: 'update',
+    paperID: '3',
+    authorID: '2',
+    primaryName: 'John',
+    firstName: 'Wasson',
+    middleName: 'T',
+  };
+  // {
+  //     type: 'author',
+  //     command: 'insert',
+  //     paperID: '3',
+  //     primaryName: 'John',
+  //     firstName: 'Wasson',
+  //     middleName: 'T'
+  // }
+  // {
+  //     type: 'author',
+  //     command: 'delete',
+  //     paperID: '3',
+  //     authorID: '2',
+  // }
+
+  switch (obj.command) {
+    case 'update': {
+      const query = `
+      UPDATE authors
+      SET (primary_name, middle_name, first_name)
+      = ($1, $2, $3)
+      WHERE author_id = ($4)
+      `;
+
+      const values = [
+        obj.primaryName,
+        obj.middleName,
+        obj.firstName,
+      ];
+
+      await client.query(query, values);
+      break;
+    }
+
+    case 'insert': {
+      const queries = `
+      INSERT INTO
+      authors(primary_name, middle_name, first_name)
+      VALUES($1, $2, $3)
+      RETURNING author_id
+      `;
+
+      const values = [
+        obj.primaryName,
+        obj.middleName,
+        obj.firstName,
+      ];
+
+      let rows = await client.query(queries, values);
+      const authorID = rows.rows[0].author_id;
+
+      // Build metadata for author
+      const authorStatusQuery = `
+      INSERT INTO
+      author_status(author_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
+      RETURNING status_id
+      `;
+      const authorStatusValue = [
+        authorID,
+        'pending',
+        username,
+        submissionID,
+      ];
+      rows = await client.query(authorStatusQuery, authorStatusValue);
+
+      const statusIdAuthor = rows.rows[0].status_id;
+      const authorUpdateQuery = `
+      UPDATE authors
+      SET status_id = ($1)
+      WHERE author_id = ($2)
+      `;
+      const authorUpdateValue = [
+        statusIdAuthor,
+        authorID,
+      ];
+      await client.query(authorUpdateQuery, authorUpdateValue);
+
+      // Build attribution for new author
+      const attrQuery = `
+      INSERT INTO
+      attributions(paper_id, author_id)
+      VALUES($1, $2)
+      RETURNING attribution_id
+      `;
+      const attrValue = [
+        obj.paperID,
+        authorID,
+      ];
+      rows = await client.query(attrQuery, attrValue);
+
+      const attrId = rows.rows[0].attribution_id;
+      const attrStatusQuery = `
+      INSERT INTO
+      attribution_status(attribution_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
+      RETURNING status_id
+      `;
+      const attrStatusValue = [
+        attrId,
+        status,
+        username,
+        submissionID,
+      ];
+      rows = await client.query(attrStatusQuery, attrStatusValue);
+      const statusIdAttr = rows.rows[0].status_id;
+      const attrUpdateQuery = `
+      UPDATE attributions
+      SET status_id = ($1)
+      WHERE attribution_id = ($2)
+      `;
+      const attrUpdateValue = [
+        statusIdAttr,
+        attrId,
+      ];
+      await client.query(attrUpdateQuery, attrUpdateValue);
+
+      // //
+
+      break;
+    }
+
+    case 'delete': {
+      // Get status_id for attribution
+      let query = `
+      SELECT status_id
+      FROM attributions
+      WHERE paper_id = ($1)
+      AND author_id = ($2)
+      `;
+      let values = [
+        obj.paperID,
+        obj.authorID,
+      ];
+      let rows = await client.query(query, values);
+      let statusID = rows.rows[0].status_id;
+
+      // Get user_id from username
+      query = `
+      SELECT user_id
+      FROM users
+      WHERE username = ($1)
+      `;
+      values = [username];
+      rows = await client.query(query, values);
+      const userID = rows.rows[0].user_id;
+
+      // Update metadata to rejected
+      query = `
+      UPDATE attribution_status
+      SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+      WHERE status_id = ($4)
+      `;
+      values = [
+        'rejected',
+        userID,
+        'now()',
+        statusID,
+      ];
+
+      await client.query(query, values);
+
+      // Get status_id for author
+      query = `
+      SELECT status_id
+      FROM authors
+      WHERE author_id = ($1)
+      `;
+      values = [obj.authorID];
+
+      rows = await client.query(query, values);
+      statusID = rows.rows[0].status_id;
+
+      // Update metadata to rejected
+      query = `
+      UPDATE author_status
+      SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+      WHERE status_id = ($4)
+      `;
+      values = [
+        'rejected',
+        userID,
+        'now()',
+        statusID,
+      ];
+
+      await client.query(query, values);
+
+      break;
+    }
+
+    default:
+      break;
+  }
+  return true;
 }
 
 module.exports = {updateEntry, parseAction};
