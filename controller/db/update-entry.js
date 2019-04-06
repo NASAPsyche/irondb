@@ -25,7 +25,8 @@ async function updateEntry() {
 
 /**
  * @param  {object} obj
- * @return {Promise} boolean
+ * @return {Promise} success: {queries: [], values: []},
+ * failure: false
  */
 async function parseAction( obj ) {
   if ( obj.hasOwnProperty('type') && obj.hasOwnProperty('command') ) {
@@ -37,7 +38,7 @@ async function parseAction( obj ) {
         if ( (await validateBasic(obj)) == false ) {
           return false;
         }
-        break;
+        return buildQueryBasic(obj);
 
       case 'author':
         if ( (await validateAuthor(obj)) == false ) {
@@ -78,15 +79,17 @@ async function parseAction( obj ) {
 async function validateBasic( obj ) {
   // Example object
   // obj ={
-  //   paperID: '2',
-  //   paperTitle: 'title',
-  //   doi: '',
-  //   journalID: '3',
-  //   journalName: 'name',
-  //   pub_year: '1998',
-  //   volume: '12',
-  //   issue: '11',
-  //   series: '3',
+  //     type: 'basic',
+  //     command: 'update',
+  //     paperID: '2',
+  //     paperTitle: 'title',
+  //     doi: '',
+  //     journalID: '3',
+  //     journalName: 'name',
+  //     pub_year: '1998',
+  //     volume: '12',
+  //     issue: '11',
+  //     series: '3'
   // };
   if ( obj.command == 'update' ) { // valid command
     if ( // has all the required properties
@@ -536,6 +539,66 @@ async function validateBody( obj ) {
 
   // Valid json
   return true;
+}
+
+/**
+ * @param  {object} obj
+ * @return {Promise} success: {queries: [], values: []},
+ * failure: false
+ */
+async function buildQueryBasic( obj ) {
+  // Example object
+  // obj ={
+  //   type: 'basic',
+  //   command: 'update',
+  //   paperID: '2',
+  //   paperTitle: 'title',
+  //   doi: '',
+  //   journalID: '3',
+  //   journalName: 'name',
+  //   pub_year: '1998',
+  //   volume: '12',
+  //   issue: '11',
+  //   series: '3',
+  // };
+
+  switch (obj.command) {
+    case 'update': {
+      const queries = [];
+      const values = [];
+      queries.push(`
+      UPDATE journals
+      SET (journal_name, volume, issue, series, published_year)
+      = ($1, $2, $3, $4, $5) 
+      WHERE journal_id = ($6)
+      `);
+      const journalValues = [];
+      journalValues.push(obj.journalName);
+      journalValues.push(obj.volume);
+      journalValues.push(obj.issue);
+      journalValues.push(obj.series);
+      journalValues.push(parseInt(obj.pub_year));
+      journalValues.push(parseInt(obj.journalID));
+      values.push(journalValues);
+
+      queries.push(`
+      UPDATE papers
+      SET (title, doi)
+      = ($1, $2)
+      WHERE paper_id = ($3)
+      `);
+      const paperValues = [];
+      paperValues.push(obj.paperTitle);
+      paperValues.push(obj.doi);
+      paperValues.push(obj.paperID);
+      values.push(paperValues);
+
+      return {queries: queries, values: values};
+    }
+
+    default:
+      return false;
+  }
 }
 
 module.exports = {updateEntry, parseAction};
