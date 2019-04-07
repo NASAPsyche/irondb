@@ -52,8 +52,10 @@ __version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
-import os, io, re, string
+import os, io, re, string, json
 import nltk
+from nltk.corpus import words
+from rake_nltk import Rake, Metric
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
 #from nltk.corpus import stopwords
@@ -61,8 +63,6 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
-from nltk.corpus import words
-from rake_nltk import Rake, Metric
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
@@ -313,8 +313,13 @@ def source_extract(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-print()
-print("TITLE: " + title_extract(paper) + '\n')
-print("AUTHOR(S): " + authors_extract(paper) + '\n')
-print("DATE: " + date_extract(paper) + '\n')
-print("SOURCE: " + source_extract(paper) + '\n')
+#print()
+#print("TITLE: " + title_extract(paper) + '\n')
+#print("AUTHOR(S): " + authors_extract(paper) + '\n')
+#print("SOURCE: " + source_extract(paper) + '\n')
+#print("DATE: " + date_extract(paper) + '\n')
+
+attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
+			  'source': source_extract(paper), 'date': date_extract(paper)}
+attributes_json = json.dumps(attributes)
+print(attributes_json)
