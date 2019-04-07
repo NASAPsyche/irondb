@@ -1408,5 +1408,5 @@ async function execBody( obj, client, submissionID, username ) {
   }
 }
 
-module.exports = {updateEntry, parseAction};
+module.exports = {updateEntry};
 
