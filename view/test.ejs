@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test</title>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/index.css' />
+</head>
+
+<body>
+    <% if(isSignedIn){ %>
+    <%- include('components/navbar_signed_in'); %>
+    <% } else { %>
+    <%- include('components/navbar'); %>
+    <% } %>
+
+
+<button type="button">Test JSON</button>
+
+    <%- include('bootstrap/js'); %>
+</body>
+
+</html>
