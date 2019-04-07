@@ -1,61 +1,65 @@
 name: journalImport
 channels:
-  - conda-forge
   - anaconda
+  - conda-forge
   - defaults
 dependencies:
-  - atomicwrites=1.2.1=py36_0
   - attrs=18.2.0=py36h28b3542_0
-  - certifi=2018.10.15=py36_0
-  - more-itertools=4.3.0=py36_0
+  - intel-openmp=2019.0=118
+  - libcxx=4.0.1=h579ed51_0
+  - libedit=3.1.20170329=hb402a30_2
+  - libffi=3.2.1=h475c297_4
+  - libgfortran=3.0.1=h93005f0_2
+  - mkl=2019.0=118
+  - ncurses=6.1=h0a44026_0
   - nltk=3.3.0=py36_0
+  - numpy=1.15.3=py36h6a91979_0
+  - numpy-base=1.15.3=py36h8a80b8c_0
   - pluggy=0.8.0=py36_0
   - py=1.7.0=py36_0
   - pytest=3.9.1=py36_0
+  - python=3.6.6=hc167b69_0
+  - readline=7.0=h1de35cc_5
+  - sqlite=3.25.2=ha441bb4_0
+  - xz=5.2.4=h1de35cc_4
+  - zlib=1.2.11=hf3cbc9b_2
   - asn1crypto=0.24.0=py36_1003
+  - atomicwrites=1.2.1=py36_0
   - ca-certificates=2018.10.15=ha4d7672_0
   - cffi=1.11.5=py36h5e8e0c9_1
   - chardet=3.0.4=py36_1003
   - cryptography=2.3.1=py36hdffb7b8_0
   - cryptography-vectors=2.3.1=py36_1000
   - idna=2.7=py36_1002
+  - libcxxabi=4.0.1=hebd6815_0
   - mkl_fft=1.0.6=py36_0
   - mkl_random=1.0.1=py36_0
+  - more-itertools=4.3.0=py36_0
+  - nltk_data=2017.10.22=py_0
   - openssl=1.0.2p=h470a237_1
   - pandas=0.23.4=py36hf8a1672_0
   - pdfminer.six=20170720=py36_0
+  - periodictable=1.5.0=py_1
+  - pip=10.0.1=py36_0
   - pycparser=2.19=py_0
   - pycrypto=2.6.1=py36h470a237_2
   - pyopenssl=18.0.0=py36_1000
+  - pyparsing=2.3.1=py_0
   - pypdf2=1.26.0=py36_1
   - pysocks=1.6.8=py36_1002
   - python-dateutil=2.7.5=py_0
   - pytz=2018.7=py_0
+  - rake_nltk=1.0.3=py36_0
   - requests=2.20.0=py36_1000
+  - setuptools=40.5.0=py36_0
   - six=1.11.0=py36_1001
   - tabula-py=1.1.1=py36_1000
-  - urllib3=1.23=py36_1001
-  - blas=1.0=mkl
-  - intel-openmp=2019.0=118
-  - libcxx=4.0.1=h579ed51_0
-  - libcxxabi=4.0.1=hebd6815_0
-  - libedit=3.1.20170329=hb402a30_2
-  - libffi=3.2.1=h475c297_4
-  - libgfortran=3.0.1=h93005f0_2
-  - mkl=2019.0=118
-  - ncurses=6.1=h0a44026_0
-  - numpy=1.15.3=py36h6a91979_0
-  - numpy-base=1.15.3=py36h8a80b8c_0
-  - openjdk=8.0.152=h393ad39_1
-  - pip=10.0.1=py36_0
-  - python=3.6.6=hc167b69_0
-  - readline=7.0=h1de35cc_5
-  - setuptools=40.5.0=py36_0
-  - sqlite=3.25.2=ha441bb4_0
   - tk=8.6.8=ha441bb4_0
+  - urllib3=1.23=py36_1001
   - wheel=0.32.2=py36_0
-  - xz=5.2.4=h1de35cc_4
-  - zlib=1.2.11=hf3cbc9b_2
-  - rake_nltk=1.0.3=py36_0
-  
-
+  - blas=1.0=mkl
+  - certifi=2018.10.15=py36_0
+  - openjdk=8.0.152=h393ad39_1
+  - pip:
+    - psycopg2-binary==2.7.7
+    

@@ -516,16 +516,21 @@ router.get('/reported', isLoggedIn, function(req, res, next) {
 
 
 /* GET /database/unapproved */
-router.get('/unapproved', isLoggedIn, function(req, res, next) {
-  db.query(
-      'SELECT * FROM pending_entries_panel', [], (dbErr, dbRes) => {
-        if (dbErr) {
-          return next(dbErr);
-        }
-        res.render('db-unapproved', {
-          Entries: dbRes.rows,
-        });
-      });
+router.get('/unapproved', isLoggedIn, async function(req, res, next) {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery(
+        'SELECT DISTINCT ON (paper_id) * FROM pending_entries_panel',
+        []
+    );
+    resObj = await Promise.all([Entries]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('db-unapproved', {
+      Entries: resObj[0].rows,
+    });
+  }
 });
 
 /* GET /database/all */

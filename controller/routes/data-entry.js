@@ -6,13 +6,10 @@ const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
 const fs = require('fs');
-// const pg = require('../db');
 
-const toolRouter = require('./data-entry/tool');
-router.use('/tool', toolRouter);
-
-const dataEntrySaveRouter = require('./data-entry/save');
-router.use('/save', dataEntrySaveRouter);
+// Mounting Routers
+const approvalRouter = require('./data-entry/approve');
+router.use('/approve', approvalRouter);
 
 const insertRouter = require('./data-entry/insert');
 router.use('/insert', insertRouter);
@@ -23,6 +20,14 @@ router.use('/insert/update', updateRouter);
 const resumeRouter = require('./data-entry/resume');
 router.use('/resume', resumeRouter);
 
+const dataEntrySaveRouter = require('./data-entry/save');
+router.use('/save', dataEntrySaveRouter);
+
+const toolRouter = require('./data-entry/tool');
+router.use('/tool', toolRouter);
+
+
+// Routes
 router.get('/', isLoggedIn, function(req, res, next) {
   res.render('data-entry');
 });
@@ -45,7 +50,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
         res.render('editor', {
           username: req.user.username,
           data: null,
-          sessionID: req.sessionID,
           Elements: resObj[0].rows,
           Technique: resObj[1].rows,
         });
@@ -93,7 +97,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
                 res.render('tool', {
                   data: newpath.slice(15),
                   username: req.user.username,
-                  sessionID: req.sessionID,
                   Elements: resObj[0].rows,
                   Technique: resObj[1].rows,
                 });
@@ -113,7 +116,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
                 res.render('editor_with_pdf', {
                   data: newpath.slice(15),
                   username: req.user.username,
-                  sessionID: req.sessionID,
                   Elements: resObj[0].rows,
                   Technique: resObj[1].rows,
                 });
@@ -143,7 +145,6 @@ router.get('/editor', isLoggedIn, async function(req, res, next) {
     res.render('editor', {
       username: req.user.username,
       data: null,
-      sessionID: req.sessionID,
       Elements: resObj[0].rows,
       Technique: resObj[1].rows,
     });
@@ -193,7 +194,6 @@ router.post('/editor', isLoggedIn, async function(req, res, next) {
             res.render('editor_with_pdf', {
               data: newpath.slice(15),
               username: req.user.username,
-              sessionID: req.sessionID,
               Elements: resObj[0].rows,
               Technique: resObj[1].rows,
             });
