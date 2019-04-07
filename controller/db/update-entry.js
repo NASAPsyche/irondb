@@ -1,9 +1,19 @@
 /* eslint-disable max-len */
 const pg = require('./index');
 /**
+ * @param  {object} obj
+ * @param  {string} username
  * @return {Promise} boolean
  */
-async function updateEntry() {
+async function updateEntry( obj, username ) {
+  if ( !obj.hasOwnProperty('submissionID') || !obj.hasOwnProperty('actions') ) {
+    console.error('Request invalid, missing properties');
+    return false;
+  }
+  if ( !Array.isArray(obj.actions) ) {
+    console.error('Request invlaid, actions needs to be an array');
+    return false;
+  }
   const client = await pg.pool.connect();
   try {
     await client.query('BEGIN');
@@ -439,30 +449,31 @@ async function validateElement( obj ) {
  */
 async function validateBody( obj ) {
   // Example body
-  obj = {
-    type: 'body',
-    command: 'update',
-    bodyName: 'Alt',
-    bodyID: '3',
-    group: 'IIG',
-    groupID: '4',
-    measurements: [{
-      elementID: '123',
-      element: 'Fe',
-      lessThan: 'true',
-      units: 'ppb',
-      technique: 'INAA',
-      page: '12',
-      sigfig: '3',
-      convertedMeasurement: '200',
-      convertedDeviation: '121',
-    }],
-  };
+  // obj = {
+  //   type: 'body',
+  //   command: 'update',
+  //   bodyName: 'Alt',
+  //   bodyID: '3',
+  //   group: 'IIG',
+  //   groupID: '4',
+  //   measurements: [{
+  //     elementID: '123',
+  //     element: 'Fe',
+  //     lessThan: 'true',
+  //     units: 'ppb',
+  //     technique: 'INAA',
+  //     page: '12',
+  //     sigfig: '3',
+  //     convertedMeasurement: '200',
+  //     convertedDeviation: '121',
+  //   }],
+  // };
   // {
   //     type: 'body',
   //     command: 'insert',
   //     bodyName: 'Alt',
   //     group: 'IIG',
+  //     paperID: '3',
   //     measurements: [{
   //         element: 'Fe',
   //         lessThan: 'true',
@@ -485,7 +496,8 @@ async function validateBody( obj ) {
       if (
         !obj.hasOwnProperty('bodyName') ||
         !obj.hasOwnProperty('group') ||
-        !obj.hasOwnProperty('measurements')
+        !obj.hasOwnProperty('measurements') ||
+        !obj.hasOwnProperty('paperID')
       ) {
         console.error('Body: missing fields on command '+obj.command);
         return false;
@@ -506,6 +518,11 @@ async function validateBody( obj ) {
 
       if ( !Array.isArray(obj.measurements) ) {
         console.error('Body: measurement must be an array');
+        return false;
+      }
+
+      if ( obj.paperID == '' || obj.paperID == null || isNaN(parseInt(obj.paperID))) {
+        console.error('Body: invlaid paper id');
         return false;
       }
 
@@ -1069,30 +1086,31 @@ async function execSingleElementDelete( obj, client, username) {
  */
 async function execBody( obj, client, submissionID, username ) {
   // Example obj
-  obj = {
-    type: 'body',
-    command: 'update',
-    bodyName: 'Alt',
-    bodyID: '3',
-    group: 'IIG',
-    groupID: '4',
-    measurements: [{
-      elementID: '123',
-      element: 'Fe',
-      lessThan: 'true',
-      units: 'ppb',
-      technique: 'INAA',
-      page: '12',
-      sigfig: '3',
-      convertedMeasurement: '200',
-      convertedDeviation: '121',
-    }],
-  };
+  // obj = {
+  //   type: 'body',
+  //   command: 'update',
+  //   bodyName: 'Alt',
+  //   bodyID: '3',
+  //   group: 'IIG',
+  //   groupID: '4',
+  //   measurements: [{
+  //     elementID: '123',
+  //     element: 'Fe',
+  //     lessThan: 'true',
+  //     units: 'ppb',
+  //     technique: 'INAA',
+  //     page: '12',
+  //     sigfig: '3',
+  //     convertedMeasurement: '200',
+  //     convertedDeviation: '121',
+  //   }],
+  // };
   // {
   //     type: 'body',
   //     command: 'insert',
   //     bodyName: 'Alt',
   //     group: 'IIG',
+  //     paperID: '3'
   //     measurements: [{
   //         element: 'Fe',
   //         lessThan: 'true',
@@ -1227,10 +1245,75 @@ async function execBody( obj, client, submissionID, username ) {
       ];
       await client.query(groupUpdateQuery, groupUpdateValue);
       // END GROUP TRANSACTION
-      for ( const measure of obj.measurements ) {
-        // Do element stuff
-        measure;
-      }
+
+
+      // START MEASUREMENTS FOR BODIES TRANSACTIONS
+      for (const measure of obj.measurements) {
+        // Convert data to appropriate type
+        const measureVal = parseInt(measure.convertedMeasurement, 10);
+        const deviation = parseInt(measure.convertedDeviation, 10);
+        const sigfigVal = parseInt(measure.sigfig, 10);
+        measure.element = String(measure.element).toLowerCase();
+
+        const measureQuery = `
+        INSERT INTO
+        element_entries(
+          body_id,
+          element_symbol,
+          paper_id,
+          page_number,
+          ppb_mean,
+          deviation,
+          less_than,
+          original_unit,
+          technique,
+          sigfig
+        )
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING element_id
+        `;
+        const measureValue = [
+          bodyId,
+          measure.element,
+          obj.paperID,
+          measure.page,
+          measureVal,
+          deviation,
+          measure.lessThan,
+          measure.unit,
+          measure.technique,
+          sigfigVal,
+        ];
+        let rows = await client.query(measureQuery, measureValue);
+
+        const elementId = rows.rows[0].element_id;
+        const measureStatusQuery = `
+        INSERT INTO
+        element_status(element_id, current_status, submitted_by, submission_id)
+        VALUES($1, $2, $3, $4)
+        RETURNING status_id
+        `;
+        const measureStatusValue = [
+          elementId,
+          status,
+          username,
+          submissionID,
+        ];
+        rows = await client.query(measureStatusQuery, measureStatusValue);
+
+        const statusIdMeasure = rows.rows[0].status_id;
+        const measureUpdateQuery = `
+        UPDATE element_entries
+        SET status_id = ($1)
+        WHERE element_id = ($2)
+        `;
+        const measureUpdateValue = [
+          statusIdMeasure,
+          elementId,
+        ];
+        await client.query(measureUpdateQuery, measureUpdateValue);
+      } // END MEASUREMENTS FOR BODIES TRANSACTIONS
+
       break;
     }
 
@@ -1241,7 +1324,7 @@ async function execBody( obj, client, submissionID, username ) {
       FROM body
       WHERE body_id = ($1)
       `;
-      let values = [obj.bodyID];
+      let values = [parseInt(obj.bodyID)];
       let rows = await client.query(query, values);
       const statusID = rows.rows[0].status_id;
 
@@ -1269,7 +1352,36 @@ async function execBody( obj, client, submissionID, username ) {
       ];
       await client.query(query, values);
 
-      // Erase elements too???
+      query = `
+      SELECT element_id
+      FROM element_entries
+      WHERE body_id = ($1)
+      `;
+      values = [parseInt(obj.bodyID)];
+
+      rows = await client.query(query, values);
+      for ( const row of rows.rows ) {
+        let query = `
+        SELECT status_id
+        FROM element_entries
+        WHERE element_id = ($1)
+        `;
+        let values = [parseInt(row.element_id)];
+        const res = await client.query(query, values);
+        const statusID = res.rows[0].status_id;
+        query = `
+        UPDATE element_status
+        SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+        WHERE status_id = ($4)
+        `;
+        values = [
+          'rejected',
+          userID,
+          'now()',
+          statusID,
+        ];
+        await client.query(query, values);
+      }
 
       break;
     }
