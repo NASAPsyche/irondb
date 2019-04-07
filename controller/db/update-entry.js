@@ -14,18 +14,36 @@ async function updateEntry( obj, username ) {
     console.error('Request invlaid, actions needs to be an array');
     return false;
   }
+  if ( obj.actions.length < 1 ) {
+    console.error('Request invalid, no actions found');
+    return false;
+  }
+  const submissionID = parseInt(obj.submissionID);
   const client = await pg.pool.connect();
   try {
     await client.query('BEGIN');
-    // Example of how to insert current timestamp
-    // const query = `INSERT INTO ts_test(ts) VALUES($1)`;
-    // const values = ['now()'];
-    // await client.query(query, values);
+    const query = `
+    UPDATE submissions
+    SET (username) = ($1)
+    WHERE submission_id = ($2)
+    `;
+    const values = [username, submissionID];
+    await client.query(query, values); // submission now belongs to current user
+
+    // Perform each action
+    for ( const action of obj.actions ) {
+      const res = await parseAction(action, client, submissionID, username);
+      if ( res === false ) {
+        console.dir(action);
+        throw new Error('Action Failed');
+      }
+    }
+
     await client.query('COMMIT');
   } catch (error) {
     //
     await client.query('ROLLBACK');
-    console.log(error);
+    console.error(error);
     return false;
   } finally {
     client.release();
@@ -44,8 +62,6 @@ async function updateEntry( obj, username ) {
 async function parseAction( obj, client, submissionID, username ) {
   if ( obj.hasOwnProperty('type') && obj.hasOwnProperty('command') ) {
     const type = obj.type;
-    // eslint-disable-next-line no-unused-vars
-    const command = obj.command;
     switch (type) {
       case 'basic':
         if ( (await validateBasic(obj)) === false ) {
