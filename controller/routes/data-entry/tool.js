@@ -178,16 +178,9 @@ router.post('/validate', isLoggedIn, function(req, res, next) {
 
 router.post('/insert', isLoggedIn, function(req, res, next) {
   // Debugging test for pr only, delete immediately in new branch
-  console.log('-----------Req  Body---------------------');
-  console.log(req.body);
-  console.log('-----------Req---------------------------');
-  console.log(JSON.parse(req.body.tableData)[0]);
-  console.log('-----------Session-----------------------');
-  console.log(req.session.tableJSON);
-  if (JSON.stringify(JSON.parse(req.body.tableData)[0])
-  === JSON.stringify(req.session.tableJSON)) {
-    console.log('JSONS MATCH');
-  }
+  // console.log('-----------Req  Body---------------------');
+  // console.log(req.body);
+
 
   res.send('<h1>form submitted</h1>');
 });

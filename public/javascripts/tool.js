@@ -352,7 +352,7 @@ function addAuthor( e ) {
   const html = ejs.render(authorTemplate, idObj);
 
   // Insert template into DOM
-  $(e).parent().siblings('.meteorite-header').first().before(html);
+  $(e).parent().siblings('.authors-end').first().before(html);
 }
 
 /**
