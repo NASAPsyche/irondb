@@ -53,7 +53,7 @@ async function parseAction( obj, client, submissionID, username ) {
         if ( (await validateBody(obj)) === false ) {
           return false;
         }
-        break;
+        return execBody(obj, client, submissionID, username);
 
       case 'element':
         if ( (await validateSingleElementDelete(obj)) === false ) {
@@ -481,8 +481,43 @@ async function validateBody( obj ) {
   //     groupID: '4',
   // }
   switch (obj.command) {
-    case 'insert':
-      // intentional fallthrough
+    case 'insert': {
+      if (
+        !obj.hasOwnProperty('bodyName') ||
+        !obj.hasOwnProperty('group') ||
+        !obj.hasOwnProperty('measurements')
+      ) {
+        console.error('Body: missing fields on command '+obj.command);
+        return false;
+      }
+      if (
+        typeof obj.bodyName == 'undefined' ||
+        obj.bodyName == null ||
+        obj.bodyName == ''
+      ) {
+        console.error('Body: invalid body name');
+        return false;
+      }
+
+      if ( typeof obj.group == 'undefined' || obj.group == null ) {
+        console.error('Body: invalid group');
+        return false;
+      }
+
+      if ( !Array.isArray(obj.measurements) ) {
+        console.error('Body: measurement must be an array');
+        return false;
+      }
+
+      for ( const ms of obj.measurements ) {
+        if ( !validateElement(ms) ) {
+          console.error('Body: Invalid measurement');
+          return false;
+        }
+      }
+      break;
+    }
+
     case 'update':
       if (
         !obj.hasOwnProperty('bodyName') ||
@@ -735,7 +770,7 @@ async function execAuthor( obj, client, submissionID, username ) {
       `;
       const attrStatusValue = [
         attrId,
-        status,
+        'pending',
         username,
         submissionID,
       ];
@@ -901,7 +936,7 @@ async function execNote( obj, client, submissionID, username ) {
       `;
       const noteStatusValue = [
         noteId,
-        status,
+        'pending',
         username,
         submissionID,
       ];
@@ -1024,6 +1059,225 @@ async function execSingleElementDelete( obj, client, username) {
   }
 
   return true;
+}
+
+/**
+ * @param  {object} obj
+ * @param  {object} client
+ * @param  {int} submissionID
+ * @param  {string} username
+ */
+async function execBody( obj, client, submissionID, username ) {
+  // Example obj
+  obj = {
+    type: 'body',
+    command: 'update',
+    bodyName: 'Alt',
+    bodyID: '3',
+    group: 'IIG',
+    groupID: '4',
+    measurements: [{
+      elementID: '123',
+      element: 'Fe',
+      lessThan: 'true',
+      units: 'ppb',
+      technique: 'INAA',
+      page: '12',
+      sigfig: '3',
+      convertedMeasurement: '200',
+      convertedDeviation: '121',
+    }],
+  };
+  // {
+  //     type: 'body',
+  //     command: 'insert',
+  //     bodyName: 'Alt',
+  //     group: 'IIG',
+  //     measurements: [{
+  //         element: 'Fe',
+  //         lessThan: 'true',
+  //         units: 'ppb',
+  //         technique: 'INAA',
+  //         page: '12',
+  //         sigfig: '3',
+  //         convertedMeasurement: '200',
+  //         convertedDeviation: '121'
+  //     }] // array for if more than one element
+  // }
+  // {
+  //     type: 'body',
+  //     command: 'delete',
+  //     bodyID: '3',
+  //     groupID: '4',
+  // }
+
+  switch (obj.command) {
+    case 'update': {
+      // Update body nomenclature
+      let query = `
+      UPDATE bodies
+      SET (nomenclature) = ($1)
+      WHERE body_id = ($2)
+      `;
+
+      let values = [
+        obj.bodyName,
+        obj.bodyID,
+      ];
+
+      await client.query(query, values);
+
+      // Update group
+      query = `
+      UPDATE groups
+      SET (the_group) = ($1)
+      WHERE group_id = ($2)
+      `;
+      values = [
+        obj.group,
+        obj.groupID,
+      ];
+
+      await client.query(query, values);
+
+      for ( const measure of obj.measurements ) {
+        // Do element stuff
+        measure;
+      }
+
+      break;
+    }
+
+    case 'insert': {
+      // START BODY TRANSACTION
+      const bodyQuery = `
+      INSERT INTO
+      bodies(nomenclature)
+      VALUES($1)
+      RETURNING body_id
+      `;
+      const bodyValue = [
+        obj.bodyName,
+      ];
+      let rows = await client.query(bodyQuery, bodyValue);
+
+      const bodyId = rows.rows[0].body_id;
+      const bodyStatusQuery = `
+      INSERT INTO
+      body_status(body_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
+      RETURNING status_id
+      `;
+      const bodyStatusValue = [
+        bodyId,
+        'pending',
+        username,
+        submissionID,
+      ];
+      rows = await client.query(bodyStatusQuery, bodyStatusValue);
+
+      const statusIdBody = rows.rows[0].status_id;
+      const bodyUpdateQuery = `
+      UPDATE bodies
+      SET status_id = ($1)
+      WHERE body_id = ($2)
+      `;
+      const bodyUpdateValue = [
+        statusIdBody,
+        bodyId,
+      ];
+      await client.query(bodyUpdateQuery, bodyUpdateValue);
+      // END BODY TRANSACTION
+      // START GROUP TRANSACTION
+      const groupQuery = `
+      INSERT INTO
+      groups(body_id, the_group)
+      VALUES($1, $2)
+      RETURNING group_id
+      `;
+      const groupValue = [
+        bodyId,
+        obj.group,
+      ];
+      rows = await client.query(groupQuery, groupValue);
+      const groupId = rows.rows[0].group_id;
+      const groupStatusQuery = `
+      INSERT INTO
+      group_status(group_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
+      RETURNING status_id
+      `;
+      const groupStatusValue = [
+        groupId,
+        'pending',
+        username,
+        submissionID,
+      ];
+      rows = await client.query(groupStatusQuery, groupStatusValue);
+
+      const statusIdGroup = rows.rows[0].status_id;
+      const groupUpdateQuery = `
+      UPDATE groups
+      SET status_id = ($1)
+      WHERE group_id = ($2)
+      `;
+      const groupUpdateValue = [
+        statusIdGroup,
+        groupId,
+      ];
+      await client.query(groupUpdateQuery, groupUpdateValue);
+      // END GROUP TRANSACTION
+      for ( const measure of obj.measurements ) {
+        // Do element stuff
+        measure;
+      }
+      break;
+    }
+
+    case 'delete': {
+      // Get status_id for body
+      let query = `
+      SELECT status_id
+      FROM body
+      WHERE body_id = ($1)
+      `;
+      let values = [obj.bodyID];
+      let rows = await client.query(query, values);
+      const statusID = rows.rows[0].status_id;
+
+      // Get user_id from username
+      query = `
+      SELECT user_id
+      FROM users
+      WHERE username = ($1)
+      `;
+      values = [username];
+      rows = await client.query(query, values);
+      const userID = rows.rows[0].user_id;
+
+      // Update metadata to rejected
+      query = `
+      UPDATE body_status
+      SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+      WHERE status_id = ($4)
+      `;
+      values = [
+        'rejected',
+        userID,
+        'now()',
+        statusID,
+      ];
+      await client.query(query, values);
+
+      // Erase elements too???
+
+      break;
+    }
+
+
+    default:
+      break;
+  }
 }
 
 module.exports = {updateEntry, parseAction};
