@@ -218,14 +218,14 @@ def authors_extract(pdf_name):
                     if (english_author in line) and (len(line.split()) > 1):
                         authors_full = line
                     if authors_full.endswith(","):
-                    	authors_full += " " + relevant_text.split('\n\n')[line_index+1]
+                    	authors_full += relevant_text.split('\n\n')[line_index+1]
         if authors_full == "":
             for word in tagged:
                 if ((word[0] not in words.words()) and (word[1] == 'NNP') and 
                     (word[0] in line) and (len(line.split()) > 1)):
                     authors_full = line
                 if authors_full.endswith(","):
-                	authors_full += " " + relevant_text.split('\n\n')[line_index+1]
+                	authors_full += relevant_text.split('\n\n')[line_index+1]
         line_index += 1
 
     if authors_full == "":
@@ -259,6 +259,9 @@ def authors_extract(pdf_name):
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_text.lower()).find(authors_tagword.lower())
     #authors_full = relevant_text[:authors_index].rsplit('\n\n', 1)[1] + relevant_text[authors_index:].split('\n', 1)[0]
+
+    if authors_full.endswith(" "):
+        authors_full = authors_full[:-1]
 
     return authors_full
 
