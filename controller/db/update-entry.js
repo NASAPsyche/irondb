@@ -59,7 +59,7 @@ async function parseAction( obj, client, submissionID, username ) {
         if ( (await validateSingleElementDelete(obj)) === false ) {
           return false;
         }
-        break;
+        return execSingleElementDelete(obj, client, username);
 
       case 'note':
         if ( (await validateNote(obj)) === false ) {
@@ -966,4 +966,65 @@ async function execNote( obj, client, submissionID, username ) {
   return true;
 }
 
+/**
+ * @param  {object} obj
+ * @param  {object} client
+ * @param  {String} username
+ */
+async function execSingleElementDelete( obj, client, username) {
+  // Example object
+  // obj = {
+  //   type: 'element',
+  //   command: 'delete',
+  //   elementID: '123',
+  // };
+
+  switch (obj.command) {
+    case 'delete': {
+      // Get status_id for element
+      let query = `
+      SELECT status_id
+      FROM element_entries
+      WHERE element_id = ($1)
+      `;
+      let values = [obj.elementID];
+      let rows = await client.query(query, values);
+      const statusID = rows.rows[0].status_id;
+
+      // Get user_id from username
+      query = `
+      SELECT user_id
+      FROM users
+      WHERE username = ($1)
+      `;
+      values = [username];
+      rows = await client.query(query, values);
+      const userID = rows.rows[0].user_id;
+
+      // Update metadata to rejected
+      query = `
+      UPDATE element_status
+      SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+      WHERE status_id = ($4)
+      `;
+      values = [
+        'rejected',
+        userID,
+        'now()',
+        statusID,
+      ];
+      await client.query(query, values);
+
+      break;
+    }
+
+
+    default:
+      return false;
+  }
+
+  return true;
+}
+
 module.exports = {updateEntry, parseAction};
+
