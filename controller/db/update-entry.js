@@ -38,34 +38,34 @@ async function parseAction( obj, client, submissionID, username ) {
     const command = obj.command;
     switch (type) {
       case 'basic':
-        if ( (await validateBasic(obj)) == false ) {
+        if ( (await validateBasic(obj)) === false ) {
           return false;
         }
         return execBasic(obj);
 
       case 'author':
-        if ( (await validateAuthor(obj)) == false ) {
+        if ( (await validateAuthor(obj)) === false ) {
           return false;
         }
         return execAuthor( obj, client, submissionID, username );
 
       case 'body':
-        if ( (await validateBody(obj)) == false ) {
+        if ( (await validateBody(obj)) === false ) {
           return false;
         }
         break;
 
       case 'element':
-        if ( (await validateSingleElementDelete(obj)) == false ) {
+        if ( (await validateSingleElementDelete(obj)) === false ) {
           return false;
         }
         break;
 
       case 'note':
-        if ( (await validateNote(obj)) == false ) {
+        if ( (await validateNote(obj)) === false ) {
           return false;
         }
-        break;
+        return execNote(obj, client, submissionID, username);
 
       default:
         return false;
@@ -625,15 +625,15 @@ async function execBasic( obj, client ) {
  */
 async function execAuthor( obj, client, submissionID, username ) {
   // Example obj
-  obj = {
-    type: 'author',
-    command: 'update',
-    paperID: '3',
-    authorID: '2',
-    primaryName: 'John',
-    firstName: 'Wasson',
-    middleName: 'T',
-  };
+  // obj = {
+  //   type: 'author',
+  //   command: 'update',
+  //   paperID: '3',
+  //   authorID: '2',
+  //   primaryName: 'John',
+  //   firstName: 'Wasson',
+  //   middleName: 'T',
+  // };
   // {
   //     type: 'author',
   //     command: 'insert',
@@ -662,6 +662,7 @@ async function execAuthor( obj, client, submissionID, username ) {
         obj.primaryName,
         obj.middleName,
         obj.firstName,
+        obj.authorID,
       ];
 
       await client.query(query, values);
@@ -828,6 +829,140 @@ async function execAuthor( obj, client, submissionID, username ) {
     default:
       break;
   }
+  return true;
+}
+
+/**
+ * @param  {object} obj
+ * @param  {object} client pg client
+ * @param  {int} submissionID
+ * @param  {string} username
+ */
+async function execNote( obj, client, submissionID, username ) {
+  // Example object
+  // obj = {
+  //   type: 'note',
+  //   command: 'update',
+  //   noteID: '12',
+  //   paperID: '2',
+  //   note: 'this is a note',
+  // };
+  // {
+  //     type: 'note',
+  //     command: 'insert',
+  //     noteID: '12',
+  //     paperID: '2',
+  //     note: 'this is a note'
+  // }
+  // {
+  //     type: 'note',
+  //     command: 'delete',
+  //     noteID: '12'
+  // }
+
+  switch (obj.command) {
+    case 'update': {
+      const query = `
+      UPDATE notes
+      SET (note)= ($1, $2, $3)
+      WHERE note_id = ($4)
+      `;
+
+      const values = [
+        obj.primaryName,
+        obj.middleName,
+        obj.firstName,
+        obj.noteID,
+      ];
+
+      await client.query(query, values);
+      break;
+    }
+
+    case 'insert': {
+      const noteQuery = `
+      INSERT INTO
+      notes(paper_id, note)
+      VALUES($1, $2)
+      RETURNING note_id
+      `;
+      const noteValue = [
+        obj.paperID,
+        obj.note,
+      ];
+      let {rows} = await client.query(noteQuery, noteValue);
+
+      const noteId = rows[0].note_id;
+      const noteStatusQuery = `
+      INSERT INTO
+      note_status(note_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
+      RETURNING status_id
+      `;
+      const noteStatusValue = [
+        noteId,
+        status,
+        username,
+        submissionID,
+      ];
+      rows = await client.query(noteStatusQuery, noteStatusValue);
+
+      const statusIdNote = rows.rows[0].status_id;
+      const noteUpdateQuery = `
+      UPDATE notes
+      SET status_id = ($1)
+      WHERE note_id = ($2)
+      `;
+      const noteUpdateValue = [
+        statusIdNote,
+        noteId,
+      ];
+      await client.query(noteUpdateQuery, noteUpdateValue);
+      break;
+    }
+
+    case 'delete': {
+      // Get status_id for note
+      let query = `
+      SELECT status_id
+      FROM notes
+      WHERE note_id = ($1)
+      `;
+      let values = [obj.noteID];
+      let rows = await client.query(query, values);
+      const statusID = rows.rows[0].status_id;
+
+      // Get user_id from username
+      query = `
+      SELECT user_id
+      FROM users
+      WHERE username = ($1)
+      `;
+      values = [username];
+      rows = await client.query(query, values);
+      const userID = rows.rows[0].user_id;
+
+      // Update metadata to rejected
+      query = `
+      UPDATE note_status
+      SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+      WHERE status_id = ($4)
+      `;
+      values = [
+        'rejected',
+        userID,
+        'now()',
+        statusID,
+      ];
+      await client.query(query, values);
+
+      break;
+    }
+
+    default:
+      return false;
+  }
+
   return true;
 }
 
