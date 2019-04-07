@@ -6,7 +6,7 @@ __version__ = "1.0"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "03/18/19"
 
-import os, io, re
+import os, io, re, json
 import nltk
 
 # global variables
@@ -14,7 +14,7 @@ path = os.path.abspath('pdfs') + '/'
 
 
 # 
-def validate_data(attributes="Empty JSON", tables="Empty JSON"):
+def validate_data(data="Empty JSON"):
     return "Data validated."
 
 
@@ -24,8 +24,8 @@ def stage_data(data):
 
 
 # 
-def attributes_validate(attributes):
-    return "Attributes validated."
+def form_validate(form):
+    return "Form validated."
 
 
 # 
@@ -38,6 +38,6 @@ data = "Mock JSON"
 attributes = "Mock JSON"
 tables = "Mock JSON"
 print()
-print("Data VALIDATION: " + validate_data(data) + '\n')
-print("ATTRIBUTES VALIDATION: " + attributes_validate(attributes) + '\n')
+print("DATA VALIDATION: " + validate_data(data) + '\n')
+print("FORM VALIDATION: " + attributes_validate(attributes) + '\n')
 print("TABLES VALIDATION: " + tables_validate(tables) + '\n')
