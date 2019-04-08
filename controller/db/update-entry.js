@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 const pg = require('./index');
+
+let client;
 /**
  * @param  {object} obj
  * @param  {string} username
@@ -19,12 +21,13 @@ async function updateEntry( obj, username ) {
     return false;
   }
   const submissionID = parseInt(obj.submissionID);
-  const client = await pg.pool.connect();
+  // const client = await pg.pool.connect();
+  client = await pg.pool.connect();
   try {
     await client.query('BEGIN');
     const query = `
     UPDATE submissions
-    SET (username) = ($1)
+    SET username = ($1)
     WHERE submission_id = ($2)
     `;
     const values = [username, submissionID];
@@ -32,7 +35,7 @@ async function updateEntry( obj, username ) {
 
     // Perform each action
     for ( const action of obj.actions ) {
-      const res = await parseAction(action, client, submissionID, username);
+      const res = await parseAction(action, submissionID, username);
       if ( res === false ) {
         console.dir(action);
         throw new Error('Action Failed');
@@ -46,7 +49,7 @@ async function updateEntry( obj, username ) {
     console.error(error);
     return false;
   } finally {
-    client.release();
+    // client.release();
   }
   return true;
 }
@@ -54,44 +57,51 @@ async function updateEntry( obj, username ) {
 
 /**
  * @param  {object} obj
- * @param  {object} client pg client
  * @param  {int} submissionID
  * @param  {string} username
  * @return {Promise} boolean
  */
-async function parseAction( obj, client, submissionID, username ) {
+async function parseAction( obj, submissionID, username ) {
+  console.log('Handle action: ', obj);
   if ( obj.hasOwnProperty('type') && obj.hasOwnProperty('command') ) {
     const type = obj.type;
     switch (type) {
       case 'basic':
         if ( (await validateBasic(obj)) === false ) {
           return false;
+        } else {
+          console.log('BASIC json validated, executing...');
+          return execBasic(obj);
         }
-        return execBasic(obj);
-
       case 'author':
         if ( (await validateAuthor(obj)) === false ) {
           return false;
+        } else {
+          console.log('AUTHOR json validated, executing...');
+          return execAuthor( obj, submissionID, username );
         }
-        return execAuthor( obj, client, submissionID, username );
-
       case 'body':
         if ( (await validateBody(obj)) === false ) {
           return false;
+        } else {
+          console.log('BODY json validated, executing...');
+          return execBody(obj, submissionID, username);
         }
-        return execBody(obj, client, submissionID, username);
-
       case 'element':
         if ( (await validateSingleElementDelete(obj)) === false ) {
           return false;
+        } else {
+          console.log('ELEMENT json validated, executing...');
+          return execSingleElementDelete(obj, username);
         }
-        return execSingleElementDelete(obj, client, username);
 
       case 'note':
         if ( (await validateNote(obj)) === false ) {
           return false;
+        } else {
+          console.log('NOTE json validated, executing...');
+          return execNote(obj, submissionID, username);
         }
-        return execNote(obj, client, submissionID, username);
 
       default:
         return false;
@@ -125,52 +135,74 @@ async function validateBasic( obj ) {
   //     series: '3'
   // };
   if ( obj.command == 'update' ) { // valid command
-    if ( // has all the required properties
-      obj.hasOwnProperty('paperID') &&
-      obj.hasOwnProperty('paperTitle') &&
-      obj.hasOwnProperty('doi') &&
-      obj.hasOwnProperty('journalID') &&
-      obj.hasOwnProperty('journalName') &&
-      obj.hasOwnProperty('pub_year') &&
-      obj.hasOwnProperty('volume') &&
-      obj.hasOwnProperty('issues') &&
-      obj.hasOwnProperty('series')
-    ) {
-      if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
-        console.error('Basic: invalid paper ID');
-        return false;
-      }
-      if ( obj.paperTitle == '' ) {
-        console.error('Basic: invalid paper title');
-        return false;
-      }
-      if ( obj.journalID == '' || isNaN(parseInt(obj.journalID)) ) {
-        console.error('Basic: invalid journal ID');
-        return false;
-      }
-      if ( obj.journalName == '' ) {
-        console.error('Basic: invalid journal name');
-        return false;
-      }
-      if ( obj.pub_year = '' || isNaN(parseInt(obj.pub_year)) ) {
-        console.error('Basic: invalid publication year');
-        return false;
-      }
-      if ( parseInt(obj.pub_year) < 1900 ) {
-        console.error('Basic: invalid publication year < 1900');
-        return false;
-      }
-      if ( obj.volume == '' ) {
-        console.error('Basic: invalid journal volume');
-        return false;
-      }
-      // All checks passed
-      return true;
-    } else {
-      console.error('Basic: invalid command '+obj.command);
+    if ( !obj.hasOwnProperty('paperID') ) {
+      console.error('Basic: missing paperID');
       return false;
     }
+    if ( !obj.hasOwnProperty('paperTitle') ) {
+      console.error('Basic: missing paperTitle');
+      return false;
+    }
+    if ( !obj.hasOwnProperty('doi') ) {
+      console.error('Basic: missing doi');
+      return false;
+    }
+    if ( !obj.hasOwnProperty('journalID') ) {
+      console.error('Basic: missing journalID');
+      return false;
+    }
+    if ( !obj.hasOwnProperty('journalName') ) {
+      console.error('Basic: missing journalName');
+      return false;
+    }
+    if ( !obj.hasOwnProperty('pub_year') ) {
+      console.error('Basic: missing pub_year');
+      return false;
+    }
+    if ( !obj.hasOwnProperty('volume') ) {
+      console.error('Basic: missing volume');
+      return false;
+    }
+    if ( !obj.hasOwnProperty('issue') ) {
+      console.error('Basic: missing issue');
+      return false;
+    }
+    if ( !obj.hasOwnProperty('series') ) {
+      console.error('Basic: missing series');
+      return false;
+    }
+    if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
+      console.error('Basic: invalid paper ID');
+      return false;
+    }
+    if ( obj.paperTitle == '' ) {
+      console.error('Basic: invalid paper title');
+      return false;
+    }
+    if ( obj.journalID == '' || isNaN(parseInt(obj.journalID)) ) {
+      console.error('Basic: invalid journal ID');
+      return false;
+    }
+    if ( obj.journalName == '' ) {
+      console.error('Basic: invalid journal name');
+      return false;
+    }
+    if ( obj.pub_year == '' || isNaN(parseInt(obj.pub_year)) ) {
+      console.error('Basic: invalid publication year');
+      return false;
+    }
+    if ( parseInt(obj.pub_year) < 1900 ) {
+      console.error('Basic: invalid publication year < 1900');
+      return false;
+    }
+    if ( obj.volume == '' ) {
+      console.error('Basic: invalid journal volume');
+      return false;
+    }
+    // All checks passed
+    return true;
   } else {
+    console.error('Basic: invalid command '+obj.command);
     return false;
   }
 }
@@ -205,8 +237,6 @@ async function validateAuthor( obj ) {
   // }
   switch (obj.command) {
     case 'update':
-      // intentional fallthrough
-    case 'insert':
       if (
         !obj.hasOwnProperty('primaryName') ||
         !obj.hasOwnProperty('firstName') ||
@@ -223,8 +253,57 @@ async function validateAuthor( obj ) {
         console.error('Author: invalid first name');
         return false;
       }
-      // intentional fallthrough
-    case 'delete':
+      if ( !obj.hasOwnProperty('paperID') ) {
+        console.error('Author: missing paper id');
+        return false;
+      }
+      if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
+        console.error('Author: invalid paper id');
+        return false;
+      }
+      if ( obj.authorID == '' || isNaN(parseInt(obj.authorID)) ) {
+        console.error('Author: invalid author id');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('authorID') ) {
+        console.error('Author: missing author id');
+        return false;
+      }
+      if ( obj.authorID == '' || isNaN(parseInt(obj.authorID)) ) {
+        console.error('Author: invalid author id');
+        return false;
+      }
+      break;
+
+    case 'insert': {
+      if (
+        !obj.hasOwnProperty('primaryName') ||
+        !obj.hasOwnProperty('firstName') ||
+        !obj.hasOwnProperty('middleName')
+      ) {
+        console.error('Author: missing one or more name fields');
+        return false;
+      }
+      if ( obj.primaryName == '' || obj.primaryName == null ) {
+        console.error('Author: invalid primary name');
+        return false;
+      }
+      if ( obj.firstName == '' || obj.firstName == null ) {
+        console.error('Author: invalid first name');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('paperID') ) {
+        console.error('Author: missing paper id');
+        return false;
+      }
+      if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
+        console.error('Author: invalid paper id');
+        return false;
+      }
+      break;
+    }
+
+    case 'delete': {
       if ( !obj.hasOwnProperty('paperID') ) {
         console.error('Author: missing paper id');
         return false;
@@ -241,11 +320,11 @@ async function validateAuthor( obj ) {
         console.error('Author: invalid author id');
         return false;
       }
-      // All tests pass
       break;
+    }
 
     default:
-      break;
+      return false;
   }
   // json is valid
   return true;
@@ -260,13 +339,11 @@ async function validateNote( obj ) {
   //   type: 'note',
   //   command: 'update',
   //   noteID: '12',
-  //   paperID: '2',
   //   note: 'this is a note',
   // };
   // {
   //     type: 'note',
   //     command: 'insert',
-  //     noteID: '12',
   //     paperID: '2',
   //     note: 'this is a note'
   // }
@@ -277,9 +354,22 @@ async function validateNote( obj ) {
   //     noteID: '12'
   // }
   switch (obj.command) {
-    case 'update':
-      // intentional fallthrough
-    case 'insert':
+    case 'update': {
+      if ( !obj.hasOwnProperty('note') ) {
+        console.error('Note: no note field');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('noteID') ) {
+        console.error('Note: no noteID field');
+        return false;
+      }
+      if ( obj.noteID == '' || isNaN(parseInt(obj.noteID)) ) {
+        console.error('Note: Invalid note ID');
+        return false;
+      }
+      break;
+    }
+    case 'insert': {
       if ( !obj.hasOwnProperty('paperID') ) {
         console.error('Note: no paperID field');
         return false;
@@ -292,8 +382,9 @@ async function validateNote( obj ) {
         console.error('Note: no note field');
         return false;
       }
-      // intentional fallthrough
-    case 'delete':
+      break;
+    }
+    case 'delete': {
       if ( !obj.hasOwnProperty('noteID') ) {
         console.error('Note: no noteID field');
         return false;
@@ -302,9 +393,8 @@ async function validateNote( obj ) {
         console.error('Note: Invalid note ID');
         return false;
       }
-      // all checks passed
       break;
-
+    }
     default:
       console.error('Note: Invalid command '+obj.command);
       return false;
@@ -372,7 +462,7 @@ async function validateElement( obj ) {
     // Element symbol
     if (
       typeof obj.element != 'string' ||
-      obj.element.length < 2 ||
+      obj.element.length < 1 ||
       obj.element.length > 3
     ) {
       console.error('Element: element symbol invalid');
@@ -393,7 +483,7 @@ async function validateElement( obj ) {
     // Units
     const validUnits = ['wt_percent', 'ppm', 'ppb', 'mg_g', 'ug_g', 'ng_g'];
     if ( typeof obj.units == 'string' ) {
-      if ( !validUnits.contains(obj.units) ) {
+      if ( !validUnits.includes(obj.units) ) {
         console.error('Element: units not matching expected values');
         return false;
       }
@@ -623,10 +713,9 @@ async function validateBody( obj ) {
 
 /**
  * @param  {object} obj
- * @param  {object} client pg client
  * @return {Promise}
  */
-async function execBasic( obj, client ) {
+async function execBasic( obj ) {
   // Example object
   // obj ={
   //   type: 'basic',
@@ -655,8 +744,8 @@ async function execBasic( obj, client ) {
         obj.volume,
         obj.issue,
         obj.series,
-        parseInt(obj.pub_year),
-        parseInt(obj.journalID),
+        obj.pub_year,
+        obj.journalID,
       ];
 
       await client.query(query, values);
@@ -687,11 +776,10 @@ async function execBasic( obj, client ) {
 
 /**
  * @param  {object} obj
- * @param  {object} client pg client
  * @param  {int} submissionID
  * @param  {string} username
  */
-async function execAuthor( obj, client, submissionID, username ) {
+async function execAuthor( obj, submissionID, username ) {
   // Example obj
   // obj = {
   //   type: 'author',
@@ -902,17 +990,15 @@ async function execAuthor( obj, client, submissionID, username ) {
 
 /**
  * @param  {object} obj
- * @param  {object} client pg client
  * @param  {int} submissionID
  * @param  {string} username
  */
-async function execNote( obj, client, submissionID, username ) {
+async function execNote( obj, submissionID, username ) {
   // Example object
   // obj = {
   //   type: 'note',
   //   command: 'update',
   //   noteID: '12',
-  //   paperID: '2',
   //   note: 'this is a note',
   // };
   // {
@@ -932,14 +1018,12 @@ async function execNote( obj, client, submissionID, username ) {
     case 'update': {
       const query = `
       UPDATE notes
-      SET (note)= ($1, $2, $3)
-      WHERE note_id = ($4)
+      SET note= ($1)
+      WHERE note_id = ($2)
       `;
 
       const values = [
-        obj.primaryName,
-        obj.middleName,
-        obj.firstName,
+        obj.note,
         obj.noteID,
       ];
 
@@ -1036,10 +1120,9 @@ async function execNote( obj, client, submissionID, username ) {
 
 /**
  * @param  {object} obj
- * @param  {object} client
  * @param  {String} username
  */
-async function execSingleElementDelete( obj, client, username) {
+async function execSingleElementDelete( obj, username) {
   // Example object
   // obj = {
   //   type: 'element',
@@ -1096,11 +1179,10 @@ async function execSingleElementDelete( obj, client, username) {
 
 /**
  * @param  {object} obj
- * @param  {object} client
  * @param  {int} submissionID
  * @param  {string} username
  */
-async function execBody( obj, client, submissionID, username ) {
+async function execBody( obj, submissionID, username ) {
   // Example obj
   // obj = {
   //   type: 'body',
@@ -1150,7 +1232,7 @@ async function execBody( obj, client, submissionID, username ) {
       // Update body nomenclature
       let query = `
       UPDATE bodies
-      SET (nomenclature) = ($1)
+      SET nomenclature = ($1)
       WHERE body_id = ($2)
       `;
 
@@ -1164,7 +1246,7 @@ async function execBody( obj, client, submissionID, username ) {
       // Update group
       query = `
       UPDATE groups
-      SET (the_group) = ($1)
+      SET the_group = ($1)
       WHERE group_id = ($2)
       `;
       values = [
@@ -1175,8 +1257,46 @@ async function execBody( obj, client, submissionID, username ) {
       await client.query(query, values);
 
       for ( const measure of obj.measurements ) {
-        // Do element stuff
-        measure;
+        // Example measure
+        // measure ={
+        //   elementID: '123',
+        //   element: 'Fe',
+        //   lessThan: 'true',
+        //   units: 'ppb',
+        //   technique: 'INAA',
+        //   page: '12',
+        //   sigfig: '3',
+        //   convertedMeasurement: '200',
+        //   convertedDeviation: '121',
+        // };
+        // measure;
+        query = `
+        UPDATE element_entries
+        SET (
+          element_symbol, 
+          less_than, 
+          original_unit, 
+          technique, 
+          page_number, 
+          sigfig, 
+          ppb_mean,
+          deviation 
+        ) = ($1, $2, $3, $4, $5, $6, $7, $8)
+        WHERE element_id = ($9)
+        `;
+        values = [
+          measure.element,
+          measure.lessThan,
+          measure.units,
+          measure.technique,
+          measure.page,
+          measure.sigfig,
+          measure.convertedMeasurement,
+          measure.convertedDeviation,
+          measure.elementID,
+        ];
+
+        await client.query(query, values);
       }
 
       break;
@@ -1296,7 +1416,7 @@ async function execBody( obj, client, submissionID, username ) {
           measureVal,
           deviation,
           measure.lessThan,
-          measure.unit,
+          measure.units,
           measure.technique,
           sigfigVal,
         ];
@@ -1311,7 +1431,7 @@ async function execBody( obj, client, submissionID, username ) {
         `;
         const measureStatusValue = [
           elementId,
-          status,
+          'pending',
           username,
           submissionID,
         ];
@@ -1337,7 +1457,7 @@ async function execBody( obj, client, submissionID, username ) {
       // Get status_id for body
       let query = `
       SELECT status_id
-      FROM body
+      FROM bodies
       WHERE body_id = ($1)
       `;
       let values = [parseInt(obj.bodyID)];
@@ -1368,6 +1488,31 @@ async function execBody( obj, client, submissionID, username ) {
       ];
       await client.query(query, values);
 
+      // Get status_id for group
+      query = `
+      SELECT status_id
+      FROM groups
+      WHERE group_id = ($1)
+      `;
+      values = [obj.groupID];
+      rows = await client.query(query, values);
+      const groupStatusId = rows.rows[0].status_id;
+
+      // Update metadata to rejected
+      query = `
+      UPDATE group_status
+      SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+      WHERE status_id = ($4)
+      `;
+      values = [
+        'rejected',
+        userID,
+        'now()',
+        groupStatusId,
+      ];
+      await client.query(query, values);
+
+      // Get elements
       query = `
       SELECT element_id
       FROM element_entries
