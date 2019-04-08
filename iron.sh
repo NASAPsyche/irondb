@@ -71,16 +71,18 @@ When exiting the attached shell, the containers will stop.
 Use -g instead to simulate an attached Shell.
 
 The order of the flags is not important. -lpae is the same as -aepl.
+
 --------------
 --------------
-Advanced Options: can be used with -l flag in chain ( e.g., ./iron.sh -lp ).
+Advanced Options: Can be used with -l flag in chain ( e.g., ./iron.sh -lp ).
 -g    Attach logs: Opens a live feed of the docker logs, CTRL+C to exit 
       logs. This simulates an attached shell, but will not close the servers 
       when exited.
 -a    Attach shell: When launching the containers, attach the shell to the
       Node server. CTRL+C to quit, this shuts down the server. This is for
       diagnostic purposes only and should not be used in production. Cannot
-      generate mock users if using this option.
+      generate mock users when using this option. Cannot backup or restore
+      database when using this option.
 -e    Reset environment: Install the local Node dependencies and runs tasks
       specified by Gulp.
 -p    Reset/populate database: This will DELETE the local database. When the
@@ -88,23 +90,21 @@ Advanced Options: can be used with -l flag in chain ( e.g., ./iron.sh -lp ).
       files ( ./model/db-init/*.sql ).
 -m    Mock users: Adds the mock users. Cannot be used with -a in chain.
       NOT for production.
+--------------
+Docker Operations: Always executed first when used in a chain.
 -c    Clean Docker environment: Removes dangling containers and volumes to
       free up space. This is done automatically when launching the containers.
 -x    Reset Docker environment: A complete refresh of your Docker environment.
-      -x and -c are always executed first
 --------------
-Database operations: the containers must be running.
+Database Operations: The containers must be running.
 -b    Backup database: creates a backup of the current database
 -r    Restore database: restore the database from the most recent backup.
       For more advanced database manipulation, refer to Postgresql docs. 
 --------------
---------------
-Initial install
+Basic Commands
 -i    Initial/Clean install: If this is your first time, or you need to 
       rebuild your containers, then select this option. The containers will
       launch once they are built.
---------------
-
 -l    Launch containers: Launches the containers, by default the shell is 
       detached from the containers.
 -s    Stop containers: Stops the containers after executing all other
