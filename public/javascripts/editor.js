@@ -8,29 +8,10 @@ ElementsArr = Elements.slice(0, -1).split(',');
 TechniqueArr = Technique.slice(0, -1).split(',');
 
 /** ---------------------------- */
-/**     Remove Hover Toggle      */
-/** ---------------------------- */
-$( 'document' ).ready(function() {
-  // All remove icons hidden on load.
-  $( 'i.remove' ).hide();
-});
-
-$( '#insert-form' ).on('mouseover', 'div.form-row', function( event ) {
-  // Show remove ui on mouseover of parent div
-  $(this).children().children( 'i.remove' ).show();
-});
-
-$( '#insert-form' ).on('mouseout', 'div.form-row', function( event ) {
-  // Hide remove ui on mouseout of parent div
-  $(this).children().children( 'i.remove' ).hide();
-});
-
-
-/** ---------------------------- */
 /**      Validate Button         */
 /** ---------------------------- */
 
-$('#insert-form').on('click', '#validate-btn', function() {
+$('#event-div').on('click', '#validate-btn', function() {
   const formData = $('#insert-form').serializeArray();
   const postData = {};
   for (let i = 0; i < formData.length; i++) {
@@ -49,6 +30,10 @@ $('#insert-form').on('click', '#validate-btn', function() {
   $.post('/data-entry/tool/validate', postData, function( data ) {
     console.log(data);
   });
+});
+
+$('#event-div').on('click', '#override-btn', function() {
+  $('#submit-btn').prop('disabled', false);
 });
 
 
@@ -196,7 +181,7 @@ const meteoriteTemplate = `
   title="Press to remove meteorite and all associated measurements."></i>
 </div>
 <div class="form-group col-md-6">
-  <label for="<%- bodyNameID %>">Name</label>
+  <label for="<%- bodyNameID %>">Meteorite</label>
   <input type="text" class="form-control" id="<%- bodyNameID %>" 
   name="<%- bodyNameID %>" required>
 </div>
@@ -244,22 +229,22 @@ let classIDCount = 1;
 
 
 // Simple Add Event Handlers
-$( '#insert-form' ).on('click', 'i.add-author', function( event ) {
+$( '#event-div' ).on('click', 'i.add-author', function( event ) {
   addAuthor(this);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-note', function( event ) {
+$( '#event-div' ).on('click', 'i.add-note', function( event ) {
   addNote(this);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
+$( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
   addMeasurement(this);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
+$( '#event-div' ).on('click', 'i.add-meteorite', function( event ) {
   addMeteorite(this);
 });
 
@@ -289,9 +274,6 @@ function addAuthor( e ) {
 
   // Insert template into DOM
   $(e).parent().siblings('.meteorite-header').first().before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /**
@@ -313,9 +295,6 @@ function addNote( e ) {
 
   // Insert template into DOM
   $(e).parent().siblings('button:submit').before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /**
@@ -327,18 +306,18 @@ function addMeasurement( e ) {
       .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
 
   // Dynamically create IDs
-  const elementID = 'element' + meteoriteID + '-' + elementIDCount;
-  const lessThanID = 'lessThan' + meteoriteID + '-' + lessThanIDCount;
-  const measurementID = 'measurement' + meteoriteID + '-' + measurementIDCount;
-  const deviationID = 'deviation' + meteoriteID + '-' + deviationIDCount;
-  const unitsID = 'units' + meteoriteID + '-' + unitsIDCount;
-  const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
-  const pageID = 'page' + meteoriteID + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const elementID = 'element' + meteoriteID + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteID + '_' + lessThanIDCount;
+  const measurementID = 'measurement' + meteoriteID + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteID + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteID + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteID + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteID + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '_' + sigfigIDCount;
   const convertedMeasurementID =
-    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+    'convertedMeasurement' + meteoriteID + '_' + convertedMeasurementIDCount;
   const convertedDeviationID =
-    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
+    'convertedDeviation' + meteoriteID + '_' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -383,9 +362,6 @@ function addMeasurement( e ) {
     $(e).parent().siblings('.notes-header')
         .first().before(html);
   }
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /**
@@ -397,19 +373,19 @@ function addMeteorite( e ) {
   const bodyNameID = 'bodyName' + bodyNameIDCount;
   const groupID = 'group' + groupIDCount;
   const classID = 'class' + classIDCount;
-  const elementID = 'element' + meteoriteIDCount + '-' + elementIDCount;
-  const lessThanID = 'lessThan' + meteoriteIDCount + '-' + lessThanIDCount;
+  const elementID = 'element' + meteoriteIDCount + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteIDCount + '_' + lessThanIDCount;
   const measurementID =
-  'measurement' + meteoriteIDCount + '-' + measurementIDCount;
-  const deviationID = 'deviation' + meteoriteIDCount + '-' + deviationIDCount;
-  const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
-  const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
-  const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteIDCount + '-' + sigfigIDCount;
+  'measurement' + meteoriteIDCount + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteIDCount + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteIDCount + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteIDCount + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteIDCount + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteIDCount + '_' + sigfigIDCount;
   const convertedMeasurementID =
-  'convertedMeasurement' + meteoriteIDCount + '-' + convertedMeasurementIDCount;
+  'convertedMeasurement' + meteoriteIDCount + '_' + convertedMeasurementIDCount;
   const convertedDeviationID =
-  'convertedDeviation' + meteoriteIDCount + '-' + convertedDeviationIDCount;
+  'convertedDeviation' + meteoriteIDCount + '_' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -455,28 +431,25 @@ function addMeteorite( e ) {
 
   // Insert template into DOM
   $(e).parent().siblings('.notes-header').before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /** ---------------------------- */
 /**        UI Remove Events      */
 /** ---------------------------- */
 
-$( '#insert-form' ).on('click', 'i.remove-note', function() {
+$( '#event-div' ).on('click', 'i.remove-note', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === false ) {
     $(this).parent().parent().remove();
   }
 });
 
-$( '#insert-form' ).on('click', 'i.remove-inline', function() {
+$( '#event-div' ).on('click', 'i.remove-inline', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === false ) {
     $(this).parent().parent().remove();
   }
 });
 
-$( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
+$( '#event-div' ).on('click', 'i.remove-meteorite', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === true ) {
     // Do not remove if saved
   } else {

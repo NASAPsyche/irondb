@@ -147,7 +147,7 @@ function getBodies(reqBody, keys) {
     };
 
     // Make a regular expression for matching the body with element numbers
-    const elementKeyString = 'element' + String(bodyNum) + '-';
+    const elementKeyString = 'element' + String(bodyNum) + '_';
     const re = new RegExp(elementKeyString, 'g');
 
     const measurements = [];
@@ -162,8 +162,8 @@ function getBodies(reqBody, keys) {
     measurements.forEach((elem) => {
       const elemNum = elem.substring(elementKeyString.length);
       const element = elem;
-      // The index of the measurement, ex: '0-0'
-      const idx = String(bodyNum) + '-' + String(elemNum);
+      // The index of the measurement, ex: '0_0'
+      const idx = String(bodyNum) + '_' + String(elemNum);
       const lessThan = 'lessThan' + String(idx);
       let lessThanVal = false;
       if (lessThanKeys.includes(String(lessThan))) {

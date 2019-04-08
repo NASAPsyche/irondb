@@ -13,6 +13,12 @@ router.post('/', isLoggedIn, function(req, res, next) {
   // Probably where you'd want the get for basic data used elsewhere
   // AJAX call from submit on tool flow checklist
 
+  // set tables flag if tables selected from checklist
+  let hasTables = false;
+  if (req.body.hasOwnProperty('tables') && req.body.tables === 'on') {
+    hasTables = true;
+  }
+
   console.log(req.body);
 
   // Hardcoded params for US969 pr, need to modify script or request as needed
@@ -50,14 +56,15 @@ router.post('/', isLoggedIn, function(req, res, next) {
       res.render('components/tool_panel', {
         Elements: resObj[0].rows,
         Technique: resObj[1].rows,
+        hasTables: hasTables,
       });
     }
   });
   console.log(req.session.textHolder);
 });
 
-router.get('/tables', isLoggedIn, function(req, res, next) {
-  // route to request all tables
+router.get('/allPagesTables', isLoggedIn, function(req, res, next) {
+  // route to request all tables from all pages
   const options = {
     mode: 'text',
     // pythonPath: '../py',
@@ -80,7 +87,31 @@ router.get('/tables', isLoggedIn, function(req, res, next) {
   });
 });
 
-router.post('/tables', isLoggedIn, function(req, res, next) {
+router.post('/attributes', isLoggedIn, function(req, res, next) {
+  // route to request all non-table attributes from all pages.
+  const options = {
+    mode: 'text',
+    // pythonPath: '../py',
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: sPath,
+    args: [JSON.stringify(req.body)],
+  };
+    // const result = '';
+    // console.log(JSON.stringify(req.body));
+  PythonShell.run('nlp4attributes.py', options, function(err, results) {
+    if (err) throw err;
+    // results is an array consisting of messages collected during execution
+    // Debugging test for pr only, delete immediately in new branch
+    // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
+
+    res.send(results);
+    // res.render('components/table-xhr-response', {
+    //   Results: JSON.parse(results[0].slice(2, -2)),
+    // });
+  });
+});
+
+router.post('/onePageTables', isLoggedIn, function(req, res, next) {
   // route to request tables on given page
   const options = {
     mode: 'text',
@@ -91,22 +122,35 @@ router.post('/tables', isLoggedIn, function(req, res, next) {
   };
   // const result = '';
   // console.log(JSON.stringify(req.body));
-  PythonShell.run('table_driver_single.py', options, function(err, results) {
-    if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    // console.log('results: %j', results);
 
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, ' +
-      'X-Requested-With, Content-Type, Accept');
 
-    // Debugging test for pr only, delete immediately in new branch
-    req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
+  PythonShell.run('table_driver_single.py',
+      options, async function(err, results) {
+        if (err) throw err;
+        // results is an array consisting of messages collected during execution
+        // console.log('results: %j', results);
 
-    res.render('components/table-xhr-response', {
-      Results: JSON.parse(results[0].slice(2, -2)),
-    });
-  });
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'Origin, ' +
+          'X-Requested-With, Content-Type, Accept');
+
+        // Debugging test for pr only, delete immediately in new branch
+        // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
+
+        let resObj = [];
+        try {
+          const Technique = db.aQuery(
+              'SELECT abbreviation FROM analysis_techniques', []);
+          resObj = await Promise.all([Technique]);
+        } catch (err) {
+          next(createError(500));
+        } finally {
+          res.render('components/table-xhr-response', {
+            Results: JSON.parse(results[0].slice(2, -2)),
+            Technique: resObj[0].rows,
+          });
+        }
+      });
 });
 
 router.post('/validate', isLoggedIn, function(req, res, next) {
@@ -134,16 +178,9 @@ router.post('/validate', isLoggedIn, function(req, res, next) {
 
 router.post('/insert', isLoggedIn, function(req, res, next) {
   // Debugging test for pr only, delete immediately in new branch
-  console.log('-----------Req  Body---------------------');
-  console.log(req.body);
-  console.log('-----------Req---------------------------');
-  console.log(JSON.parse(req.body.tableData)[0]);
-  console.log('-----------Session-----------------------');
-  console.log(req.session.tableJSON);
-  if (JSON.stringify(JSON.parse(req.body.tableData)[0])
-  === JSON.stringify(req.session.tableJSON)) {
-    console.log('JSONS MATCH');
-  }
+  // console.log('-----------Req  Body---------------------');
+  // console.log(req.body);
+
 
   res.send('<h1>form submitted</h1>');
 });

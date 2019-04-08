@@ -7,6 +7,7 @@ ElementsArr = Elements.slice(0, -1).split(',');
 // eslint-disable-next-line no-undef
 TechniqueArr = Technique.slice(0, -1).split(',');
 
+
 /** ----------------------------- */
 /**         Tool Specific         */
 /** ----------------------------- */
@@ -25,29 +26,35 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
   $.post('/data-entry/tool/', $(this).serialize(), function( data ) {
     // Remove checklist and replace with ui panel
     $('#secondary-panel').replaceWith( data );
-    $( 'i.remove' ).hide();
+    $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
   });
 });
 
 // Table button ajax post
 $( '#event-div' ).on('submit', '#single-page-form', function( event ) {
   event.preventDefault();
+
+  $('#modal-table').prop('disabled', true);
   // eslint-disable-next-line no-invalid-this
-  $.post('/data-entry/tool/tables', $(this).serialize(), function( data ) {
-    $('#table-target').append(data);
-    $('#tableModal').modal('hide');
-  });
+  $.post('/data-entry/tool/onePageTables',
+      $(this).serialize(), function( data ) {
+        $('#table-target').append(data);
+        $('#tableModal').modal('hide');
+        $('#modal-table').prop('disabled', false);
+      });
 });
 
 $('#event-div').on('click', '#validate-btn', function() {
-  // serialize all tables
-  const tables = [];
-  const tableObjects = $('#table-target').children('div.table-div');
-  $.each( tableObjects, function(tableIndex, table) {
-    const rows = $(table).children('table').children('tbody').children();
-    tables.push(serializeTable(rows));
-  });
-  $('#table-data-input').attr('value', JSON.stringify(tables));
+  if ($('#table-data-input').length) {
+    // serialize all tables
+    const tables = [];
+    const tableObjects = $('#table-target').children('div.table-div');
+    $.each( tableObjects, function(tableIndex, table) {
+      const rows = $(table).children('table').children('tbody').children();
+      tables.push(serializeTable(rows));
+    });
+    $('#table-data-input').attr('value', JSON.stringify(tables));
+  }
 
   const formData = $('#insert-form').serializeArray();
   const postData = {};
@@ -65,6 +72,10 @@ $('#event-div').on('click', '#validate-btn', function() {
   $.post('/data-entry/tool/validate', postData, function( data ) {
     console.log(data);
   });
+});
+
+$('#event-div').on('click', '#override-btn', function() {
+  $('#submit-btn').prop('disabled', false);
 });
 
 
@@ -85,200 +96,26 @@ function serializeTable(rows) {
         tableData[columnIndex] = {};
       }
 
-      // Set cell equal to it's value or null if empty
-      tableData[columnIndex][rowIndex] = $(value)
-          .children('input').attr('value') === '' ? null : $(value)
-              .children('input').val();
+      if (rowIndex === 0) {
+        // Set cell equal to it's value or null if empty
+        tableData[columnIndex][rowIndex] = $(value)
+            .children('select').attr('value') === '' ? null : $(value)
+                .children('select').val();
+      } else {
+        // Set cell equal to it's value or null if empty
+        tableData[columnIndex][rowIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      }
     });
   });
   return tableData;
 }
 
 /** ---------------------------- */
-/**     Remove Hover Toggle      */
-/** ---------------------------- */
-$( '#event-div' ).on('mouseover', 'div.form-row', function( event ) {
-// Show remove ui on mouseover of parent div
-  $(this).children().children( 'i.remove' ).show();
-});
-
-$( '#event-div' ).on('mouseout', 'div.form-row', function( event ) {
-// Hide remove ui on mouseout of parent div
-  $(this).children().children( 'i.remove' ).hide();
-});
-
-
-/** ---------------------------- */
-/**      Save/Edit Events        */
-/** ---------------------------- */
-
-// Bacis section
-$( '#event-div' ).on( 'click', 'i.save-basic', function( event ) {
-// Disable all inputs in the basic information section.
-  $(this).parent().siblings().slice(0, 3)
-      .children().children('input').prop('readonly', true);
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $( 'i.edit-basic' ).prop('hidden', false);
-});
-
-$( '#event-div' ).on( 'click', 'i.edit-basic', function( event ) {
-// Enable all inputs in the basic information section.
-  $(this).parent().siblings().slice(0, 3)
-      .children().children('input').prop('readonly', false);
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $( 'i.save-basic' ).prop('hidden', false);
-});
-
-
-// Author(s) Section
-$( '#event-div' ).on( 'click', 'i.save-author', function( event ) {
-// Disable inputs
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
-});
-
-$( '#event-div' ).on( 'click', 'i.edit-author', function( event ) {
-// Enable inputs
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-author' ).prop('hidden', false);
-});
-
-
-// Meteorite Section
-$( '#event-div' ).on( 'click', 'i.save-meteorite', function( event ) {
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
-});
-
-$( '#event-div' ).on( 'click', 'i.edit-meteorite', function( event ) {
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-meteorite' ).prop('hidden', false);
-});
-
-
-// Measurement Section
-$( '#event-div' ).on( 'click', 'i.save-measurement', function( event ) {
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
-});
-
-$( '#event-div' ).on( 'click', 'i.edit-measurement', function( event ) {
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
-});
-
-
-// Note Section
-$( '#event-div' ).on( 'click', 'i.save-note', function( event ) {
-// Disable textfield
-  $(this).parent().parent().children('textarea').prop('disabled', true);
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
-});
-
-$( '#event-div' ).on( 'click', 'i.edit-note', function( event ) {
-// Enable textfield
-  $(this).parent().parent().children('textarea').prop('disabled', false);
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-note' ).prop('hidden', false);
-});
-
-
-/** ---------------------------- */
 /**    Functions Declarations    */
 /** ---------------------------- */
 
-
-/**
- * @function disableInline
- * @param {Object} element - The clicked element
- * @description Function disables form controls associated with ui.
- */
-function disableInline(element) {
-// Disable all inputs associated with element
-  element.parent().siblings().children('input').prop('readonly', true);
-
-  // Disable checkboxs associated with element
-  element.parent().siblings().children('select').prop('disabled', true);
-
-  // Disable select groups associated with element
-  element.parent().siblings().children('input[type=checkbox]')
-      .prop('disabled', true);
-}
-
-
-/**
- * @function EnableInline
- * @param {Object} element - The clicked element
- * @description Function Enables form controls associated with ui.
- */
-function enableInline(element) {
-// Enable all inputs associated with element
-  element.parent().siblings().children('input').prop('readonly', false);
-
-  // Enable checkboxs associated with element
-  element.parent().siblings().children('select').prop('disabled', false);
-
-  // Enable select groups associated with element
-  element.parent().siblings().children('input[type=checkbox]')
-      .prop('disabled', false);
-}
 
 /**
  * @param  {string} num The number that you need
@@ -303,7 +140,6 @@ function getSigFig(num) {
     : splitStr[0].length + splitStr[1].length
   );
 }
-
 
 /** ----------------------------------- */
 /**        EJS Templates for Add        */
@@ -345,6 +181,7 @@ const noteTemplate = `
   </textarea>
 </div>
 `;
+
 
 const measurementTemplate = `
 <div class="form-row">
@@ -419,7 +256,7 @@ const meteoriteTemplate = `
   title="Press to remove meteorite and all associated measurements."></i>
 </div>
 <div class="form-group col-md-6">
-  <label for="<%- bodyNameID %>">Name</label>
+  <label for="<%- bodyNameID %>">Meteorite</label>
   <input type="text" class="form-control" id="<%- bodyNameID %>" 
   name="<%- bodyNameID %>" required>
 </div>
@@ -466,9 +303,32 @@ let bodyNameIDCount = 1;
 let groupIDCount = 1;
 let classIDCount = 1;
 
+
 // Simple Add Event Handlers
 $( '#event-div' ).on('click', 'i.add-author', function( event ) {
-// Dynamically create IDs
+  addAuthor(this);
+});
+
+
+$( '#event-div' ).on('click', 'i.add-note', function( event ) {
+  addNote(this);
+});
+
+
+$( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
+  addMeasurement(this);
+});
+
+
+$( '#event-div' ).on('click', 'i.add-meteorite', function( event ) {
+  addMeteorite(this);
+});
+
+/**
+ * @param  {object} e this
+ */
+function addAuthor( e ) {
+  // Dynamically create IDs
   const primaryNameID = 'primaryName' + primaryNameIDCount;
   const firstNameID = 'firstName' + firstNameIDCount;
   const middleNameID = 'middleName' + middleNameIDCount;
@@ -489,18 +349,17 @@ $( '#event-div' ).on('click', 'i.add-author', function( event ) {
 
   // Render Author template with current IDs
   // eslint-disable-next-line
-const html = ejs.render(authorTemplate, idObj);
+  const html = ejs.render(authorTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.meteorite-header').first().before(html);
+  $(e).parent().siblings('.authors-end').first().before(html);
+}
 
-  // Hide remove ui
-  $( 'i.remove' ).hide();
-});
-
-
-$( '#event-div' ).on('click', 'i.add-note', function( event ) {
-// Dynamically create IDs
+/**
+ * @param  {object} e this
+ */
+function addNote( e ) {
+  // Dynamically create IDs
   const noteID = 'note' + noteIDCount;
 
   // Assign IDs
@@ -511,34 +370,33 @@ $( '#event-div' ).on('click', 'i.add-note', function( event ) {
 
   // Render note template with current ID
   // eslint-disable-next-line
-const html = ejs.render(noteTemplate, idObj);
+  const html = ejs.render(noteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('button:submit').before(html);
+  $(e).parent().siblings('button:submit').before(html);
+}
 
-  // Hide remove ui
-  $( 'i.remove' ).hide();
-});
-
-
-$( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
-// Get parent meteorite
-  const meteoriteID = $(this).parent()
+/**
+ * @param  {object} e this
+ */
+function addMeasurement( e ) {
+  // Get parent meteorite
+  const meteoriteID = $(e).parent()
       .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
 
   // Dynamically create IDs
-  const elementID = 'element' + meteoriteID + '-' + elementIDCount;
-  const lessThanID = 'lessThan' + meteoriteID + '-' + lessThanIDCount;
-  const measurementID = 'measurement' + meteoriteID + '-' + measurementIDCount;
-  const deviationID = 'deviation' + meteoriteID + '-' + deviationIDCount;
-  const unitsID = 'units' + meteoriteID + '-' + unitsIDCount;
-  const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
-  const pageID = 'page' + meteoriteID + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const elementID = 'element' + meteoriteID + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteID + '_' + lessThanIDCount;
+  const measurementID = 'measurement' + meteoriteID + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteID + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteID + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteID + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteID + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '_' + sigfigIDCount;
   const convertedMeasurementID =
-    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+    'convertedMeasurement' + meteoriteID + '_' + convertedMeasurementIDCount;
   const convertedDeviationID =
-    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
+    'convertedDeviation' + meteoriteID + '_' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -573,41 +431,40 @@ $( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
 
   // Render note template with current ID
   // eslint-disable-next-line
-const html = ejs.render(measurementTemplate, idObj);
+  const html = ejs.render(measurementTemplate, idObj);
 
   // Insert template into DOM
   const nextID = 'meteorite' + (1 + Number(meteoriteID));
   if ( $( '#' + nextID ).length ) {
     $( '#' + nextID ).before(html);
   } else {
-    $(this).parent().siblings('.notes-header')
+    $(e).parent().siblings('.notes-header')
         .first().before(html);
   }
+}
 
-  // Hide remove ui
-  $( 'i.remove' ).hide();
-});
-
-$( '#event-div' ).on('click', 'i.add-meteorite', function( event ) {
-// Dynamically create IDs
+/**
+ * @param  {object} e this
+ */
+function addMeteorite( e ) {
+  // Dynamically create IDs
   const meteoriteID = 'meteorite' + meteoriteIDCount;
   const bodyNameID = 'bodyName' + bodyNameIDCount;
   const groupID = 'group' + groupIDCount;
   const classID = 'class' + classIDCount;
-  const elementID = 'element' + meteoriteIDCount + '-' + elementIDCount;
-  const lessThanID = 'lessThan' + meteoriteIDCount + '-' + lessThanIDCount;
-  // eslint-disable-next-line
-const measurementID = 'measurement' + meteoriteIDCount + '-' + measurementIDCount;
-  const deviationID = 'deviation' + meteoriteIDCount + '-' + deviationIDCount;
-  const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
-  const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
-  const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const elementID = 'element' + meteoriteIDCount + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteIDCount + '_' + lessThanIDCount;
+  const measurementID =
+  'measurement' + meteoriteIDCount + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteIDCount + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteIDCount + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteIDCount + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteIDCount + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteIDCount + '_' + sigfigIDCount;
   const convertedMeasurementID =
-    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  'convertedMeasurement' + meteoriteIDCount + '_' + convertedMeasurementIDCount;
   const convertedDeviationID =
-    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
-
+  'convertedDeviation' + meteoriteIDCount + '_' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -649,14 +506,11 @@ const measurementID = 'measurement' + meteoriteIDCount + '-' + measurementIDCoun
 
   // Render note template with current ID
   // eslint-disable-next-line
-const html = ejs.render(meteoriteTemplate, idObj);
+  const html = ejs.render(meteoriteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.notes-header').before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
-});
+  $(e).parent().siblings('.notes-header').before(html);
+}
 
 /** ---------------------------- */
 /**        UI Remove Events      */

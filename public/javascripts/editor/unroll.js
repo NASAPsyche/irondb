@@ -110,7 +110,7 @@ for ( const [index, element] of uniqueIndex.bodies.entries() ) {
   changeValue(classTarget, classKey, dict);
 
   // Gather indices of measurements that belong to this body
-  const reStr = 'element' + element + '-';
+  const reStr = 'element' + element + '_';
   const re = new RegExp(reStr, 'g');
   const matchedElements = [];
   elementKeys.forEach((key) => {
@@ -126,8 +126,8 @@ for ( const [index, element] of uniqueIndex.bodies.entries() ) {
       addMeasurement('i.add-measurement');
     }
 
-    const targetIdx = String(index) + '-' + String(elementCounter);
-    const elementIdx = String(element) + '-' + String(subElement);
+    const targetIdx = String(index) + '_' + String(elementCounter);
+    const elementIdx = String(element) + '_' + String(subElement);
 
     const elementTarget = 'element' + targetIdx;
     const elementKey = 'element' + elementIdx;

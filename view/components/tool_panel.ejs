@@ -1,36 +1,43 @@
 <div>
-    <div class="card text-center border-dark">
-        <div class="card-header bg-danger">
-            <ul class="nav nav-tabs card-header-tabs">
-            <li class="nav-item bg-warning">
-                <a class="nav-link active" id="insert-tab" data-toggle="tab" href="#insert" role="tab" aria-controls="insert" aria-selected="true">Insert View</a>
-            </li>
-            <li class="nav-item bg-warning">
-                <a class="nav-link" id="table-tab" data-toggle="tab" href="#table" role="tab" aria-controls="table" aria-selected="true">Table View</a>
-            </li>
-            </ul>
-        </div>
+    <div class="container-fluid pt-1 pb-1 px-0">
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="card text-center border-dark">
+                    <div class="card-header bg-danger">
+                        <h3 class="card-title text-warning">Editor</h3>
+                    </div>
+    
+                    <div class="card-body tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
+                            
+                            <form method="POST" action="/data-entry/tool/insert" class="align-top mx-auto text-left" id="insert-form">
+                                <%- include('basic-attributes-form-group'); %>
+                                <% if (hasTables === true) { %>
+                                    <div class="form-row tables-header">
+                                        <h5 class="pt-1 mr-2"><strong>Tables</strong></h5>
+                                    </div>
+                                    <div id="table-target">
+                                    </div>
 
-        <div class="card-body tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
-                <h5 class="card-title">Insert Tab</h5>
-                <form method="POST" action="/data-entry/tool/insert" class="align-top mx-auto text-left" id="insert-form">
-                    <%- include('insert_form'); %>
-                    <input type="hidden" name="tableData" value="" id="table-data-input">
-                </form>
-            </div>
-            <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
-                <h5 class="card-title">Table Tab</h5>
-                <p id="manual-text">View populated via automated tool.</p>
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#tableModal">Single Page Get</button>
-                <div id="table-target">
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#tableModal">Single Page Get</button>
+                                    <input type="hidden" name="tableData" value="" id="table-data-input">
+                                <% } else { %>
+                                    <%- include('meteorites-form-group'); %>
+                                <% } %>
+                                <%- include('notes-form-group'); %>
+                                <button type="submit" class="btn btn-warning mt-2 float-right" disabled="true" title="Validate or override to enable" id="submit-btn">Submit</button>
+                                <button type="button" class="btn btn-danger mt-2 mr-3 float-right" id="validate-btn">Validate</button>
+                                <button type="button" class="btn btn-danger mt-2 mr-5 float-left" id="override-btn">Override Validation</button>
+                            </form>
+    
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
 
 <!-- Modal -->
-<div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="tableModal" aria-hidden="true">
+    <div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="tableModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -45,17 +52,16 @@
                         <small>Select page of pdf to extract tables from.</small>
                         <!-- This will remain hidden -->
                         <div class="form-group">
-                            <label for="fileName" class="sr-only"></label>
+                            <label for="fileName" class="sr-only">filenam</label>
                             <input id="fileName" name="fileName" type="hidden" value="">
                         </div>
             
                         <!-- This will be a drop down, I'll need some way of grabing the number of pages before rendering this -->
                         <!-- currently giving you 0-20 -->
                         <div class="form-group">
-                            <label for="pageNum" class="sr-only"></label>
+                            <label for="pageNum">Page Number</label>
                             <select class="form-control" name="pageNum" id="pageNum">
                                 <option>Page Number</option>
-                                <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -81,32 +87,38 @@
             
                         <!-- Drop down with the given options -->
                         <div class="form-group">
-                            <label for="taskNum" class="sr-only"></label>
-                            <input id="taskNum" name="taskNum" type="hidden" value="0">
+                            <label for="taskNum">Task Number (0 by default, 1 if sepcifying coordinates only, 2 if non-zero coordinates and rotation)</label>
+                            <input id="taskNum" name="taskNum" type="number" value="0" min="0" max="2" step="1">
                         </div>
             
                         <!-- Some form of directional input, probably just number -360 to 360 -->
                         <div class="form-group">
-                            <label for="flipDir" class="sr-only"></label>
-                            <input id="flipDir" name="flipDir" type="hidden" value="0">
+                            <label for="flipDir">Flip Direction (Degrees rotating clockwise)</label>
+                            <select class="form-control" id="flipDir" name="flipDir">
+                                <option value="0">0</option>
+                                <option value="90">90</option>
+                                <option value="180">180</option>
+                                <option value="270">270</option>            
+                            </select>
                         </div>
             
                         <!-- will discuss further when/if we get to it -->
+                        <h5>Coordinates:</h5>
                         <div class="form-group">
-                            <label for="coordsLeft" class="sr-only"></label>
-                            <input id="coordsLeft" name="coordsLeft" type="hidden" value="0">
+                            <label for="coordsLeft">Left Coordinate</label>
+                            <input id="coordsLeft" name="coordsLeft" type="number" value="0">
                         </div>
                         <div class="form-group">
-                            <label for="coordsTop" class="sr-only"></label>
-                            <input id="coordsTop" name="coordsTop" type="hidden" value="0">
+                            <label for="coordsTop">Top Coordinate</label>
+                            <input id="coordsTop" name="coordsTop" type="number" value="0">
                         </div>
                         <div class="form-group">
-                            <label for="coordsWidth" class="sr-only"></label>
-                            <input id="coordsWidth" name="coordsWidth" type="hidden" value="0">
+                            <label for="coordsWidth">Width Coordinate</label>
+                            <input id="coordsWidth" name="coordsWidth" type="number" value="0">
                         </div>
                         <div class="form-group">
-                            <label for="coordsHeight" class="sr-only"></label>
-                            <input id="coordsHeight" name="coordsHeight" type="hidden" value="0">
+                            <label for="coordsHeight">Height Coordinate</label>
+                            <input id="coordsHeight" name="coordsHeight" type="number" value="0">
                         </div>
                     </div>
                     <div class="modal-footer">
