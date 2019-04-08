@@ -1,4 +1,6 @@
 import pandas as pd
+from periodictable import elements
+import re
 
 
 def row_by_row(mdf, mdf2):
@@ -44,8 +46,20 @@ def mark_fields_for_removal(tables_for_marking):
         for table_df in tables_for_marking:
             for removal_row in range(table_df.shape[0]):
                 for removal_col in range(table_df.shape[1]):
-                    if len(str(table_df.iat[removal_row, removal_col])) > 20:
-                        table_df.iat[removal_row, removal_col] = "REMOVE"
+                    if not str(table_df.iat[removal_row, removal_col]) == 'nan':
+                        print("Before clean: " + str(table_df.iat[removal_row, removal_col]))
+                        print("Type: " + str(type(table_df.iat[removal_row, removal_col])))
+                        print("Is Element: " + str(is_element(str(table_df.iat[removal_row, removal_col]))))
+                        print("Is Number: " + str(is_number(str(table_df.iat[removal_row, removal_col]))))
+                        print("Is Measurement: " + str(is_measurement(str(table_df.iat[removal_row, removal_col]))))
+                        print("Is Proper Name: " + str(is_proper_name(str(table_df.iat[removal_row, removal_col]))))
+                        # if not is_element(str(table_df.iat[removal_row, removal_col])) \
+                        #         and not is_number(str(table_df.iat[removal_row, removal_col])) \
+                        #         and not is_measurement(str(table_df.iat[removal_row, removal_col])) \
+                        #         and not is_proper_name(str(table_df.iat[removal_row, removal_col])):
+                        if len(str(table_df.iat[removal_row, removal_col])) > 20:
+                            table_df.iat[removal_row, removal_col] = 'REMOVE'
+                        print("After clean: " + str(table_df.iat[removal_row, removal_col]))
     return tables_for_marking
 # End Marking the fields for removal
 
@@ -69,3 +83,34 @@ def marked_field_clean_up(tables_dirty, tables_clean):
                     if str(tables_dirty[tt].iat[row, col]) == "REMOVE":
                         tables_dirty[tt].iat[row, col] = tables_clean[tt].iat[row, col]
 # END Put original values back in fields marked for removal by mistake
+
+
+def is_element(df_value):
+    el_list = []
+    for el in elements:
+        el_list.append(str(el.symbol))
+    for each_el in el_list:
+        if bool(re.search(r'\s' + each_el + '\s', " " + df_value + " ") and len(str(df_value)) < 10):
+            return True
+    return False
+
+
+def is_number(df_value):
+    if bool(re.search(r'^\d+|<\d+', df_value) and len(str(df_value)) < 6):
+        return True
+    return False
+
+
+def is_measurement(df_value):
+    if bool(re.search(r'^\\g|mg|lg|ng', df_value) and len(str(df_value)) < 10):
+        return True
+    return False
+
+
+def is_proper_name(df_value):
+    cap_letters = re.findall(r'[A-Z]', df_value)
+    words = df_value.split()
+    if len(cap_letters) >= len(words):
+        return True
+    return False
+

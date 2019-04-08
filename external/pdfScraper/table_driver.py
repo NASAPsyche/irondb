@@ -11,12 +11,12 @@ __date__ = "11/7/18"
 import PyPDF2
 from tabula import read_pdf
 import re
+import sys
 from copy import deepcopy
 import json
 import pdf_text_import as pti
 import table_cleaner as tc
 import table_page_finder as tpf
-
 
 pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/WassonandChoe_GCA_2009.pdf",
@@ -30,24 +30,36 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/WassonandKallemeyn_GCA_2002.pdf",
        "pdfs/RuzickaandHutson2010.pdf"]
 
-chosen_pdf = pdf[0]
-print(chosen_pdf)
+fileName = pdf[9]
+# print(fileName)
+
+# j = json.loads(sys.argv[1])
+# fileName = j['fileName']
+# fileName = '/usr/app/controller/py/WassonandChoe_GCA_2009.pdf'
+# pageNum = int(j['pageNum'])
+# taskNum = int(j['taskNum'])
+# flipDir = int(j['flipDir'])
+# coordsLeft = j['coordsLeft']
+# coordsTop = j['coordsTop']
+# coordsWidth = j['coordsWidth']
+# coordsHeight = j['coordsHeight']
+
 
 tables = []
 json_pages_confirmed = []
 
 # START Get number of Pages
-total_pages = PyPDF2.PdfFileReader(open(chosen_pdf, 'rb')).numPages
+total_pages = PyPDF2.PdfFileReader(open(fileName, 'rb')).numPages
 
 # START get text from pdf
-text = pti.convert_pdf_to_txt_looper(chosen_pdf, total_pages)
+text = pti.convert_pdf_to_txt_looper(fileName, total_pages)
 
 # START Finding pages that have tables on them.
 json_pages = tpf.find_pages_with_tables(total_pages, text)
 
 # START Get tables 1 page at a time.
 for page in range(len(json_pages)):
-    one_page_of_tables = read_pdf(chosen_pdf, output_format="dataframe", encoding="utf-8", multiple_tables=True,
+    one_page_of_tables = read_pdf(fileName, output_format="dataframe", encoding="utf-8", multiple_tables=True,
                                   pages=json_pages[page]["pdf_page"], silent=True)
     if one_page_of_tables:
         for table in one_page_of_tables:
@@ -86,5 +98,5 @@ for ind in range(len(tables)):
     tables[ind] = '{\"actual_page\":' + str(json_pages_confirmed[ind]["actual_page"]) \
                   + ',\"pdf_page\": ' + str(json_pages_confirmed[ind]["pdf_page"]) \
                   + ', \"Table\":' + tables[ind].to_json() + '}'
-    print(tables[ind])
-# print(tables_rec_from_pages)
+    # print(tables[ind])
+print(tables)
