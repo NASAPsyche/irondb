@@ -11,7 +11,7 @@
 
 # Displays a brief help message
 function show_short_help() {
-  helpString= helpString='Make sure Docker is running before performing any operations.
+  helpString='Make sure Docker is running before performing any operations.
 Common commands:
 
 Initial/Clean install
