@@ -356,6 +356,15 @@ function restore_recent ()
 # if a chain of parameters. only wait once to check if containers are started
 hasWaited=false
 # Wait for containers to be available
+# This function is a workaround for maximizing portability. The cleaner solution would be
+# to use a psql client to make calls to the psql server to check for health.
+# However, not all environments will have a psql client installed and adding it as a dependency
+# is not justifiable since there are workarounds. Instead, we will parse the docker-compose logs
+# and look for key phrases that indicate if there are complications during postgres startup
+# that are likely to cause a delay. This relies on 1) the docker logs having reliable output
+# and 2) on using preset sleep intervals to mimic checking the health directly.
+# TODO: Implement a cleaner solution that doesn't rely on arbitrary wait times while still
+# maintaining maximum portability.
 function wait_for_containers ()
 {
   echo " "
