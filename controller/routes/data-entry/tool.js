@@ -8,7 +8,7 @@ const sPath = path.join(__dirname, ('../../py/'));
 const {isLoggedIn} = require('../../middleware/auth');
 const createError = require('http-errors');
 
-router.post('/', isLoggedIn, function(req, res, next) {
+router.post('/', isLoggedIn, async function(req, res, next) {
   // Root of tool router i.e. 'localhost:3001/data-entry/tool'
   // Probably where you'd want the get for basic data used elsewhere
   // AJAX call from submit on tool flow checklist
@@ -21,45 +21,23 @@ router.post('/', isLoggedIn, function(req, res, next) {
 
   console.log(req.body);
 
-  // Hardcoded params for US969 pr, need to modify script or request as needed
-  // Can be addressed when further integrating.
-  req.body.pageNum = 2;
-  req.body.taskNum = 0;
-  req.body.flipDir = 0;
-  req.body.coordsLeft = 0;
-  req.body.coordsTop = 0;
-  req.body.coordsWidth = 0;
-  req.body.coordsHeight = 0;
+  let resObj = [];
+  try {
+    // Database queries for information to populate drop downs
+    const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
+    const Technique = db.aQuery(
+        'SELECT abbreviation FROM analysis_techniques', []);
+    resObj = await Promise.all([Elements, Technique]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('components/tool_panel', {
+      Elements: resObj[0].rows,
+      Technique: resObj[1].rows,
+      hasTables: hasTables,
+    });
+  }
 
-  const options = {
-    mode: 'text',
-    // pythonPath: '../py',
-    pythonOptions: ['-u'], // get print results in real-time
-    scriptPath: sPath,
-    args: [JSON.stringify(req.body)],
-  };
-  // const result = '';
-  // console.log(JSON.stringify(req.body));
-  PythonShell.run('pdf_text_import.py', options, async function(err, result) {
-    if (err) throw err;
-    req.session.textHolder = result;
-    let resObj = [];
-    try {
-      // Database queries for information to populate drop downs
-      const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
-      const Technique = db.aQuery(
-          'SELECT abbreviation FROM analysis_techniques', []);
-      resObj = await Promise.all([Elements, Technique]);
-    } catch (err) {
-      next(createError(500));
-    } finally {
-      res.render('components/tool_panel', {
-        Elements: resObj[0].rows,
-        Technique: resObj[1].rows,
-        hasTables: hasTables,
-      });
-    }
-  });
   console.log(req.session.textHolder);
 });
 

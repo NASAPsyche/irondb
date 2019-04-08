@@ -5,6 +5,8 @@ const {isLoggedIn} = require('../middleware/auth');
 const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
+const {PythonShell} = require('python-shell');
+const sPath = path.join(__dirname, ('../../external/pdfScraper'));
 const fs = require('fs');
 
 // Mounting Routers
@@ -64,6 +66,22 @@ router.post('/', isLoggedIn, async function(req, res, next) {
           }
           fs.rename(oldpath, newpath, async function(err) {
             if (err) next(createError(500));
+            // Get text and number of page
+            const options = {
+              mode: 'text',
+              // pythonPath: '../py',
+              pythonOptions: ['-u'], // get print results in real-time
+              scriptPath: sPath,
+              args: [JSON.stringify(req.body)],
+            };
+            PythonShell.run('pdf_text_import.py', 
+                options, async function(err, result) {
+                  if (err) throw err;
+                  req.session.textHolder = result;
+                  // get pages
+                });
+
+            // Render checklitst template
             req.session.fileName = newpath.slice(21);
             let resObj = [];
             try {
