@@ -33,7 +33,7 @@ router.get('/secret', isLoggedIn, function(req, res, next) {
 });
 
 router.get('/test', isLoggedIn, function(req, res, next) {
-  res.render('test');
+  res.render('test', {isSignedIn: req.isAuthenticated()});
 });
 
 module.exports = router;
