@@ -43,15 +43,15 @@ async function updateEntry( obj, username ) {
     }
 
     await client.query('COMMIT');
+    return true;
   } catch (error) {
     //
     await client.query('ROLLBACK');
     console.error(error);
     return false;
   } finally {
-    // client.release();
+    client.release();
   }
-  return true;
 }
 
 
