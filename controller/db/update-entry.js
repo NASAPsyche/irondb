@@ -13,7 +13,7 @@ async function updateEntry( obj, username ) {
     return false;
   }
   if ( !Array.isArray(obj.actions) ) {
-    console.error('Request invlaid, actions needs to be an array');
+    console.error('Request invalid, actions needs to be an array');
     return false;
   }
   if ( obj.actions.length < 1 ) {
