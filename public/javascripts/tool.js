@@ -11,13 +11,34 @@ TechniqueArr = Technique.slice(0, -1).split(',');
 /** ----------------------------- */
 /**         Tool Specific         */
 /** ----------------------------- */
-// Render pdf
+// Render pdf and set filename value on checklist hidden input
 $('document').ready(function() {
   const fp = $( '#filepath' ).attr('value');
   const panel = $( '#pdf-panel' );
   // eslint-disable-next-line
   PDFObject.embed(fp, panel);
+
+  // Set hidden input
+  $('#fileName-checklist').attr('value', $('#filepath').attr('value').slice(6));
 });
+
+
+// No extraction checkbox
+$( '#event-div' ).on( 'click', '#manual', function() {
+  if ($('#manual').prop('checked') === true) {
+    // on check of manual, uncheck all other checkboxes
+    $('#collapse').collapse('hide');
+    $( '#attributes' ).prop( 'checked', false ).prop('disabled', true);
+    $( '#allTables' ).prop( 'checked', false ).prop('disabled', true);
+    $( '#singleTable' ).prop( 'checked', false ).prop('disabled', true);
+  } else {
+    // on uncheck renable other checkboxes
+    $( '#attributes' ).prop('disabled', false);
+    $( '#allTables' ).prop('disabled', false);
+    $( '#singleTable' ).prop('disabled', false);
+  }
+});
+
 
 // Submit checklist and replace with ui
 $( '#checklist-form' ).on( 'submit', function( event ) {
@@ -30,8 +51,9 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
   });
 });
 
+
 // Table button ajax post
-$( '#event-div' ).on('submit', '#single-page-form', function( event ) {
+$( '#table-div' ).on('submit', '#single-page-form', function( event ) {
   event.preventDefault();
 
   $('#modal-table').prop('disabled', true);
@@ -39,11 +61,25 @@ $( '#event-div' ).on('submit', '#single-page-form', function( event ) {
   $.post('/data-entry/tool/onePageTables',
       $(this).serialize(), function( data ) {
         $('#table-target').append(data);
-        $('#tableModal').modal('hide');
         $('#modal-table').prop('disabled', false);
       });
 });
 
+
+// Toggle single table form visible
+$('#event-div').on('click', '#tableToggle', function() {
+  $('#event-div').prop('hidden', true);
+  $('#table-div').prop('hidden', false);
+});
+
+
+// Toggle editor visible
+$('#event-div').on('click', '#cancel-btn', function() {
+  $('#event-div').prop('hidden', false);
+  $('#table-div').prop('hidden', true);
+});
+
+// Validation button
 $('#event-div').on('click', '#validate-btn', function() {
   if ($('#table-data-input').length) {
     // serialize all tables
@@ -73,6 +109,7 @@ $('#event-div').on('click', '#validate-btn', function() {
     console.log(data);
   });
 });
+
 
 $('#event-div').on('click', '#override-btn', function() {
   $('#submit-btn').prop('disabled', false);
