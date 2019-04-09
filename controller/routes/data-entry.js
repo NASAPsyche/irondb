@@ -6,7 +6,7 @@ const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
 const {PythonShell} = require('python-shell');
-const sPath = path.join(__dirname, ('../../external/pdfScraper'));
+const sPath = path.join(__dirname, ('../../../external/pdfScraper'));
 const fs = require('fs');
 
 // Mounting Routers
@@ -74,7 +74,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
               scriptPath: sPath,
               args: [JSON.stringify(req.body)],
             };
-            PythonShell.run('pdf_text_import.py', 
+            PythonShell.run('pdf_text_import.py',
                 options, async function(err, result) {
                   if (err) throw err;
                   req.session.textHolder = result;

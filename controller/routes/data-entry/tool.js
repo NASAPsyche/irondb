@@ -3,7 +3,7 @@ const router = new Router();
 const db = require('../../db');
 const {PythonShell} = require('python-shell');
 const path = require('path');
-const sPath = path.join(__dirname, ('../../py/'));
+const sPath = path.join(__dirname, ('../../../external/pdfScraper'));
 // eslint-disable-next-line new-cap
 const {isLoggedIn} = require('../../middleware/auth');
 const createError = require('http-errors');
@@ -15,7 +15,9 @@ router.post('/', isLoggedIn, async function(req, res, next) {
 
   // set tables flag if tables selected from checklist
   let hasTables = false;
-  if (req.body.hasOwnProperty('tables') && req.body.tables === 'on') {
+  if ((req.body.hasOwnProperty('allTables') && req.body.allTables === 'on')
+      || (req.body.hasOwnProperty('singleTable')
+          && req.body.singleTable === 'on')) {
     hasTables = true;
   }
 
@@ -41,7 +43,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   console.log(req.session.textHolder);
 });
 
-router.get('/allPagesTables', isLoggedIn, function(req, res, next) {
+router.post('/allPagesTables', isLoggedIn, function(req, res, next) {
   // route to request all tables from all pages
   const options = {
     mode: 'text',

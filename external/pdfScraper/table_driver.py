@@ -30,12 +30,12 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/WassonandKallemeyn_GCA_2002.pdf",
        "pdfs/RuzickaandHutson2010.pdf"]
 
-fileName = pdf[9]
+fileName = pdf[1]
 # print(fileName)
 
 # j = json.loads(sys.argv[1])
 # fileName = j['fileName']
-# fileName = '/usr/app/controller/py/WassonandChoe_GCA_2009.pdf'
+# fileName = '/usr/app/external/pdfScraper/' + fileName
 # pageNum = int(j['pageNum'])
 # taskNum = int(j['taskNum'])
 # flipDir = int(j['flipDir'])
