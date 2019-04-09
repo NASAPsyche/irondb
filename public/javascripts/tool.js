@@ -43,11 +43,25 @@ $( '#event-div' ).on( 'click', '#manual', function() {
 // Submit checklist and replace with ui
 $( '#checklist-form' ).on( 'submit', function( event ) {
   event.preventDefault();
+
+  // JSON of checklist inputs
+  const formData = $('#checklist-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    postData[formData[i].name] = formData[i].value;
+  }
+
   // eslint-disable-next-line no-invalid-this
-  $.post('/data-entry/tool/', $(this).serialize(), function( data ) {
+  $.post('/data-entry/tool/', postData, function( data ) {
     // Remove checklist and replace with ui panel
     $('#secondary-panel').replaceWith( data );
     $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
+    if (postData.hasOwnProperty('singleTable')
+        && postData.singleTable === 'on') {
+      $.post('/data-entry/tool/onePageTables', postData, function(data) {
+        $('#table-target').append(data);
+      });
+    }
   });
 });
 
@@ -55,7 +69,6 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
 // Table button ajax post
 $( '#table-div' ).on('submit', '#single-page-form', function( event ) {
   event.preventDefault();
-
   $('#modal-table').prop('disabled', true);
   // eslint-disable-next-line no-invalid-this
   $.post('/data-entry/tool/onePageTables',
