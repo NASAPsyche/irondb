@@ -6,7 +6,7 @@ const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
 const {PythonShell} = require('python-shell');
-const sPath = path.join(__dirname, ('../../../external/pdfScraper'));
+const sPath = path.join(__dirname, ('../../external/pdfScraper'));
 const fs = require('fs');
 
 // Mounting Routers
@@ -67,39 +67,40 @@ router.post('/', isLoggedIn, async function(req, res, next) {
           fs.rename(oldpath, newpath, async function(err) {
             if (err) next(createError(500));
             // Get text and number of page
+            req.session.fileName = newpath.slice(21);
             const options = {
               mode: 'text',
               // pythonPath: '../py',
               pythonOptions: ['-u'], // get print results in real-time
               scriptPath: sPath,
-              args: [JSON.stringify(req.body)],
+              args: [JSON.stringify(req.session)],
             };
             PythonShell.run('pdf_text_import.py',
                 options, async function(err, result) {
                   if (err) throw err;
                   req.session.textHolder = result;
+                  console.log(result);
                   // get pages
+                  // Render checklitst template
+                  let resObj = [];
+                  try {
+                    const Elements = db.aQuery(
+                        'SELECT symbol FROM element_symbols', []);
+                    const Technique = db.aQuery(
+                        'SELECT abbreviation FROM analysis_techniques', []);
+                    resObj = await Promise.all([Elements, Technique]);
+                  } catch (err) {
+                    next(createError(500));
+                  } finally {
+                    res.render('tool', {
+                      data: newpath.slice(15),
+                      username: req.user.username,
+                      Elements: resObj[0].rows,
+                      Technique: resObj[1].rows,
+                      numOfPages: result[0],
+                    });
+                  }
                 });
-
-            // Render checklitst template
-            req.session.fileName = newpath.slice(21);
-            let resObj = [];
-            try {
-              const Elements = db.aQuery(
-                  'SELECT symbol FROM element_symbols', []);
-              const Technique = db.aQuery(
-                  'SELECT abbreviation FROM analysis_techniques', []);
-              resObj = await Promise.all([Elements, Technique]);
-            } catch (err) {
-              next(createError(500));
-            } finally {
-              res.render('tool', {
-                data: newpath.slice(15),
-                username: req.user.username,
-                Elements: resObj[0].rows,
-                Technique: resObj[1].rows,
-              });
-            }
           });
         });
       } catch (err) {
