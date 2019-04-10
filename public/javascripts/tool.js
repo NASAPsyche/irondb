@@ -62,6 +62,12 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
         $('#table-target').append(data);
       });
     }
+    if (postData.hasOwnProperty('allTables')
+        && postData.allTables === 'on') {
+      $.post('/data-entry/tool/allPagesTables', postData, function(data) {
+        $('#table-target').append(data);
+      });
+    }
   });
 });
 
