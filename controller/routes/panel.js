@@ -57,8 +57,19 @@ router.get('/user', isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.get('/analysis-technique', isAdmin, function(req, res, next) {
-  res.render('analysis-technique');
+router.get('/analysis-technique', isAdmin, async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Techniques = db.aQuery('SELECT * FROM analysis_techniques', []);
+    resObj = await Promise.all([Techniques]);
+    console.log(resObj[0]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('analysis-technique', {
+      Technique: resObj[0].rows,
+    });
+  }
 });
 
 module.exports = router;

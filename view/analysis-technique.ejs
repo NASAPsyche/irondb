@@ -8,10 +8,43 @@
 
 <body>
     <%- include('components/navbar_signed_in'); %>
+    <div class="container col-md-7 mt-5 mb-2 pt-3 pb-2">
+        <div class="row">
+            <div class="col-md-4 card mr-2" id=>
 
-    <h1>Placeholder for analysis technique</h1>
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Current Analysis Techniques:</th>
 
-    <%- include('bootstrap/js'); %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i=0; i < Technique.length; i++) { %>
+                        <tr>
+                            <td>
+                                <%= Technique[i].abbreviation %>
+                            </td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md card ml-2">
+                <div class="card-body">
+                    <h5 class="card-title">Enter New Analysis Technique</h5>
+                    <form action="/panel/analysis-technique" method="post" class="form-row">
+                        <div class="card-text pt-2 pb-2">
+                            <input class="form-control" type="text" id="new-technique">
+                        </div>
+                    </form>
+                    <button type="button" class="btn btn-danger">Add To Database</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    < <%- include('bootstrap/js'); %>
 </body>
 
 </html>
