@@ -43,7 +43,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   console.log(req.session.textHolder);
 });
 
-router.post('/allPagesTables', isLoggedIn, function(req, res, next) {
+router.post('/allPagesTables', isLoggedIn, async function(req, res, next) {
   // route to request all tables from all pages
   const options = {
     mode: 'text',
@@ -54,16 +54,28 @@ router.post('/allPagesTables', isLoggedIn, function(req, res, next) {
   };
   // const result = '';
   // console.log(JSON.stringify(req.body));
-  PythonShell.run('table_driver.py', options, function(err, results) {
+  PythonShell.run('table_driver.py', options, async function(err, results) {
     if (err) throw err;
     // results is an array consisting of messages collected during execution
     // Debugging test for pr only, delete immediately in new branch
     // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
 
-    res.send(results);
-    // res.render('components/table-xhr-response', {
-    //   Results: JSON.parse(results[0].slice(2, -2)),
-    // });
+    let resObj = [];
+    try {
+      const Technique = db.aQuery(
+          'SELECT abbreviation FROM analysis_techniques', []);
+      resObj = await Promise.all([Technique]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+      console.log(results);
+      console.log('------------');
+      console.log(results[0].slice(2, -2));
+      res.render('components/table-xhr-response', {
+        Results: results[0],
+        Technique: resObj[0].rows,
+      });
+    }
   });
 });
 
@@ -128,7 +140,7 @@ router.post('/onePageTables', isLoggedIn, function(req, res, next) {
           console.log(results);
           console.log('------------');
           console.log(results[0].slice(2, -2));
-          res.render('components/table-xhr-response', {
+          res.render('components/table-xhr-response-single-table', {
             Results: JSON.parse(results[0].slice(2, -2)),
             Technique: resObj[0].rows,
           });
