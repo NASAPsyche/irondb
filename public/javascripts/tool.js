@@ -69,27 +69,26 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
 // Table button ajax post
 $( '#table-div' ).on('submit', '#single-page-form', function( event ) {
   event.preventDefault();
-  $('#modal-table').prop('disabled', true);
+  $('#get-btn').prop('disabled', true);
   // eslint-disable-next-line no-invalid-this
   $.post('/data-entry/tool/onePageTables',
       $(this).serialize(), function( data ) {
         $('#table-target').append(data);
-        $('#modal-table').prop('disabled', false);
+        showEditor();
+        $('#get-btn').prop('disabled', false);
       });
 });
 
 
-// Toggle single table form visible
+// Single Table Form Button
 $('#event-div').on('click', '#tableToggle', function() {
-  $('#event-div').prop('hidden', true);
-  $('#table-div').prop('hidden', false);
+  hideEditor();
 });
 
 
-// Toggle editor visible
-$('#event-div').on('click', '#cancel-btn', function() {
-  $('#event-div').prop('hidden', false);
-  $('#table-div').prop('hidden', true);
+// Cancel Button
+$('#table-div').on('click', '#cancel-btn', function() {
+  showEditor();
 });
 
 // Validation button
@@ -128,10 +127,9 @@ $('#event-div').on('click', '#override-btn', function() {
   $('#submit-btn').prop('disabled', false);
 });
 
-
-$( '#event-div' ).on('click', 'button.table-edit', function() {
-  console.log('clicked edit');
-});
+/** ---------------------------- */
+/**    Functions Declarations    */
+/** ---------------------------- */
 
 /**
  * @param  {object} rows JQuery collection of rows
@@ -139,32 +137,77 @@ $( '#event-div' ).on('click', 'button.table-edit', function() {
  */
 function serializeTable(rows) {
   // Serialize table
-  const tableData = {};
+  const tableData = [];
+  const techniqueColumns = [];
+  const elementColums = [];
+  const unitColumns = [];
+  const meteoriteRows = [];
+
   $.each( rows, function(rowIndex, value) {
     $.each( $(this).children(), function(columnIndex, value) {
-      if (tableData.hasOwnProperty(columnIndex.toString()) === false) {
-        tableData[columnIndex] = {};
-      }
-
-      if (rowIndex === 0) {
-        // Set cell equal to it's value or null if empty
-        tableData[columnIndex][rowIndex] = $(value)
-            .children('select').attr('value') === '' ? null : $(value)
-                .children('select').val();
-      } else {
-        // Set cell equal to it's value or null if empty
-        tableData[columnIndex][rowIndex] = $(value)
+      if (columnIndex === 0) {
+        // meteorite name
+        meteoriteRows[rowIndex] = $(value)
             .children('input').attr('value') === '' ? null : $(value)
                 .children('input').val();
+      } else if (rowIndex === 0) {
+        // Analysis Technique
+        techniqueColumns[columnIndex] = $(value)
+            .children('select').attr('value') === '' ? null : $(value)
+                .children('select').val();
+      } else if (rowIndex === 1 && columnIndex !== 0) {
+        // Element
+        elementColums[columnIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      } else if (rowIndex === 2 && columnIndex !== 0) {
+        // Unit
+        unitColumns[columnIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      }
+    });
+  });
+
+  // Add each cell with accompanying values to table array
+  let temp = {};
+  $.each( rows, function(rowIndex, value) {
+    $.each( $(this).children(), function(columnIndex, value) {
+      if (columnIndex > 0 && rowIndex > 2) {
+        // Fill temp with cells attributes
+        temp.analysis_technique = techniqueColumns[columnIndex];
+        temp.meteorite_name = meteoriteRows[rowIndex];
+        temp.element = elementColums[columnIndex];
+        temp.units = unitColumns[columnIndex];
+        temp.measurement = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+        // temp.col = columnIndex;
+        // temp.row = rowIndex;
+        // Push and reset temp
+        tableData.push(temp);
+        temp = {};
       }
     });
   });
   return tableData;
 }
 
-/** ---------------------------- */
-/**    Functions Declarations    */
-/** ---------------------------- */
+/**
+ * @description Hides Editor to visible and Toggles signle table form to visible
+ */
+function hideEditor() {
+  $('#event-div').prop('hidden', true);
+  $('#table-div').prop('hidden', false);
+}
+
+/**
+ * @description Toggles Editor to visible and hides single table form
+ */
+function showEditor() {
+  $('#event-div').prop('hidden', false);
+  $('#table-div').prop('hidden', true);
+}
 
 
 /**
