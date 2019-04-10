@@ -57,5 +57,9 @@ router.get('/user', isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get('/analysis-technique', isAdmin, function(req, res, next) {
+  res.render('analysis-technique');
+});
+
 module.exports = router;
 
