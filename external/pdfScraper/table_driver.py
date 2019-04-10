@@ -28,12 +28,12 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
        "pdfs/WassonandKallemeyn_GCA_2002.pdf",
        "pdfs/RuzickaandHutson2010.pdf"]
 
-fileName = pdf[1]
+# fileName = pdf[1]
 # print(fileName)
 
 j = json.loads(sys.argv[1])
 fileName = j['fileName']
-fileName = '/usr/app/external/pdfScraper/' + fileName
+fileName = '/usr/app/public/temp/' + fileName
 
 tables = []
 json_pages_confirmed = []
@@ -88,5 +88,4 @@ for ind in range(len(tables)):
     tables[ind] = '{\"actual_page\":' + str(json_pages_confirmed[ind]["actual_page"]) \
                   + ',\"pdf_page\": ' + str(json_pages_confirmed[ind]["pdf_page"]) \
                   + ', \"Table\":' + tables[ind].to_json() + '}'
-    # print(tables[ind])
 print(tables)
