@@ -179,11 +179,19 @@ function serializeTable(rows) {
         temp.meteorite_name = meteoriteRows[rowIndex];
         temp.element = elementColums[columnIndex];
         temp.units = unitColumns[columnIndex];
-        temp.measurement = $(value)
-            .children('input').attr('value') === '' ? null : $(value)
-                .children('input').val();
-        // temp.col = columnIndex;
-        // temp.row = rowIndex;
+        if ($(value).children('input').attr('value').charAt(0) === '<') {
+          temp.less_than = true;
+          temp.measurement = $(value)
+              .children('input').attr('value').slice(1);
+        } else {
+          temp.less_than = false;
+          temp.measurement = $(value)
+              .children('input').attr('value') === '' ? null : $(value)
+                  .children('input').val();
+        }
+        temp.column = columnIndex;
+        temp.row = rowIndex;
+
         // Push and reset temp
         tableData.push(temp);
         temp = {};
