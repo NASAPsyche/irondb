@@ -1,5 +1,6 @@
 <form method="POST" action="/data-entry/tool" class="border border-dark bg mx-auto p-5 mt-5 mb-5" id="checklist-form">
     <h3 class="pb-1 align-items-center">Options</h3>
+    <% if (numOfPages !== -1 ) { %>
     <div class="form-group">
         <input class="form-check-input" type="checkbox" name="attributes" id="attributes">
         <label class="form-check-label" for="attributes">
@@ -29,26 +30,9 @@
             <div class="form-group pl-3">
                 <label for="pageNum">Page Number <small><em><sup>*</sup>required</em></small></label>
                 <select class="form-control" name="pageNum" id="pageNum">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
+                    <% for (var i = 0; i < numOfPages; i++) { %>
+                        <option value="<%= i + 1 %>"><%= i + 1 %></option>
+                    <% } %>
                 </select>
             </div>
             <!-- Some form of directional input, probably just number -360 to 360 -->
@@ -89,9 +73,18 @@
         </div>
     </div>
 
+    <% } else { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error: </strong>
+            The pdf you uploaded is unable to be processed. Please continue manually or try uploading another pdf.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <% } %>
     <hr class="text-danger mt-1">
     <div class="form-group">
-        <input class="form-check-input" type="checkbox" name="manual" id="manual">
+        <input class="form-check-input" type="checkbox" name="manual" id="manual" <% if (numOfPages === -1 ) { %> checked <% } %> >
         <label class="form-check-label" for="manual">No Automatic Data Extraction</label>
     </div>
 
