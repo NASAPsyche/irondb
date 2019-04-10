@@ -17,8 +17,8 @@ coordsLeft = int(j['coordsLeft'])
 coordsTop = int(j['coordsTop'])
 coordsWidth = int(j['coordsWidth'])
 coordsHeight = int(j['coordsHeight'])
-
-print(fileName)
+#
+# print(fileName)
 # pdfname = '/usr/app/external/pdfScraper/pdfs/WassonandChoe_GCA_2009.pdf'
 tables = []
 
