@@ -72,5 +72,25 @@ router.get('/analysis-technique', isAdmin, async (req, res, next) => {
   }
 });
 
+router.post('/analysis-technique', isAdmin, async (req, res, next) => {
+  const client = await db.pool.connect();
+  try {
+    console.log(`REQ BODY IS ${JSON.stringify(req.body)}`);
+    await client.query('BEGIN');
+    const insertQuery =
+      `INSERT INTO analysis_techniques(abbreviation) VALUES($1)`;
+    const insertValues = [req.body.technique];
+    await client.query(insertQuery, insertValues);
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    next(createError(500));
+  } finally {
+    client.release();
+  }
+  res.json({ok: true});
+});
+
+
 module.exports = router;
 
