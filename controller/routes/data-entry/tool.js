@@ -101,7 +101,7 @@ router.post('/onePageTables', isLoggedIn, function(req, res, next) {
     args: [JSON.stringify(req.body)],
   };
   // const result = '';
-  // console.log(JSON.stringify(req.body));
+  console.log(JSON.stringify(req.body));
 
 
   PythonShell.run('table_driver_single.py',
@@ -125,6 +125,7 @@ router.post('/onePageTables', isLoggedIn, function(req, res, next) {
         } catch (err) {
           next(createError(500));
         } finally {
+          console.log(results);
           res.render('components/table-xhr-response', {
             Results: JSON.parse(results[0].slice(2, -2)),
             Technique: resObj[0].rows,
