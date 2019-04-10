@@ -10,10 +10,8 @@ __date__ = "11/7/18"
 
 import PyPDF2
 from tabula import read_pdf
-import re
-import sys
 from copy import deepcopy
-import json
+import sys, json
 import pdf_text_import as pti
 import table_cleaner as tc
 import table_page_finder as tpf
@@ -33,17 +31,9 @@ pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
 fileName = pdf[1]
 # print(fileName)
 
-# j = json.loads(sys.argv[1])
-# fileName = j['fileName']
-# fileName = '/usr/app/external/pdfScraper/' + fileName
-# pageNum = int(j['pageNum'])
-# taskNum = int(j['taskNum'])
-# flipDir = int(j['flipDir'])
-# coordsLeft = j['coordsLeft']
-# coordsTop = j['coordsTop']
-# coordsWidth = j['coordsWidth']
-# coordsHeight = j['coordsHeight']
-
+j = json.loads(sys.argv[1])
+fileName = j['fileName']
+fileName = '/usr/app/external/pdfScraper/' + fileName
 
 tables = []
 json_pages_confirmed = []
