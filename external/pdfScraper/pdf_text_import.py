@@ -17,17 +17,13 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
-# j = json.loads(sys.argv[1])
-# # fileName = j['fileName']
-# fileName = '/usr/app/controller/py/WassonandChoe_GCA_2009.pdf'
-# pageNum = int(j['pageNum'])
-# taskNum = int(j['taskNum'])
-# flipDir = int(j['flipDir'])
-# coordsLeft = j['coordsLeft']
-# coordsTop = j['coordsTop']
-# coordsWidth = j['coordsWidth']
-# coordsHeight = j['coordsHeight']
+j = json.loads(sys.argv[1])
+fileName = j['fileName']
+fileName = '/usr/app/public/temp/' + fileName
 
+# START Get number of Pages
+total_pages = PyPDF2.PdfFileReader(open(fileName, 'rb')).numPages
+print(total_pages)
 
 # START This function imports raw text import from a chosen pdf request.
 def convert_pdf_to_txt(path, pageNo=0):
