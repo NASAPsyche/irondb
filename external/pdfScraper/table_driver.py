@@ -88,4 +88,4 @@ for ind in range(len(tables)):
     tables[ind] = '{\"actual_page\":' + str(json_pages_confirmed[ind]["actual_page"]) \
                   + ',\"pdf_page\": ' + str(json_pages_confirmed[ind]["pdf_page"]) \
                   + ', \"Table\":' + tables[ind].to_json() + '}'
-print(tables)
+    print(tables[ind])
