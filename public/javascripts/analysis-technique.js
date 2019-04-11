@@ -15,7 +15,6 @@ $(document).ready(function() {
         $('#exists').attr('hidden', true);
         if (confirm) {
           $('.alert').attr('hidden', true);
-          console.log(`data is ${technique}`);
           data = JSON.stringify({'technique': technique});
           await postData(data);
           window.location.reload();
@@ -23,16 +22,12 @@ $(document).ready(function() {
           $('#success').attr('hidden', false);
         }
       } else {
-        console.log('Already Exists');
         $('#blank').attr('hidden', true);
         $('#exists').attr('hidden', false);
-        console.log(existing);
       }
     } else {
       console.log('null');
       $('#blank').attr('hidden', false);
-      alreadyExists();
-      console.log(existing);
     }
   });
 });
@@ -59,7 +54,6 @@ function existingEntries() {
 function alreadyExists(string) {
   const entries = existingEntries();
   const result = entries.includes(string);
-  console.log(`Already exists is ${result}`);
   return result;
 }
 
