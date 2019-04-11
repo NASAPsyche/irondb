@@ -1,17 +1,16 @@
 import PyPDF2
 import sys
-import os
+import os.path
 import json
 from tabula import read_pdf
-import pandas as pd
-pd.options.display.max_rows = 999
-pd.options.display.max_columns = 999
-
+import pdf_text_import as pti
+import table_page_finder as tpf
 
 j = json.loads(sys.argv[1])
 fileName = j['fileName']
 fileName = '/usr/app/public/temp/' + fileName
 pageNum = int(j['pageNum'])
+total_pages = [pageNum]
 flipDir = int(j['flipDir'])
 coordsLeft = int(j['coordsLeft'])
 coordsTop = int(j['coordsTop'])
@@ -48,7 +47,11 @@ else:
                   pages=pageNum, silent=True)
 if len(tables) > 0:
     for ind in range(len(tables)):
-        tables[ind] = '{ \"Table\":' + tables[ind].to_json() + '}'
+        tables[ind] = '{\"actual_page\":' + str(0) \
+                      + ',\"pdf_page\": ' + str(pageNum) \
+                      + ', \"Table\":' + tables[ind].to_json() + '}'
+        print(tables[ind])
 
-print(tables)
+else:
+    print("-1000")
 

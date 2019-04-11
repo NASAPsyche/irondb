@@ -141,7 +141,7 @@ router.post('/onePageTables', isLoggedIn, function(req, res, next) {
           console.log('------------');
           console.log(results[0].slice(2, -2));
           res.render('components/table-xhr-response-single-table', {
-            Results: JSON.parse(results[0].slice(2, -2)),
+            Results: results,
             Technique: resObj[0].rows,
           });
         }
