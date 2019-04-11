@@ -6,7 +6,7 @@
 
 CREATE TABLE IF NOT EXISTS analysis_techniques (
     technique_id serial PRIMARY KEY,
-    abbreviation text UNIQUE NOT NULL
+    abbreviation citext UNIQUE NOT NULL
 );
 
 INSERT INTO analysis_techniques (abbreviation)
