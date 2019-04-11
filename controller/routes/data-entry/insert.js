@@ -1,11 +1,11 @@
-// const createError = require('http-errors');
-// const pg = require('../../db');
 const parser = require('../../db/entry-parser');
 const inserter = require('../../db/insert-entry');
 const Router = require('express-promise-router');
 const router = new Router();
+const {isLoggedIn} = require('../../middleware/auth');
 
-router.post('/', async (req, res, next) => {
+
+router.post('/', isLoggedIn, async (req, res, next) => {
   const reqBody = req.body;
   const username = req.user.username;
   let pdfPath = 'null';
