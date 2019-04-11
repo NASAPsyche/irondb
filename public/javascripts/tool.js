@@ -85,6 +85,10 @@ $( '#table-div' ).on('submit', '#single-page-form', function( event ) {
       });
 });
 
+// remove inline style on change
+$('#event-div').on('change', 'input.page-number', function() {
+  $(this).removeAttr('style');
+});
 
 // Remove Table X-Button
 $('#event-div').on('click', 'i.remove-table', function() {
