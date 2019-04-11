@@ -75,7 +75,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
               scriptPath: sPath,
               args: [JSON.stringify(req.session)],
             };
-            PythonShell.run('pdf_text_import.py',
+            PythonShell.run('pdf_num_pages.py',
                 options, async function(err, result) {
                   if (err) throw err;
                   req.session.textHolder = result;
