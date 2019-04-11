@@ -72,7 +72,7 @@ router.post('/allPagesTables', isLoggedIn, async function(req, res, next) {
       console.log('------------');
       console.log(results[0].slice(2, -2));
       res.render('components/table-xhr-response', {
-        Results: results[0],
+        Results: results,
         Technique: resObj[0].rows,
       });
     }

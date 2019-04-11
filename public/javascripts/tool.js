@@ -86,6 +86,13 @@ $( '#table-div' ).on('submit', '#single-page-form', function( event ) {
 });
 
 
+// Remove Table X-Button
+$('#event-div').on('click', 'i.remove-table', function() {
+  // remove closest div.table
+  $(this).closest('div.table').remove();
+});
+
+
 // Single Table Form Button
 $('#event-div').on('click', '#tableToggle', function() {
   hideEditor();
@@ -102,10 +109,9 @@ $('#event-div').on('click', '#validate-btn', function() {
   if ($('#table-data-input').length) {
     // serialize all tables
     const tables = [];
-    const tableObjects = $('#table-target').children('div.table-div');
+    const tableObjects = $('#table-target').children('div.table');
     $.each( tableObjects, function(tableIndex, table) {
-      const rows = $(table).children('table').children('tbody').children();
-      tables.push(serializeTable(rows));
+      tables.push(serializeTable(table));
     });
     $('#table-data-input').attr('value', JSON.stringify(tables));
   }
@@ -138,12 +144,16 @@ $('#event-div').on('click', '#override-btn', function() {
 /** ---------------------------- */
 
 /**
- * @param  {object} rows JQuery collection of rows
- * @return {json} json serialization of table
+ * @param  {object} table html element of given table div
+ * @return {json} json serialization of table xhr response div
  */
-function serializeTable(rows) {
-  // Serialize table
-  const tableData = [];
+function serializeTable(table) {
+  const rows = $(table).children('table').children('tbody').children();
+  const pageNumber = $(table).children('div.page-row')
+      .children('div').children('label').children('input').val();
+  const tableObj = {};
+
+  const cellData = [];
   const techniqueColumns = [];
   const elementColums = [];
   const unitColumns = [];
@@ -199,12 +209,15 @@ function serializeTable(rows) {
         temp.row = rowIndex;
 
         // Push and reset temp
-        tableData.push(temp);
+        cellData.push(temp);
         temp = {};
       }
     });
   });
-  return tableData;
+
+  tableObj.page_number = pageNumber;
+  tableObj.cells = cellData;
+  return tableObj;
 }
 
 /**
