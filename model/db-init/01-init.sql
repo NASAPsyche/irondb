@@ -69,7 +69,7 @@ $$ LANGUAGE plpythonu;
 -------------------
 
 -- From the example at : https://github.com/voxpelli/node-connect-pg-simple/blob/HEAD/table.sql
-CREATE TABLE "user_session" (
+CREATE TABLE IF NOT EXISTS "user_session" (
   "sid" varchar NOT NULL COLLATE "default",
 	"sess" json NOT NULL,
 	"expire" timestamp(6) NOT NULL
