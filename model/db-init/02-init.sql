@@ -737,7 +737,10 @@ SELECT DISTINCT t1.paper_id,
    t3.submission_id
    FROM full_attributions_all AS t1
    INNER JOIN all_aggregated_authors_by_paper_id AS t2 ON t1.paper_id = t2.paper_id
-   JOIN (SELECT * FROM paper_status WHERE submission_id IS NOT NULL) AS t3 ON t1.paper_id = t3.paper_id
+   JOIN (SELECT * FROM paper_status 
+         WHERE submission_id IS NOT NULL 
+         AND current_status != 'rejected') 
+   AS t3 ON t1.paper_id = t3.paper_id
    ORDER BY t1.current_status ASC
 );
 

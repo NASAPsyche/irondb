@@ -17,6 +17,9 @@ router.use('/insert', insertRouter);
 const updateRouter = require('./data-entry/update');
 router.use('/insert/update', updateRouter);
 
+const deleteRouter = require('./data-entry/delete');
+router.use('/delete', deleteRouter);
+
 const resumeRouter = require('./data-entry/resume');
 router.use('/resume', resumeRouter);
 

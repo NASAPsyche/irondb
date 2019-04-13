@@ -42,6 +42,26 @@ async function updateEntry( obj, username ) {
       }
     }
 
+    // If command 'delete' on object set submission pending to false
+    // Otherwise set to true
+    if ( obj.hasOwnProperty('command') && obj.command === 'delete' ) {
+      const query = `
+      UPDATE submissions
+      SET pending = ($1)
+      WHERE submission_id = ($2)
+      `;
+      const values = [false, submissionID];
+      await client.query(query, values);
+    } else {
+      const query = `
+      UPDATE submissions
+      SET pending = ($1)
+      WHERE submission_id = ($2)
+      `;
+      const values = [true, submissionID];
+      await client.query(query, values);
+    }
+
     await client.query('COMMIT');
     return true;
   } catch (error) {
