@@ -22,6 +22,7 @@
                     <th>Year</th>
                     <th>Author(s)</th>
                     <th>Status</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody class='table-light'>
@@ -41,6 +42,16 @@
                     </th>
                     <th>
                         <%= Entries[i].current_status %>
+                    </th>
+                    <th>
+                        <div class="row ml-2  mr-2 mr-md-0">
+                            <form action="/data-entry/editor/update" method="POST">
+                                <label class="sr-only" for="submissionID">submission id of entry</label>
+                                <input type="hidden" name="submissionID" value=<%= Entries[i].submission_id %>>
+                                <button class="btn btn-warning" type="submit">Edit</button>
+                            </form>
+                            <button class="btn btn-danger mt-2 mt-xl-0 ml-xl-2 delete-btn">Delete</button>
+                        </div>
                     </th>
                     <% } %>
                 </tr>
