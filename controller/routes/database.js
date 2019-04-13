@@ -547,6 +547,22 @@ router.get('/all', isAdmin, async (req, res, next) => {
   }
 });
 
+/* GET /database/own */
+router.get('/own', isLoggedIn, async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery(
+        'SELECT * FROM all_papers_with_authors WHERE submitted_by = $1',
+        [req.user.username]
+    );
+    resObj = await Promise.all([Entries]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('own-entries', {Entries: resObj[0].rows});
+  }
+});
+
 module.exports = router;
 
 
