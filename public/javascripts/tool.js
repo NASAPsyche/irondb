@@ -56,17 +56,21 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     // Remove checklist and replace with ui panel
     $('#secondary-panel').replaceWith( data );
     $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
+
     if (postData.hasOwnProperty('attributes')
     && postData.attributes === 'on') {
       $.post('/data-entry/tool/attributes', postData, function(data) {
         $('#event-div').append(data);
-    });
+      });
+    }
+
     if (postData.hasOwnProperty('singleTable')
         && postData.singleTable === 'on') {
       $.post('/data-entry/tool/onePageTables', postData, function(data) {
         $('#table-target').append(data);
       });
     }
+
     if (postData.hasOwnProperty('allTables')
         && postData.allTables === 'on') {
       $.post('/data-entry/tool/allPagesTables', postData, function(data) {
