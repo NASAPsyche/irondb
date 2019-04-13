@@ -492,27 +492,28 @@ router.post('/export', async (req, res, next) => {
 });
 
 
+// Unimplemented due to timeline limitation
 /* GET /database/reported */
-router.get('/reported', isLoggedIn, function(req, res, next) {
-  db.query(
-      'SELECT * FROM flagged_entries_panel', [],
-      (dbErr1, dbRes1) => {
-        if (dbErr1) {
-          return next(dbErr1);
-        }
-        db.query(
-        /* eslint-disable-next-line max-len */
-            'SELECT * FROM inactive_entries_panel', [], (dbErr2, dbRes2) => {
-              if (dbErr2) {
-                return next(dbErr2);
-              }
-              res.render('db-reported', {
-                Reported: dbRes1.rows,
-                Inactive: dbRes2.rows,
-              });
-            });
-      });
-});
+// router.get('/reported', isLoggedIn, function(req, res, next) {
+//   db.query(
+//       'SELECT * FROM flagged_entries_panel', [],
+//       (dbErr1, dbRes1) => {
+//         if (dbErr1) {
+//           return next(dbErr1);
+//         }
+//         db.query(
+//         /* eslint-disable-next-line max-len */
+//             'SELECT * FROM inactive_entries_panel', [], (dbErr2, dbRes2) => {
+//               if (dbErr2) {
+//                 return next(dbErr2);
+//               }
+//               res.render('db-reported', {
+//                 Reported: dbRes1.rows,
+//                 Inactive: dbRes2.rows,
+//               });
+//             });
+//       });
+// });
 
 
 /* GET /database/unapproved */
