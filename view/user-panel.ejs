@@ -66,7 +66,73 @@
     </div>
     <% } %>
   </div>
-  
+
+  <div class="container card mt-5 pt-2 pb-2" id="own-entries">
+    <div>
+   <a class="btn btn-danger btn-large p-2 text-warning " href="../database/own" role="button"> <u>Own Entries</u>
+        <span class="h1 badge badge-light">
+        <% let ownEntriesCount = ownCount <= 3 ? ownCount : "3+" %>
+        <%= ownEntriesCount %></span>
+      </a>
+    </div>
+    <div>
+      <table class="table table-stripd table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th>Paper Id</th>
+            <th>Title</th>
+            <th>Year</th>
+            <th>Authors</th>
+          </tr>
+        </thead>
+        <tbody class='table-light'>
+          <% let db = (OwnEntries.length < 3 ? OwnEntries.length : 3) %>
+          <% for(var i=0; i < db; i++) { %>
+          <tr>
+            <th>
+              <%= OwnEntries[i].paper_id %>
+            </th>
+            <th>
+              <%= OwnEntries[i].title %>
+            </th>
+            <th>
+              <%= OwnEntries[i].published_year %>
+            </th>
+            <th>
+              <%= OwnEntries[i].authors %>
+            </th>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+    <% if (ownEntriesCount > 4) { %>
+    <div class="text-right">
+      <a class="btn btn-danger btn-sm p-2 text-warning " href="../database/own" role="button"> <u>View More of Your
+          Entries
+        </u>
+      </a>
+    </div>
+    <% } %>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--  Unimplemented due to timeline limitation -->
   <!-- <div class="container card mt-5 pt-2 pb-2" id="approval">
     <div>
