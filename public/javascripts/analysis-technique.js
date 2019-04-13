@@ -53,7 +53,12 @@ function existingEntries() {
  */
 function alreadyExists(string) {
   const entries = existingEntries();
-  const result = entries.includes(string);
+
+  for (let i = 0; i < entries.length; i++) {
+    entries[i] = entries[i].toLowerCase();
+  }
+
+  const result = entries.includes(string.toLowerCase());
   return result;
 }
 
