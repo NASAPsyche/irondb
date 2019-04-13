@@ -18,6 +18,7 @@ router.get('/admin', isAdmin, async (req, res, next) => {
   let resObj = [];
   try {
     const Pending = db.aQuery('SELECT * FROM pending_entries_panel', []);
+    // Flagged Unimplemented due to timeline limitation
     const Flagged = db.aQuery('SELECT * FROM full_attributions_flagged', []);
     // eslint-disable-next-line max-len
     const Users = db.aQuery('SELECT t1.user_id, t1.username, t1.role_of FROM users as t1', []);
@@ -43,6 +44,7 @@ router.get('/user', isLoggedIn, async (req, res, next) => {
   let resObj = [];
   try {
     const Pending = db.aQuery('SELECT * FROM pending_entries_panel', []);
+    // Flagged Unimplemented due to timeline limitation
     const Flagged = db.aQuery('SELECT * FROM full_attributions_flagged', []);
     resObj = await Promise.all([Pending, Flagged]);
   } catch (err) {

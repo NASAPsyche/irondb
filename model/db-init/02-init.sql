@@ -728,13 +728,16 @@ CREATE VIEW all_aggregated_authors_by_paper_id AS (
 );
 
 CREATE VIEW all_papers_with_authors AS (
- SELECT DISTINCT  t1.paper_id,
+SELECT DISTINCT t1.paper_id,
    t1.title,
    t1.published_year,
    t2.authors,
-   t1.current_status
-   FROM full_attributions_all as t1
-   INNER JOIN all_aggregated_authors_by_paper_id as t2 on t1.paper_id = t2.paper_id
+   t1.current_status,
+   t3.submitted_by,
+   t3.submission_id
+   FROM full_attributions_all AS t1
+   INNER JOIN all_aggregated_authors_by_paper_id AS t2 ON t1.paper_id = t2.paper_id
+   JOIN (SELECT * FROM paper_status WHERE submission_id IS NOT NULL) AS t3 ON t1.paper_id = t3.paper_id
    ORDER BY t1.current_status ASC
 );
 
