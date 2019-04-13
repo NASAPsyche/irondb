@@ -29,8 +29,6 @@ $(document).ready(async function() {
     } else {
       alert('Failed to auto-save, check your connection');
     }
-    // const myLog = await postSave(jsonString, false);
-    // console.log(myLog);
   }, 60 * 1000 /* One minute in milliseconds */);
 });
 
