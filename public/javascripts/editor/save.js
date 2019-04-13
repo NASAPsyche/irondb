@@ -9,8 +9,29 @@
 $(document).ready(async () => {
   $('#save-btn').click(async () => {
     const jsonString = serializeInsertForm();
-    postSave(jsonString);
+    // postSave(jsonString);
+    if ( await postSave(jsonString) === true ) {
+      alert('Saved');
+    } else {
+      alert('Failed to save, check your connection');
+    }
   });
+});
+
+/**
+ * @description save the work every minute
+ */
+$(document).ready(async function() {
+  setInterval(async function() {
+    const jsonString = serializeInsertForm();
+    if ( await postSave(jsonString) === true ) {
+      console.log('save successful');
+    } else {
+      alert('Failed to auto-save, check your connection');
+    }
+    // const myLog = await postSave(jsonString, false);
+    // console.log(myLog);
+  }, 60 * 1000 /* One minute in milliseconds */);
 });
 
 
@@ -63,6 +84,7 @@ function serializeInsertForm() {
  * @param  {String} jsonString
  */
 async function postSave(jsonString) {
+  let ret;
   await $.ajax({
     url: '/data-entry/save',
     type: 'POST',
@@ -71,11 +93,11 @@ async function postSave(jsonString) {
     dataType: 'json',
     async: true,
     success: function(data, status, jqXHR) {
-      alert(status);
-      return true;
+      ret = true;
     },
     error: function(jqXHR, status) {
-      return false;
+      ret = false;
     },
   });
+  return ret;
 }
