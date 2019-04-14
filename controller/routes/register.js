@@ -4,15 +4,25 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require('../db');
 const passport = require('passport');
+const createError = require('http-errors');
 
 /* GET registration page. */
-router.get('/', function(req, res, next) {
+router.get('/', async (req, res, next) => {
   // check if signed in
   let isSignedIn = false;
   if (req.isAuthenticated()) {
     isSignedIn = true;
   }
-  res.render('register', {isSignedIn: isSignedIn});
+  let resObj = [];
+  try {
+    const users = db.aQuery('SELECT username FROM users', []);
+    resObj = await Promise.all([users]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    console.log(resObj[0]);
+    res.render('register', {isSignedIn: isSignedIn, Users: resObj[0].rows});
+  }
 });
 
 router.post('/', function(req, res, next) {
