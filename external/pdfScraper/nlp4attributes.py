@@ -52,7 +52,7 @@ __version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
-import os, io, re, string, json
+import os, io, re, string, json, sys
 import nltk
 from nltk.corpus import words
 from rake_nltk import Rake, Metric
@@ -65,7 +65,10 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 # global variables
-path = os.path.abspath('pdfs') + '/'
+# path = os.path.abspath('pdfs') + '/'
+j = json.loads(sys.argv[1])
+fileName = j['fileName']
+path = '/usr/app/public/temp/' + fileName
 page_num_title = 1 #shouldn't be global, make it local
 page_num_authors = 1 #shouldn't be global, make it local
 
