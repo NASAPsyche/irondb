@@ -13,15 +13,35 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   // Probably where you'd want the get for basic data used elsewhere
   // AJAX call from submit on tool flow checklist
 
-  // set tables flag if tables selected from checklist
+  // set checklist flags for building template
   let hasTables = false;
-  if ((req.body.hasOwnProperty('allTables') && req.body.allTables === 'on')
+  if ((req.body.hasOwnProperty('allTables')
+      && req.body.allTables === 'on')
       || (req.body.hasOwnProperty('singleTable')
-          && req.body.singleTable === 'on')) {
+      && req.body.singleTable === 'on')
+  ) {
     hasTables = true;
   }
 
-  console.log(req.body);
+  let hasAttributes = false;
+  if ((req.body.hasOwnProperty('attributes') && req.body.attributes === 'on')) {
+    hasAttributes = true;
+  }
+
+  let hasFileName = false;
+  if ((req.body.hasOwnProperty('fileName')
+       && req.body.fileName !== ''
+       && req.body.fileName.slice(-4) === '.pdf')
+  ) {
+    hasFileName = true;
+  }
+
+  // Use manual form action (data-entry/insert) if no tables
+  // Default to manual
+  let isManual = true;
+  if ( hasFileName === true && hasTables === true ) {
+    isManual = false;
+  }
 
   let resObj = [];
   try {
@@ -37,6 +57,9 @@ router.post('/', isLoggedIn, async function(req, res, next) {
       Elements: resObj[0].rows,
       Technique: resObj[1].rows,
       hasTables: hasTables,
+      hasAttributes: hasAttributes,
+      hasFileName: hasFileName,
+      isManual: isManual,
     });
   }
 

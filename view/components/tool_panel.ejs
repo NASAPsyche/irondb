@@ -9,7 +9,13 @@
                     <div class="card-body tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
                             
-                            <form method="POST" action="/data-entry/tool/insert" class="align-top mx-auto text-left" id="insert-form">
+                            <form method="POST" 
+                            <% if (isManual === true) { %>
+                                action="/data-entry/insert"
+                            <% } else { %>                           
+                                action="/data-entry/tool/insert"
+                            <% } %>
+                            class="align-top mx-auto text-left" id="insert-form">
                                 <%- include('basic-attributes-form-group'); %>
                                 <% if (hasTables === true) { %>
                                     <div class="form-row tables-header">
