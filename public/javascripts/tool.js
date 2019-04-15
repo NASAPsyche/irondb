@@ -39,6 +39,23 @@ $( '#event-div' ).on( 'click', '#manual', function() {
   }
 });
 
+// On select of allTables unselect single table
+$( '#event-div' ).on( 'click', '#allTables', function() {
+  if ($('#allTables').prop('checked') === true) {
+    // if all tables uncheck single table and close collapse
+    $('#collapse').collapse('hide');
+    $( '#singleTable' ).prop( 'checked', false );
+  }
+});
+
+// On select of single tables unselect allTables
+$( '#event-div' ).on( 'click', '#singleTable', function() {
+  if ($('#singleTable').prop('checked') === true) {
+    // if single tables selected uncheck all tables
+    $( '#allTables' ).prop( 'checked', false );
+  }
+});
+
 
 // Submit checklist and replace with ui
 $( '#checklist-form' ).on( 'submit', function( event ) {
@@ -51,33 +68,52 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     postData[formData[i].name] = formData[i].value;
   }
 
-  // eslint-disable-next-line no-invalid-this
-  $.post('/data-entry/tool/', postData, function( data ) {
-    // Remove checklist and replace with ui panel
-    $('#secondary-panel').replaceWith( data );
-    $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
+  if (
+    postData.hasOwnProperty('attributes') ||
+    postData.hasOwnProperty('allTables') ||
+    postData.hasOwnProperty('singleTable') ||
+    postData.hasOwnProperty('manual')
+  ) {
+    // eslint-disable-next-line no-invalid-this
+    $.post('/data-entry/tool/', postData, function( data ) {
+      // Remove checklist and replace with ui panel
+      $('#secondary-panel').replaceWith( data );
+      $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
 
-    if (postData.hasOwnProperty('attributes')
-    && postData.attributes === 'on') {
-      $.post('/data-entry/tool/attributes', postData, function(data) {
-        $('#attributes-target').replaceWith(data);
-      });
-    }
+      if (postData.hasOwnProperty('attributes')
+      && postData.attributes === 'on') {
+        $.post('/data-entry/tool/attributes', postData, function(data) {
+          $('#attributes-target').replaceWith(data);
+        });
+      }
 
-    if (postData.hasOwnProperty('singleTable')
-        && postData.singleTable === 'on') {
-      $.post('/data-entry/tool/onePageTables', postData, function(data) {
-        $('#table-target').append(data);
-      });
-    }
+      if (postData.hasOwnProperty('singleTable')
+          && postData.singleTable === 'on') {
+        $.post('/data-entry/tool/onePageTables', postData, function(data) {
+          $('#table-target').append(data);
+        });
+      }
 
-    if (postData.hasOwnProperty('allTables')
-        && postData.allTables === 'on') {
-      $.post('/data-entry/tool/allPagesTables', postData, function(data) {
-        $('#table-target').append(data);
-      });
-    }
-  });
+      if (postData.hasOwnProperty('allTables')
+          && postData.allTables === 'on') {
+        $.post('/data-entry/tool/allPagesTables', postData, function(data) {
+          $('#table-target').append(data);
+        });
+      }
+    });
+  } else {
+    // No checkbox selected
+    const alertMessage = `
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Error: </strong>
+      Please upload pdf before attempting to use tool with pdf.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>`;
+
+    $('#alert-target').replaceWith(alertMessage);
+  }
 });
 
 

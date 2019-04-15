@@ -13,6 +13,8 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   // Probably where you'd want the get for basic data used elsewhere
   // AJAX call from submit on tool flow checklist
 
+  console.log(req.body);
+
   // set checklist flags for building template
   let hasTables = false;
   if ((req.body.hasOwnProperty('allTables')
@@ -62,43 +64,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
       isManual: isManual,
     });
   }
-
-  console.log(req.session.textHolder);
-});
-
-router.post('/allPagesTables', isLoggedIn, async function(req, res, next) {
-  // route to request all tables from all pages
-  const options = {
-    mode: 'text',
-    // pythonPath: '../py',
-    pythonOptions: ['-u'], // get print results in real-time
-    scriptPath: sPath,
-    args: [JSON.stringify(req.body)],
-  };
-  // const result = '';
-  // console.log(JSON.stringify(req.body));
-  PythonShell.run('table_driver.py', options, async function(err, results) {
-    if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    // Debugging test for pr only, delete immediately in new branch
-    // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
-
-    let resObj = [];
-    try {
-      const Technique = db.aQuery(
-          'SELECT abbreviation FROM analysis_techniques', []);
-      resObj = await Promise.all([Technique]);
-    } catch (err) {
-      next(createError(500));
-    } finally {
-      console.log(results);
-      console.log('------------');
-      res.render('components/table-xhr-response', {
-        Results: results,
-        Technique: resObj[0].rows,
-      });
-    }
-  });
 });
 
 router.post('/attributes', isLoggedIn, function(req, res, next) {
@@ -120,10 +85,58 @@ router.post('/attributes', isLoggedIn, function(req, res, next) {
     } else {
       // results is an array consisting of messages collected during execution
       console.log(results);
-      res.render(
-          'components/attributes-xhr-response',
-          {Results: JSON.parse(results[0])}
-      );
+
+      try {
+        res.render(
+            'components/attributes-xhr-response',
+            {Results: JSON.parse(results[0])}
+        );
+      } catch (err) {
+        console.log(err);
+        res.render('components/attributes-xhr-error-response');
+      }
+    }
+  });
+});
+
+router.post('/allPagesTables', isLoggedIn, async function(req, res, next) {
+  // route to request all tables from all pages
+  const options = {
+    mode: 'text',
+    // pythonPath: '../py',
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: sPath,
+    args: [JSON.stringify(req.body)],
+  };
+  // const result = '';
+  // console.log(JSON.stringify(req.body));
+  PythonShell.run('table_driver.py', options, async function(err, results) {
+    if (err) {
+      // Send error alert
+      console.log(err);
+      res.render('components/table-xhr-error-response');
+    } else {
+      // results is an array consisting of messages collected during execution
+      let resObj = [];
+      try {
+        const Technique = db.aQuery(
+            'SELECT abbreviation FROM analysis_techniques', []);
+        resObj = await Promise.all([Technique]);
+      } catch (err) {
+        next(createError(500));
+      } finally {
+        console.log(results);
+        console.log('------------');
+        try {
+          res.render('components/table-xhr-response', {
+            Results: results,
+            Technique: resObj[0].rows,
+          });
+        } catch (err) {
+          console.log(err);
+          res.render('components/table-xhr-error-response');
+        }
+      }
     }
   });
 });
@@ -141,33 +154,40 @@ router.post('/onePageTables', isLoggedIn, function(req, res, next) {
   console.log(JSON.stringify(req.body));
 
 
-  PythonShell.run('table_driver_single.py',
-      options, async function(err, results) {
-        if (err) throw err;
-        // results is an array consisting of messages collected during execution
-        // console.log('results: %j', results);
+  PythonShell.run('table_driver_single.py', options,
+      async function(err, results) {
+        if (err) {
+          // Send error alert
+          console.log(err);
+          res.render('components/table-xhr-error-response');
+        } else {
+          // results is an array of messages collected during execution
+          console.log('results: %j', results);
 
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Headers', 'Origin, ' +
-          'X-Requested-With, Content-Type, Accept');
+          res.header('Access-Control-Allow-Origin', '*');
+          res.header('Access-Control-Allow-Headers', 'Origin, ' +
+            'X-Requested-With, Content-Type, Accept');
 
-        // Debugging test for pr only, delete immediately in new branch
-        // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
-
-        let resObj = [];
-        try {
-          const Technique = db.aQuery(
-              'SELECT abbreviation FROM analysis_techniques', []);
-          resObj = await Promise.all([Technique]);
-        } catch (err) {
-          next(createError(500));
-        } finally {
-          console.log(results);
-          console.log('------------');
-          res.render('components/table-xhr-response', {
-            Results: results,
-            Technique: resObj[0].rows,
-          });
+          let resObj = [];
+          try {
+            const Technique = db.aQuery(
+                'SELECT abbreviation FROM analysis_techniques', []);
+            resObj = await Promise.all([Technique]);
+          } catch (err) {
+            next(createError(500));
+          } finally {
+            console.log(results);
+            console.log('------------');
+            try {
+              res.render('components/table-xhr-response', {
+                Results: results,
+                Technique: resObj[0].rows,
+              });
+            } catch (err) {
+              console.log(err);
+              res.render('components/table-xhr-error-response');
+            }
+          }
         }
       });
 });

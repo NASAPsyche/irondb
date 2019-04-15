@@ -1,5 +1,7 @@
 <form method="POST" action="/data-entry/tool" class="border border-dark bg mx-auto p-5 mt-5 mb-5" id="checklist-form">
     <h3 class="pb-1 align-items-center">Options</h3>
+    <div id="alert-target"></div>
+
     <% if (numOfPages !== -1 ) { %>
     <div class="form-group">
         <input class="form-check-input" type="checkbox" name="attributes" id="attributes">
