@@ -60,7 +60,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     if (postData.hasOwnProperty('attributes')
     && postData.attributes === 'on') {
       $.post('/data-entry/tool/attributes', postData, function(data) {
-        $('#event-div').append(data);
+        $('#attributes-target').replaceWith(data);
       });
     }
 

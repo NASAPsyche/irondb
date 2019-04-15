@@ -14,9 +14,16 @@
                                 action="/data-entry/insert"
                             <% } else { %>                           
                                 action="/data-entry/tool/insert"
-                            <% } %>
-                            class="align-top mx-auto text-left" id="insert-form">
-                                <%- include('basic-attributes-form-group'); %>
+                            <% } %> class="align-top mx-auto text-left" id="insert-form">
+
+                                <!-- Check for attributes -->
+                                <% if (hasAttributes === true) { %>
+                                    <%- include('attributes-loading-placeholder'); %>
+                                <% } else { %>
+                                    <%- include('basic-attributes-form-group'); %>
+                                <% } %>
+
+                                <!-- Check for tables -->
                                 <% if (hasTables === true) { %>
                                     <div class="form-row tables-header">
                                         <h5 class="pt-1 mr-2"><strong>Tables</strong></h5>

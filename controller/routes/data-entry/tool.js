@@ -113,15 +113,18 @@ router.post('/attributes', isLoggedIn, function(req, res, next) {
     // const result = '';
     // console.log(JSON.stringify(req.body));
   PythonShell.run('nlp4attributes.py', options, function(err, results) {
-    if (err) throw err;
-    // results is an array consisting of messages collected during execution
-    // Debugging test for pr only, delete immediately in new branch
-    // req.session.tableJSON = JSON.parse(results[0].slice(2, -2));
-
-    res.send(results);
-    // res.render('components/table-xhr-response', {
-    //   Results: JSON.parse(results[0].slice(2, -2)),
-    // });
+    if (err) {
+      // If error return empty attributes
+      console.log(err);
+      res.render('components/attributes-xhr-error-response');
+    } else {
+      // results is an array consisting of messages collected during execution
+      console.log(results);
+      res.render(
+          'components/attributes-xhr-response',
+          {Results: JSON.parse(results[0])}
+      );
+    }
   });
 });
 
