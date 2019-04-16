@@ -20,19 +20,144 @@ async function updateEntry( obj, username ) {
     console.error('Request invalid, no actions found');
     return false;
   }
-  const submissionID = parseInt(obj.submissionID);
+
+  let submissionID = null;
+  if ( !obj.hasOwnProperty('command') || (obj.hasOwnProperty('command') && obj.command !== 'insert') ) {
+    submissionID = parseInt(obj.submissionID);
+  }
   // const client = await pg.pool.connect();
   client = await pg.pool.connect();
   try {
     await client.query('BEGIN');
-    const query = `
-    UPDATE submissions
-    SET username = ($1)
-    WHERE submission_id = ($2)
-    `;
-    const values = [username, submissionID];
-    await client.query(query, values); // submission now belongs to current user
 
+    if (obj.hasOwnProperty('command') && obj.command === 'insert') {
+      const submissionQuery =`
+      INSERT INTO
+      submissions(pdf_path, username)
+      VALUES($1, $2)
+      RETURNING submission_id
+      `;
+      const submissionValue = [obj.pdfPath, username];
+      const {rows} = await client.query(submissionQuery, submissionValue);
+      submissionID = rows[0].submission_id;
+      let journalId = null;
+      let paperId = null;
+
+      // START JOURNAL TRANSACTION
+      {
+        const journalQuery = `
+        INSERT INTO
+        journals(journal_name, volume, issue, series, published_year)
+        VALUES($1, $2, $3, $4, $5)
+        RETURNING journal_id
+        `;
+        const journalValue = [
+          obj.basic.journalName,
+          obj.basic.volume,
+          obj.basic.issue,
+          obj.basic.series,
+          obj.basic.pubYear,
+        ];
+        let {rows} = await client.query(journalQuery, journalValue);
+        const journalStatusQuery = `
+        INSERT INTO journal_status(journal_id, current_status, submitted_by, submission_id)
+        VALUES($1, $2, $3, $4)
+        RETURNING status_id
+        `;
+        const journalId_ = rows[0].journal_id;
+        journalId = journalId_;
+        if ( journalId == null || journalId == '') {
+          throw new Error( 'invalid journal ID');
+        }
+        const journalStatusValue = [
+          journalId,
+          'pending',
+          username,
+          submissionID,
+        ];
+        rows = await client.query(journalStatusQuery, journalStatusValue);
+
+        const journalUpdateQuery = `
+        UPDATE journals
+        SET status_id = ($1)
+        WHERE journal_id = ($2)
+        `;
+        const statusIdJournal = rows.rows[0].status_id;
+        const journalUpdateValue = [
+          statusIdJournal,
+          journalId,
+        ];
+        await client.query(journalUpdateQuery, journalUpdateValue);
+        // END JOURNAL TRANSACTION
+      }
+
+      { // PAPER TRANSACTION
+        const paperQuery = `
+        INSERT INTO
+        papers(journal_id, title, doi)
+        VALUES($1, $2, $3)
+        RETURNING paper_id
+        `;
+        const paperValue = [
+          journalId,
+          obj.basic.paperTitle,
+          obj.basic.doi,
+        ];
+        let {rows} = await client.query(paperQuery, paperValue);
+
+        const paperId_ = rows[0].paper_id;
+        paperId = paperId_;
+        if ( paperId == null || paperId == '') {
+          throw new Error( 'invalid paper ID');
+        }
+
+        const paperStatusQuery = `
+        INSERT INTO
+        paper_status(paper_id, current_status, submitted_by, submission_id)
+        VALUES($1, $2, $3, $4)
+        RETURNING status_id
+        `;
+        const paperStatusValue = [
+          paperId,
+          'pending',
+          username,
+          submissionID,
+        ];
+        rows = await client.query(paperStatusQuery, paperStatusValue);
+        const statusIdPaper = rows.rows[0].status_id;
+        const paperUpdateQuery = `
+        UPDATE papers
+        SET status_id = ($1)
+        WHERE paper_id = ($2)
+        `;
+        const paperUpdateValue = [
+          statusIdPaper,
+          paperId,
+        ];
+        await client.query(paperUpdateQuery, paperUpdateValue);
+        // END PAPER TRANSACTION
+      }
+
+      // Update Actions with paperID
+      obj.actions.map((action) => {
+        action.paperID = paperId;
+        if (action.type === 'body') {
+          action.measurements.map((measurement) => {
+            measurement.paperID = paperId;
+          });
+        }
+      });
+    } else {
+      const query = `
+      UPDATE submissions
+      SET username = ($1)
+      WHERE submission_id = ($2)
+      `;
+      const values = [username, submissionID];
+      await client.query(query, values); // submission now belongs to current user
+    }
+
+    console.log(obj.actions);
     // Perform each action
     for ( const action of obj.actions ) {
       const res = await parseAction(action, submissionID, username);
@@ -1424,7 +1549,14 @@ async function execBody( obj, submissionID, username ) {
       ];
       let rows = await client.query(bodyQuery, bodyValue);
 
+
       const bodyId = rows.rows[0].body_id;
+      // if completely new insert update elements with body ID
+      if (obj.hasOwnProperty('command') && obj.command === 'insert') {
+        obj.measurements.map((measurement) => {
+          measurement.bodyID = bodyId;
+        });
+      }
       const bodyStatusQuery = `
       INSERT INTO
       body_status(body_id, current_status, submitted_by, submission_id)
@@ -1662,5 +1794,9 @@ async function execBody( obj, submissionID, username ) {
   }
 }
 
-module.exports = {updateEntry};
+module.exports = {
+  updateEntry,
+  validateBody,
+  validateElement,
+};
 
