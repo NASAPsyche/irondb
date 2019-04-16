@@ -354,7 +354,8 @@ router.post('/insert', isLoggedIn, async function(req, res, next) {
               break;
           }
 
-          if (updater.validateElement(temp) && !isNaN(temp.convertedMeasurement)) {
+          if (updater.validateElement(temp)
+              && !isNaN(temp.convertedMeasurement)) {
             console.log(temp);
             body.measurements.push(temp);
           }
