@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Data Entry - Approval</title>
+    <%- include('components/font-awesome'); %>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/data-entry.css' />
+  </head>
+  <body>
+    <%- include('components/navbar_signed_in'); %>
+  
+
+    <div class="container-fluid mt-5">
+        <div class="row p-2" id="alert-target">
+            
+                <div class="container-fluid border border-dark rounded ml-md-5 mr-md-5 mb-3 pb-2" id="event-div">
+                    <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
+                        <h1>Edit</h1>
+                    </div>
+                    <p>Submission last owned by <%= username %></p>
+                
+
+                    <form method="POST" action="/data-entry/edit" class="align-top mx-auto text-left" id="insert-form">
+                    </form>
+
+                    <h5 class="pt-1 pr-1 mr-2">
+                        <%= SubmissionID %>
+                    </h5>
+                        
+                </div>
+        </div>
+    </div>
+
+  
+
+    <%- include('bootstrap/js'); %>
+    <%- include('components/ejs'); %>
+
+    <script src="/javascripts/edit.js"></script>
+  </body>
+</html>
