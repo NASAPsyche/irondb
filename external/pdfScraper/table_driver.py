@@ -16,20 +16,6 @@ import pdf_text_import as pti
 import table_cleaner as tc
 import table_page_finder as tpf
 
-pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
-       "pdfs/WassonandChoe_GCA_2009.pdf",
-       "pdfs/Wasson_GCA_2017.pdf",
-       "pdfs/WassonandChoi_2003.pdf",
-       "pdfs/Litasov2018_Article_TraceElementCompositionAndClas.pdf",
-       "pdfs/Wasson_2010.pdf",
-       "pdfs/Wasson_2004.pdf",
-       "pdfs/Wassonetal_GCA_2007.pdf",
-       "pdfs/Ruzicka2014.pdf",
-       "pdfs/WassonandKallemeyn_GCA_2002.pdf",
-       "pdfs/RuzickaandHutson2010.pdf"]
-
-# fileName = pdf[1]
-# print(fileName)
 
 j = json.loads(sys.argv[1])
 fileName = j['fileName']
