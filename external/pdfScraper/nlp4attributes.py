@@ -52,7 +52,7 @@ __version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
-import os, io, re, string, json
+import os, io, re, string, json, sys
 import nltk
 from nltk.corpus import words
 from rake_nltk import Rake, Metric
@@ -65,10 +65,18 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 # global variables
-path = os.path.abspath('pdfs') + '/'
+# path = os.path.abspath('pdfs') + '/'
+j = json.loads(sys.argv[1])
+fileName = j['fileName']
+paper = fileName
+path = '/usr/app/public/temp/'
 page_num_title = 1 #shouldn't be global, make it local
 page_num_authors = 1 #shouldn't be global, make it local
 
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger') # pos_tag dependency
+nltk.download('maxent_ne_chunker') # ne_chunk dependency
+nltk.download('words') # ne_chunk dependency
 
 # retrieves raw text from any given pdf
 def convert_pdf_to_txt(path, pageNo=0):
@@ -315,7 +323,7 @@ def source_extract(pdf_name):
 
 
 
-paper = input("Enter name of paper with extension (.pdf): ")
+# paper = input("Enter name of paper with extension (.pdf): ")
 #print()
 #print("TITLE: " + title_extract(paper) + '\n')
 #print("AUTHOR(S): " + authors_extract(paper) + '\n')

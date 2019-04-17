@@ -47,19 +47,12 @@ def mark_fields_for_removal(tables_for_marking):
             for removal_row in range(table_df.shape[0]):
                 for removal_col in range(table_df.shape[1]):
                     if not str(table_df.iat[removal_row, removal_col]) == 'nan':
-                        print("Before clean: " + str(table_df.iat[removal_row, removal_col]))
-                        print("Type: " + str(type(table_df.iat[removal_row, removal_col])))
-                        print("Is Element: " + str(is_element(str(table_df.iat[removal_row, removal_col]))))
-                        print("Is Number: " + str(is_number(str(table_df.iat[removal_row, removal_col]))))
-                        print("Is Measurement: " + str(is_measurement(str(table_df.iat[removal_row, removal_col]))))
-                        print("Is Proper Name: " + str(is_proper_name(str(table_df.iat[removal_row, removal_col]))))
-                        # if not is_element(str(table_df.iat[removal_row, removal_col])) \
-                        #         and not is_number(str(table_df.iat[removal_row, removal_col])) \
-                        #         and not is_measurement(str(table_df.iat[removal_row, removal_col])) \
-                        #         and not is_proper_name(str(table_df.iat[removal_row, removal_col])):
-                        if len(str(table_df.iat[removal_row, removal_col])) > 20:
+                        if not is_element(str(table_df.iat[removal_row, removal_col])) \
+                                and not is_number(str(table_df.iat[removal_row, removal_col])) \
+                                and not is_measurement(str(table_df.iat[removal_row, removal_col])) \
+                                and not is_proper_name(str(table_df.iat[removal_row, removal_col])):
                             table_df.iat[removal_row, removal_col] = 'REMOVE'
-                        print("After clean: " + str(table_df.iat[removal_row, removal_col]))
+                        # print("After clean: " + str(table_df.iat[removal_row, removal_col]))
     return tables_for_marking
 # End Marking the fields for removal
 

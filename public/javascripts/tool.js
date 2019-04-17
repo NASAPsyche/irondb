@@ -11,47 +11,156 @@ TechniqueArr = Technique.slice(0, -1).split(',');
 /** ----------------------------- */
 /**         Tool Specific         */
 /** ----------------------------- */
-// Render pdf
+// Render pdf and set filename value on checklist hidden input
 $('document').ready(function() {
   const fp = $( '#filepath' ).attr('value');
   const panel = $( '#pdf-panel' );
   // eslint-disable-next-line
   PDFObject.embed(fp, panel);
+
+  // Set hidden input
+  $('#fileName-checklist').attr('value', $('#filepath').attr('value').slice(6));
 });
+
+
+// No extraction checkbox
+$( '#event-div' ).on( 'click', '#manual', function() {
+  if ($('#manual').prop('checked') === true) {
+    // on check of manual, uncheck all other checkboxes
+    $('#collapse').collapse('hide');
+    $( '#attributes' ).prop( 'checked', false ).prop('disabled', true);
+    $( '#allTables' ).prop( 'checked', false ).prop('disabled', true);
+    $( '#singleTable' ).prop( 'checked', false ).prop('disabled', true);
+  } else {
+    // on uncheck renable other checkboxes
+    $( '#attributes' ).prop('disabled', false);
+    $( '#allTables' ).prop('disabled', false);
+    $( '#singleTable' ).prop('disabled', false);
+  }
+});
+
+// On select of allTables unselect single table
+$( '#event-div' ).on( 'click', '#allTables', function() {
+  if ($('#allTables').prop('checked') === true) {
+    // if all tables uncheck single table and close collapse
+    $('#collapse').collapse('hide');
+    $( '#singleTable' ).prop( 'checked', false );
+  }
+});
+
+// On select of single tables unselect allTables
+$( '#event-div' ).on( 'click', '#singleTable', function() {
+  if ($('#singleTable').prop('checked') === true) {
+    // if single tables selected uncheck all tables
+    $( '#allTables' ).prop( 'checked', false );
+  }
+});
+
 
 // Submit checklist and replace with ui
 $( '#checklist-form' ).on( 'submit', function( event ) {
   event.preventDefault();
-  // eslint-disable-next-line no-invalid-this
-  $.post('/data-entry/tool/', $(this).serialize(), function( data ) {
-    // Remove checklist and replace with ui panel
-    $('#secondary-panel').replaceWith( data );
-    $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
-  });
+
+  // JSON of checklist inputs
+  const formData = $('#checklist-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    postData[formData[i].name] = formData[i].value;
+  }
+
+  if (
+    postData.hasOwnProperty('attributes') ||
+    postData.hasOwnProperty('allTables') ||
+    postData.hasOwnProperty('singleTable') ||
+    postData.hasOwnProperty('manual')
+  ) {
+    // eslint-disable-next-line no-invalid-this
+    $.post('/data-entry/tool/', postData, function( data ) {
+      // Remove checklist and replace with ui panel
+      $('#secondary-panel').replaceWith( data );
+      $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
+
+      if (postData.hasOwnProperty('attributes')
+      && postData.attributes === 'on') {
+        $.post('/data-entry/tool/attributes', postData, function(data) {
+          $('#attributes-target').replaceWith(data);
+        });
+      }
+
+      if (postData.hasOwnProperty('singleTable')
+          && postData.singleTable === 'on') {
+        $.post('/data-entry/tool/onePageTables', postData, function(data) {
+          $('#table-target').append(data);
+        });
+      }
+
+      if (postData.hasOwnProperty('allTables')
+          && postData.allTables === 'on') {
+        $.post('/data-entry/tool/allPagesTables', postData, function(data) {
+          $('#table-target').append(data);
+        });
+      }
+    });
+  } else {
+    // No checkbox selected
+    const alertMessage = `
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Error: </strong>
+      Please upload pdf before attempting to use tool with pdf.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>`;
+
+    $('#alert-target').replaceWith(alertMessage);
+  }
 });
 
-// Table button ajax post
-$( '#event-div' ).on('submit', '#single-page-form', function( event ) {
-  event.preventDefault();
 
-  $('#modal-table').prop('disabled', true);
+// Table button ajax post
+$( '#table-div' ).on('submit', '#single-page-form', function( event ) {
+  event.preventDefault();
+  $('#get-btn').prop('disabled', true);
   // eslint-disable-next-line no-invalid-this
   $.post('/data-entry/tool/onePageTables',
       $(this).serialize(), function( data ) {
         $('#table-target').append(data);
-        $('#tableModal').modal('hide');
-        $('#modal-table').prop('disabled', false);
+        showEditor();
+        $('#get-btn').prop('disabled', false);
       });
 });
 
+// remove inline style on change
+$('#event-div').on('change', 'input.page-number', function() {
+  $(this).removeAttr('style');
+});
+
+// Remove Table X-Button
+$('#event-div').on('click', 'i.remove-table', function() {
+  // remove closest div.table
+  $(this).closest('div.table').remove();
+});
+
+
+// Single Table Form Button
+$('#event-div').on('click', '#tableToggle', function() {
+  hideEditor();
+});
+
+
+// Cancel Button
+$('#table-div').on('click', '#cancel-btn', function() {
+  showEditor();
+});
+
+// Validation button
 $('#event-div').on('click', '#validate-btn', function() {
   if ($('#table-data-input').length) {
     // serialize all tables
     const tables = [];
-    const tableObjects = $('#table-target').children('div.table-div');
+    const tableObjects = $('#table-target').children('div.table');
     $.each( tableObjects, function(tableIndex, table) {
-      const rows = $(table).children('table').children('tbody').children();
-      tables.push(serializeTable(rows));
+      tables.push(serializeTable(table));
     });
     $('#table-data-input').attr('value', JSON.stringify(tables));
   }
@@ -74,47 +183,107 @@ $('#event-div').on('click', '#validate-btn', function() {
   });
 });
 
+
 $('#event-div').on('click', '#override-btn', function() {
   $('#submit-btn').prop('disabled', false);
 });
 
-
-$( '#event-div' ).on('click', 'button.table-edit', function() {
-  console.log('clicked edit');
-});
+/** ---------------------------- */
+/**    Functions Declarations    */
+/** ---------------------------- */
 
 /**
- * @param  {object} rows JQuery collection of rows
- * @return {json} json serialization of table
+ * @param  {object} table html element of given table div
+ * @return {json} json serialization of table xhr response div
  */
-function serializeTable(rows) {
-  // Serialize table
-  const tableData = {};
+function serializeTable(table) {
+  const rows = $(table).children('table').children('tbody').children();
+  const pageNumber = $(table).children('div.page-row')
+      .children('div').children('label').children('input').val();
+  const tableObj = {};
+
+  const cellData = [];
+  const techniqueColumns = [];
+  const elementColums = [];
+  const unitColumns = [];
+  const meteoriteRows = [];
+
   $.each( rows, function(rowIndex, value) {
     $.each( $(this).children(), function(columnIndex, value) {
-      if (tableData.hasOwnProperty(columnIndex.toString()) === false) {
-        tableData[columnIndex] = {};
-      }
-
-      if (rowIndex === 0) {
-        // Set cell equal to it's value or null if empty
-        tableData[columnIndex][rowIndex] = $(value)
+      if (columnIndex === 0) {
+        // meteorite name
+        meteoriteRows[rowIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      } else if (rowIndex === 0) {
+        // Analysis Technique
+        techniqueColumns[columnIndex] = $(value)
             .children('select').attr('value') === '' ? null : $(value)
                 .children('select').val();
-      } else {
-        // Set cell equal to it's value or null if empty
-        tableData[columnIndex][rowIndex] = $(value)
+      } else if (rowIndex === 1 && columnIndex !== 0) {
+        // Element
+        elementColums[columnIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      } else if (rowIndex === 2 && columnIndex !== 0) {
+        // Unit
+        unitColumns[columnIndex] = $(value)
             .children('input').attr('value') === '' ? null : $(value)
                 .children('input').val();
       }
     });
   });
-  return tableData;
+
+  // Add each cell with accompanying values to table array
+  let temp = {};
+  $.each( rows, function(rowIndex, value) {
+    $.each( $(this).children(), function(columnIndex, value) {
+      if (columnIndex > 0 && rowIndex > 2) {
+        // Fill temp with cells attributes
+        temp.analysis_technique = techniqueColumns[columnIndex];
+        temp.meteorite_name = meteoriteRows[rowIndex];
+        temp.element = elementColums[columnIndex];
+        temp.units = unitColumns[columnIndex];
+        if ($(value).children('input').attr('value').charAt(0) === '<') {
+          temp.less_than = true;
+          temp.measurement = $(value)
+              .children('input').attr('value').slice(1);
+        } else {
+          temp.less_than = false;
+          temp.measurement = $(value)
+              .children('input').attr('value') === '' ? null : $(value)
+                  .children('input').val();
+        }
+        temp.column = columnIndex;
+        temp.row = rowIndex;
+
+        // Push and reset temp
+        cellData.push(temp);
+        temp = {};
+      }
+    });
+  });
+
+  tableObj.page_number = pageNumber;
+  tableObj.cells = cellData;
+  return tableObj;
 }
 
-/** ---------------------------- */
-/**    Functions Declarations    */
-/** ---------------------------- */
+/**
+ * @description Hides Editor to visible and Toggles signle table form to visible
+ */
+function hideEditor() {
+  $('#event-div').prop('hidden', true);
+  $('#table-div').prop('hidden', false);
+}
+
+/**
+ * @description Toggles Editor to visible and hides single table form
+ */
+function showEditor() {
+  $('#event-div').prop('hidden', false);
+  $('#table-div').prop('hidden', true);
+}
 
 
 /**
@@ -673,14 +842,15 @@ $( '#event-div' ).on('submit', '#insert-form', function(event) {
 
   // Submit if checks pass
   if (allValid === true) {
-    // serialize all tables
-    const tables = [];
-    const tableObjects = $('#table-target').children('div.table-div');
-    $.each( tableObjects, function(tableIndex, table) {
-      const rows = $(table).children('table').children('tbody').children();
-      tables.push(serializeTable(rows));
-    });
-    $('#table-data-input').attr('value', JSON.stringify(tables));
+    if ($('#table-data-input').length) {
+      // serialize all tables
+      const tables = [];
+      const tableObjects = $('#table-target').children('div.table');
+      $.each( tableObjects, function(tableIndex, table) {
+        tables.push(serializeTable(table));
+      });
+      $('#table-data-input').attr('value', JSON.stringify(tables));
+    }
 
     return; // submit
   } else {
