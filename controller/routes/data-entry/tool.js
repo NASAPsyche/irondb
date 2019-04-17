@@ -393,7 +393,6 @@ router.post('/insert', isLoggedIn, async function(req, res, next) {
   } else {
     res.json({status: 'error'});
   }
-  res.send('<h1>form submitted</h1>');
 });
 
 
