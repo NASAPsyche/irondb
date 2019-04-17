@@ -20,19 +20,144 @@ async function updateEntry( obj, username ) {
     console.error('Request invalid, no actions found');
     return false;
   }
-  const submissionID = parseInt(obj.submissionID);
+
+  let submissionID = null;
+  if ( !obj.hasOwnProperty('command') || (obj.hasOwnProperty('command') && obj.command !== 'insert') ) {
+    submissionID = parseInt(obj.submissionID);
+  }
   // const client = await pg.pool.connect();
   client = await pg.pool.connect();
   try {
     await client.query('BEGIN');
-    const query = `
-    UPDATE submissions
-    SET username = ($1)
-    WHERE submission_id = ($2)
-    `;
-    const values = [username, submissionID];
-    await client.query(query, values); // submission now belongs to current user
 
+    if (obj.hasOwnProperty('command') && obj.command === 'insert') {
+      const submissionQuery =`
+      INSERT INTO
+      submissions(pdf_path, username)
+      VALUES($1, $2)
+      RETURNING submission_id
+      `;
+      const submissionValue = [obj.pdfPath, username];
+      const {rows} = await client.query(submissionQuery, submissionValue);
+      submissionID = rows[0].submission_id;
+      let journalId = null;
+      let paperId = null;
+
+      // START JOURNAL TRANSACTION
+      {
+        const journalQuery = `
+        INSERT INTO
+        journals(journal_name, volume, issue, series, published_year)
+        VALUES($1, $2, $3, $4, $5)
+        RETURNING journal_id
+        `;
+        const journalValue = [
+          obj.basic.journalName,
+          obj.basic.volume,
+          obj.basic.issue,
+          obj.basic.series,
+          obj.basic.pubYear,
+        ];
+        let {rows} = await client.query(journalQuery, journalValue);
+        const journalStatusQuery = `
+        INSERT INTO journal_status(journal_id, current_status, submitted_by, submission_id)
+        VALUES($1, $2, $3, $4)
+        RETURNING status_id
+        `;
+        const journalId_ = rows[0].journal_id;
+        journalId = journalId_;
+        if ( journalId == null || journalId == '') {
+          throw new Error( 'invalid journal ID');
+        }
+        const journalStatusValue = [
+          journalId,
+          'pending',
+          username,
+          submissionID,
+        ];
+        rows = await client.query(journalStatusQuery, journalStatusValue);
+
+        const journalUpdateQuery = `
+        UPDATE journals
+        SET status_id = ($1)
+        WHERE journal_id = ($2)
+        `;
+        const statusIdJournal = rows.rows[0].status_id;
+        const journalUpdateValue = [
+          statusIdJournal,
+          journalId,
+        ];
+        await client.query(journalUpdateQuery, journalUpdateValue);
+        // END JOURNAL TRANSACTION
+      }
+
+      { // PAPER TRANSACTION
+        const paperQuery = `
+        INSERT INTO
+        papers(journal_id, title, doi)
+        VALUES($1, $2, $3)
+        RETURNING paper_id
+        `;
+        const paperValue = [
+          journalId,
+          obj.basic.paperTitle,
+          obj.basic.doi,
+        ];
+        let {rows} = await client.query(paperQuery, paperValue);
+
+        const paperId_ = rows[0].paper_id;
+        paperId = paperId_;
+        if ( paperId == null || paperId == '') {
+          throw new Error( 'invalid paper ID');
+        }
+
+        const paperStatusQuery = `
+        INSERT INTO
+        paper_status(paper_id, current_status, submitted_by, submission_id)
+        VALUES($1, $2, $3, $4)
+        RETURNING status_id
+        `;
+        const paperStatusValue = [
+          paperId,
+          'pending',
+          username,
+          submissionID,
+        ];
+        rows = await client.query(paperStatusQuery, paperStatusValue);
+        const statusIdPaper = rows.rows[0].status_id;
+        const paperUpdateQuery = `
+        UPDATE papers
+        SET status_id = ($1)
+        WHERE paper_id = ($2)
+        `;
+        const paperUpdateValue = [
+          statusIdPaper,
+          paperId,
+        ];
+        await client.query(paperUpdateQuery, paperUpdateValue);
+        // END PAPER TRANSACTION
+      }
+
+      // Update Actions with paperID
+      obj.actions.map((action) => {
+        action.paperID = paperId;
+        if (action.type === 'body') {
+          action.measurements.map((measurement) => {
+            measurement.paperID = paperId;
+          });
+        }
+      });
+    } else {
+      const query = `
+      UPDATE submissions
+      SET username = ($1)
+      WHERE submission_id = ($2)
+      `;
+      const values = [username, submissionID];
+      await client.query(query, values); // submission now belongs to current user
+    }
+
+    console.log(obj.actions);
     // Perform each action
     for ( const action of obj.actions ) {
       const res = await parseAction(action, submissionID, username);
@@ -40,6 +165,26 @@ async function updateEntry( obj, username ) {
         console.dir(action);
         throw new Error('Action Failed');
       }
+    }
+
+    // If command 'delete' on object set submission pending to false
+    // Otherwise set to true
+    if ( obj.hasOwnProperty('command') && obj.command === 'delete' ) {
+      const query = `
+      UPDATE submissions
+      SET pending = ($1)
+      WHERE submission_id = ($2)
+      `;
+      const values = [false, submissionID];
+      await client.query(query, values);
+    } else {
+      const query = `
+      UPDATE submissions
+      SET pending = ($1)
+      WHERE submission_id = ($2)
+      `;
+      const values = [true, submissionID];
+      await client.query(query, values);
     }
 
     await client.query('COMMIT');
@@ -71,7 +216,7 @@ async function parseAction( obj, submissionID, username ) {
           return false;
         } else {
           console.log('BASIC json validated, executing...');
-          return execBasic(obj);
+          return execBasic(obj, username);
         }
       case 'author':
         if ( (await validateAuthor(obj)) === false ) {
@@ -134,77 +279,100 @@ async function validateBasic( obj ) {
   //     issue: '11',
   //     series: '3'
   // };
-  if ( obj.command == 'update' ) { // valid command
-    if ( !obj.hasOwnProperty('paperID') ) {
-      console.error('Basic: missing paperID');
-      return false;
+  switch (obj.command) {
+    case 'update': {
+      if ( !obj.hasOwnProperty('paperID') ) {
+        console.error('Basic: missing paperID');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('paperTitle') ) {
+        console.error('Basic: missing paperTitle');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('doi') ) {
+        console.error('Basic: missing doi');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('journalID') ) {
+        console.error('Basic: missing journalID');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('journalName') ) {
+        console.error('Basic: missing journalName');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('pub_year') ) {
+        console.error('Basic: missing pub_year');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('volume') ) {
+        console.error('Basic: missing volume');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('issue') ) {
+        console.error('Basic: missing issue');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('series') ) {
+        console.error('Basic: missing series');
+        return false;
+      }
+      if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
+        console.error('Basic: invalid paper ID');
+        return false;
+      }
+      if ( obj.paperTitle == '' ) {
+        console.error('Basic: invalid paper title');
+        return false;
+      }
+      if ( obj.journalID == '' || isNaN(parseInt(obj.journalID)) ) {
+        console.error('Basic: invalid journal ID');
+        return false;
+      }
+      if ( obj.journalName == '' ) {
+        console.error('Basic: invalid journal name');
+        return false;
+      }
+      if ( obj.pub_year == '' || isNaN(parseInt(obj.pub_year)) ) {
+        console.error('Basic: invalid publication year');
+        return false;
+      }
+      if ( parseInt(obj.pub_year) < 1900 ) {
+        console.error('Basic: invalid publication year < 1900');
+        return false;
+      }
+      if ( obj.volume == '' ) {
+        console.error('Basic: invalid journal volume');
+        return false;
+      }
+      break;
     }
-    if ( !obj.hasOwnProperty('paperTitle') ) {
-      console.error('Basic: missing paperTitle');
-      return false;
+
+    case 'delete': {
+      if ( !obj.hasOwnProperty('paperID') ) {
+        console.error('Basic: missing paperID');
+        return false;
+      }
+      if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
+        console.error('Basic: invalid paper ID');
+        return false;
+      }
+      if ( !obj.hasOwnProperty('journalID') ) {
+        console.error('Basic: missing journalID');
+        return false;
+      }
+      if ( obj.journalID == '' || isNaN(parseInt(obj.journalID)) ) {
+        console.error('Basic: invalid journal ID');
+        return false;
+      }
+      break;
     }
-    if ( !obj.hasOwnProperty('doi') ) {
-      console.error('Basic: missing doi');
+
+    default:
       return false;
-    }
-    if ( !obj.hasOwnProperty('journalID') ) {
-      console.error('Basic: missing journalID');
-      return false;
-    }
-    if ( !obj.hasOwnProperty('journalName') ) {
-      console.error('Basic: missing journalName');
-      return false;
-    }
-    if ( !obj.hasOwnProperty('pub_year') ) {
-      console.error('Basic: missing pub_year');
-      return false;
-    }
-    if ( !obj.hasOwnProperty('volume') ) {
-      console.error('Basic: missing volume');
-      return false;
-    }
-    if ( !obj.hasOwnProperty('issue') ) {
-      console.error('Basic: missing issue');
-      return false;
-    }
-    if ( !obj.hasOwnProperty('series') ) {
-      console.error('Basic: missing series');
-      return false;
-    }
-    if ( obj.paperID == '' || isNaN(parseInt(obj.paperID)) ) {
-      console.error('Basic: invalid paper ID');
-      return false;
-    }
-    if ( obj.paperTitle == '' ) {
-      console.error('Basic: invalid paper title');
-      return false;
-    }
-    if ( obj.journalID == '' || isNaN(parseInt(obj.journalID)) ) {
-      console.error('Basic: invalid journal ID');
-      return false;
-    }
-    if ( obj.journalName == '' ) {
-      console.error('Basic: invalid journal name');
-      return false;
-    }
-    if ( obj.pub_year == '' || isNaN(parseInt(obj.pub_year)) ) {
-      console.error('Basic: invalid publication year');
-      return false;
-    }
-    if ( parseInt(obj.pub_year) < 1900 ) {
-      console.error('Basic: invalid publication year < 1900');
-      return false;
-    }
-    if ( obj.volume == '' ) {
-      console.error('Basic: invalid journal volume');
-      return false;
-    }
-    // All checks passed
-    return true;
-  } else {
-    console.error('Basic: invalid command '+obj.command);
-    return false;
   }
+  // json is valid
+  return true;
 }
 
 /**
@@ -713,9 +881,9 @@ async function validateBody( obj ) {
 
 /**
  * @param  {object} obj
- * @return {Promise}
+ * @param  {string} username
  */
-async function execBasic( obj ) {
+async function execBasic( obj, username ) {
   // Example object
   // obj ={
   //   type: 'basic',
@@ -760,6 +928,72 @@ async function execBasic( obj ) {
         obj.paperTitle,
         obj.doi,
         obj.paperID,
+      ];
+
+      await client.query(query, values);
+
+      break;
+    }
+
+    case 'delete': {
+      // Get status_id for paper
+      let query = `
+      SELECT status_id
+      FROM papers
+      WHERE paper_id = ($1)
+      `;
+      let values = [obj.paperID];
+
+      let rows = await client.query(query, values);
+      let statusID = rows.rows[0].status_id;
+
+      // Get user_id from username
+      query = `
+      SELECT user_id
+      FROM users
+      WHERE username = ($1)
+      `;
+      values = [username];
+      rows = await client.query(query, values);
+      const userID = rows.rows[0].user_id;
+
+      // Update metadata to rejected
+      query = `
+      UPDATE paper_status
+      SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+      WHERE status_id = ($4)
+      `;
+      values = [
+        'rejected',
+        userID,
+        'now()',
+        statusID,
+      ];
+
+      await client.query(query, values);
+
+      // Get status_id for journal
+      query = `
+      SELECT status_id
+      FROM journals
+      WHERE journal_id = ($1)
+      `;
+      values = [obj.journalID];
+
+      rows = await client.query(query, values);
+      statusID = rows.rows[0].status_id;
+
+      // Update metadata to rejected
+      query = `
+      UPDATE journal_status
+      SET (current_status, reviewed_by, reviewed_date) = ($1, $2, $3)
+      WHERE status_id = ($4)
+      `;
+      values = [
+        'rejected',
+        userID,
+        'now()',
+        statusID,
       ];
 
       await client.query(query, values);
@@ -1315,7 +1549,14 @@ async function execBody( obj, submissionID, username ) {
       ];
       let rows = await client.query(bodyQuery, bodyValue);
 
+
       const bodyId = rows.rows[0].body_id;
+      // if completely new insert update elements with body ID
+      if (obj.hasOwnProperty('command') && obj.command === 'insert') {
+        obj.measurements.map((measurement) => {
+          measurement.bodyID = bodyId;
+        });
+      }
       const bodyStatusQuery = `
       INSERT INTO
       body_status(body_id, current_status, submitted_by, submission_id)
@@ -1553,5 +1794,9 @@ async function execBody( obj, submissionID, username ) {
   }
 }
 
-module.exports = {updateEntry};
+module.exports = {
+  updateEntry,
+  validateBody,
+  validateElement,
+};
 

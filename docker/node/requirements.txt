@@ -26,6 +26,7 @@ PySocks==1.6.8
 pytest==4.0.1
 python-dateutil==2.7.5
 pytz==2018.7
+rake_nltk==1.0.3
 readline==6.2.4.1
 requests==2.20.1
 singledispatch==3.4.0.3
