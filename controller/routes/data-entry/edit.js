@@ -13,7 +13,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
   // Setup
   const submissionID = req.body.submissionID;
   let pdfPath = null;
-  let pending = null;
+  // let pending = null;
   let username = null;
 
   let resObj = [];
@@ -37,7 +37,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
         resObj[0].rows[0].hasOwnProperty('username')
     ) {
       pdfPath = resObj[0].rows[0].pdf_path;
-      pending = resObj[0].rows[0].pending;
+      // pending = resObj[0].rows[0].pending;
       username = resObj[0].rows[0].username;
     } else {
       next(createError(500));
