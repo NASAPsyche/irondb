@@ -86,7 +86,7 @@ $(document).ready(async function() {
     console.log(validatePassword());
     console.log(alreadyExists());
     const username = $('#username').val();
-    getEmails().then( async (emailExists) => {
+    getEmails().then(async (emailExists) => {
       console.log('email exists?', emailExists);
       if (emailExists === false) {
         if (!alreadyExists(username)) {
@@ -109,9 +109,8 @@ $(document).ready(async function() {
                 data.email = $('#email-address').val();
                 data.password = $('#pwd').val();
                 data.user_id = parseInt($('#count').val()) + 1;
-                alert(JSON.stringify(data));
                 await postData(JSON.stringify(data));
-                window.location.reload();
+                window.location.replace('/login');
               } else {
                 $('#length').attr('hidden', true);
                 $('#reqs').attr('hidden', false);

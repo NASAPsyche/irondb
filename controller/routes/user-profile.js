@@ -2,7 +2,7 @@ const Router = require('express-promise-router');
 // eslint-disable-next-line new-cap
 const router = new Router();
 const createError = require('http-errors');
-const { isLoggedIn } = require('../middleware/auth');
+const {isLoggedIn} = require('../middleware/auth');
 const db = require('../db');
 const bcrypt = require('bcrypt');
 
@@ -18,7 +18,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   } catch (err) {
     next(createError(500));
   } finally {
-    res.render('profile', { User: resObj[0].rows });
+    res.render('profile', {User: resObj[0].rows});
   }
 });
 
@@ -45,7 +45,7 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
     const saltRounds = 10;
     hasPassword = true;
     const hashedPassword = await new Promise((resolve, reject) => {
-      bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+      bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
         if (err) reject(err);
         resolve(hash);
       });
@@ -80,7 +80,7 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   } finally {
     client.release();
   }
-  res.json({ ok: true });
+  res.json({ok: true});
 });
 
 module.exports = router;
