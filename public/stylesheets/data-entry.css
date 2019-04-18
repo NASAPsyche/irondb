@@ -31,10 +31,13 @@ a {
 	font-size: 1.2rem;
 }
 
+.sticky-top {
+	top: 5em;
+}
+
 #pdf-form {
 	width: 100%;
 	max-width: 400px;
-	padding: 5px;
 	border-radius: 0.5em;
 	background-color: #d3d3d3;
   }
