@@ -8,6 +8,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const db = require('./db');
+const expressSanitizer = require('express-sanitizer');
 
 // Define individual route routers
 const indexRouter = require('./routes/index');
@@ -117,6 +118,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(expressSanitizer());
 
 // Define routers for given routes
 app.use('/', indexRouter);
