@@ -32,6 +32,10 @@
             <strong>Error:</strong> Username already exists.
           </div>
 
+          <div class="alert alert-warning alert-dismissible fade show" hidden=true id="emails" role="alert">
+            <strong>Error:</strong> Email already exists.
+          </div>
+
           <div class="alert alert-warning alert-dismissible fade show" hidden=true id="reqs" role="alert">
             <strong>Error:</strong> Password does not contain all necessary characters.
           </div>
@@ -84,7 +88,7 @@
               and 1 number.
             </small>
           </div>
-          <button class="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
+          <button class="btn btn-lg btn-danger btn-block mt-2" type="submit" id="submit">Submit</button>
 
         </form>
         <ul id="users" hidden=true>

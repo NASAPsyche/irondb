@@ -117,8 +117,30 @@ router.post('/new-user', async (req, res, next) => {
   res.json({ok: true});
 });
 
+router.get('/:id', async (req, res, next) => {
+  let resObj = [];
+  const emails = [];
+  try {
+    const users = db.aQuery('SELECT email_address FROM user_info', []);
+    resObj = await Promise.all([users]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    // eslint-disable-next-line max-len
+    console.log(req.params.id);
+    for (let i = 0; i < resObj[0].rowCount; i++) {
+      emails.push(resObj[0].rows[i].email_address);
+    }
+    const result = emails.includes(req.params.id);
+    console.log(JSON.stringify(emails));
+    res.json({result: result});
+  }
+});
+
 router.use(function(req, res, next) {
   // After database insert transaction complete, athenticate and redirect.
+  console.log(JSON.stringify(req));
+  console.log(JSON.stringify(res));
   passport.authenticate('local')(req, res, function() {
     res.redirect('/panel');
   });

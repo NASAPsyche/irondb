@@ -86,51 +86,73 @@ $(document).ready(async function() {
     console.log(validatePassword());
     console.log(alreadyExists());
     const username = $('#username').val();
+    const result = getEmails();
+    console.log(result);
 
-    if (!alreadyExists(username)) {
-      const pwd = $('#pwd').val();
-      const cnfm = $('#confirm').val();
+    if (result == 'false') {
+      if (!alreadyExists(username)) {
+        const pwd = $('#pwd').val();
+        const cnfm = $('#confirm').val();
 
-      // eslint-disable-next-line max-len
-      // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
-      if (pwd == cnfm) {
-        if (pwd.length >= 8) {
-          const hasUpperCase = /[A-Z]/.test(pwd);
-          const hasLowerCase = /[a-z]/.test(pwd);
-          const hasNumbers = /\d/.test(pwd);
+        // eslint-disable-next-line max-len
+        // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
+        if (pwd == cnfm) {
+          if (pwd.length >= 8) {
+            const hasUpperCase = /[A-Z]/.test(pwd);
+            const hasLowerCase = /[a-z]/.test(pwd);
+            const hasNumbers = /\d/.test(pwd);
 
-          if (hasUpperCase && hasLowerCase && hasNumbers) {
-            console.log('GOOD PASSWORDS');
-            data.first_name = $('#fname').val();
-            data.last_name = $('#lname').val();
-            data.username = $('#username').val();
-            data.email = $('#email-address').val();
-            data.password = $('#pwd').val();
-            data.user_id = parseInt($('#count').val()) + 1;
-            alert(JSON.stringify(data));
-            await postData(JSON.stringify(data));
-            // window.location.reload();
+            if (hasUpperCase && hasLowerCase && hasNumbers) {
+              console.log('GOOD PASSWORDS');
+              data.first_name = $('#fname').val();
+              data.last_name = $('#lname').val();
+              data.username = $('#username').val();
+              data.email = $('#email-address').val();
+              data.password = $('#pwd').val();
+              data.user_id = parseInt($('#count').val()) + 1;
+              alert(JSON.stringify(data));
+              await postData(JSON.stringify(data));
+              window.location.reload();
+            } else {
+              $('#length').attr('hidden', true);
+              $('#reqs').attr('hidden', false);
+              $('#mismatch').attr('hidden', true);
+            }
           } else {
-            $('#length').attr('hidden', true);
-            $('#reqs').attr('hidden', false);
+            $('#length').attr('hidden', false);
+            $('#reqs').attr('hidden', true);
             $('#mismatch').attr('hidden', true);
           }
         } else {
-          $('#length').attr('hidden', false);
+          $('#length').attr('hidden', true);
           $('#reqs').attr('hidden', true);
-          $('#mismatch').attr('hidden', true);
+          $('#mismatch').attr('hidden', false);
         }
       } else {
-        $('#length').attr('hidden', true);
-        $('#reqs').attr('hidden', true);
-        $('#mismatch').attr('hidden', false);
+        $('#name').attr('hidden', false);
+        $('#exists').attr('hidden', true);
       }
     } else {
-      $('#name').attr('hidden', false);
-      $('#exists').attr('hidden', true);
+      $('#emails').attr('hidden', false);
     }
   });
 });
+
+function getEmails(callback) {
+  const email = $('#email-address').val();
+  $.ajax({
+    url: `/register/${email}`,
+    type: 'GET',
+    async: true,
+    success: function(data, status, jqXHR) {
+      return data.result;
+    },
+    error: function() {
+      return false;
+    },
+  });
+}
+
 
 /**
  * Send data to server
