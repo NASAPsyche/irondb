@@ -47,7 +47,48 @@
                         <p class="row-count" hidden="true"><%= rowCount %></p>
                         <p class="col-count" hidden="true"><%= columnCount %></p>
                     </div>
+
+                    <a class="btn btn-outline-danger mb-2 table-update-btn">Toggle Table Controls</a>
                     
+                    <!-- Table control form -->
+                    <div aria-expanded="false" class="collapse">
+                        <div class="table-alert-target"></div>
+
+                        <div class="form-inline table-control-form">
+                            <label class="sr-only" for="command">Command</label>
+                            <select class="form-control my-1 mx-2 px-2 command" name="command">
+                                <option selected>Add/Del</option>
+                                <option value="add">Add</option>
+                                <option value="delete">Delete</option>
+                            </select>
+
+                            <label class="sr-only" for="type">Type</label>
+                            <select class="form-control my-1 mx-2 px-2 type" name="type">
+                                <option value="row" selected>Row</option>
+                                <option value="column">Column</option>
+                            </select>
+
+                            <label class="sr-only" for="row-number">Row Number</label>
+                            <select class="form-control my-1 mx-2 px-2 row-number" name="row-number">
+                                <option selected>Number</option>
+                                <% for(var i = 0; i <= rowCount; i++) { %>
+                                    <option value="<%= i%>"><%= i%></option>
+                                <% } %>
+                            </select>
+
+                            <label class="sr-only" for="col-number">Columne Number</label>
+                            <select class="form-control my-1 mx-2 px-2 col-number" name="col-number" hidden="true">
+                                <option selected>Number</option>
+                                <% for(var i = 0; i <= columnCount; i++) { %>
+                                    <option value="<%= i%>"><%= i%></option>
+                                <% } %>
+                            </select>
+                            
+                            <a class="btn btn-outline-danger mb-1 ml-2 table-control-update">Update</a>
+                        </div>
+                        <p><small>Add function adds row/column after selected column/row</small></p>
+                    </div>
+
                     <table class="table table-sm table-responsive">
                         <tbody>
                             <!-- First row all analysis technique -->

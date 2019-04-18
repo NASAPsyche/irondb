@@ -143,6 +143,78 @@ $('#event-div').on('click', 'i.remove-table', function() {
   $(this).closest('div.table').remove();
 });
 
+// Table control toggle collapsed form
+$('#event-div').on('click', 'a.table-update-btn', function() {
+  // Toggle confirmation visibility
+  $(this).siblings('div.collapse').collapse('toggle');
+});
+
+// On select of col/row show associated number select
+$('#event-div').on('change', 'select.type', function() {
+  if ($(this).val() === 'row') {
+    $(this).siblings('select.row-number').prop('hidden', false);
+    $(this).siblings('select.col-number').prop('hidden', true);
+  } else if ($(this).val() === 'column') {
+    $(this).siblings('select.row-number').prop('hidden', true);
+    $(this).siblings('select.col-number').prop('hidden', false);
+  }
+});
+
+/* eslint-disable max-len*/
+const tableAlertTemplate = `<div 
+class="alert alert-danger alert-dismissible fade show" role="alert">
+<strong>Warning: </strong>
+Cannot delete <%= type %> 0.
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>`;
+/* eslint-enable max-len*/
+
+// Call function for table control form
+$('#event-div').on('click', 'a.table-control-update', function() {
+  // Remove any previous alerts
+  $(this).parent().siblings('div.table-alert-target').empty();
+
+  // Collect options
+  const options = {};
+  options.command = $(this).siblings('select.command').val();
+  options.type = $(this).siblings('select.type').val();
+  const table = $(this).closest('div.collapse').siblings('table');
+
+  // Execute specified command
+  if (options.type === 'row') {
+    const select = $(this).siblings('select.row-number');
+    options.number = select.val();
+
+    if ( options.command === 'add' ) {
+      addRow(table, options.number, select);
+    } else if ( options.command === 'delete' ) {
+      if (options.number !== '0') {
+        deleteRow(table, options.number, select);
+      } else {
+        // eslint-disable-next-line
+        const tableAlert = ejs.render(tableAlertTemplate, {type: options.type});
+        $(this).parent().siblings('div.table-alert-target').html(tableAlert);
+      }
+    }
+  } else if (options.type === 'column') {
+    const select = $(this).siblings('select.col-number');
+    options.number = select.val();
+    if ( options.command === 'add' ) {
+      addColumn(table, options.number, select);
+    } else if ( options.command === 'delete' ) {
+      if (options.number !== '0') {
+        deleteColumn(table, options.number, select);
+      } else {
+        // eslint-disable-next-line
+        const tableAlert = ejs.render(tableAlertTemplate, {type: options.type});
+        $(this).parent().siblings('div.table-alert-target').html(tableAlert);
+      }
+    }
+  }
+  console.log(options);
+});
 
 // Single Table Form Button
 $('#event-div').on('click', '#tableToggle', function() {
@@ -269,6 +341,98 @@ function serializeTable(table) {
   tableObj.page_number = pageNumber;
   tableObj.cells = cellData;
   return tableObj;
+}
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function addRow(table, num, select) {
+  // Add row after selected row
+  const target = table.children('tbody').children('tr').eq(num);
+  let rowStr = '<tr>';
+  for ( let i = 0; i < target.children().length; i++ ) {
+    rowStr += '<th><input type="text"></th>';
+  }
+  rowStr += '</tr>';
+  target.after(rowStr);
+
+  // Update select
+  const count = parseInt(select.children('option').last().val()) + 1;
+  select.append('<option value="'+ count +'">'+ count +'</option>');
+}
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function deleteRow(table, num, select) {
+  // Remove specified row
+  table.children('tbody').children('tr').eq(num).remove();
+  // Update select
+  select.children('option').last().remove();
+}
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function addColumn(table, num, select) {
+  /* eslint-disable max-len*/
+  const techniqueSelectTemplate = `<th>
+  <select class="form-control">
+      <option value="None">None</option>
+      <% for(var k=0; k < Technique.length; k++) { %>
+          <option value="<%= Technique[k] %>"><%= Technique[k] %></option> 
+      <% } %>                   
+  </select>
+  </th>`;
+  /* eslint-enable max-len*/
+
+  // Render technique select
+  // eslint-disable-next-line
+  const techniqueSelect = ejs.render(techniqueSelectTemplate, {Technique: TechniqueArr});
+
+  // Add column after specified column
+  const rows = table.children('tbody').children('tr');
+  for (let i = 0; i <= rows.length; i++) {
+    if (i === 0) {
+      if ((num - 1) === -1) {
+        rows.eq(i).children().eq(num).before(techniqueSelect);
+      } else {
+        rows.eq(i).children().eq(num - 1).after(techniqueSelect);
+      }
+    } else {
+      if ((num - 1) === -1) {
+        rows.eq(i).children()
+            .eq(num).before('<th><input type="text"></th>');
+      } else {
+        rows.eq(i).children().eq(num - 1).after('<th><input type="text"></th>');
+      }
+    }
+  }
+
+  // Update select
+  const count = parseInt(select.children('option').last().val()) + 1;
+  select.append('<option value="'+ count +'">'+ count +'</option>');
+}
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function deleteColumn(table, num, select) {
+  // Remove specified column
+  const rows = table.children('tbody').children('tr');
+  for (let i = 0; i <= rows.length; i++) {
+    rows.eq(i).children().eq(num - 1).remove();
+  }
+  // Update select
+  select.children('option').last().remove();
 }
 
 /**
