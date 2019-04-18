@@ -212,6 +212,29 @@ function set_creds ()
   done
 }
 
+function randomSecret() {
+  NEWSECRET=$(LC_CTYPE=C tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= < /dev/urandom | head -c 32 | xargs)
+  SECRETPLACEHOLDER="%%SECRET%%"
+  MYENV="$(uname -s)"
+  LINUXENV="Linux"
+  MACENV="Darwin"
+
+  if [ -f "./controller/app.js" ]; then
+    rm -f ./controller/app.js
+  fi 
+
+  if [[ "$MYENV" == "$MACENV"  ]] ; then
+    cp ./docker/template/app.js  ./controller/app.js 
+    sed -i '' -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./controller/app.js
+    break
+  elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+    cp ./docker/template/app.js  ./controller/app.js 
+    sed -i -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./controller/app.js
+    break
+  fi
+
+}
+
 # Install the global dependencies
 function install_global_deps ()
 {
@@ -665,6 +688,7 @@ fi
 
 if [[ "$initInstall" = true ]] ; then
   set_creds
+  randomSecret
   stop_containers
   install_global_deps
   install_node_deps
