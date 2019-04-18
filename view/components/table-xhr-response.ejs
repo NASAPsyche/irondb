@@ -5,13 +5,14 @@
 
             <% var rowCount  = Object.keys(currentObj.Table[0]).length; %>
             <% var columnCount = Object.keys(currentObj.Table).length; %>
+            <% var keys = Object.keys(currentObj.Table); %>
 
 
             <!-- Row Validation, checking that all rows are of same length -->
             <% var isValid = false; %>
             <% var countMismatchFound = false; %>
             <% for(var i = 0; i < columnCount; i++) { %>
-                <% var currentLength = Object.keys(currentObj.Table[i]).length; %>
+                <% var currentLength = Object.keys(currentObj.Table[keys[i]]).length; %>
                 <% if (currentLength !== rowCount) { %>
                     <% countMismatchFound = true; %>
                 <% } %>
@@ -108,10 +109,10 @@
                             <% for(let i=0; i < rowCount; i++) { %>
                                 <tr>
                                 <% for(let j=0; j < columnCount; j++) { %>
-                                    <% if (currentObj.Table[j][i] === null) { %>
+                                    <% if (currentObj.Table[keys[j]][i] === null) { %>
                                         <th><input type="text" value=""></th>
                                     <% } else { %>
-                                        <th><input type="text" value="<%= currentObj.Table[j][i] %>"></th>
+                                        <th><input type="text" value="<%= currentObj.Table[keys[j]][i] %>"></th>
                                     <% } %>
                                 <% } %>
                                 </tr>
