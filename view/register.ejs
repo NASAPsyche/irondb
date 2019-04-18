@@ -24,35 +24,77 @@
   <% } else { %>
   <div class="container mt-4">
     <div class="row">
-      <div class="col-sm-8 offset-sm-4 text-center">
-        <form action="/register" method="POST">
+      <div class="col-md-10 offset-md-4 text-center">
+        <form action="/register" method="POST" id="register-form">
           <h1 class="h3">Registration form:</h1>
-          <label class="sr-only" for="fname">First Name</label>
-          <input type="text" name="fname" id="fname" class="form-control" placeholder="First Name" required>
-          <label class="sr-only" for="lname">Last Name</label>
-          <input type="text" name="lname" id="lname" class="form-control" placeholder="Last Name" required>
-          <label class="sr-only" for="email">Email</label>
-          <input type="email" name="email" id="email" class="form-control" placeholder="Email" required>
-          <label class="sr-only" for="username">Username</label>
-          <input type="text" name="username" id="username" class="form-control" placeholder="Username" required>
-          <label class="sr-only" for="password">Password</label>
-          <input type="password" name="password" id="password" class="form-control" placeholder="Password" required
-            minlength="6" maxlength="25">
-          <label class="sr-only" for="confirm">Confirm Password</label>
-          <input type="password" name="confirm" id="confirm" class="form-control" placeholder="Confirm Password"
-            required minlength="6" maxlength="25">
 
+          <div class="alert alert-warning alert-dismissible fade show" hidden=true id="exists" role="alert">
+            <strong>Error:</strong> Username already exists.
+          </div>
+
+          <div class="alert alert-warning alert-dismissible fade show" hidden=true id="reqs" role="alert">
+            <strong>Error:</strong> Password does not contain all necessary characters.
+          </div>
+
+          <div class="alert alert-warning alert-dismissible fade show" hidden=true id="mismatch" role="alert">
+            <strong>Error:</strong> Passwords do not match.
+          </div>
+
+          <div class="alert alert-warning alert-dismissible fade show" hidden=true id="length" role="alert">
+            <strong>Error:</strong> Password does not meet length requirements.
+          </div>
+
+          <div class="alert alert-warning alert-dismissible fade show" hidden=true id="name" role="alert">
+            <strong>Error:</strong> Try a different username.
+          </div>
+
+          <div class="form-group">
+            <label class="sr-only" for="username">Username</label>
+            <input type="text" name="username" id="username" class="form-control" placeholder="Username" required
+              minlength="5">
+            <small id="usernameHelpBlock" class="form-text text-muted text-left">
+              Must be at least 5 characters long.
+            </small>
+          </div>
+          <div class="form-row form-group">
+            <div class="col">
+              <label class="sr-only" for="fname">First Name</label>
+              <input type="text" name="fname" id="fname" class="form-control" placeholder="First Name" required>
+            </div>
+            <div class="col">
+              <label class="sr-only" for="lname">Last Name</label>
+              <input type="text" name="lname" id="lname" class="form-control" placeholder="Last Name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="sr-only" for="email">Email</label>
+            <input type="email" name="email" id="email-address" class="form-control" placeholder="Email" required>
+          </div>
+          <div class="form-group">
+            <label class="sr-only" for="password">Password</label>
+            <input type="password" name="password" id="pwd" class="form-control" placeholder="Password" required>
+          </div>
+          <div>
+            <label class="sr-only" for="confirm">Confirm Password</label>
+            <input type="password" name="confirm" id="confirm" class="form-control" placeholder="Confirm Password"
+              required>
+            <small id="usernameHelpBlock" class="form-text text-muted text-left">
+              Your password must be between 8 and 25 characters long and must contain at least 1 uppercase, 1
+              lowercase
+              and 1 number.
+            </small>
+          </div>
           <button class="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
 
-          <ul id="users" hidden=true>
-            <% for (var i = 0; i < Users.length; i++) {   %>
-            <li>
-              <%= Users[i].username %>
-            </li>
-            <% } %>
-          </ul>
-
         </form>
+        <ul id="users" hidden=true>
+          <% for (var i = 0; i < Users.length; i++) {   %>
+          <li>
+            <%= Users[i].username %>
+          </li>
+          <% } %>
+        </ul>
+        <input type="number" class="form-control" id="count" value="<%= UserTotal %>" hidden="true" readonly>
       </div>
     </div>
   </div>
