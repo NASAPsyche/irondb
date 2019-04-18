@@ -91,6 +91,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
           && postData.singleTable === 'on') {
         $.post('/data-entry/tool/onePageTables', postData, function(data) {
           $('#table-target').append(data);
+          $('#table-loader').remove();
         });
       }
 
@@ -98,6 +99,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
           && postData.allTables === 'on') {
         $.post('/data-entry/tool/allPagesTables', postData, function(data) {
           $('#table-target').append(data);
+          $('#table-loader').remove();
         });
       }
     });
