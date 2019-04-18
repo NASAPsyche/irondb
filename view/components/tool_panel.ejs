@@ -8,7 +8,10 @@
     
                     <div class="card-body tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
-                            
+                            <% if (hasFileName) { %>
+                                <p>Current pdf: <%= filename %></p>
+                            <% } %>
+
                             <form method="POST" 
                             <% if (isManual === true) { %>
                                 action="/data-entry/insert"

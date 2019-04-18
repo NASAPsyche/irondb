@@ -65,6 +65,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
       hasTables: hasTables,
       hasAttributes: hasAttributes,
       hasFileName: hasFileName,
+      filename: req.body.fileName,
       isManual: isManual,
     });
   }
