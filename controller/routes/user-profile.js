@@ -2,7 +2,7 @@ const Router = require('express-promise-router');
 // eslint-disable-next-line new-cap
 const router = new Router();
 const createError = require('http-errors');
-const {isLoggedIn} = require('../middleware/auth');
+const { isLoggedIn } = require('../middleware/auth');
 const db = require('../db');
 const bcrypt = require('bcrypt');
 
@@ -18,7 +18,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   } catch (err) {
     next(createError(500));
   } finally {
-    res.render('profile', {User: resObj[0].rows});
+    res.render('profile', { User: resObj[0].rows });
   }
 });
 
@@ -34,8 +34,6 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   const updateLastName = `UPDATE user_info SET last_name = $1 WHERE  user_id = $2`;
   const insertLastName = [req.body.last_name, req.body.user_id];
   // eslint-disable-next-line max-len
-  const updateEmail = `UPDATE user_info SET email_address = $1 WHERE  user_id = $2`;
-  const insertEmail = [req.body.email, req.body.user_id];
 
   let hasPassword = false;
   console.log(JSON.stringify(req.body));
@@ -47,7 +45,7 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
     const saltRounds = 10;
     hasPassword = true;
     const hashedPassword = await new Promise((resolve, reject) => {
-      bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+      bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
         if (err) reject(err);
         resolve(hash);
       });
@@ -70,11 +68,6 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
     await client.query(updateLastName, insertLastName);
     await client.query('COMMIT');
 
-    // email transaction
-    await client.query('BEGIN');
-    await client.query(updateEmail, insertEmail);
-    await client.query('COMMIT');
-
     // password transaction if password is changed
     if (hasPassword) {
       await client.query('BEGIN');
@@ -87,7 +80,7 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   } finally {
     client.release();
   }
-  res.json({ok: true});
+  res.json({ ok: true });
 });
 
 module.exports = router;

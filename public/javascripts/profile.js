@@ -9,7 +9,6 @@ $(document).ready(function() {
     $(':submit').removeAttr('hidden');
     $('#firstname').removeAttr('readonly');
     $('#lastname').removeAttr('readonly');
-    $('#email').removeAttr('readonly');
     $('#passCheckBox').removeAttr('hidden');
     $('#save-btn').attr('disabled', false);
   });
@@ -63,8 +62,14 @@ function validatePassword() {
     const cnfm = $('#confirm_password').val();
 
     if (pwd === cnfm) {
-      if (pwd.length >= 6) {
-        $('#save-btn').attr('disabled', false);
+      if (pwd.length >= 8) {
+        const hasUpperCase = /[A-Z]/.test(pwd);
+        const hasLowerCase = /[a-z]/.test(pwd);
+        const hasNumbers = /\d/.test(pwd);
+
+        if (hasUpperCase && hasLowerCase && hasNumbers) {
+          $('#save-btn').attr('disabled', false);
+        }
       }
     }
   });
@@ -92,8 +97,13 @@ $(document).ready(async function() {
     data.password = $('#password').val();
     data.user_id = parseInt($('#userID').val());
     const jsonData = JSON.stringify(data);
-    await postData(jsonData);
-    window.location.reload();
+    try {
+      await postData(jsonData);
+      window.location.reload();
+    } catch (err) {
+      alert(err);
+      console.log(err);
+    }
   });
 });
 
