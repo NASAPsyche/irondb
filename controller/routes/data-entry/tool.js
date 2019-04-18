@@ -135,6 +135,7 @@ router.post('/allPagesTables', isLoggedIn, async function(req, res, next) {
           res.render('components/table-xhr-response', {
             Results: results,
             Technique: resObj[0].rows,
+            Alert: 'auto',
           });
         } catch (err) {
           console.log(err);
@@ -186,6 +187,7 @@ router.post('/onePageTables', isLoggedIn, function(req, res, next) {
               res.render('components/table-xhr-response', {
                 Results: results,
                 Technique: resObj[0].rows,
+                Alert: 'single',
               });
             } catch (err) {
               console.log(err);
@@ -389,11 +391,16 @@ router.post('/insert', isLoggedIn, async function(req, res, next) {
   const resp = await updater.updateEntry(obj, username);
   console.log( 'resp ====', resp);
   if ( resp === true ) {
-    res.json({status: 'success'});
+    res.render('data-entry', {Alert:
+      `Data succesfully added to the database pending approval.`,
+    AlertType: 'sucess',
+    });
   } else {
-    res.json({status: 'error'});
+    res.render('data-entry', {Alert:
+      `Insert Failed.`,
+    AlertType: 'error',
+    });
   }
-  res.send('<h1>form submitted</h1>');
 });
 
 
