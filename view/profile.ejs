@@ -30,12 +30,12 @@
                         <div class="col">
                             <label>First Name</label>
                             <input type="text" class="form-control" id="firstname" value="<%= User[0].first_name %>"
-                                readonly>
+                                readonly required>
                         </div>
                         <div class="col">
                             <label>Last Name</label>
                             <input type="text" class="form-control" id="lastname" value="<%= User[0].last_name %>"
-                                readonly>
+                                readonly required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -51,18 +51,25 @@
 
                     <div class="form-group">
                         <label id="passwordLabel">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="************" readonly
-                            minlength="6" maxlength="25">
+                        <input type="password" class="form-control" id="password" placeholder="************" readonly>
                     </div>
 
                     <div class="form-group">
                         <label hidden="true" id="confirmLabel">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirm_password" readonly hidden=true
-                            minlength="6" maxlength="25">
+                        <input type="password" class="form-control" id="confirm_password" readonly hidden=true>
+
                     </div>
                     <div class="form-group" id="passCheckBox" hidden="true">
                         <input type="checkbox" id="updatepassword">
                         <label class="control-label" id="updateLabel" for="updatepassword">Update Password?</label>
+                        <small id="usernameHelpBlock" class="form-text text-muted text-left">
+                            Your password must be between 8 and 25 characters long and must contain at least 1
+                            uppercase, 1
+                            lowercase
+                            and 1 number. Save will unlock when passwords match. Unchecking box will not save changes
+                            to password.
+                        </small>
+
                     </div>
 
                     <div class="text-right form-group pb-2">
