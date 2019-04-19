@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
 const pg = require('./index');
-
+/* The pg client is defined globally as passing by reference to
+   a function didn't work. Consider looking for a better solution
+   than global variables.
+*/
 let client;
 /**
  * @param  {object} obj
