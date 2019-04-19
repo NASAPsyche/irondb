@@ -68,6 +68,15 @@ $$ LANGUAGE plpythonu;
 -- Define tables --
 -------------------
 
+-- From the example at : https://github.com/voxpelli/node-connect-pg-simple/blob/HEAD/table.sql
+CREATE TABLE IF NOT EXISTS "user_session" (
+  "sid" varchar NOT NULL COLLATE "default",
+	"sess" json NOT NULL,
+	"expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+ALTER TABLE "user_session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
 -- User tables --
 
 CREATE TABLE IF NOT EXISTS users (
