@@ -105,7 +105,7 @@ const authorTemplate = `
 <div class="form-group col-md-3">
   <label for="<%- middleNameID %>">Middle Name</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
-  name="<%- middleNameID %>">
+  name="<%- middleNameID %>" placeholder="optional">
 </div>
 </div>
 `;

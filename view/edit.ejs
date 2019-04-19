@@ -17,9 +17,9 @@
                 <div class="col-sm-12 col-md-5 pl-1 mb-3 mt-5">
                     <div class="sticky-top" id="pdf-panel"></div>
                 </div>
-                <div class="col-sm-11 col-md-7 border border-dark rounded pb-2" id="event-div">
+                <div class="col-sm-11 col-md-7 border border-dark rounded pb-2 text-center" id="event-div">
             <% } else { %>
-                <div class="container-fluid border border-dark rounded ml-md-5 mr-md-5 mb-3 pb-2" id="event-div">
+                <div class="container-fluid border border-dark rounded ml-md-5 mr-md-5 mb-3 pb-2 text-center" id="event-div">
             <% } %>
                     <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
                         <h1>Edit</h1>
@@ -29,7 +29,59 @@
                         <p>No pdf found for this submission.</p>
                     <% } %>
 
-                    <form method="POST" action="/data-entry/edit" class="align-top mx-auto text-left" id="insert-form">
+                    <form method="POST" action="/data-entry/edit/submit" class="align-top mx-auto text-left" id="edit-form">
+                        <!-- Basic -->
+                        <div class="basic-update">
+                            <input type="hidden" name="paperID" value="<%= Paper.paper_id %>">
+                            <input type="hidden" name="journalID" value="<%= Journal.journal_id %>">
+                        
+                            <h5 class="pt-1 pr-1 mr-2"><strong>Basic Information</strong></h5>
+                            <div class="form-row">
+                                <div class="form-group col-md-8">
+                                    <label for="paperTitle">Paper Title</label>
+                                    <input type="text" class="form-control" id="paperTitle" name="paperTitle" required="true" value="<%= Paper.title %>"> 
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="doi">DOI</label>
+                                    <input type="text" class="form-control" id="doi" name="doi" value="<%= Paper.doi %>">
+                                </div>
+                            </div>
+                        
+                            <div class="form-row">
+                                <div class="form-group col-md-7">
+                                    <label for="journalName">Journal Name</label>
+                                    <input type="text" class="form-control" id="journalName" name="journalName" required="true" value="<%= Journal.journal_name %>">
+                                </div>
+                                <div class="form-group offset-md-1 col-md-4">
+                                    <label for="pub_year">Year Published</label>
+                                    <input type="number" class="form-control" id="pubYear" name="pubYear" required="true" min="1900" Max="2100" step="1" value="<%= Journal.published_year %>">
+                                </div>
+                            </div>
+                        
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="volume">Volume</label>
+                                    <input type="text" class="form-control" id="volume" name="volume" required="true" value="<%= Journal.volume %>">
+                                </div>
+                                <div class="form-group offset-md-1 col-md-3">
+                                    <label for="issue">Issue</label>
+                                    <input type="text" class="form-control" id="issue" name="issue" value="<%= Journal.issue %>">
+                                </div>
+                                <div class="form-group offset-md-1 col-md-3">
+                                    <label for="series">Series</label>
+                                    <input type="text" class="form-control" id="series" name="series" value="<%= Journal.series %>">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Authors -->
+
+                        <input type="hidden" name="submissionID" value="">
+                        <input type="hidden" name="actions" value="">
+                        <button type="submit" class="btn btn-warning mt-2 float-right" disabled="true" title="Validate or override to enable" id="submit-btn">Submit</button>
+                        <button type="button" class="btn btn-danger mt-2 mr-3 float-right" id="validate-btn">Validate</button>
+                        <button type="button" class="btn btn-danger mt-2 mr-5 float-left" id="override-btn">Override Validation</button>
                     </form>
 
                     <h5 class="pt-1 pr-1 mr-2">
@@ -57,6 +109,8 @@
         </script>
         <script src="/javascripts/editor/pdf.js"></script>
     <% } %>
+    <script src="/javascripts/editor.js"></script>
+    <!-- UI for this specific flow -->
     <script src="/javascripts/edit.js"></script>
   </body>
 </html>
