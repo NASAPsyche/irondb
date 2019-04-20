@@ -224,7 +224,7 @@ router.post('/validate', isLoggedIn, function(req, res, next) {
     });
 
     // success
-  
+
     // failure
     // res.json({
     //   'status': 'invalid',
