@@ -31,7 +31,7 @@
                     <form method="POST" action="/data-entry/edit/submit" class="align-top mx-auto text-left" id="edit-form">
                         <!-- Basic -->
                         <div class="basic">
-                            <input type="hidden" name="paperID" value="<%= Paper.paper_id %>">
+                            <input type="hidden" name="paperID" id="paperID" value="<%= Paper.paper_id %>">
                             <input type="hidden" name="journalID" value="<%= Journal.journal_id %>">
                         
                             <h5 class="pt-1 pr-1 mr-2"><strong>Basic Information</strong></h5>
@@ -77,19 +77,19 @@
 
                         <div class="form-row author-header">
                             <p class="pt-1 mr-2">Author(s)</p>
-                            <i class="fas fa-plus-circle fa-lg add-author mt-2 text-danger"></i>
+                            <i class="fas fa-plus-circle fa-lg add-author-edit mt-2 text-danger"></i>
                         </div>
 
                         <!-- iterate over all authors -->
                         <% for (let i=0; i < Authors.length; i++) { %>
-                            <div class="author author-update">
+                            <div class="author-update">
 
                                 <input type="hidden" name="paperID" value="<%= Paper.paper_id %>">
                                 <input type="hidden" name="authorID" value="<%= Authors[i].author_id %>">
                                 
                                 <div class="form-row">
                                     <div class="col-md-1">
-                                        <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" title="Press to remove author."></i>
+                                        <i class="far fa-times-circle fa-lg remove remove-author pt-4 text-danger" title="Press to remove author."></i>
                                     </div>
                                     <div class="form-group col-md-4">
                                         <label for="<%= 'primaryName' + i %>">Last Name</label>
@@ -339,7 +339,7 @@
                         <!-- Notes -->
                         <div class="form-row notes-header">
                             <h5 class="pt-1 mr-2"><strong>Notes</strong></h5>
-                            <i class="fas fa-plus-circle fa-lg add-note mt-2 text-danger"></i>
+                            <i class="fas fa-plus-circle fa-lg add-note-edit mt-2 text-danger"></i>
                         </div>
                         
                         <% for (let i = 0; i < Notes.length; i++) { %>
@@ -349,7 +349,7 @@
 
                                 <div class="form-row pt-1">
                                     <label for="<%= 'note' + i %>">Note:
-                                        <i class="far fa-times-circle fa-lg remove remove-note pl-5 text-danger" title="Press to remove note."></i>
+                                        <i class="far fa-times-circle fa-lg remove remove-note-edit pl-5 text-danger" title="Press to remove note."></i>
                                     </label>
                                     <textarea class="form-control" id="<%= 'note' + i %>" name="<%= 'note' + i %>" rows="5"><%= Notes[i].note %></textarea>
                                 </div>

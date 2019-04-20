@@ -563,13 +563,13 @@ CREATE VIEW pending_entries_panel AS (
   t2.submitted_by,
   t2.submission_id
   FROM papers AS t1
-  JOIN (SELECT submission_date, submitted_by, t3.submission_id, paper_id 
+  JOIN (SELECT submission_date, t4.submitted_by, t3.submission_id, paper_id 
         FROM paper_status AS t3
-        JOIN (SELECT submission_id 
+        JOIN (SELECT username as submitted_by, submission_id 
               FROM submissions
               WHERE pending = true) AS t4
         ON t3.submission_id = t4.submission_id) AS t2
-ON t1.paper_id = t2.paper_id
+  ON t1.paper_id = t2.paper_id
 );
 
 CREATE VIEW flagged_entries_panel AS ( 
@@ -667,7 +667,8 @@ CREATE VIEW authors_all AS (
     t1.first_name || ' ' || t1.middle_name || ' ' || t1.primary_name as author_name,
     t1.single_entity
     FROM authors as t1 
-    INNER JOIN author_status as t2 on t1.status_id = t2.status_id 
+    INNER JOIN author_status as t2 on t1.status_id = t2.status_id
+    WHERE current_status != 'rejected'
 );
 
 CREATE VIEW attributions_all AS (
@@ -737,8 +738,10 @@ SELECT DISTINCT t1.paper_id,
    t3.submission_id
    FROM full_attributions_all AS t1
    INNER JOIN all_aggregated_authors_by_paper_id AS t2 ON t1.paper_id = t2.paper_id
-   JOIN (SELECT * FROM paper_status 
-         WHERE submission_id IS NOT NULL 
+   JOIN (SELECT t4.paper_id, t4.submission_id, 
+         t5.username as submitted_by FROM paper_status AS t4
+         JOIN submissions AS t5 ON t4.submission_id = t5.submission_id
+         WHERE t4.submission_id IS NOT NULL 
          AND current_status != 'rejected') 
    AS t3 ON t1.paper_id = t3.paper_id
    ORDER BY t1.current_status ASC

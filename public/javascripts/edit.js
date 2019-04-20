@@ -1,14 +1,17 @@
 
 // Some functions inline on template to avoid import issues.
-// Uses functions defined in editor.js
+// Uses functions defined in editor.js, must be added after
 /* eslint-disable no-invalid-this */
 
 $('document').ready( function() {
+  console.log('length:' + $('div.note-update').length);
+  console.log('Log 1');
+  console.log($('div.note-update').children('div').children('textarea').val());
+  console.log('Log 2');
   console.log('Serialization: ');
-  console.log('length:' + $('div.basic').length);
-  console.log($('div.basic').children());
-  console.log($('div.basic').children().eq(3).children().children());
-  console.log( serialzeBasic( $('div.basic') ));
+  for (let i = 0; i < $('div.note-update').length; i++) {
+    console.log( serialzeNote( $('div.note-update').eq(i) ));
+  }
 });
 
 /** ---------------------------- */
@@ -50,17 +53,77 @@ $('#event-div').on('click', '#validate-btn-edit', function() {
 /**        EJS Templates for Add        */
 /** ----------------------------------- */
 /* eslint-disable max-len*/
+const authorInsertTemplate = `<div class="author-insert">
+<input type="hidden" name="paperID" value="">
+<input type="hidden" name="authorID" value="">
+<div class="form-row">
+    <div class="col-md-1">
+        <i class="far fa-times-circle fa-lg remove remove-author pt-4 text-danger" title="Press to remove author."></i>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="<%= primaryNameID %>">Last Name</label>
+        <input type="text" class="form-control" id="<%= primaryNameID %>" name="<%= primaryNameID %>" required="true" placeholder="required"> 
+    </div>
+    <div class="form-group col-md-4">
+        <label for="<%= firstNameID %>">First Name</label>
+        <input type="text" class="form-control" id="<%= firstNameID %>" name="<%= firstNameID %>" required="true" placeholder="required"> 
+    </div>
+    <div class="form-group col-md-3">
+        <label for="<%= middleNameID %>" >Middle Name</label>
+        <input type="text" class="form-control" id="<%= middleNameID %>" name="<%= middleNameID %>" placeholder="optional"> 
+    </div>
+</div>
+</div>`;
+
+
+const noteInsertTemplate = `<div class="note-insert">
+  <input type="hidden" name="paperID" value="">
+  <input type="hidden" name="noteID" value="">
+
+  <div class="form-row pt-1">
+      <label for="<%= noteID %>">Note:
+          <i class="far fa-times-circle fa-lg remove remove-note-edit pl-5 text-danger" title="Press to remove note."></i>
+      </label>
+      <textarea class="form-control" id="<%= noteID %>" name="<%= noteID %>" rows="5"></textarea>
+  </div>
+</div>`;
+
 /* eslint-enable max-len*/
 
 /** ---------------------------- */
 /**        UI Add Events         */
 /** ---------------------------- */
+$( '#event-div' ).on('click', 'i.add-author-edit', function( event ) {
+  // eslint-disable-next-line no-undef
+  addAuthor(this, authorInsertTemplate);
+});
 
+$( '#event-div' ).on('click', 'i.add-note-edit', function( event ) {
+  // eslint-disable-next-line no-undef
+  addNote(this, noteInsertTemplate);
+});
 
 /** ---------------------------- */
 /**        UI Remove Events      */
 /** ---------------------------- */
+const removedArray = [];
 
+$( '#event-div' ).on('click', 'i.remove-author', function() {
+  const author = $(this).parent().parent().parent();
+  if (author.hasClass('author-update')) {
+    removedArray.push(deleteAuthor(serialzeAuthor( author )));
+  }
+  author.remove();
+});
+
+$( '#event-div' ).on('click', 'i.remove-note-edit', function() {
+  const note = $(this).parent().parent().parent();
+  if (note.hasClass('note-update')) {
+    removedArray.push(deleteNote(serialzeNote( note )));
+    console.log(removedArray);
+  }
+  note.remove();
+});
 
 /** ---------------------------- */
 /**       Submit the form        */
@@ -179,9 +242,38 @@ $('#edit-form').submit(function(event) {
 
   // Submit if checks pass
   if (allValid === true) {
-    const actionsArr = [];
+    const actionsArr = removedArray;
+    const PaperID = $('#paperID').val();
     // Serialize all ui elements and add them to actions
     actionsArr.push(serialzeBasic( $('div.basic') ));
+
+    // Authors
+    for (let i = 0; i < $('div.author-update').length; i++) {
+      actionsArr.push(
+          updateAuthor(serialzeAuthor($('div.author-update').eq(i)))
+      );
+    }
+
+    for (let i = 0; i < $('div.author-insert').length; i++) {
+      actionsArr.push(
+          insertAuthor( serialzeAuthor($('div.author-insert').eq(i)), PaperID )
+      );
+    }
+
+    // Bodies
+
+    // Notes
+    for (let i = 0; i < $('div.note-update').length; i++) {
+      actionsArr.push(
+          updateNote(serialzeNote($('div.note-update').eq(i)))
+      );
+    }
+
+    for (let i = 0; i < $('div.note-insert').length; i++) {
+      actionsArr.push(
+          insertNote( serialzeNote($('div.note-insert').eq(i)), PaperID )
+      );
+    }
 
     // Add actions array to hidden input
     $('#actions').val(JSON.stringify(actionsArr));
@@ -213,5 +305,111 @@ function serialzeBasic( obj ) {
   temp.volume = $('#volume').val();
   temp.issue = $('#issue').val();
   temp.series = $('#series').val();
+  return temp;
+}
+
+/**
+ * @param  {object} obj a div of class author-*
+ * @return {object} author object for creation of action object
+ */
+function serialzeAuthor( obj ) {
+  const temp = {};
+  temp.type = 'author';
+  temp.command = 'update';
+  temp.paperID = obj.children().eq(0).val();
+  temp.authorID = obj.children().eq(1).val();
+  temp.primaryName = obj.children().eq(2)
+      .children().eq(1).children('input').val();
+  temp.firstName = obj.children().eq(2)
+      .children().eq(2).children('input').val();
+  temp.middleName = obj.children().eq(2)
+      .children().eq(3).children('input').val();
+  return temp;
+}
+
+/**
+ * @param  {object} author a serialized author object
+ * @return {object} action object for update
+ */
+function updateAuthor( author ) {
+  author.type = 'author';
+  author.command = 'update';
+  return author;
+}
+
+/**
+ * @param  {object} author a serialized author object
+ * @param {number} PaperID Id of loaded paper
+ * @return {object} action object for insert
+ */
+function insertAuthor( author, PaperID ) {
+  const temp = {};
+  temp.type = 'author';
+  temp.command = 'insert';
+  temp.paperID = PaperID;
+  temp.primaryName = author.primaryName;
+  temp.firstName = author.firstName;
+  temp.middleName = author.middleName;
+  return temp;
+}
+
+/**
+ * @param  {object} author a serialized author object
+ * @return {object} action object for delete
+ */
+function deleteAuthor( author ) {
+  const temp = {};
+  temp.type = 'author';
+  temp.command = 'delete';
+  temp.paperID = author.paperID;
+  temp.authorID = author.authorID;
+  return temp;
+}
+
+/**
+ * @param  {object} obj a div of class note-*
+ * @return {object} note object for creation of action object
+ */
+function serialzeNote( obj ) {
+  const temp = {};
+  temp.paperID = obj.children().eq(0).val();
+  temp.noteID = obj.children().eq(1).val();
+  temp.note = obj.children('div').children('textarea').val();
+  return temp;
+}
+
+/**
+ * @param  {object} note a serialized note object
+ * @return {object} action object for update
+ */
+function updateNote( note ) {
+  note.type = 'note';
+  note.command = 'update';
+  return note;
+}
+
+/**
+ * @param  {object} note a serialized note object
+ * @param {number} PaperID Id of loaded paper
+ * @return {object} action object for insert
+ */
+function insertNote( note, PaperID ) {
+  const temp = {};
+  temp.type = 'note';
+  temp.command = 'insert';
+  temp.paperID = PaperID;
+  temp.note = note.note;
+  return temp;
+}
+
+/**
+ * @param  {object} note a serialized note object
+ * @return {object} action object for delete
+ */
+function deleteNote( note ) {
+  const temp = {};
+  temp.type = 'note';
+  temp.command = 'delete';
+  temp.noteID = note.noteID;
   return temp;
 }

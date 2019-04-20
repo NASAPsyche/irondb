@@ -1,6 +1,7 @@
 const Router = require('express-promise-router');
 const router = new Router();
 const db = require('../../db');
+const updater = require('../../db/update-entry');
 const ejsUnitConversion = require('../../utils/ejs-unit-conversion');
 const {isLoggedIn} = require('../../middleware/auth');
 const createError = require('http-errors');
@@ -45,31 +46,39 @@ router.post('/', isLoggedIn, async function(req, res, next) {
         `SELECT t1.* 
         FROM authors AS t1
         JOIN (SELECT author_id FROM author_status
-              WHERE submission_id = $1 ) 
+              WHERE submission_id = $1 
+              AND current_status != 'rejected') 
         AS t2 on t1.author_id = t2.author_id`,
         [submissionID]
     );
     const Bodies = await db.aQuery(
         `SELECT t1.* FROM bodies AS t1 JOIN
-          (SELECT body_id FROM body_status WHERE submission_id = $1)
+          (SELECT body_id FROM body_status WHERE submission_id = $1
+            AND current_status != 'rejected')
           AS t2 ON t1.body_id = t2.body_id`,
         [submissionID]
     );
     const Groups = await db.aQuery(
         `SELECT t1.* FROM groups AS t1 JOIN
-          (SELECT group_id FROM group_status WHERE submission_id = $1)
+          (SELECT group_id FROM group_status 
+            WHERE submission_id = $1
+            AND current_status != 'rejected')
           AS t2 ON t1.group_id = t2.group_id`,
         [submissionID]
     );
     const ElementEntries = await db.aQuery(
         `SELECT t1.* FROM element_entries AS t1 JOIN
-          (SELECT element_id FROM element_status WHERE submission_id = $1)
+          (SELECT element_id FROM element_status 
+            WHERE submission_id = $1
+            AND current_status != 'rejected')
           AS t2 ON t1.element_id = t2.element_id`,
         [submissionID]
     );
     const Notes = await db.aQuery(
         `SELECT t1.* FROM notes AS t1 JOIN 
-        (SELECT note_id FROM note_status WHERE submission_id = $1) 
+        (SELECT note_id FROM note_status 
+          WHERE submission_id = $1
+          AND current_status != 'rejected') 
         AS t2 ON t1.note_id = t2.note_id`,
         [submissionID]
     );
@@ -112,7 +121,21 @@ router.post('/', isLoggedIn, async function(req, res, next) {
 });
 
 router.post('/submit', isLoggedIn, async function(req, res, next) {
-  res.send(req.body);
+  const obj = {};
+  obj.submissionID = req.body.submissionID;
+  obj.actions = JSON.parse(req.body.actions);
+
+  const username = req.user.username;
+  console.dir(obj);
+  const resp = await updater.updateEntry(obj, username);
+  console.log( 'resp ====', resp);
+  if ( resp === true ) {
+    res.json({status: 'success'});
+  } else {
+    res.json({status: 'error'});
+  }
+
+  // res.send(obj);
 });
 
 module.exports = router;
