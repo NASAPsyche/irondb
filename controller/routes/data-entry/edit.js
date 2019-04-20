@@ -93,9 +93,6 @@ router.post('/', isLoggedIn, async function(req, res, next) {
       next(createError(500));
     }
 
-    console.log(resObj[0].rows);
-    console.log(resObj[1].rows);
-    console.log(resObj[8].rows);
     res.render('edit', {
       Elements: resObj[0].rows,
       Technique: resObj[1].rows,
