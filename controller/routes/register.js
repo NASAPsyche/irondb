@@ -4,18 +4,29 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require('../db');
 const passport = require('passport');
+const createError = require('http-errors');
 
 /* GET registration page. */
-router.get('/', function(req, res, next) {
+router.get('/', async (req, res, next) => {
   // check if signed in
   let isSignedIn = false;
   if (req.isAuthenticated()) {
     isSignedIn = true;
   }
-  res.render('register', {isSignedIn: isSignedIn});
+  let resObj = [];
+  try {
+    const users = db.aQuery('SELECT username FROM users', []);
+    resObj = await Promise.all([users]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    // eslint-disable-next-line max-len
+    res.render('register', {isSignedIn: isSignedIn, Users: resObj[0].rows, UserTotal: resObj[0].rowCount});
+  }
 });
 
 router.post('/', function(req, res, next) {
+  console.log(JSON.stringify(req.body));
   // Register user, storing hash instead of password.
   const saltRounds = 10;
   bcrypt.genSalt(saltRounds, function(err, salt) {
@@ -60,8 +71,76 @@ router.post('/', function(req, res, next) {
   });
 });
 
+router.post('/new-user', async (req, res, next) => {
+  const client = await db.pool.connect();
+  let hashed = '';
+
+  // salt and hash password
+  const saltRounds = 10;
+  const hashedPassword = await new Promise((resolve, reject) => {
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+      if (err) reject(err);
+      resolve(hash);
+    });
+  });
+  hashed = hashedPassword;
+
+  // eslint-disable-next-line max-len
+  const insertUser = 'INSERT INTO users(user_id,username, password_hash, role_of) VALUES ($1,$2,$3,$4)';
+  // eslint-disable-next-line max-len
+  const insertUserValues = [req.body.user_id, req.body.username, hashed, 'user'];
+
+  // eslint-disable-next-line max-len
+  let insertUserInfo = 'INSERT INTO user_info(user_id,first_name, last_name,email_address)';
+  insertUserInfo += 'VALUES($1,$2,$3,$4)';
+  // eslint-disable-next-line max-len
+  const insertUserInfoValues = [req.body.user_id, req.body.first_name, req.body.last_name, req.body.email];
+
+  try {
+    // first name transaction
+    await client.query('BEGIN');
+    await client.query(insertUser, insertUserValues);
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    next(createError(500));
+  } try {
+    await client.query('BEGIN');
+    await client.query(insertUserInfo, insertUserInfoValues);
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    next(createError(500));
+  } finally {
+    client.release();
+  }
+  res.json({ok: true});
+});
+
+router.get('/:id', async (req, res, next) => {
+  let resObj = [];
+  const emails = [];
+  try {
+    const users = db.aQuery('SELECT email_address FROM user_info', []);
+    resObj = await Promise.all([users]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    // eslint-disable-next-line max-len
+    console.log(req.params.id);
+    for (let i = 0; i < resObj[0].rowCount; i++) {
+      emails.push(resObj[0].rows[i].email_address);
+    }
+    const result = emails.includes(req.params.id);
+    console.log(JSON.stringify(emails));
+    res.json({result: result});
+  }
+});
+
 router.use(function(req, res, next) {
   // After database insert transaction complete, athenticate and redirect.
+  console.log(JSON.stringify(req));
+  console.log(JSON.stringify(res));
   passport.authenticate('local')(req, res, function() {
     res.redirect('/panel');
   });

@@ -1,55 +1,57 @@
 import PyPDF2
 import sys
-import os
+import os.path
 import json
 from tabula import read_pdf
-import pandas as pd
-pd.options.display.max_rows = 999
-pd.options.display.max_columns = 999
+import pdf_text_import as pti
+import table_page_finder as tpf
 
-# sys.argv[0]  = path of python script that is running
-# sys.argv[1]  = Name of file
-# sys.argv[2]  = Page number
-# sys.argv[3] = Number of task to call.
-# sys.argv[4]  = Direction to flip page
-# To test use python table_driver_single.py Wasson_2010.pdf 5 0 90
-
-
-print(sys.argv[1])
-
-pdf_name = "pdfs/" + str(sys.argv[1])
-tables_rec_from_pages = []
+j = json.loads(sys.argv[1])
+fileName = j['fileName']
+fileName = '/usr/app/public/temp/' + fileName
+pageNum = int(j['pageNum'])
+total_pages = [pageNum]
+flipDir = int(j['flipDir'])
+coordsLeft = int(j['coordsLeft'])
+coordsTop = int(j['coordsTop'])
+coordsWidth = int(j['coordsWidth'])
+coordsHeight = int(j['coordsHeight'])
+#
+# print(fileName)
+# pdfname = '/usr/app/external/pdfScraper/pdfs/WassonandChoe_GCA_2009.pdf'
+tables = []
 
 
 def target_coords():
-    print(sys.argv[1])
-    pdfname = "pdfs/Wassonetal_GCA_2007.pdf"
-    page_num = int(sys.argv[2])
-
-    # page_in = open(pdfname, 'rb')
-    return read_pdf(pdfname, output_format="dataframe", encoding="utf-8", multiple_tables=True,
-                                    pages=page_num, silent=True, area=[521.71, 27.73, 705, 560])
+    return read_pdf(fileName, output_format="dataframe", encoding="utf-8", multiple_tables=True,
+                                    pages=pageNum, silent=True, area=[521.71, 27.73, 705, 560])
 
 
 def rotate_page():
-    pagenum = int(sys.argv[2])
-    page_in = open(pdf_name, 'rb')
+    page_in = open(fileName, 'rb')
     page_reader = PyPDF2.PdfFileReader(page_in)
-
-    page = page_reader.getPage(pagenum)
-    page.rotateClockwise(90)
-    return read_pdf(pdf_name, output_format="dataframe", encoding="utf-8", multiple_tables=True,
-                                    pages=pagenum, silent=True)
-
-
-if int(sys.argv[3]) == 0:
-    tables_rec_from_pages = rotate_page()
-
-elif int(sys.argv[3]) == 1:
-    tables_rec_from_pages = target_coords()
-
-for ind in range(len(tables_rec_from_pages)):
-    tables_rec_from_pages[ind] = json.loads(tables_rec_from_pages[ind].to_json())
+    page = page_reader.getPage(pageNum)
+    page.rotateClockwise(flipDir)
+    return read_pdf(fileName, output_format="dataframe", encoding="utf-8", multiple_tables=True,
+                                    pages=pageNum, silent=True)
 
 
-print(tables_rec_from_pages)
+if flipDir > 0:
+    tables = rotate_page()
+
+
+if coordsLeft > 0 or coordsHeight > 0 or coordsTop > 0 or coordsWidth > 0:
+    tables = target_coords()
+else:
+    tables = read_pdf(fileName, output_format="dataframe", encoding="utf-8", multiple_tables=True,
+                  pages=pageNum, silent=True)
+if len(tables) > 0:
+    for ind in range(len(tables)):
+        tables[ind] = '{\"actual_page\":' + str(0) \
+                      + ',\"pdf_page\": ' + str(pageNum) \
+                      + ', \"Table\":' + tables[ind].to_json() + '}'
+        print(tables[ind])
+
+else:
+    print("-1000")
+

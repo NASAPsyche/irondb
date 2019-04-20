@@ -1,0 +1,71 @@
+<!-- Error alert -->
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error: </strong>
+    Failed to extract attributes. Please enter manually or return to data entry.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<!-- Component of basic attribute form elements for editor -->
+<h5 class="pt-1 pr-1 mr-2"><strong>Basic Information</strong></h5>
+<div class="form-row">
+    <div class="form-group col-md-8">
+        <label for="paperTitle">Paper Title</label>
+        <input type="text" class="form-control" id="paperTitle" name="paperTitle" required="true" placeholder="required"> 
+    </div>
+    <div class="form-group col-md-4">
+        <label for="doi">DOI</label>
+        <input type="text" class="form-control" id="doi" name="doi" placeholder="optional">
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-7">
+        <label for="journalName">Journal Name</label>
+        <input type="text" class="form-control" id="journalName" name="journalName" required="true" placeholder="required">
+    </div>
+    <div class="form-group offset-md-1 col-md-4">
+        <label for="pub_year">Year Published</label>
+        <input type="number" class="form-control" id="pubYear" name="pubYear" required="true" min="1900" Max="2100" step="1">
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-3">
+        <label for="volume">Volume</label>
+        <input type="text" class="form-control" id="volume" name="volume" required="true" placeholder="required">
+    </div>
+    <div class="form-group offset-md-1 col-md-3">
+        <label for="issue">Issue</label>
+        <input type="text" class="form-control" id="issue" name="issue" placeholder="optional">
+    </div>
+    <div class="form-group offset-md-1 col-md-3">
+        <label for="series">Series</label>
+        <input type="text" class="form-control" id="series" name="series" placeholder="optional">
+    </div>
+</div>
+
+<div class="form-row author-header">
+    <p class="pt-1 mr-2">Author(s)</p>
+    <i class="fas fa-plus-circle fa-lg add-author mt-2 text-danger"></i>
+</div>
+
+<div class="form-row">
+    <div class="col-md-1">
+        <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" title="Press to remove author."></i>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="primaryName">Last Name</label>
+        <input type="text" class="form-control" id="primaryName0" name="primaryName0" required="true" placeholder="required"> 
+    </div>
+    <div class="form-group col-md-4">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName0" name="firstName0" required="true" placeholder="required"> 
+    </div>
+    <div class="form-group col-md-3">
+        <label for="middleName" >Middle Name</label>
+        <input type="text" class="form-control" id="middleName0" name="middleName0"> 
+    </div>
+</div>
+
+<div class="authors-end"></div>

@@ -1,121 +1,49 @@
 <div>
-    <div class="card text-center border-dark">
-        <div class="card-header bg-danger">
-            <ul class="nav nav-tabs card-header-tabs">
-            <li class="nav-item bg-warning">
-                <a class="nav-link active" id="insert-tab" data-toggle="tab" href="#insert" role="tab" aria-controls="insert" aria-selected="true">Insert View</a>
-            </li>
-            <li class="nav-item bg-warning">
-                <a class="nav-link" id="table-tab" data-toggle="tab" href="#table" role="tab" aria-controls="table" aria-selected="true">Table View</a>
-            </li>
-            </ul>
-        </div>
+    <div class="container-fluid pt-1 pb-1 px-0">
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="card text-center border-dark">
+                    <div class="card-header bg-danger">
+                        <h3 class="card-title text-warning">Editor</h3>
+                    </div>
+    
+                    <div class="card-body tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
+                            
+                            <form method="POST" 
+                            <% if (isManual === true) { %>
+                                action="/data-entry/insert"
+                            <% } else { %>                           
+                                action="/data-entry/tool/insert"
+                            <% } %> class="align-top mx-auto text-left" id="insert-form">
 
-        <div class="card-body tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
-                <h5 class="card-title">Insert Tab</h5>
-                <form method="POST" action="/data-entry/tool/insert" class="align-top mx-auto text-left" id="insert-form">
-                    <%- include('insert_form'); %>
-                    <input type="hidden" name="tableData" value="" id="table-data-input">
-                </form>
-            </div>
-            <div class="tab-pane fade" id="table" role="tabpanel" aria-labelledby="table-tab">
-                <h5 class="card-title">Table Tab</h5>
-                <p id="manual-text">View populated via automated tool.</p>
-                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#tableModal">Single Page Get</button>
-                <div id="table-target">
+                                <!-- Check for attributes -->
+                                <% if (hasAttributes === true) { %>
+                                    <%- include('attributes-loading-placeholder'); %>
+                                <% } else { %>
+                                    <%- include('basic-attributes-form-group'); %>
+                                <% } %>
+
+                                <!-- Check for tables -->
+                                <% if (hasTables === true) { %>
+                                    <div class="form-row tables-header">
+                                        <h5 class="pt-1 mr-2"><strong>Tables</strong></h5>
+                                    </div>
+                                    <div id="table-target">
+                                    </div>
+
+                                    <button type="button" class="btn btn-danger" id="tableToggle">Single Page Get</button>
+                                    <input type="hidden" name="tableData" value="" id="table-data-input">
+                                <% } else { %>
+                                    <%- include('meteorites-form-group'); %>
+                                <% } %>
+                                <%- include('notes-form-group'); %>
+                                <button type="submit" class="btn btn-warning mt-2 float-right" disabled="true" title="Validate or override to enable" id="submit-btn">Submit</button>
+                                <button type="button" class="btn btn-danger mt-2 mr-3 float-right" id="validate-btn">Validate</button>
+                                <button type="button" class="btn btn-danger mt-2 mr-5 float-left" id="override-btn">Override Validation</button>
+                            </form>
+    
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-<!-- Modal -->
-<div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="tableModal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Single Page Table(s) Getter</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <form method="POST" action="/data-entry/tool/tables" class=" align-top mx-auto" id="single-page-form">
-                    <div class="modal-body">
-                        <small>Select page of pdf to extract tables from.</small>
-                        <!-- This will remain hidden -->
-                        <div class="form-group">
-                            <label for="fileName" class="sr-only"></label>
-                            <input id="fileName" name="fileName" type="hidden" value="">
-                        </div>
-            
-                        <!-- This will be a drop down, I'll need some way of grabing the number of pages before rendering this -->
-                        <!-- currently giving you 0-20 -->
-                        <div class="form-group">
-                            <label for="pageNum" class="sr-only"></label>
-                            <select class="form-control" name="pageNum" id="pageNum">
-                                <option>Page Number</option>
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                                <option value="13">13</option>
-                                <option value="14">14</option>
-                                <option value="15">15</option>
-                                <option value="16">16</option>
-                                <option value="17">17</option>
-                                <option value="18">18</option>
-                                <option value="19">19</option>
-                                <option value="20">20</option>
-                            </select>
-                        </div>
-            
-                        <!-- Drop down with the given options -->
-                        <div class="form-group">
-                            <label for="taskNum" class="sr-only"></label>
-                            <input id="taskNum" name="taskNum" type="hidden" value="0">
-                        </div>
-            
-                        <!-- Some form of directional input, probably just number -360 to 360 -->
-                        <div class="form-group">
-                            <label for="flipDir" class="sr-only"></label>
-                            <input id="flipDir" name="flipDir" type="hidden" value="0">
-                        </div>
-            
-                        <!-- will discuss further when/if we get to it -->
-                        <div class="form-group">
-                            <label for="coordsLeft" class="sr-only"></label>
-                            <input id="coordsLeft" name="coordsLeft" type="hidden" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="coordsTop" class="sr-only"></label>
-                            <input id="coordsTop" name="coordsTop" type="hidden" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="coordsWidth" class="sr-only"></label>
-                            <input id="coordsWidth" name="coordsWidth" type="hidden" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="coordsHeight" class="sr-only"></label>
-                            <input id="coordsHeight" name="coordsHeight" type="hidden" value="0">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <!-- even though the id 'modal-upload' is never called, it will break the autosave if you remove it -->
-                        <button type="submit" class="btn btn-danger mt-2 ml-2 pr-4 pl-4" id="modal-table">Get</button> 
-                        <button type="button" class="btn btn-secondary mt-2" data-dismiss="modal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>

@@ -9,8 +9,27 @@
 $(document).ready(async () => {
   $('#save-btn').click(async () => {
     const jsonString = serializeInsertForm();
-    postSave(jsonString);
+    // postSave(jsonString);
+    if ( await postSave(jsonString) === true ) {
+      alert('Saved');
+    } else {
+      alert('Failed to save, check your connection');
+    }
   });
+});
+
+/**
+ * @description save the work every minute
+ */
+$(document).ready(async function() {
+  setInterval(async function() {
+    const jsonString = serializeInsertForm();
+    if ( await postSave(jsonString) === true ) {
+      console.log('save successful');
+    } else {
+      alert('Failed to auto-save, check your connection');
+    }
+  }, 60 * 1000 /* One minute in milliseconds */);
 });
 
 
@@ -47,12 +66,12 @@ function serializeInsertForm() {
   // eslint-disable-next-line no-undef
   const username_ = username; // username defined in ejs from route
   // eslint-disable-next-line no-undef
-  const filename_ = filename; // filename defined in ejs from route
+  // const filename_ = filename; // filename defined in ejs from route
 
   const fullJson = {
     username: username_,
     data: jsondata_,
-    pdf_path: filename_,
+    // pdf_path: filename_,
   };
   return (JSON.stringify(fullJson));
 }
@@ -63,6 +82,7 @@ function serializeInsertForm() {
  * @param  {String} jsonString
  */
 async function postSave(jsonString) {
+  let ret;
   await $.ajax({
     url: '/data-entry/save',
     type: 'POST',
@@ -71,11 +91,11 @@ async function postSave(jsonString) {
     dataType: 'json',
     async: true,
     success: function(data, status, jqXHR) {
-      alert(status);
-      return true;
+      ret = true;
     },
     error: function(jqXHR, status) {
-      return false;
+      ret = false;
     },
   });
+  return ret;
 }
