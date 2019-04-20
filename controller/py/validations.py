@@ -128,5 +128,5 @@ def form_validate(form_json):
 
 
 
-print("FORM VALIDATION: " + json.dumps(form_validate('meteorite_example.json')) + '\n')
+print("FORM VALIDATION: " + json.dumps(form_validate('meteorite_example.json'), indent=4) + '\n')
 #print("TABLES VALIDATION: " + tables_validate(tables) + '\n')
