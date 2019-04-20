@@ -1,0 +1,18 @@
+.card {
+    background-color:#8c1d40;
+    box-shadow: 8px 8px 6px grey;
+}
+
+h1 {
+    color: #FFC627;
+}
+
+.btn-md {
+    width: 120px;
+    text-align: center;
+}
+
+.input-group-text {
+    background-color: #FFC627;
+    color: black;
+}

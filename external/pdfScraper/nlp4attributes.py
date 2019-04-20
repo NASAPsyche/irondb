@@ -52,8 +52,10 @@ __version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
-import os, io, re, string
+import os, io, re, string, json
 import nltk
+from nltk.corpus import words
+from rake_nltk import Rake, Metric
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
 #from nltk.corpus import stopwords
@@ -61,8 +63,6 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
-from nltk.corpus import words
-from rake_nltk import Rake, Metric
 
 # global variables
 path = os.path.abspath('pdfs') + '/'
@@ -218,14 +218,14 @@ def authors_extract(pdf_name):
                     if (english_author in line) and (len(line.split()) > 1):
                         authors_full = line
                     if authors_full.endswith(","):
-                    	authors_full += " " + relevant_text.split('\n\n')[line_index+1]
+                    	authors_full += relevant_text.split('\n\n')[line_index+1]
         if authors_full == "":
             for word in tagged:
                 if ((word[0] not in words.words()) and (word[1] == 'NNP') and 
                     (word[0] in line) and (len(line.split()) > 1)):
                     authors_full = line
                 if authors_full.endswith(","):
-                	authors_full += " " + relevant_text.split('\n\n')[line_index+1]
+                	authors_full += relevant_text.split('\n\n')[line_index+1]
         line_index += 1
 
     if authors_full == "":
@@ -259,6 +259,9 @@ def authors_extract(pdf_name):
     #authors_tagword = truncated_authors(pdf_name).split()[1].replace(",", "")
     #authors_index = (relevant_text.lower()).find(authors_tagword.lower())
     #authors_full = relevant_text[:authors_index].rsplit('\n\n', 1)[1] + relevant_text[authors_index:].split('\n', 1)[0]
+
+    if authors_full.endswith(" "):
+        authors_full = authors_full[:-1]
 
     return authors_full
 
@@ -313,8 +316,13 @@ def source_extract(pdf_name):
 
 
 paper = input("Enter name of paper with extension (.pdf): ")
-print()
-print("TITLE: " + title_extract(paper) + '\n')
-print("AUTHOR(S): " + authors_extract(paper) + '\n')
-print("DATE: " + date_extract(paper) + '\n')
-print("SOURCE: " + source_extract(paper) + '\n')
+#print()
+#print("TITLE: " + title_extract(paper) + '\n')
+#print("AUTHOR(S): " + authors_extract(paper) + '\n')
+#print("SOURCE: " + source_extract(paper) + '\n')
+#print("DATE: " + date_extract(paper) + '\n')
+
+attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
+			  'source': source_extract(paper), 'date': date_extract(paper)}
+attributes_json = json.dumps(attributes)
+print(attributes_json)

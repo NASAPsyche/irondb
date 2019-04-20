@@ -1,5 +1,4 @@
--- Create and connect to irondb database 
-CREATE DATABASE irondb WITH OWNER = group16; 
+-- add extensions
 CREATE EXTENSION IF NOT EXISTS citext;
 CREATE EXTENSION IF NOT EXISTS plpythonu;
 
@@ -86,22 +85,11 @@ CREATE TABLE IF NOT EXISTS user_info (
   PRIMARY KEY(user_id)
 );
 
--- Session table --
--- Table copied from: https://github.com/voxpelli/node-connect-pg-simple/blob/HEAD/table.sql
--- as per usage documentation: https://www.npmjs.com/package/connect-pg-simple
-CREATE TABLE "session" (
-  "sid" varchar NOT NULL COLLATE "default",
-	"sess" json NOT NULL,
-	"expire" timestamp(6) NOT NULL
-)
-WITH (OIDS=FALSE);
-ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-
 -- Data tables --
 
 CREATE TABLE IF NOT EXISTS bodies (
   body_id serial PRIMARY KEY,
-  nomenclature citext UNIQUE NOT NULL,
+  nomenclature citext NOT NULL,
   status_id bigint
 );
 
@@ -218,7 +206,6 @@ CREATE TABLE IF NOT EXISTS body_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES body_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 
@@ -242,7 +229,6 @@ CREATE TABLE IF NOT EXISTS journal_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES journal_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 
@@ -266,7 +252,6 @@ CREATE TABLE IF NOT EXISTS paper_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES paper_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 
@@ -290,7 +275,6 @@ CREATE TABLE IF NOT EXISTS attribution_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES attribution_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 
@@ -314,7 +298,6 @@ CREATE TABLE IF NOT EXISTS author_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES author_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 
@@ -338,7 +321,6 @@ CREATE TABLE IF NOT EXISTS group_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES group_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 
@@ -362,7 +344,6 @@ CREATE TABLE IF NOT EXISTS classification_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES classification_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 
@@ -386,7 +367,6 @@ CREATE TABLE IF NOT EXISTS element_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES element_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 
@@ -410,7 +390,6 @@ CREATE TABLE IF NOT EXISTS note_status (
   reviewed_by integer REFERENCES users(user_id),
   submission_date timestamp DEFAULT now() NOT NULL,
   reviewed_date timestamp,
-  previous_entry bigint REFERENCES note_status(status_id),
   submission_id bigint REFERENCES submissions(submission_id)
 );
 

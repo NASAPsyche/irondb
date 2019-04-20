@@ -3,57 +3,214 @@
 # Iron Shell - Iron Meteorite Database Manager
 # For deploying and managing the docker composition.
 
+
+
+############################
+# Functions
+############################
+
+# Displays a brief help message
+function show_short_help() {
+  helpString= helpString='Make sure Docker is running before performing any operations.
+Common commands:
+
+Initial/Clean install
+  ./iron.sh -i
+
+Launch/start the containers
+  ./iron.sh -l
+  
+Stop the containers
+  ./iron.sh -s
+
+--------------
+For advanced options or more information
+  ./iron.sh -h
+'
+  echo "${helpString}"
+
+}
 # Displays the help contents
 function show_help ()
 {
-  echo "                                        "
-  echo "    ██╗██████╗  ██████╗ ███╗   ██╗      "
-  echo "    ██║██╔══██╗██╔═══██╗████╗  ██║      "
-  echo "    ██║██████╔╝██║   ██║██╔██╗ ██║      "
-  echo "    ██║██╔══██╗██║   ██║██║╚██╗██║      "
-  echo "    ██║██║  ██║╚██████╔╝██║ ╚████║      "
-  echo "    ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝      "
-  echo "███████╗██╗  ██╗███████╗██╗     ██╗     "
-  echo "██╔════╝██║  ██║██╔════╝██║     ██║     "
-  echo "███████╗███████║█████╗  ██║     ██║     "
-  echo "╚════██║██╔══██║██╔══╝  ██║     ██║     "
-  echo "███████║██║  ██║███████╗███████╗███████╗"
-  echo "╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
-  echo "                                        "
-  echo "Welcome to the Iron Meteorite Database Manager." 
-  echo "Make sure Docker is running before performing any operations."
-  echo "-h    Help: Displays the command options"
-  echo "--------"
-  echo "-i    Initial install: Install dependencies, build the containers, and launch"
-  echo "      the server. This can take 15+ minutes and will download several GB of data."
-  echo "--------"
-  echo "-l    Launch: Installs node dependencies and then launches the server."
-  echo "-p    Populate and launch: Launches the servers with the database populated"
-  echo "      only from init script. Deletes local data."
-  echo "-q    Quick launch: Launches the server without installing node dependencies."
-  echo "      SELECT this if there have been no changes to the server since it last ran."
-  echo "-a    Attached quick launch: Launches the server with node output to shell."
-  echo "-f    Fresh build: Rebuild containers and launch."
-  echo "--------"
-  echo "-m    Mock data - add some mock data."
-  echo "-s    Stop the server."
-  echo "-x    Reset Docker Environment - Stops the server and clear the docker environment."
-  echo "      Consider this the factory refresh of your Docker environment. Frees up space " 
-  echo "      in your virtual drive. This does NOT uninstall Docker. "
-  echo "--------"
-  echo "Postgress must be running for backup operations."
-  echo "-b    Backup: Makes a backup of the database."
-  echo "-r    Restore: Restore the database from the most recent backup."
-  echo ""
+  helpString='
+            ██╗██████╗  ██████╗ ███╗   ██╗      
+            ██║██╔══██╗██╔═══██╗████╗  ██║      
+            ██║██████╔╝██║   ██║██╔██╗ ██║      
+            ██║██╔══██╗██║   ██║██║╚██╗██║      
+            ██║██║  ██║╚██████╔╝██║ ╚████║      
+            ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝      
+        ███████╗██╗  ██╗███████╗██╗     ██╗     
+        ██╔════╝██║  ██║██╔════╝██║     ██║     
+        ███████╗███████║█████╗  ██║     ██║     
+        ╚════██║██╔══██║██╔══╝  ██║     ██║     
+        ███████║██║  ██║███████╗███████╗███████╗
+        ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
+          Iron Meteorite Database Manager
+
+Make sure Docker is running before performing any operations.
+
+Initial/Clean install
+  ./iron.sh -i
+
+To launch/start the containers
+  ./iron.sh -l
+  
+To stop the containers
+  ./iron.sh -s
+
+The Iron Shell accepts chains of options, for example:
+    ./iron.sh -lpea
+
+This will (l)aunch the containers, after (p)opulating the database by the
+init files, reseting the node (e)nvironment, using an (a)ttached shell.
+
+While running in attached mode, it is not possible to backup or restore the
+database, or to generate mock users. 
+When exiting the attached shell, the containers will stop.
+Use -g instead to simulate an attached Shell.
+
+The order of the flags is not important. -lpae is the same as -aepl.
+--------------
+--------------
+Advanced Options: can be used with -l flag in chain ( e.g., ./iron.sh -lp ).
+-g    Attach logs: Opens a live feed of the docker logs, CTRL+C to exit 
+      logs. This simulates an attached shell, but will not close the servers 
+      when exited.
+-a    Attach shell: When launching the containers, attach the shell to the
+      Node server. CTRL+C to quit, this shuts down the server. This is for
+      diagnostic purposes only and should not be used in production. Cannot
+      generate mock users if using this option.
+-e    Reset environment: Install the local Node dependencies and runs tasks
+      specified by Gulp.
+-p    Reset/populate database: This will DELETE the local database. When the
+      containers are launched the database will be populated from the init
+      files ( ./model/db-init/*.sql ).
+-m    Mock users: Adds the mock users. Cannot be used with -a in chain.
+      NOT for production.
+-c    Clean Docker environment: Removes dangling containers and volumes to
+      free up space. This is done automatically when launching the containers.
+-x    Reset Docker environment: A complete refresh of your Docker environment.
+      -x and -c are always executed first
+--------------
+Database operations: the containers must be running.
+-b    Backup database: creates a backup of the current database
+-r    Restore database: restore the database from the most recent backup.
+      For more advanced database manipulation, refer to Postgresql docs. 
+--------------
+--------------
+Initial install
+-i    Initial/Clean install: If this is your first time, or you need to 
+      rebuild your containers, then select this option. The containers will
+      launch once they are built.
+--------------
+
+-l    Launch containers: Launches the containers, by default the shell is 
+      detached from the containers.
+-s    Stop containers: Stops the containers after executing all other
+      commands. This is always executed last.
+-h    Help: Displays the help message
+  '
+  echo "${helpString}"
 }
 
 # No args given, display help
 if [[ $# -eq 0 ]] ; then
-  show_help
+  show_short_help
   exit 1
 fi 
 
 #### Declare functions for manipulating server and database ###
+
+# Add credentials
+function set_creds () 
+{
+  echo "Set username and password for Postgres"
+  
+  NORESP=""
+  MYENV="$(uname -s)"
+  LINUXENV="Linux"
+  MACENV="Darwin"
+
+  while true; do
+    echo -n "Select a username: "
+    read name
+    size=${#name}
+    if [[ "$name" =~ [^a-zA-Z0-9\_] ]] || [[ "$name" == "$NORESP" ]] || [[ "${name:0:1}" =~ [^a-zA-Z] ]] ; then
+      echo "Must start with a letter. Only letters, numbers, and underscore allowed"
+    elif [[ $size < 3 ]]; then
+      echo "${name} is too short, minimum of 3 characters"
+    else 
+      break
+    fi
+  done
+  while true; do
+    echo -n "Enter a password: "
+    read -s pass1
+    echo ""
+    echo -n "Re-enter the password: "
+    read -s pass2
+    echo ""
+    size=${#pass1}
+    if [[ "$pass1" != "$pass2" ]]; then
+      echo "The passwords did not match. Try again..."
+    elif [[ "$pass1" == "$NORESP" ]]; then
+      echo "You must enter a password"
+    elif [[ "$pass1" =~ [\ \\\/\'\"\%\;] ]]; then
+      echo "Illegal character: whitespace ' \" ; / \\ %"
+    elif [[ $size < 6 ]]; then
+      echo "password is too short, minimum 6 characters"
+    else
+      nameHolder="%%user%%"
+      passHolder="%%password%%"
+
+      # copy over docker-compose with template and change placeholders
+      if [ -f "./docker-compose.yml" ]; then
+        rm -f ./docker-compose.yml
+      fi
+
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
+      cp ./docker/template/docker-compose.yml ./docker-compose.yml
+      sed -i '' -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
+      sed -i '' -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/docker-compose.yml ./docker-compose.yml
+      sed -i -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
+      sed -i -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
+      fi
+
+
+      # add those credentials to the mock user info generator
+      if [ -f "./docker/mock/mock-user-info.py" ]; then
+        rm -f ./docker/mock/mock-user-info.py
+      fi
+
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
+      cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
+      sed -i '' -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
+      sed -i '' -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
+      sed -i -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
+      sed -i -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+      fi
+
+      #  set user in sql init
+      if [ -f "./model/db-init/00-init.sql" ]; then
+        rm -f ./model/db-init/00-init.sql
+      fi 
+      if [[ "$MYENV" == "$MACENV"  ]] ; then
+      cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
+      sed -i '' -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
+      break
+      elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+      cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
+      sed -i -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
+      break
+      fi
+    fi
+  done
+}
 
 # Install the global dependencies
 function install_global_deps ()
@@ -173,8 +330,8 @@ function delete_containers ()
 function remove_dangles ()
 {
   echo "Remove dangling images and volumes if any exist"
-  docker images -aq -f 'dangling=true' | xargs docker rmi
-  docker volume ls -q -f 'dangling=true' | xargs docker volume rm
+  docker images -aq -f 'dangling=true' | xargs docker rmi > /dev/null 2>&1
+  docker volume ls -q -f 'dangling=true' | xargs docker volume rm > /dev/null 2>&1
 }
 
 # Make a backup of the db to irondb/model/backup-pg/pg_timestamp.sql
@@ -196,9 +353,16 @@ function restore_recent ()
   cd ..
 }
 
+# if a chain of parameters. only wait once to check if containers are started
+hasWaited=false
 # Wait for containers to be available
 function wait_for_containers ()
 {
+  echo " "
+  if [[ "$hasWaited" = true ]] ; then
+    return
+  fi
+  
   echo "Waiting for the containers to initialize"
   NORESP=""
   # Check that pg is available from logs of call to wait-for-it.sh
@@ -337,13 +501,15 @@ function wait_for_containers ()
   done
   echo ""
   echo "Node appears to be running"
+  hasWaited=true
 }
 
 # Populate mock data
 function populate_mock_data ()
 {
+  install_pip
   NORESP=""
-  PSYEXISTS="$(pip list | grep "psycopg2-binary")"
+  PSYEXISTS="$(pip list --format=columns | grep "psycopg2-binary")"
  
   # install psycopg2-binary if not exists
   if [[ "$PSYEXISTS" =  "$NORESP" ]]
@@ -357,78 +523,109 @@ function populate_mock_data ()
   echo "Adding mock users"
   node docker/mock/mock-users.js 
   python docker/mock/mock-user-info.py 
-  exit 0
 }
 
-### BEGIN ###
+function install_pip ()
+{
+  echo "looking for pip"
+  NORESP=""
+  PIPEXISTS="$(which pip)"
 
-# Read in the options and perform the tasks
-while getopts ":hilpjqafsxbrm " opt; do
+  if [[ "$PIPEXISTS" == "$NORESP" ]]; then
+    MYENV=$(uname -s)
+    LINUXENV="Linux"
+    MACENV="Darwin"
+    PYTWO=$(python --version 2>&1 | grep "n 2.")
+    PYTHREE=$(python --version 2>&1 | grep "n 3.")
+    
+    if [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
+      echo "install python2 pip as sudo"
+      sudo apt-get install -y python-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTWO" != "$NORESP" ]]; then
+      echo "install python2 pip as root"
+      apt-get install -y python-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTHREE" != "$NORESP" ]] && [[ $EUID -ne 0 ]]; then
+      echo "install python3 pip as sudo"
+      sudo apt-get install -y python3-pip
+    elif [[ "$MYENV" == "$LINUXENV"  ]] && [[ "$PYTHREE" != "$NORESP" ]]; then
+      echo "install python3 pip as root"
+      apt-get install -y python3-pip 
+    elif  [[ "$MYENV" == "$MACENV" ]]; then
+      echo "installing pip as user:$EDUID for macOS"
+      python -m ensurepip
+    else 
+      echo "unable to install pip automatically, install manually:"
+      echo ""
+      echo "      https://pip.pypa.io/en/stable/installing/ "
+      exit 1
+    fi
+  else
+    echo "pip is already installed"
+  fi
+}
+
+
+############################
+#         START
+############################
+
+# Parameter flags
+
+initInstall=false
+attachShell=false
+launchContainers=false
+stopContainers=false
+resetEnv=false
+populateData=false
+mockUsers=false
+restoreData=false
+backupData=false
+deleteDocker=false
+openLogs=false
+cleanDocker=false
+
+# Read in options and set flags
+while getopts ":hilpaemsxbrgcHILPAEMSXBRGC " opt; do
   case ${opt} in
-    h )
+    h | H)
       show_help
       exit 0
       ;;
-    i ) #initial install
-      stop_containers
-      install_global_deps
-      install_node_deps
-      rm_db
-      remove_dangles
-      build_containers
-      start_detached
+    i | I) #initial install
+      initInstall=true
       ;;
-    l ) #launch
-      stop_containers
-      install_node_deps
-      start_detached
+    l | L) #launch
+      launchContainers=true
       ;;
-    p ) #launch with fresh postgres init
-      stop_containers
-      rm_db
-      remove_dangles
-      install_node_deps
-      start_detached
-      # populate_mock_data
+    p | P) #launch with fresh postgres init
+      populateData=true
       ;;
-    j ) #launch with fresh postgres init and none of the extra staging
-      stop_containers
-      rm_db
-      start_attached
-      # populate_mock_data
+    a | A) #attached quick launch
+      attachShell=true
       ;;
-    q ) #quick launch
-      stop_containers
-      start_detached
+    e | E)
+      resetEnv=true
       ;;
-    a ) #attached quick launch
-      stop_containers
-      start_attached
+    m | M)
+      mockUsers=true
       ;;
-    f ) #rebuild containers
-      stop_containers
-      install_node_deps
-      rm_db
-      remove_dangles
-      build_containers
-      start_detached
+    s | S)
+      stopContainers=true
       ;;
-    m )
-      populate_mock_data
+    x | X)
+      deleteDocker=true
       ;;
-    s )
-      stop_containers
+    b | B) #backup db
+      backupData=true
       ;;
-    x )
-      delete_containers
+    r | R) #restore most recent db backup
+      restoreData=true
       ;;
-    b ) #backup db
-      wait_for_containers
-      make_backup
+    g | G)
+      openLogs=true
       ;;
-    r ) #restore most recent db backup
-      wait_for_containers
-      restore_recent
+    c | C)
+      cleanDocker=true
       ;;
     * ) 
       echo "Invalid selection"
@@ -436,5 +633,95 @@ while getopts ":hilpjqafsxbrm " opt; do
   esac
 done
 shift $((OPTIND -1))
+
+############################
+# Perform operations
+############################
+
+# Exit if docker is not running
+DOCKEROFF="$(docker info 2>&1 | grep "Cannot connect")"
+NORESP=""
+if [[ "$DOCKEROFF" != "$NORESP" ]] ; then 
+  echo "Docker does not appear to be running"
+  exit 1
+fi
+
+if [[ "$cleanDocker" = true ]] ; then
+  remove_dangles
+fi
+
+if [[ "$deleteDocker" = true ]] ; then
+  delete_containers
+fi
+
+if [[ "$initInstall" = true ]] ; then
+  set_creds
+  stop_containers
+  install_global_deps
+  install_node_deps
+  rm_db
+  remove_dangles
+  build_containers
+  if [[ "$attachShell" = true ]] ; then
+    start_attached
+    exit 0
+  else
+    start_detached
+  fi
+fi
+
+if [[ "$launchContainers" = true ]] ; then
+  stop_containers
+  remove_dangles
+
+  if [[ "$populateData" = true ]] ; then
+    rm_db
+  fi
+
+  if [[ "$resetEnv" = true ]] ; then
+    install_node_deps
+  fi
+
+  if [[ "$attachShell" = true ]] ; then
+    start_attached
+    exit 0
+  else
+    start_detached
+  fi
+fi
+
+if [[ "$launchContainers" = false ]] ; then
+  if [[ "$populateData" = true ]] ; then
+    rm_db
+  fi
+
+  if [[ "$resetEnv" = true ]] ; then
+    install_node_deps
+  fi
+fi
+
+if [[ "$mockUsers" = true ]] ; then
+  populate_mock_data
+fi
+
+if [[ "$backupData" = true ]] ; then
+  wait_for_containers
+  make_backup
+fi
+
+if [[ "$restoreData" = true ]] ; then
+  wait_for_containers
+  restore_recent
+fi
+
+
+if [[ "$openLogs" = true ]] ; then
+  docker-compose logs -f -t
+  exit 0
+fi
+
+if [[ "$stopContainers" = true ]] ; then
+  stop_containers
+fi
 
 exit 0

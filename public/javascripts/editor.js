@@ -223,7 +223,6 @@ const meteoriteTemplate = `
 let primaryNameIDCount = 1;
 let firstNameIDCount = 1;
 let middleNameIDCount = 1;
-let singleEntityIDCount = 1;
 
 let noteIDCount = 1;
 
@@ -245,7 +244,7 @@ let classIDCount = 1;
 
 
 // Simple Add Event Handlers
-$( '#insert-form' ).on('click', 'i.add-author', ( event ) => {
+$( '#insert-form' ).on('click', 'i.add-author', function( event ) {
   addAuthor(this);
 });
 
@@ -272,20 +271,17 @@ function addAuthor( e ) {
   const primaryNameID = 'primaryName' + primaryNameIDCount;
   const firstNameID = 'firstName' + firstNameIDCount;
   const middleNameID = 'middleName' + middleNameIDCount;
-  const singleEntityID = 'singleEntity' + singleEntityIDCount;
 
   // Assign IDs
   const idObj = {};
   idObj['primaryNameID'] = primaryNameID;
   idObj['firstNameID'] = firstNameID;
   idObj['middleNameID'] = middleNameID;
-  idObj['singleEntityID'] = singleEntityID;
 
   // Increment current counts
   primaryNameIDCount++;
   firstNameIDCount++;
   middleNameIDCount++;
-  singleEntityIDCount++;
 
   // Render Author template with current IDs
   // eslint-disable-next-line
