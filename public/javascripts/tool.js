@@ -2,15 +2,13 @@
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
 
-if (typeof ElementsArr !== 'undefined') {
-  // eslint-disable-next-line no-undef
-  ElementsArr = Elements.slice(0, -1).split(',');
-}
 
-if (typeof TechniqueArr !== 'undefined') {
-  // eslint-disable-next-line no-undef
-  TechniqueArr = Technique.slice(0, -1).split(',');
-}
+// eslint-disable-next-line no-undef
+ElementsArr = Elements.slice(0, -1).split(',');
+
+
+// eslint-disable-next-line no-undef
+TechniqueArr = Technique.slice(0, -1).split(',');
 
 
 /** ----------------------------- */

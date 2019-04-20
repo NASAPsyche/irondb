@@ -201,21 +201,23 @@ router.post('/validate', isLoggedIn, function(req, res, next) {
     // Debugging test for pr only, delete immediately in new branch
     console.log('-----------Body---------------------------');
     console.log(req.body);
+    const args = [JSON.stringify(req.body)];
+    console.log(args);
 
 
-    // success
-    res.json({
-      'status': 'success',
-    });
-    // failure
-    // res.json({
-    //   'status': 'invalid',
-    // col, row
-    //   'malformed': ['2,3','4,5'], format tbd?
-    // });
-  } else {
-    // Bad request
-    next(createError(400));
+  //   // success
+  //   res.json({
+  //     'status': 'success',
+  //   });
+  //   // failure
+  //   // res.json({
+  //   //   'status': 'invalid',
+  //   // col, row
+  //   //   'malformed': ['2,3','4,5'], format tbd?
+  //   // });
+  // } else {
+  //   // Bad request
+  //   next(createError(400));
   }
 });
 

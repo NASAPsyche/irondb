@@ -2,15 +2,11 @@
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
 
-if (typeof ElementsArr !== 'undefined') {
-  // eslint-disable-next-line no-undef
-  ElementsArr = Elements.slice(0, -1).split(',');
-}
+// eslint-disable-next-line no-undef
+ElementsArr = Elements.slice(0, -1).split(',');
 
-if (typeof TechniqueArr !== 'undefined') {
-  // eslint-disable-next-line no-undef
-  TechniqueArr = Technique.slice(0, -1).split(',');
-}
+// eslint-disable-next-line no-undef
+TechniqueArr = Technique.slice(0, -1).split(',');
 
 /** ---------------------------- */
 /**      Validate Button         */
@@ -245,28 +241,29 @@ let classIDCount = 1;
 
 // Simple Add Event Handlers
 $( '#event-div' ).on('click', 'i.add-author', function( event ) {
-  addAuthor(this);
+  addAuthor(this, authorTemplate);
 });
 
 
 $( '#event-div' ).on('click', 'i.add-note', function( event ) {
-  addNote(this);
+  addNote(this, noteTemplate);
 });
 
 
 $( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
-  addMeasurement(this);
+  addMeasurement(this, measurementTemplate);
 });
 
 
 $( '#event-div' ).on('click', 'i.add-meteorite', function( event ) {
-  addMeteorite(this);
+  addMeteorite(this, meteoriteTemplate);
 });
 
 /**
  * @param  {object} e this
+ * @param {string} template the template to be rendered
  */
-function addAuthor( e ) {
+function addAuthor( e, template ) {
   // Dynamically create IDs
   const primaryNameID = 'primaryName' + primaryNameIDCount;
   const firstNameID = 'firstName' + firstNameIDCount;
@@ -285,7 +282,7 @@ function addAuthor( e ) {
 
   // Render Author template with current IDs
   // eslint-disable-next-line
-  const html = ejs.render(authorTemplate, idObj);
+  const html = ejs.render(template, idObj);
 
   // Insert template into DOM
   $(e).parent().siblings('.meteorite-header').first().before(html);
@@ -293,8 +290,9 @@ function addAuthor( e ) {
 
 /**
  * @param  {object} e this
+ * @param {string} template the template to be rendered
  */
-function addNote( e ) {
+function addNote( e, template ) {
   // Dynamically create IDs
   const noteID = 'note' + noteIDCount;
 
@@ -306,7 +304,7 @@ function addNote( e ) {
 
   // Render note template with current ID
   // eslint-disable-next-line
-  const html = ejs.render(noteTemplate, idObj);
+  const html = ejs.render(template, idObj);
 
   // Insert template into DOM
   $(e).parent().siblings('button:submit').before(html);
@@ -314,8 +312,9 @@ function addNote( e ) {
 
 /**
  * @param  {object} e this
+ * @param {string} template the template to be rendered
  */
-function addMeasurement( e ) {
+function addMeasurement( e, template ) {
   // Get parent meteorite
   const meteoriteID = $(e).parent()
       .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
@@ -367,7 +366,7 @@ function addMeasurement( e ) {
 
   // Render note template with current ID
   // eslint-disable-next-line
-  const html = ejs.render(measurementTemplate, idObj);
+  const html = ejs.render(template, idObj);
 
   // Insert template into DOM
   const nextID = 'meteorite' + (1 + Number(meteoriteID));
@@ -381,8 +380,9 @@ function addMeasurement( e ) {
 
 /**
  * @param  {object} e this
+ * @param {string} template the template to be rendered
  */
-function addMeteorite( e ) {
+function addMeteorite( e, template ) {
   // Dynamically create IDs
   const meteoriteID = 'meteorite' + meteoriteIDCount;
   const bodyNameID = 'bodyName' + bodyNameIDCount;
@@ -440,9 +440,9 @@ function addMeteorite( e ) {
   convertedMeasurementIDCount++;
   convertedDeviationIDCount++;
 
-  // Render note template with current ID
+  // Render meteorite template with current ID
   // eslint-disable-next-line
-  const html = ejs.render(meteoriteTemplate, idObj);
+  const html = ejs.render(template, idObj);
 
   // Insert template into DOM
   $(e).parent().siblings('.notes-header').before(html);
