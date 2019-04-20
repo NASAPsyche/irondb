@@ -46,7 +46,7 @@ def form_validate(form_json):
 	else:
 		form['journalName'] = "invalid"
 
-	if re.match(r'[1-3][0-9]{3}', form['pubYear']):
+	if re.match(r'[1-3][0-9]{3}$', form['pubYear']):
 		form['pubYear'] = "success"
 	else:
 		form['pubYear'] = "invalid"
