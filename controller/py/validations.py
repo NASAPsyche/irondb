@@ -2,14 +2,15 @@
 validations.py: validates attributes and table data received from the user
 """
 __authors__ = "Hajar Boughoula"
-__version__ = "1.0"
+__version__ = "1.2"
 __email__ = "hajar.boughoula@gmail.com"
-__date__ = "03/18/19"
+__date__ = "04/19/19"
 
-import os, io, re, json
+import sys, os, io, json, re
 
 # global variables
-path = os.path.abspath('mockJsons') + '/'
+data = json.loads(sys.argv[1])
+# path = os.path.abspath('mockJsons') + '/'
 
 
 # stages the data from the JSON for validations
@@ -18,11 +19,6 @@ def stage_data(data_json):
 		data = json.load(json_file)
 
 	return data
-
-
-# 
-def data_validate(data="Empty JSON"):
-    return "Data validated."
 
 
 # 
@@ -128,5 +124,5 @@ def form_validate(form_json):
 
 
 
-print(json.dumps(form_validate('meteorite_example.json')) + '\n')
+print(json.dumps(form_validate(data)))
 #print("TABLES VALIDATION: " + tables_validate(tables) + '\n')
