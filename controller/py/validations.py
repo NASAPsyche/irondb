@@ -7,7 +7,6 @@ __email__ = "hajar.boughoula@gmail.com"
 __date__ = "03/18/19"
 
 import os, io, re, json
-#import nltk
 
 # global variables
 path = os.path.abspath('mockJsons') + '/'
@@ -56,29 +55,28 @@ def form_validate(form_json):
 	else:
 		form['volume'] = "invalid"
 
-	if (form['issue'].isdigit() or (form['issue'] == "")):
+	if ((form['issue'].isdigit()) or (form['issue'] == "")):
 		form['issue'] = "success"
 	else:
 		form['issue'] = "invalid"
 
 	if form['series'] == "":
 		form['series'] = "success"
-	elif re.match(r'[0-9]{4}-[0-9]{3}[0-9xX]', form['series']):
-		seven_digits = form['series'].replace("-", "")
-		index = 8
-		weighted_sum = 0
-		for digit in seven_digits:
-			if digit.upper() == "X":
-				weighted_sum += 10 * index
-			else:
-				weighted_sum += int(digit) * index
-			index -= 1
-		if (weighted_sum % 11) == 0:
-			form['series'] = "success"
-		else:
-			form['series'] = "invalid"
 	else:
-		form['series'] = "invalid"
+		if re.match(r'[0-9]{4}-[0-9]{3}[0-9xX]', form['series']):
+			seven_digits = form['series'].replace("-", "")
+			index = 8
+			weighted_sum = 0
+			for digit in seven_digits:
+				if digit.upper() == "X":
+					weighted_sum += 10 * index
+				else:
+					weighted_sum += int(digit) * index
+				index -= 1
+			if (weighted_sum % 11) == 0:
+				form['series'] = "success"
+			else:
+				form['series'] = "invalid"
 
 	for key, value in form.items():
 		if "primaryName" in key or "firstName" in key:
@@ -89,55 +87,46 @@ def form_validate(form_json):
 
 		if "middleName" in key:
 			stem = form[key].replace(" ", "").replace(".", "")
-			if stem.isalpha() and len(stem) == 1:
+			if ((stem.isalpha() and len(stem) == 1) or (form[key] == "")):
 				form[key] = "success"
 			else:
 				form[key] = "invalid"
 
-	# if any(word.isalpha() for word in form[''].split()):
-	# 	form[''] = "success"
-	# else:
-	# 	form[''] = "invalid"
+		if "bodyName" in key or "group" in key:
+			if any(word.isalpha() for word in form[key].split()):
+				form[key] = "success"
+			else:
+				form[key] = "invalid"
 
-	# if any(word.isalpha() for word in form[''].split()):
-	# 	form[''] = "success"
-	# else:
-	# 	form[''] = "invalid"
+		if "measurement" in key:
+			measurement = form[key]
+			index_measurement = list(form.keys()).index(key)
+			if (re.match(r'\d+(\.\d+)?$', form[key])):
+				form[key] = "success"
+			else:
+				form[key] = "invalid"
 
-	# if any(word.isalpha() for word in form[''].split()):
-	# 	form[''] = "success"
-	# else:
-	# 	form[''] = "invalid"
+			key_deviation = list(form.keys())[index_measurement+1]
+			if "deviation" in key_deviation:
+				if (re.match(r'\d+(\.\d+)?$', form[key_deviation]) 
+					and form[key_deviation] <= measurement):
+					form[key_deviation] = "success"
+				else:
+					form[key_deviation] = "invalid"
 
-	# if any(word.isalpha() for word in form[''].split()):
-	# 	form[''] = "success"
-	# else:
-	# 	form[''] = "invalid"
-
-	# if any(word.isalpha() for word in form[''].split()):
-	# 	form[''] = "success"
-	# else:
-	# 	form[''] = "invalid"
-
-	# if any(word.isalpha() for word in form[''].split()):
-	# 	form[''] = "success"
-	# else:
-	# 	form[''] = "invalid"
-
-	# if any(word.isalpha() for word in form[''].split()):
-	# 	form[''] = "success"
-	# else:
-	# 	form[''] = "invalid
+		if "page" in key:
+			if form[key].isdigit():
+				form[key] = "success"
+			else:
+				form[key] = "invalid"
 
 	return form
 
 
 # 
-def tables_validate(tables):
-    return "Tables validated."
+# def tables_validate(tables):
 
 
 
-#print("DATA VALIDATION: " + validate_data(data) + '\n')
 print("FORM VALIDATION: " + json.dumps(form_validate('meteorite_example.json')) + '\n')
 #print("TABLES VALIDATION: " + tables_validate(tables) + '\n')

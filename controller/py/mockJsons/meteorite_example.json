@@ -12,29 +12,19 @@
 	"primaryName1" : "Boughoula",
 	"firstName1" : "Hajar",
 	"middleName1" : "S.",
-
 	"bodyName0" : "Tombigbee River",
-
 	"group0" : "IIG",
-
-	"element0_1" : "h - NO CHECK",
-	"lessThan0_1" : "on - NO CHECK",
-
+	"element0_1" : "h",
+	"lessThan0_1" : "on",
 	"measurement0_1" : "0.18",
 	"deviation0_1" : "0",
-
-	"units0_1" : "ng_g - NO CHECK",
-	"technique0_1" : "INAA - NO CHECK",
-
+	"units0_1" : "ng_g",
+	"technique0_1" : "INAA",
 	"page0_1" : "4889",
-
-	"element0_2" : "ir - NO CHECK",
-
+	"element0_2" : "ir",
 	"measurement0_2" : "0.0092",
 	"deviation0_2" : "0",
-
-	"units0_2" : "ug_g - NO CHECK",
-	"technique0_2" : "INAA - NO CHECK",
-
+	"units0_2" : "ug_g",
+	"technique0_2" : "INAA",
 	"page0_2" : "4889" 
 }
