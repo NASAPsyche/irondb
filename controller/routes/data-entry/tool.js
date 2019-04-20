@@ -5,6 +5,7 @@ const {PythonShell} = require('python-shell');
 const path = require('path');
 const parser = require('../../db/entry-parser');
 const sPath = path.join(__dirname, ('../../../external/pdfScraper'));
+const hPath = path.join(__dirname, ('../../py'));
 // eslint-disable-next-line new-cap
 const {isLoggedIn} = require('../../middleware/auth');
 const createError = require('http-errors');
@@ -202,11 +203,28 @@ router.post('/validate', isLoggedIn, function(req, res, next) {
     console.log('-----------Body---------------------------');
     console.log(req.body);
 
+    const options = {
+      mode: 'text',
+      // pythonPath: '../py',
+      pythonOptions: ['-u'], // get print results in real-time
+      scriptPath: hPath,
+      args: [JSON.stringify(req.body)],
+    };
+      // const result = '';
+      // console.log(JSON.stringify(req.body));
+    PythonShell.run('validations.py', options, function(err, results) {
+      if (err) {
+        // If error return empty attributes
+        console.log(err);
+        res.send(results);
+      } else {
+        // results is an array consisting of messages collected during execution
+        res.send(results);
+      }
+    });
 
     // success
-    res.json({
-      'status': 'success',
-    });
+  
     // failure
     // res.json({
     //   'status': 'invalid',
