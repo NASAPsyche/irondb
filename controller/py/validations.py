@@ -14,16 +14,16 @@ data = json.loads(sys.argv[1])
 
 
 # stages the data from the JSON for validations
-def stage_data(data_json):
-	with open(path + data_json) as json_file:
-		data = json.load(json_file)
+# def stage_data(data_json):
+# 	with open(path + data_json) as json_file:
+# 		data = json.load(json_file)
 
-	return data
+# 	return data
 
 
 # 
-def form_validate(form_json):
-	form = stage_data(form_json)
+def form_validate(form):
+	# form = stage_data(form_json)
 
 	if any(word.isalpha() for word in form['paperTitle'].split()):
 		form['paperTitle'] = "success"
