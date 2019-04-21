@@ -18,7 +18,7 @@ data = json.loads(sys.argv[1])
 # def stage_data(data_json):
 # 	with open(mocks_path + data_json) as json_file:
 # 		data = json.load(json_file)
-
+# 
 # 	return data
 
 
@@ -102,6 +102,7 @@ def form_validate(form):
 			else:
 				form[key] = "invalid"
 
+		# validates single meteorite entries
 		if 'bodyName' in key or 'group' in key:
 			if any(word.isalpha() for word in form[key].split()):
 				form[key] = "success"
@@ -130,6 +131,7 @@ def form_validate(form):
 			else:
 				form[key] = "invalid"
 
+		# 
 		if key == 'tableData':
 			if not form['tableData']:
 				form['tableData'] == "success"
