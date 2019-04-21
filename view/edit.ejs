@@ -114,21 +114,20 @@
                         <!-- Bodies -->
                         <% for(var i=0; i < Bodies.length; i++) { %>
                             <div class="body-update">
+                                <label class="sr-only" for="paperID">ID of current body</label>
+                                <input type="hidden" name="paperID" value="<%= Paper.paper_id %>">
+
                                 <label class="sr-only" for="bodyID">ID of current body</label>
                                 <input type="hidden" name="bodyID" value="<%= Bodies[i].body_id %>">
         
-                                <label class="sr-only" for="bodyID">ID of current body</label>
-                                <input type="hidden" name="paperID" value="<%= Paper.paper_id %>">
-        
-        
                                 <div class="form-row meteorite-header" id="<%= 'meteorite' + i %>">
                                     <h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>
-                                    <i class="fas fa-plus-circle fa-lg add-meteorite mt-2 text-danger"></i>
+                                    <i class="fas fa-plus-circle fa-lg add-meteorite-edit mt-2 text-danger"></i>
                                 </div>
         
                                 <div class="form-row">
                                     <div class="col-md-1">
-                                        <i class="far fa-times-circle fa-lg remove remove-meteorite pt-4 text-danger" title="Press to remove meteorite and all associated measurements."></i>
+                                        <i class="far fa-times-circle fa-lg remove remove-body-edit pt-4 text-danger" title="Press to remove meteorite and all associated measurements."></i>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="<%= 'bodyName' + i %>">Meteorite</label>
@@ -153,18 +152,18 @@
         
                                 <div class="form-row">
                                     <h5 class="pt-1 mr-2 pl-3"><strong>Measurements</strong></h5>
-                                    <i class="fas fa-plus-circle fa-lg add-measurement mt-2 text-danger"></i>
+                                    <i class="fas fa-plus-circle fa-lg add-measurement-edit mt-2 text-danger"></i>
                                 </div>
         
                                 <% for(var k=0; k < ElementEntries.length; k++) { %>
                                     <% if (ElementEntries[k].body_id === Bodies[i].body_id) { %>
-                                        <div class="element-update">
+                                        <div class="element element-update">
                                             <label class="sr-only" for="elementID">ID of current element</label>
                                             <input type="hidden" name="elementID" value="<%= ElementEntries[k].element_id %>">
         
                                             <div class="form-row">
                                                 <div class="col-md-1 p-0">
-                                                    <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" title="Press to remove measurement."></i>
+                                                    <i class="far fa-times-circle fa-lg remove remove-element-edit pt-4 text-danger" title="Press to remove measurement."></i>
                                                 </div>
         
                                                 <div class="form-group col-md-1 mr-3">

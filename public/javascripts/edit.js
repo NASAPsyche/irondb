@@ -1,16 +1,16 @@
-
 // Some functions inline on template to avoid import issues.
 // Uses functions defined in editor.js, must be added after
 /* eslint-disable no-invalid-this */
 
 $('document').ready( function() {
-  console.log('length:' + $('div.note-update').length);
+  console.log('length:' + $('div.body-update').length);
   console.log('Log 1');
-  console.log($('div.note-update').children('div').children('textarea').val());
+  console.log($('div.body-update').children('div.element') );
   console.log('Log 2');
+  console.log($('div.body-update').children().eq(5).children('input').val() );
   console.log('Serialization: ');
-  for (let i = 0; i < $('div.note-update').length; i++) {
-    console.log( serialzeNote( $('div.note-update').eq(i) ));
+  for (let i = 0; i < $('div.body-update').length; i++) {
+    console.log( serialzeBody( $('div.body-update').eq(i) ));
   }
 });
 
@@ -88,6 +88,105 @@ const noteInsertTemplate = `<div class="note-insert">
   </div>
 </div>`;
 
+const measurementInsertTemplate =`<div class="element element-insert">
+<label class="sr-only" for="elementID">ID of current element</label>
+<input type="hidden" name="elementID" value="">
+
+<div class="form-row">
+    <div class="col-md-1 p-0">
+        <i class="far fa-times-circle fa-lg remove remove-element-edit pt-4 text-danger" title="Press to remove measurement."></i>
+    </div>
+
+    <div class="form-group col-md-1 mr-3">
+        <label for="<%= elementID %>">Element</label>
+        <select class="form-control p-1" id="<%= elementID %>" name="<%= elementID %>" required="true">
+          <% for(var i=0; i < Elements.length; i++) { %>
+            <option value="<%= Elements[i].toLowerCase()%>"><%= Elements[i] %></option> 
+          <% } %>               
+        </select>
+    </div>
+
+    <div class="form-check-inline col-md-1">
+        <input class="form-check-input" type="checkbox" id="<%= lessThanID %>">
+        <label class="form-check-label" for="<%= lessThanID %>">&lt;</label>
+    </div>
+
+    <div class="form-group col-md-2">
+        <label for="<%= measurementID %>">Measurement</label>
+        <input type="text" class="form-control" id="<%= measurementID %>" name="<%= measurementID %>" required="true" min="0">
+    </div>
+    <div class="form-group col-md-1">
+        <label for="<%= deviationID %>">(&plusmn;)</label>
+        <input type="number" class="form-control" id="<%= deviationID %>" name="<%= deviationID %>" value="0" min="0">
+    </div>
+    <div class="form-group col-md-2">
+        <label for="<%= unitsID %>">Units</label>
+        <select class="form-control" id="<%= unitsID %>" name="<%= unitsID %>" required="true">
+            <option value="wt_percent">wt%</option>
+            <option value="ppm">ppm</option>
+            <option value="ppb">ppb</option>
+            <option value="mg_g">mg/g</option>
+            <option value="ug_g">&micro;g/g</option>
+            <option value="ng_g">ng/g</option>
+        </select>
+    </div>
+  
+    <div class="form-group col-md-2">
+        <label for="<%= techniqueID %>">Technique</label>
+        <select class="form-control p-1" id="<%= techniqueID %>" name="<%= techniqueID %>" required="true">
+          <% for(var i=0; i < Technique.length; i++) { %>
+            <option value="<%= Technique[i]%>"><%= Technique[i] %></option> 
+          <% } %>                 
+        </select>
+    </div>
+    <div class="form-group col-md-1">
+        <label for="<%= pageID %>">Page</label>
+        <input type="number" class="form-control p-1" id="<%= pageID %>" name="<%= pageID %>" min="1" required>
+    </div>
+    <div class="form-group">
+        <input type="hidden" id="<%= sigfigID %>" name="<%= sigfigID %>" value="0">
+        <input type="hidden" id="<%= convertedMeasurementID %>" name="<%= convertedMeasurementID %>" value="0">
+        <input type="hidden" id="<%= convertedDeviationID %>" name="<%= convertedDeviationID %>" value="0">
+    </div>
+</div>
+</div>`;
+
+
+const meteoriteInsertTemplate = `<div class="body-insert">
+<label class="sr-only" for="paperID">ID of current body</label>
+<input type="hidden" name="paperID" value="">
+
+<label class="sr-only" for="bodyID">ID of current body</label>
+<input type="hidden" name="bodyID" value="">
+
+<div class="form-row meteorite-header" id="<%= meteoriteID %>">
+    <h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>
+    <i class="fas fa-plus-circle fa-lg add-meteorite-edit mt-2 text-danger"></i>
+</div>
+
+<div class="form-row">
+    <div class="col-md-1">
+        <i class="far fa-times-circle fa-lg remove remove-body-edit pt-4 text-danger" title="Press to remove meteorite and all associated measurements."></i>
+    </div>
+    <div class="form-group col-md-6">
+        <label for="<%= bodyNameID %>">Meteorite</label>
+        <input type="text" class="form-control" id="<%= bodyNameID %>" name="<%= bodyNameID %>" required="true">
+    </div>
+
+    <div class="form-group col-md-2">
+        <label for="<%= groupID %>">Group</label>
+        <input type="text" class="form-control" id="<%= groupID %>" name="<%= groupID %>" required="true">
+    </div>
+
+    <label class="sr-only" for="groupID">ID of current group</label>
+    <input type="hidden" name="groupID" value="">
+</div>
+
+<div class="form-row">
+    <h5 class="pt-1 mr-2 pl-3"><strong>Measurements</strong></h5>
+    <i class="fas fa-plus-circle fa-lg add-measurement-edit mt-2 text-danger"></i>
+</div>` + measurementInsertTemplate // Add single measurement row to meteorite template
++ '</div>';
 /* eslint-enable max-len*/
 
 /** ---------------------------- */
@@ -102,6 +201,133 @@ $( '#event-div' ).on('click', 'i.add-note-edit', function( event ) {
   // eslint-disable-next-line no-undef
   addNote(this, noteInsertTemplate);
 });
+
+/* eslint-disable no-undef*/
+$( '#event-div' ).on('click', 'i.add-measurement-edit', function( event ) {
+  // Get parent meteorite
+  const meteoriteID = $(this).parent()
+      .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
+
+  // Dynamically create IDs
+  const elementID = 'element' + meteoriteID + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteID + '_' + lessThanIDCount;
+  const measurementID = 'measurement' + meteoriteID + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteID + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteID + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteID + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteID + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '_' + sigfigIDCount;
+  const convertedMeasurementID =
+    'convertedMeasurement' + meteoriteID + '_' + convertedMeasurementIDCount;
+  const convertedDeviationID =
+    'convertedDeviation' + meteoriteID + '_' + convertedDeviationIDCount;
+
+  // Assign IDs
+  const idObj = {};
+  idObj['elementID'] = elementID;
+  idObj['lessThanID'] = lessThanID;
+  idObj['measurementID'] = measurementID;
+  idObj['deviationID'] = deviationID;
+  idObj['unitsID'] = unitsID;
+  idObj['techniqueID'] = techniqueID;
+  idObj['pageID'] = pageID;
+  idObj['sigfigID'] = sigfigID;
+  idObj['convertedMeasurementID'] = convertedMeasurementID;
+  idObj['convertedDeviationID'] = convertedDeviationID;
+
+  // eslint-disable-next-line no-undef
+  idObj['Elements'] = ElementsArr;
+  // eslint-disable-next-line no-undef
+  idObj['Technique'] = TechniqueArr;
+
+
+  // Increment current count
+  elementIDCount++;
+  lessThanIDCount++;
+  measurementIDCount++;
+  deviationIDCount++;
+  unitsIDCount++;
+  techniqueIDCount++;
+  pageIDCount++;
+  sigfigIDCount++;
+  convertedMeasurementIDCount++;
+  convertedDeviationIDCount++;
+
+  // Render note template with current ID
+  // eslint-disable-next-line
+  const html = ejs.render(measurementInsertTemplate, idObj);
+
+  // Insert template into DOM at end of current body
+  $(this).parent().parent().append(html);
+});
+
+$( '#event-div' ).on('click', 'i.add-meteorite-edit', function( event ) {
+  // Dynamically create IDs
+  const meteoriteID = 'meteorite' + meteoriteIDCount;
+  const bodyNameID = 'bodyName' + bodyNameIDCount;
+  const groupID = 'group' + groupIDCount;
+  const classID = 'class' + classIDCount;
+  const elementID = 'element' + meteoriteIDCount + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteIDCount + '_' + lessThanIDCount;
+  const measurementID =
+  'measurement' + meteoriteIDCount + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteIDCount + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteIDCount + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteIDCount + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteIDCount + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteIDCount + '_' + sigfigIDCount;
+  const convertedMeasurementID =
+  'convertedMeasurement' + meteoriteIDCount + '_' + convertedMeasurementIDCount;
+  const convertedDeviationID =
+  'convertedDeviation' + meteoriteIDCount + '_' + convertedDeviationIDCount;
+
+  // Assign IDs
+  const idObj = {};
+  idObj['meteoriteID'] = meteoriteID;
+  idObj['bodyNameID'] = bodyNameID;
+  idObj['groupID'] = groupID;
+  idObj['classID'] = classID;
+  idObj['elementID'] = elementID;
+  idObj['lessThanID'] = lessThanID;
+  idObj['measurementID'] = measurementID;
+  idObj['deviationID'] = deviationID;
+  idObj['unitsID'] = unitsID;
+  idObj['techniqueID'] = techniqueID;
+  idObj['pageID'] = pageID;
+  idObj['sigfigID'] = sigfigID;
+  idObj['convertedMeasurementID'] = convertedMeasurementID;
+  idObj['convertedDeviationID'] = convertedDeviationID;
+
+  // eslint-disable-next-line no-undef
+  idObj['Elements'] = ElementsArr;
+  // eslint-disable-next-line no-undef
+  idObj['Technique'] = TechniqueArr;
+
+  // Increment current count
+  meteoriteIDCount++;
+  bodyNameIDCount++;
+  groupIDCount++;
+  classIDCount++;
+  elementIDCount++;
+  lessThanIDCount++;
+  measurementIDCount++;
+  deviationIDCount++;
+  unitsIDCount++;
+  techniqueIDCount++;
+  pageIDCount++;
+  sigfigIDCount++;
+  convertedMeasurementIDCount++;
+  convertedDeviationIDCount++;
+
+  // Render meteorite template with current ID
+  // eslint-disable-next-line
+  const html = ejs.render(meteoriteInsertTemplate, idObj);
+
+  // Insert template into DOM
+  $(this).parent().parent().after(html);
+});
+/* eslint-enable no-undef*/
+
 
 /** ---------------------------- */
 /**        UI Remove Events      */
@@ -120,11 +346,32 @@ $( '#event-div' ).on('click', 'i.remove-note-edit', function() {
   const note = $(this).parent().parent().parent();
   if (note.hasClass('note-update')) {
     removedArray.push(deleteNote(serialzeNote( note )));
-    console.log(removedArray);
   }
   note.remove();
 });
 
+$( '#event-div' ).on('click', 'i.remove-element-edit', function() {
+  const element = $(this).parent().parent().parent();
+  if (element.hasClass('element-update')) {
+    removedArray.push(deleteElement(serialzeElement( element )));
+    console.log(removedArray);
+  }
+  element.remove();
+});
+
+$( '#event-div' ).on('click', 'i.remove-body-edit', function() {
+  const body = $(this).parent().parent().parent();
+  if (body.hasClass('body-update')) {
+    removedArray.push(deleteBody(serialzeBody( body )));
+    // Add remove element commands
+    const elements = body.children('div.element');
+    for (let i = 0; i < elements.length; i++ ) {
+      removedArray.push( deleteElement(serialzeElement( $(elements[i]) )));
+    }
+    console.log(removedArray);
+  }
+  body.remove();
+});
 /** ---------------------------- */
 /**       Submit the form        */
 /** ---------------------------- */
@@ -261,6 +508,17 @@ $('#edit-form').submit(function(event) {
     }
 
     // Bodies
+    for (let i = 0; i < $('div.body-update').length; i++) {
+      actionsArr.push(
+          updateBody(serialzeBody($('div.body-update').eq(i)))
+      );
+    }
+
+    for (let i = 0; i < $('div.body-insert').length; i++) {
+      actionsArr.push(
+          insertBody( serialzeBody($('div.body-insert').eq(i)), PaperID )
+      );
+    }
 
     // Notes
     for (let i = 0; i < $('div.note-update').length; i++) {
@@ -411,5 +669,108 @@ function deleteNote( note ) {
   temp.type = 'note';
   temp.command = 'delete';
   temp.noteID = note.noteID;
+  return temp;
+}
+
+/**
+ * @param  {object} obj a div of class element-*
+ * @return {object} element object for creation of action object
+ */
+function serialzeElement( obj ) {
+  const temp = {};
+  temp.elementID = obj.children().eq(1).val();
+  temp.element = obj.children('div.form-row')
+      .children().eq(1).children('select').val();
+  if (obj.children('div.form-row')
+      .children().eq(2).children('input:checked').length
+  ) {
+    temp.lessThan = 'true';
+  } else {
+    temp.lessThan = 'false';
+  }
+  temp.units = obj.children('div.form-row')
+      .children().eq(5).children('select').val();
+  temp.technique = obj.children('div.form-row')
+      .children().eq(6).children('select').val();
+  temp.page = obj.children('div.form-row')
+      .children().eq(7).children('input').val();
+  temp.sigfig = obj.children('div.form-row')
+      .children().eq(8).children('input').eq(0).val();
+  temp.convertedMeasurement = obj.children('div.form-row')
+      .children().eq(8).children('input').eq(1).val();
+  temp.convertedDeviation = obj.children('div.form-row')
+      .children().eq(8).children('input').eq(2).val();
+  return temp;
+}
+
+/**
+ * @param  {object} element a serialized element object
+ * @return {object} action object for delete
+ */
+function deleteElement( element ) {
+  const temp = {};
+  temp.type = 'element';
+  temp.command = 'delete';
+  temp.elementID = element.elementID;
+  return temp;
+}
+
+/**
+ * @param  {object} obj a div of class body-*
+ * @return {object} body object for creation of action object
+ */
+function serialzeBody( obj ) {
+  const temp = {};
+  temp.paperID = obj.children().eq(1).val();
+  temp.bodyID = obj.children().eq(3).val();
+  temp.bodyName = obj.children().eq(5).children().eq(1).children('input').val();
+  temp.group = obj.children().eq(5).children().eq(2).children('input').val();
+  temp.groupID = obj.children().eq(5).children('input').val();
+  const tempArray = [];
+  const elements = obj.children('div.element');
+  for (let i = 0; i < elements.length; i++ ) {
+    tempArray.push( serialzeElement( $(elements[i]) ));
+  }
+  temp.measurements = tempArray;
+  return temp;
+}
+
+/**
+ * @param  {object} body a serialized body object
+ * @return {object} action object for update
+ */
+function updateBody( body ) {
+  body.type = 'body';
+  body.command = 'update';
+  return body;
+}
+
+/**
+ * @param  {object} body a serialized body object
+ * @param {number} PaperID Id of loaded paper
+ * @return {object} action object for insert
+ */
+function insertBody( body, PaperID ) {
+  const temp = {};
+  temp.type = 'body';
+  temp.command = 'insert';
+  temp.paperID = PaperID;
+  temp.bodyName = body.bodyName;
+  temp.group = body.group;
+  temp.measurements = body.measurements;
+  return temp;
+}
+
+
+/**
+ * @param  {object} body a serialized body object
+ * @return {object} action object for delete
+ */
+function deleteBody( body ) {
+  const temp = {};
+  temp.type = 'body';
+  temp.command = 'delete';
+  temp.bodyID = body.bodyID;
+  temp.groupID = body.groupID;
   return temp;
 }
