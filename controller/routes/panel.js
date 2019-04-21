@@ -18,6 +18,7 @@ router.get('/admin', isAdmin, async (req, res, next) => {
   let resObj = [];
   try {
     const Pending = db.aQuery('SELECT * FROM pending_entries_panel', []);
+    // Flagged Unimplemented due to timeline limitation
     const Flagged = db.aQuery('SELECT * FROM full_attributions_flagged', []);
     // eslint-disable-next-line max-len
     const Users = db.aQuery('SELECT t1.user_id, t1.username, t1.role_of FROM users as t1', []);
@@ -43,8 +44,13 @@ router.get('/user', isLoggedIn, async (req, res, next) => {
   let resObj = [];
   try {
     const Pending = db.aQuery('SELECT * FROM pending_entries_panel', []);
+    // Flagged Unimplemented due to timeline limitation
     const Flagged = db.aQuery('SELECT * FROM full_attributions_flagged', []);
-    resObj = await Promise.all([Pending, Flagged]);
+    const OwnEntries = db.aQuery(
+        'SELECT * FROM all_papers_with_authors WHERE submitted_by = $1',
+        [req.user.username]
+    );
+    resObj = await Promise.all([Pending, Flagged, OwnEntries]);
   } catch (err) {
     next(createError(500));
   } finally {
@@ -53,6 +59,8 @@ router.get('/user', isLoggedIn, async (req, res, next) => {
       pendingCount: resObj[0].rowCount,
       Flagged: resObj[1].rows,
       flaggedCount: resObj[1].rowCount,
+      OwnEntries: resObj[2].rows,
+      ownCount: resObj[2].rowCount,
     });
   }
 });

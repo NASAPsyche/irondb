@@ -59,7 +59,8 @@ router.post('/', isLoggedIn, async function(req, res, next) {
       const Bodies = await db.aQuery(
           `SELECT t1.* FROM bodies AS t1 JOIN
             (SELECT body_id FROM body_status WHERE submission_id = $1
-             AND current_status = 'pending')
+             AND current_status = 'pending'
+             AND current_status != 'rejected')
             AS t2 ON t1.body_id = t2.body_id`,
           [submissionID]
       );
@@ -82,13 +83,15 @@ router.post('/', isLoggedIn, async function(req, res, next) {
           `SELECT t1.*, t3.attribution_id, t3.attribution_status_id 
            FROM authors AS t1
            JOIN (SELECT author_id FROM author_status
-                 WHERE submission_id = $1 AND current_status = 'pending') 
+                 WHERE submission_id = $1 AND current_status = 'pending'
+                 AND current_status != 'rejected') 
            AS t2 on t1.author_id = t2.author_id
            JOIN (SELECT t1.attribution_id, t1.author_id, t1.paper_id,
                         t1.status_id AS attribution_status_id 
                  FROM attributions AS t1 
                  JOIN (SELECT * FROM attribution_status 
-                      WHERE submission_id = $1 AND current_status = 'pending') 
+                      WHERE submission_id = $1
+                      AND current_status != 'rejected') 
                   AS t2 ON t1.attribution_id = t2.attribution_id
                   WHERE paper_id = $2) 
             AS t3 ON t1.author_id = t3.author_id`,
@@ -97,14 +100,16 @@ router.post('/', isLoggedIn, async function(req, res, next) {
       const Groups = await db.aQuery(
           `SELECT t1.* FROM groups AS t1 JOIN
             (SELECT group_id FROM group_status WHERE submission_id = $1
-             AND current_status = 'pending')
+             AND current_status = 'pending'
+             AND current_status != 'rejected')
             AS t2 ON t1.group_id = t2.group_id`,
           [submissionID]
       );
       const ElementEntries = await db.aQuery(
           `SELECT t1.* FROM element_entries AS t1 JOIN
             (SELECT element_id FROM element_status WHERE submission_id = $1
-             AND current_status = 'pending')
+             AND current_status = 'pending'
+             AND current_status != 'rejected')
             AS t2 ON t1.element_id = t2.element_id`,
           [submissionID]
       );
@@ -117,15 +122,19 @@ router.post('/', isLoggedIn, async function(req, res, next) {
            JOIN (SELECT t3.* FROM bodies AS t3
                  JOIN (SELECT body_id 
                        FROM body_status 
-                       WHERE submission_id = $1 AND current_status != 'pending')
+                       WHERE submission_id = $1 
+                       AND current_status != 'pending'
+                       AND current_status != 'rejected')
                   AS t4 ON t3.body_id = t4.body_id) AS t5 
            ON t1.body_id = t5.body_id;`,
           [submissionID]
       );
       const Notes = await db.aQuery(
           `SELECT t1.* FROM notes AS t1 JOIN 
-            (SELECT note_id FROM note_status WHERE submission_id = $1
-             AND current_status = 'pending') 
+            (SELECT note_id FROM note_status
+             WHERE submission_id = $1
+             AND current_status = 'pending'
+             AND current_status != 'rejected') 
             AS t2 ON t1.note_id = t2.note_id`,
           [submissionID]
       );

@@ -12,19 +12,23 @@ fileName = '/usr/app/public/temp/' + fileName
 pageNum = int(j['pageNum'])
 total_pages = [pageNum]
 flipDir = int(j['flipDir'])
-coordsLeft = int(j['coordsLeft'])
-coordsTop = int(j['coordsTop'])
-coordsWidth = int(j['coordsWidth'])
-coordsHeight = int(j['coordsHeight'])
+coordsLeft = float(j['coordsLeft'])
+coordsTop = float(j['coordsTop'])
+coordsWidth = float(j['coordsWidth'])
+coordsHeight = float(j['coordsHeight'])
 #
 # print(fileName)
-# pdfname = '/usr/app/external/pdfScraper/pdfs/WassonandChoe_GCA_2009.pdf'
+# fileName = '/usr/app/external/pdfScraper/pdfs/WassonandChoe_GCA_2009.pdf'
 tables = []
 
 
 def target_coords():
+    y1 = coordsTop
+    x1 = coordsLeft
+    y2 = coordsTop + coordsHeight
+    x2 = coordsLeft + coordsWidth
     return read_pdf(fileName, output_format="dataframe", encoding="utf-8", multiple_tables=True,
-                                    pages=pageNum, silent=True, area=[521.71, 27.73, 705, 560])
+                                    pages=pageNum, silent=True, area=[y1, x1, y2, x2])
 
 
 def rotate_page():

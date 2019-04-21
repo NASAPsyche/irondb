@@ -19,6 +19,12 @@ router.use('/insert', insertRouter);
 const updateRouter = require('./data-entry/update');
 router.use('/insert/update', updateRouter);
 
+const editRouter = require('./data-entry/edit');
+router.use('/edit', editRouter);
+
+const deleteRouter = require('./data-entry/delete');
+router.use('/delete', deleteRouter);
+
 const resumeRouter = require('./data-entry/resume');
 router.use('/resume', resumeRouter);
 
@@ -31,7 +37,7 @@ router.use('/tool', toolRouter);
 
 // Routes
 router.get('/', isLoggedIn, function(req, res, next) {
-  res.render('data-entry', {Alert: ''});
+  res.render('data-entry', {Alert: '', AlertType: ''});
 });
 
 router.post('/', isLoggedIn, async function(req, res, next) {
@@ -94,11 +100,13 @@ router.post('/', isLoggedIn, async function(req, res, next) {
                             `Uploaded pdf is Invalid. 
                             Please try another pdf or use the manual editor.
                             (Failed to delete upload)`,
+                          AlertType: 'error',
                           });
                         } else {
                           res.render('data-entry', {Alert:
                             `Uploaded pdf is Invalid. 
                             Please try another pdf or use the manual editor.`,
+                          AlertType: 'error',
                           });
                         }
                       });
