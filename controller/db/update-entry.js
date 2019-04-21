@@ -1601,48 +1601,114 @@ async function execBody( obj, submissionID, username ) {
         //   convertedDeviation: '121',
         // };
         // measure;
-        query = `
-        UPDATE element_entries
-        SET (
-          element_symbol, 
-          less_than, 
-          original_unit, 
-          technique, 
-          page_number, 
-          sigfig, 
+        if (measure.elementID === '') {
+          // Convert data to appropriate type
+          const measureVal = parseInt(measure.convertedMeasurement, 10);
+          const deviation = parseInt(measure.convertedDeviation, 10);
+          const sigfigVal = parseInt(measure.sigfig, 10);
+          measure.element = String(measure.element).toLowerCase();
+
+          const measureQuery = `
+        INSERT INTO
+        element_entries(
+          body_id,
+          element_symbol,
+          paper_id,
+          page_number,
           ppb_mean,
-          deviation 
-        ) = ($1, $2, $3, $4, $5, $6, $7, $8)
-        WHERE element_id = ($9)
+          deviation,
+          less_than,
+          original_unit,
+          technique,
+          sigfig
+        )
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING element_id
+        `;
+          const measureValue = [
+            obj.bodyID,
+            measure.element,
+            obj.paperID,
+            measure.page,
+            measureVal,
+            deviation,
+            measure.lessThan,
+            measure.units,
+            measure.technique,
+            sigfigVal,
+          ];
+          let rows = await client.query(measureQuery, measureValue);
+
+          const elementId = rows.rows[0].element_id;
+          const measureStatusQuery = `
+        INSERT INTO
+        element_status(element_id, current_status, submitted_by, submission_id)
+        VALUES($1, $2, $3, $4)
         RETURNING status_id
         `;
-        values = [
-          measure.element,
-          measure.lessThan,
-          measure.units,
-          measure.technique,
-          measure.page,
-          measure.sigfig,
-          measure.convertedMeasurement,
-          measure.convertedDeviation,
-          measure.elementID,
-        ];
+          const measureStatusValue = [
+            elementId,
+            'pending',
+            username,
+            submissionID,
+          ];
+          rows = await client.query(measureStatusQuery, measureStatusValue);
 
-        rows = await client.query(query, values);
-        statusID = rows.rows[0].status_id;
-
-        // Update metadata to pending
-        query = `
-        UPDATE element_status
-        SET current_status = ($1)
-        WHERE status_id = ($2)
+          const statusIdMeasure = rows.rows[0].status_id;
+          const measureUpdateQuery = `
+        UPDATE element_entries
+        SET status_id = ($1)
+        WHERE element_id = ($2)
         `;
-        values = [
-          'pending',
-          statusID,
-        ];
+          const measureUpdateValue = [
+            statusIdMeasure,
+            elementId,
+          ];
+          await client.query(measureUpdateQuery, measureUpdateValue);
+        } else {
+          query = `
+            UPDATE element_entries
+            SET (
+              element_symbol, 
+              less_than, 
+              original_unit, 
+              technique, 
+              page_number, 
+              sigfig, 
+              ppb_mean,
+              deviation 
+            ) = ($1, $2, $3, $4, $5, $6, $7, $8)
+            WHERE element_id = ($9)
+            RETURNING status_id
+            `;
+          values = [
+            measure.element,
+            measure.lessThan,
+            measure.units,
+            measure.technique,
+            measure.page,
+            measure.sigfig,
+            measure.convertedMeasurement,
+            measure.convertedDeviation,
+            measure.elementID,
+          ];
 
-        await client.query(query, values);
+          rows = await client.query(query, values);
+          statusID = rows.rows[0].status_id;
+
+          // Update metadata to pending
+          query = `
+            UPDATE element_status
+            SET current_status = ($1)
+            WHERE status_id = ($2)
+            `;
+          values = [
+            'pending',
+            statusID,
+          ];
+
+          await client.query(query, values);
+        }
       }
 
       break;
