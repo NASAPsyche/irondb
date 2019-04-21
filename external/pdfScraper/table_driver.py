@@ -43,9 +43,6 @@ for page in range(len(json_pages)):
             json_pages_confirmed.append(json_pages[page])
 
 
-# START Make sure tables exist on pages.
-# json_master_pages_with_tables_confirmed = confirm_tables_exist()
-
 # START Make a pristine copy of list of tables before mark up.
 tables_pristine = deepcopy(tables)
 
@@ -70,8 +67,11 @@ tc.empty_table_remover(tables, tables_pristine, json_pages_confirmed)
 # Put original values back in fields marked for removal by mistake
 tc.marked_field_clean_up(tables, tables_pristine)
 
-for ind in range(len(tables)):
-    tables[ind] = '{\"actual_page\":' + str(json_pages_confirmed[ind]["actual_page"]) \
-                  + ',\"pdf_page\": ' + str(json_pages_confirmed[ind]["pdf_page"]) \
-                  + ', \"Table\":' + tables[ind].to_json() + '}'
-    print(tables[ind])
+if len(tables) > 0:
+    for ind in range(len(tables)):
+        tables[ind] = '{\"actual_page\":' + str(json_pages_confirmed[ind]["actual_page"]) \
+                      + ',\"pdf_page\": ' + str(json_pages_confirmed[ind]["pdf_page"]) \
+                      + ', \"Table\":' + tables[ind].to_json() + '}'
+        print(tables[ind])
+else:
+    print("-1000")
