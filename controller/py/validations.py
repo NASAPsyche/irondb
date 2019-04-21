@@ -186,4 +186,5 @@ def form_validate(form):
 
 
 print(json.dumps(form_validate(data)))
-# print(json.dumps(form_validate('table_example.json'), indent=4))
+# print(json.dumps(form_validate('table_example.json'), 
+# indent=4)) <-- @Josh that's how you pretty-print jsons my dude.
