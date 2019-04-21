@@ -65,5 +65,39 @@ router.get('/user', isLoggedIn, async (req, res, next) => {
   }
 });
 
+router.get('/analysis-technique', isAdmin, async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Techniques = db.aQuery('SELECT * FROM analysis_techniques', []);
+    resObj = await Promise.all([Techniques]);
+    console.log(resObj[0]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('analysis-technique', {
+      Technique: resObj[0].rows,
+    });
+  }
+});
+
+router.post('/analysis-technique', isAdmin, async (req, res, next) => {
+  const client = await db.pool.connect();
+  try {
+    await client.query('BEGIN');
+    const insertQuery =
+      `INSERT INTO analysis_techniques(abbreviation) VALUES($1)`;
+    const insertValues = [req.body.technique];
+    await client.query(insertQuery, insertValues);
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    next(createError(500));
+  } finally {
+    client.release();
+  }
+  res.json({ok: true});
+});
+
+
 module.exports = router;
 

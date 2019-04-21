@@ -37,7 +37,7 @@ router.use('/tool', toolRouter);
 
 // Routes
 router.get('/', isLoggedIn, function(req, res, next) {
-  res.render('data-entry', {Alert: ''});
+  res.render('data-entry', {Alert: '', AlertType: ''});
 });
 
 router.post('/', isLoggedIn, async function(req, res, next) {
@@ -100,11 +100,13 @@ router.post('/', isLoggedIn, async function(req, res, next) {
                             `Uploaded pdf is Invalid. 
                             Please try another pdf or use the manual editor.
                             (Failed to delete upload)`,
+                          AlertType: 'error',
                           });
                         } else {
                           res.render('data-entry', {Alert:
                             `Uploaded pdf is Invalid. 
                             Please try another pdf or use the manual editor.`,
+                          AlertType: 'error',
                           });
                         }
                       });
