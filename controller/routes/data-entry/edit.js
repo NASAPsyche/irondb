@@ -124,18 +124,15 @@ router.post('/submit', isLoggedIn, async function(req, res, next) {
   const obj = {};
   obj.submissionID = req.body.submissionID;
   obj.actions = JSON.parse(req.body.actions);
-
-  const username = req.user.username;
-  console.dir(obj);
-  const resp = await updater.updateEntry(obj, username);
-  console.log( 'resp ====', resp);
-  if ( resp === true ) {
-    res.json({status: 'success'});
-  } else {
-    res.json({status: 'error'});
+  if (obj.actions.length !== 0) {
+    const username = req.user.username;
+    console.dir(obj);
+    const resp = await updater.updateEntry(obj, username);
+    console.log( 'resp ====', resp);
   }
 
-  // res.send(obj);
+  // Redirect to panel when done
+  res.redirect('/panel');
 });
 
 module.exports = router;

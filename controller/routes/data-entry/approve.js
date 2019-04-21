@@ -90,7 +90,7 @@ router.post('/', isLoggedIn, async function(req, res, next) {
                         t1.status_id AS attribution_status_id 
                  FROM attributions AS t1 
                  JOIN (SELECT * FROM attribution_status 
-                      WHERE submission_id = $1 AND current_status = 'pending'
+                      WHERE submission_id = $1
                       AND current_status != 'rejected') 
                   AS t2 ON t1.attribution_id = t2.attribution_id
                   WHERE paper_id = $2) 

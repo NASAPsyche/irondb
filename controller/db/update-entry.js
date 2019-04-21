@@ -159,7 +159,11 @@ async function updateEntry( obj, username ) {
 
     console.log(obj.actions);
     // Perform each action
+    let hasNonDelete = false;
     for ( const action of obj.actions ) {
+      if (action.hasOwnProperty('command') && action.command !== 'delete') {
+        hasNonDelete = true;
+      }
       const res = await parseAction(action, submissionID, username);
       if ( res === false ) {
         console.dir(action);
@@ -168,7 +172,7 @@ async function updateEntry( obj, username ) {
     }
 
     // If command 'delete' on object set submission pending to false
-    // Otherwise set to true
+    // Otherwise set to true if has a non delete command
     if ( obj.hasOwnProperty('command') && obj.command === 'delete' ) {
       const query = `
       UPDATE submissions
@@ -183,7 +187,7 @@ async function updateEntry( obj, username ) {
       SET pending = ($1)
       WHERE submission_id = ($2)
       `;
-      const values = [true, submissionID];
+      const values = [hasNonDelete, submissionID];
       await client.query(query, values);
     }
 
@@ -906,6 +910,7 @@ async function execBasic( obj, username ) {
       SET (journal_name, volume, issue, series, published_year)
       = ($1, $2, $3, $4, $5) 
       WHERE journal_id = ($6)
+      RETURNING status_id
       `;
       let values = [
         obj.journalName,
@@ -916,6 +921,20 @@ async function execBasic( obj, username ) {
         obj.journalID,
       ];
 
+      let rows = await client.query(query, values);
+      let statusID = rows.rows[0].status_id;
+
+      // Update metadata to pending
+      query = `
+      UPDATE journal_status
+      SET current_status = ($1)
+      WHERE status_id = ($2)
+      `;
+      values = [
+        'pending',
+        statusID,
+      ];
+
       await client.query(query, values);
 
       query = `
@@ -923,6 +942,7 @@ async function execBasic( obj, username ) {
       SET (title, doi)
       = ($1, $2)
       WHERE paper_id = ($3)
+      RETURNING status_id
       `;
       values = [
         obj.paperTitle,
@@ -930,8 +950,21 @@ async function execBasic( obj, username ) {
         obj.paperID,
       ];
 
-      await client.query(query, values);
+      rows = await client.query(query, values);
+      statusID = rows.rows[0].status_id;
 
+      // Update metadata to pending
+      query = `
+      UPDATE paper_status
+      SET current_status = ($1)
+      WHERE status_id = ($2)
+      `;
+      values = [
+        'pending',
+        statusID,
+      ];
+
+      await client.query(query, values);
       break;
     }
 
@@ -1046,6 +1079,7 @@ async function execAuthor( obj, submissionID, username ) {
       SET (primary_name, middle_name, first_name)
       = ($1, $2, $3)
       WHERE author_id = ($4)
+      RETURNING status_id
       `;
 
       const values = [
@@ -1055,7 +1089,22 @@ async function execAuthor( obj, submissionID, username ) {
         obj.authorID,
       ];
 
-      await client.query(query, values);
+      const rows = await client.query(query, values);
+      const statusID = rows.rows[0].status_id;
+
+      // Update metadata to pending
+      const authorStatusQuery = `
+      UPDATE author_status
+      SET current_status = ($1)
+      WHERE status_id = ($2)
+      `;
+
+      const authorStatusValue = [
+        'pending',
+        statusID,
+      ];
+
+      await client.query(authorStatusQuery, authorStatusValue);
       break;
     }
 
@@ -1250,15 +1299,30 @@ async function execNote( obj, submissionID, username ) {
 
   switch (obj.command) {
     case 'update': {
-      const query = `
+      let query = `
       UPDATE notes
       SET note= ($1)
       WHERE note_id = ($2)
+      RETURNING status_id
       `;
 
-      const values = [
+      let values = [
         obj.note,
         obj.noteID,
+      ];
+
+      const rows = await client.query(query, values);
+      const statusID = rows.rows[0].status_id;
+
+      // Update metadata to pending
+      query = `
+      UPDATE note_status
+      SET current_status = ($1)
+      WHERE status_id = ($2)
+      `;
+      values = [
+        'pending',
+        statusID,
       ];
 
       await client.query(query, values);
@@ -1468,11 +1532,26 @@ async function execBody( obj, submissionID, username ) {
       UPDATE bodies
       SET nomenclature = ($1)
       WHERE body_id = ($2)
+      RETURNING status_id
       `;
 
       let values = [
         obj.bodyName,
         obj.bodyID,
+      ];
+
+      let rows = await client.query(query, values);
+      let statusID = rows.rows[0].status_id;
+
+      // Update metadata to pending
+      query = `
+      UPDATE body_status
+      SET current_status = ($1)
+      WHERE status_id = ($2)
+      `;
+      values = [
+        'pending',
+        statusID,
       ];
 
       await client.query(query, values);
@@ -1482,10 +1561,25 @@ async function execBody( obj, submissionID, username ) {
       UPDATE groups
       SET the_group = ($1)
       WHERE group_id = ($2)
+      RETURNING status_id
       `;
       values = [
         obj.group,
         obj.groupID,
+      ];
+
+      rows = await client.query(query, values);
+      statusID = rows.rows[0].status_id;
+
+      // Update metadata to pending
+      query = `
+      UPDATE group_status
+      SET current_status = ($1)
+      WHERE status_id = ($2)
+      `;
+      values = [
+        'pending',
+        statusID,
       ];
 
       await client.query(query, values);
@@ -1517,6 +1611,7 @@ async function execBody( obj, submissionID, username ) {
           deviation 
         ) = ($1, $2, $3, $4, $5, $6, $7, $8)
         WHERE element_id = ($9)
+        RETURNING status_id
         `;
         values = [
           measure.element,
@@ -1528,6 +1623,20 @@ async function execBody( obj, submissionID, username ) {
           measure.convertedMeasurement,
           measure.convertedDeviation,
           measure.elementID,
+        ];
+
+        rows = await client.query(query, values);
+        statusID = rows.rows[0].status_id;
+
+        // Update metadata to pending
+        query = `
+        UPDATE element_status
+        SET current_status = ($1)
+        WHERE status_id = ($2)
+        `;
+        values = [
+          'pending',
+          statusID,
         ];
 
         await client.query(query, values);
