@@ -7,7 +7,7 @@ const logger = require('morgan');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const db = require('./db'); 
+const db = require('./db');
 
 const expressSanitizer = require('express-sanitizer');
 const pgSession = require('connect-pg-simple')(session);
