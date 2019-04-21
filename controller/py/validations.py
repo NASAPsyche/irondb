@@ -133,11 +133,11 @@ def form_validate(form):
 
 		# validates table data
 		if key == 'tableData':
-			if not form['tableData']:
+			if form['tableData'] == '[]':
 				form['tableData'] == "success"
 			else:
 				tables_dict = json.loads(form['tableData'])
-				for table in tables_dict: #for table in form[key]:
+				for table in tables_dict:
 					for k1, v1 in table.items():
 
 						if k1 == 'page_number':
@@ -180,6 +180,7 @@ def form_validate(form):
 												cell[k2] = "success"
 											else:
 												cell[k2] = "invalid"
+				form['tableData'] = tables_dict
 
 	# https://gph.is/2k9xGgD
 	return form
