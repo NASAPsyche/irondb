@@ -136,7 +136,8 @@ def form_validate(form):
 			if not form['tableData']:
 				form['tableData'] == "success"
 			else:
-				for table in form[key]:
+				tables_dict = json.loads(form['tableData'])
+				for table in tables_dict: #for table in form[key]:
 					for k1, v1 in table.items():
 
 						if k1 == 'page_number':
