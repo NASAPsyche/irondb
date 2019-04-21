@@ -1,5 +1,5 @@
 """
-validations.py: validates attributes and table data received from the user
+validations.py: validates paper attributes and table data received from the user
 """
 __authors__ = "Hajar Boughoula"
 __version__ = "1.2"
@@ -15,14 +15,14 @@ data = json.loads(sys.argv[1])
 
 
 # stages the data from the JSON for validations
-def stage_data(data_json):
-	with open(mocks_path + data_json) as json_file:
-		data = json.load(json_file)
+# def stage_data(data_json):
+# 	with open(mocks_path + data_json) as json_file:
+# 		data = json.load(json_file)
 
-	return data
+# 	return data
 
 
-# 
+# checks if a periodic element is valid using an external catalogue
 def is_element(df_value):
     el_list = []
     for el in elements:
@@ -33,10 +33,11 @@ def is_element(df_value):
     return False
 
 
-# 
+# validates all data staged for import into the database
 def form_validate(form_json): # switch back to form
 	form = stage_data(form_json)
 
+	# validates paper attributes
 	if any(word.isalpha() for word in form['paperTitle'].split()):
 		form['paperTitle'] = "success"
 	else:
