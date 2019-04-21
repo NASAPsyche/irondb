@@ -131,7 +131,7 @@ def form_validate(form):
 			else:
 				form[key] = "invalid"
 
-		# 
+		# validates table data
 		if key == 'tableData':
 			if not form['tableData']:
 				form['tableData'] == "success"
@@ -180,8 +180,8 @@ def form_validate(form):
 											else:
 												cell[k2] = "invalid"
 
-	return form
 	# https://gph.is/2k9xGgD
+	return form
 
 
 
