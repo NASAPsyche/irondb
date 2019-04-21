@@ -34,8 +34,8 @@ def is_element(df_value):
 
 
 # validates all data staged for import into the database
-def form_validate(form_json): # switch back to form
-	form = stage_data(form_json)
+def form_validate(form):
+	# form = stage_data(form_json)
 
 	# validates paper attributes
 	if any(word.isalpha() for word in form['paperTitle'].split()):
