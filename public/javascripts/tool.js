@@ -2,8 +2,11 @@
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
 
+
 // eslint-disable-next-line no-undef
 ElementsArr = Elements.slice(0, -1).split(',');
+
+
 // eslint-disable-next-line no-undef
 TechniqueArr = Technique.slice(0, -1).split(',');
 
@@ -247,7 +250,17 @@ $('#event-div').on('click', '#validate-btn', function() {
       !formData[i].name.includes('convertedMeasurement') &&
       !formData[i].name.includes('sigfig')
     ) {
-      postData[formData[i].name] = formData[i].value;
+      if (formData[i].name.includes('primaryName') ||
+          formData[i].name.includes('firstName') ||
+          formData[i].name.includes('middleName') ||
+          formData[i].name.includes('bodyName')
+      ) {
+        const input = $('input[name="' + formData[i].name + '"]');
+        input.val(input.val().charAt(0).toUpperCase() + input.val().slice(1));
+        postData[formData[i].name.toString()] = input.val();
+      } else {
+        postData[formData[i].name.toString()] = formData[i].value;
+      }
     }
   }
 
@@ -500,7 +513,7 @@ const authorTemplate = `
 <div class="form-group col-md-3">
   <label for="<%- middleNameID %>">Middle Name</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
-  name="<%- middleNameID %>">
+  name="<%- middleNameID %>" placeholder="optional">
 </div>
 </div>
 `;
