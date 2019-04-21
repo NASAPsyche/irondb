@@ -266,7 +266,8 @@ $('#event-div').on('click', '#validate-btn', function() {
 
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
-    console.log(data);
+    $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+    // console.log(data);
   });
 });
 
