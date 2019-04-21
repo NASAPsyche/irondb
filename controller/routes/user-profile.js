@@ -34,8 +34,6 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   const updateLastName = `UPDATE user_info SET last_name = $1 WHERE  user_id = $2`;
   const insertLastName = [req.body.last_name, req.body.user_id];
   // eslint-disable-next-line max-len
-  const updateEmail = `UPDATE user_info SET email_address = $1 WHERE  user_id = $2`;
-  const insertEmail = [req.body.email, req.body.user_id];
 
   let hasPassword = false;
   console.log(JSON.stringify(req.body));
@@ -68,11 +66,6 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
     // last name transaction
     await client.query('BEGIN');
     await client.query(updateLastName, insertLastName);
-    await client.query('COMMIT');
-
-    // email transaction
-    await client.query('BEGIN');
-    await client.query(updateEmail, insertEmail);
     await client.query('COMMIT');
 
     // password transaction if password is changed
