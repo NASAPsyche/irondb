@@ -14,13 +14,13 @@
    "middleName2" : "",
    "tableData" : [  
       {  
-         "page_number":"4880",
-         "cells":[  
+         "page_number" : "4880",
+         "cells" : [  
             {  
                "analysis_technique":"None",
                "meteorite_name":"Guanaco",
                "element":"Cr",
-               "units":"lg/g",
+               "units":"μg/g",
                "less_than":false,
                "measurement":"14",
                "column":1,
