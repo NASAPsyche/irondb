@@ -7,9 +7,8 @@ const logger = require('morgan');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const db = require('./db'); 
+const db = require('./db');
 const expressSanitizer = require('express-sanitizer');
-const pgSession = require('connect-pg-simple')(session);
 
 // Define individual route routers
 const indexRouter = require('./routes/index');
@@ -109,18 +108,12 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
-const oneWeek = 604800000;
-const pgPool = db.pool;
 app.use(session({
-  // eslint-disable-next-line new-cap
-  store: new pgSession({
-    pool: pgPool, // Connection pool
-    tableName: 'user_session',
-  }),
-  secret: 'Temporary_Example_Secret_Hide_Real_Secret_When_in_Production',
+  secret: '%%SECRET%%',
   resave: false,
   saveUninitialized: false,
-  cookie: {maxAge: oneWeek},
+  // maxAge set to 60 mins, param in miliseconds
+  cookie: {maxAge: 60 * 60 * 1000},
 }));
 
 app.use(passport.initialize());
