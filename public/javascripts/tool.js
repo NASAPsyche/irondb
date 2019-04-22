@@ -83,26 +83,47 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
       $('#secondary-panel').replaceWith( data );
       $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
 
+      // Disable validate button if not manual
+      if (!postData.hasOwnProperty('manual')) {
+        $('#validate-btn').prop('disabled', true);
+      }
+      
+      let processCount = 0;
       if (postData.hasOwnProperty('attributes')
       && postData.attributes === 'on') {
+        processCount++;
         $.post('/data-entry/tool/attributes', postData, function(data) {
+          processCount--;
           $('#attributes-target').replaceWith(data);
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+          };
         });
       }
 
       if (postData.hasOwnProperty('singleTable')
           && postData.singleTable === 'on') {
+            processCount++;
         $.post('/data-entry/tool/onePageTables', postData, function(data) {
+          processCount--;
           $('#table-target').append(data);
           $('#table-loader').remove();
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+          };
         });
       }
 
       if (postData.hasOwnProperty('allTables')
           && postData.allTables === 'on') {
+            processCount++;
         $.post('/data-entry/tool/allPagesTables', postData, function(data) {
+          processCount--;
           $('#table-target').append(data);
           $('#table-loader').remove();
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+          };
         });
       }
     });
@@ -267,6 +288,11 @@ $('#event-div').on('click', '#validate-btn', function() {
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
     $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+
+
+
+
+
     // console.log(data);
   });
 });
