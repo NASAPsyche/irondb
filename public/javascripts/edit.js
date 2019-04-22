@@ -18,6 +18,7 @@ $('document').ready( function() {
 /**      Validate Button         */
 /** ---------------------------- */
 
+/* eslint-disable no-undef*/
 $('#event-div').on('click', '#validate-btn-edit', function() {
   const formData = $('#edit-form').serializeArray();
   const postData = {};
@@ -41,13 +42,72 @@ $('#event-div').on('click', '#validate-btn-edit', function() {
     }
   }
 
-  console.log(postData);
-
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
-    console.log(data);
-  });
+    $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+    const parsedData = JSON.parse(data[0]);
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      const selector = '#' + entry[0];
+      const object = $(selector);
+      // Parse Attributes
+      if (entry[1] === 'invalid') {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-invalid');
+      } else if (entry[1] === 'success') {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-valid');
+      } else {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-valid');
+      }
+    });
+
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid')) {
+        allValid = false;
+      }
+    });
+
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert in valid
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
 });
+
+// On change of any input remove classes, alert user, and disable submit button.
+$('#event-div').on('change', 'input,textarea,select', function() {
+  $(this).removeClass('is-valid').removeClass('is-invalid');
+  $('#submit-btn').prop('disabled', true);
+  // Alert change
+  const alert = ejs.render(validationWarningAlertTemplate, {
+    type: 'warning',
+    messageTitle: 'Warning:',
+    message: `Data changed revalidation 
+    or override required before submission.`,
+  });
+  $('div.main-alert-target').html(alert);
+});
+/* eslint-enable no-undef*/
 
 /** ----------------------------------- */
 /**        EJS Templates for Add        */

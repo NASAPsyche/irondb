@@ -251,6 +251,17 @@ $('#table-div').on('click', '#cancel-btn', function() {
   showEditor();
 });
 
+/* eslint-disable max-len*/
+const validationWarningAlertTemplate = `<div 
+class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+<strong><%= messageTitle %> </strong>
+<%= message %>
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>`;
+/* eslint-enable max-len*/
+
 // Validation button
 $('#event-div').on('click', '#validate-btn', function() {
   if ($('#table-data-input').length) {
@@ -288,12 +299,83 @@ $('#event-div').on('click', '#validate-btn', function() {
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
     $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+    console.log(typeof data[0]);
+    const parsedData = JSON.parse(data[0]);
+    console.log(Object.entries(parsedData));
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      console.log('This is an entry');
+      console.log(entry[0]);
+      console.log(entry[1]);
+      const selector = '#' + entry[0];
+      const object = $(selector);
+      console.log('Object: ');
+      console.log(object);
+      if ( entry[0] === 'tableData') {
+        // Parse table data
+        console.log('TABLES PRESENT');
+      } else {
+        // Parse Attributes
+        if (entry[1] === 'invalid') {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-invalid');
+        } else if (entry[1] === 'success') {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-valid');
+        } else {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-valid');
+        }
+      }
+    });
 
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid')) {
+        allValid = false;
+      }
+    });
 
-    // console.log(data);
-  });
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert in valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
 });
 
+// On change of any input remove classes, alert user, and disable submit button.
+$('#event-div').on('change', 'input,textarea,select', function() {
+  $(this).removeClass('is-valid').removeClass('is-invalid');
+  $('#submit-btn').prop('disabled', true);
+  // Alert change
+  // eslint-disable-next-line no-undef
+  const alert = ejs.render(validationWarningAlertTemplate, {
+    type: 'warning',
+    messageTitle: 'Warning:',
+    message: `Data changed revalidation 
+    or override required before submission.`,
+  });
+  $('div.main-alert-target').html(alert);
+});
 
 $('#event-div').on('click', '#override-btn', function() {
   $('#submit-btn').prop('disabled', false);
