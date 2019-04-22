@@ -87,7 +87,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
       if (!postData.hasOwnProperty('manual')) {
         $('#validate-btn').prop('disabled', true);
       }
-      
+
       let processCount = 0;
       if (postData.hasOwnProperty('attributes')
       && postData.attributes === 'on') {
@@ -97,33 +97,33 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
           $('#attributes-target').replaceWith(data);
           if (processCount === 0) {
             $('#validate-btn').prop('disabled', false);
-          };
+          }
         });
       }
 
       if (postData.hasOwnProperty('singleTable')
           && postData.singleTable === 'on') {
-            processCount++;
+        processCount++;
         $.post('/data-entry/tool/onePageTables', postData, function(data) {
           processCount--;
           $('#table-target').append(data);
           $('#table-loader').remove();
           if (processCount === 0) {
             $('#validate-btn').prop('disabled', false);
-          };
+          }
         });
       }
 
       if (postData.hasOwnProperty('allTables')
           && postData.allTables === 'on') {
-            processCount++;
+        processCount++;
         $.post('/data-entry/tool/allPagesTables', postData, function(data) {
           processCount--;
           $('#table-target').append(data);
           $('#table-loader').remove();
           if (processCount === 0) {
             $('#validate-btn').prop('disabled', false);
-          };
+          }
         });
       }
     });
@@ -288,9 +288,6 @@ $('#event-div').on('click', '#validate-btn', function() {
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
     $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
-
-
-
 
 
     // console.log(data);
