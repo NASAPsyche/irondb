@@ -314,6 +314,89 @@ $('#event-div').on('click', '#validate-btn', function() {
       if ( entry[0] === 'tableData') {
         // Parse table data
         console.log('TABLES PRESENT');
+        console.log(entry[1]);
+        if (typeof entry[1] !== 'string') {
+          const tables = $('div.table');
+          for (let i = 0; i < entry[1].length; i++){
+            // for each table parse feedback
+            let tableDiv = tables.eq(i);
+            let pageNumObj = tableDiv.children('div.page-row')
+                .children().children().children('input');
+            const rows = tableDiv.children('table').children('tbody').children();
+            console.log('This is table: ' + i);
+            console.log(rows);
+
+            if (entry[1][i]['page_number'] === 'invalid') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-invalid');
+              pageNumObj.attr('style', 'outline: 3px solid #FBDCD7');
+            } else if (entry[1][i]['page_number'] === 'success') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-valid');
+              pageNumObj.attr('style', 'outline: 2px solid #78BE20');
+            }
+
+            // Set analysis technique to valid
+            $(rows[0]).children().children('select').addClass('is-valid');
+
+            const elements = $(rows[1]).children().children('input');
+            const units = $(rows[2]).children().children('input');
+
+            // Check measurements
+            entry[1][i]['cells'].map(function(cell) {
+              console.log($(rows[cell.row]).children().eq(cell.column).children('input'));
+              const input = $(rows[cell.row]).children().eq(cell.column).children('input');
+              const element = elements.eq(cell.column);
+              const unit = units.eq(cell.column);
+              const meteorite = $(rows[cell.row]).children().eq(0).children('input');
+
+
+              if (cell.measurement === 'invalid') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                input.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.measurement === 'success') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                input.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.element === 'invalid') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                element.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.element === 'success') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                element.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.units === 'invalid') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                unit.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.units === 'success') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                unit.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.meteorite_name === 'invalid') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                meteorite.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.meteorite_name === 'success') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                meteorite.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+
+
+              // [cell.column]
+            });
+          }
+        }
       } else {
         // Parse Attributes
         if (entry[1] === 'invalid') {
@@ -362,9 +445,15 @@ $('#event-div').on('click', '#validate-btn', function() {
   }); // End validation post
 });
 
+// Manual change value on table inputs
+$('#event-div').on('change', 'input.table-input', function(){
+  $(this).attr('value', $(this).val());
+});
+
 // On change of any input remove classes, alert user, and disable submit button.
 $('#event-div').on('change', 'input,textarea,select', function() {
   $(this).removeClass('is-valid').removeClass('is-invalid');
+  $(this).removeAttr('style');
   $('#submit-btn').prop('disabled', true);
   // Alert change
   // eslint-disable-next-line no-undef
