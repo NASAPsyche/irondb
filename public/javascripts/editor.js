@@ -23,6 +23,7 @@ class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
 </div>`;
 /* eslint-enable max-len*/
 
+
 $('#event-div').on('click', '#validate-btn', function() {
   const formData = $('#insert-form').serializeArray();
   const postData = {};

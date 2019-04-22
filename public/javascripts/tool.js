@@ -106,7 +106,12 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
         processCount++;
         $.post('/data-entry/tool/onePageTables', postData, function(data) {
           processCount--;
+          $('#table-target').before(
+              `<p id="validation-msg">Please validate 
+              basic information before entering data.</p>`
+          );
           $('#table-target').append(data);
+          $('#table-target :input').prop('disabled', true);
           $('#table-loader').remove();
           if (processCount === 0) {
             $('#validate-btn').prop('disabled', false);
@@ -119,7 +124,12 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
         processCount++;
         $.post('/data-entry/tool/allPagesTables', postData, function(data) {
           processCount--;
+          $('#table-target').before(
+              `<p id="validation-msg">Please validate 
+              basic information before entering data.</p>`
+          );
           $('#table-target').append(data);
+          $('#table-target :input').prop('disabled', true);
           $('#table-loader').remove();
           if (processCount === 0) {
             $('#validate-btn').prop('disabled', false);
@@ -262,16 +272,24 @@ class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
 </div>`;
 /* eslint-enable max-len*/
 
+
+// Set global flag
+let basicValidated = false;
+
 // Validation button
 $('#event-div').on('click', '#validate-btn', function() {
   if ($('#table-data-input').length) {
-    // serialize all tables
-    const tables = [];
-    const tableObjects = $('#table-target').children('div.table');
-    $.each( tableObjects, function(tableIndex, table) {
-      tables.push(serializeTable(table));
-    });
-    $('#table-data-input').attr('value', JSON.stringify(tables));
+    if (basicValidated === true) {
+      // serialize all tables
+      const tables = [];
+      const tableObjects = $('#table-target').children('div.table');
+      $.each( tableObjects, function(tableIndex, table) {
+        tables.push(serializeTable(table));
+      });
+      $('#table-data-input').attr('value', JSON.stringify(tables));
+    } else {
+      $('#table-data-input').attr('value', JSON.stringify([]));
+    }
   }
 
   const formData = $('#insert-form').serializeArray();
@@ -409,11 +427,15 @@ $('#event-div').on('click', '#validate-btn', function() {
       }
     });
 
+    console.log(allValid);
     if (allValid) {
       // Check if first time validating
       if ($('#note0').prop('disabled')) {
         if ($('#tableToggle').length) {
+          basicValidated = true;
           $('#tableToggle').prop('disabled', false);
+          $('#table-target :input').prop('disabled', false);
+          $('#validation-msg').remove();
         } else {
           // Enable rest of form
           $('#bodyName0').prop('disabled', false);
@@ -425,7 +447,6 @@ $('#event-div').on('click', '#validate-btn', function() {
           $('#units0_0').prop('disabled', false);
           $('#technique0_0').prop('disabled', false);
           $('#page0_0').prop('disabled', false);
-          $('#note0').prop('disabled', false);
 
           // Add event binding classes
           $('#first-meteorite').addClass('remove-meteorite');
@@ -434,6 +455,7 @@ $('#event-div').on('click', '#validate-btn', function() {
           $('#first-measurement').addClass('remove-inline');
         }
 
+        $('#note0').prop('disabled', false);
         $('#note-header').addClass('add-note');
         $('#first-note').addClass('remove-note');
       } else {
