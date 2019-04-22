@@ -299,32 +299,23 @@ $('#event-div').on('click', '#validate-btn', function() {
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
     $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
-    console.log(typeof data[0]);
+
     const parsedData = JSON.parse(data[0]);
-    console.log(Object.entries(parsedData));
     // Set classes on all attributes
     Object.entries(parsedData).map(function(entry) {
-      console.log('This is an entry');
-      console.log(entry[0]);
-      console.log(entry[1]);
       const selector = '#' + entry[0];
       const object = $(selector);
-      console.log('Object: ');
-      console.log(object);
       if ( entry[0] === 'tableData') {
         // Parse table data
-        console.log('TABLES PRESENT');
-        console.log(entry[1]);
         if (typeof entry[1] !== 'string') {
           const tables = $('div.table');
-          for (let i = 0; i < entry[1].length; i++){
+          for (let i = 0; i < entry[1].length; i++) {
             // for each table parse feedback
-            let tableDiv = tables.eq(i);
-            let pageNumObj = tableDiv.children('div.page-row')
+            const tableDiv = tables.eq(i);
+            const pageNumObj = tableDiv.children('div.page-row')
                 .children().children().children('input');
-            const rows = tableDiv.children('table').children('tbody').children();
-            console.log('This is table: ' + i);
-            console.log(rows);
+            const rows = tableDiv.children('table')
+                .children('tbody').children();
 
             if (entry[1][i]['page_number'] === 'invalid') {
               pageNumObj.removeClass('is-valid')
@@ -344,11 +335,12 @@ $('#event-div').on('click', '#validate-btn', function() {
 
             // Check measurements
             entry[1][i]['cells'].map(function(cell) {
-              console.log($(rows[cell.row]).children().eq(cell.column).children('input'));
-              const input = $(rows[cell.row]).children().eq(cell.column).children('input');
+              const input = $(rows[cell.row]).children()
+                  .eq(cell.column).children('input');
               const element = elements.eq(cell.column);
               const unit = units.eq(cell.column);
-              const meteorite = $(rows[cell.row]).children().eq(0).children('input');
+              const meteorite = $(rows[cell.row])
+                  .children().eq(0).children('input');
 
 
               if (cell.measurement === 'invalid') {
@@ -390,10 +382,6 @@ $('#event-div').on('click', '#validate-btn', function() {
                     .removeClass('is-invalid').addClass('is-valid');
                 meteorite.attr('style', 'outline: 2px solid #78BE20');
               }
-
-
-
-              // [cell.column]
             });
           }
         }
@@ -422,16 +410,44 @@ $('#event-div').on('click', '#validate-btn', function() {
     });
 
     if (allValid) {
-      // If all valid enable submit
-      $('#submit-btn').prop('disabled', false);
-      // Alert all valid
-      // eslint-disable-next-line no-undef
-      const alert = ejs.render(validationWarningAlertTemplate, {
-        type: 'success',
-        messageTitle: 'Success:',
-        message: 'All inputs valid. Submission enabled.',
-      });
-      $('div.main-alert-target').html(alert);
+      // Check if first time validating
+      if ($('#note0').prop('disabled')) {
+        if ($('#tableToggle').length) {
+          $('#tableToggle').prop('disabled', false);
+        } else {
+          // Enable rest of form
+          $('#bodyName0').prop('disabled', false);
+          $('#group0').prop('disabled', false);
+          $('#element0_0').prop('disabled', false);
+          $('#lessThan0_0').prop('disabled', false);
+          $('#measurement0_0').prop('disabled', false);
+          $('#deviation0_0').prop('disabled', false);
+          $('#units0_0').prop('disabled', false);
+          $('#technique0_0').prop('disabled', false);
+          $('#page0_0').prop('disabled', false);
+          $('#note0').prop('disabled', false);
+
+          // Add event binding classes
+          $('#first-meteorite').addClass('remove-meteorite');
+          $('#first-meteorite-header').addClass('add-meteorite');
+          $('#first-add-measurement').addClass('add-measurement');
+          $('#first-measurement').addClass('remove-inline');
+        }
+        
+        $('#note-header').addClass('add-note');
+        $('#first-note').addClass('remove-note');
+      } else {
+        // If all valid enable submit
+        $('#submit-btn').prop('disabled', false);
+        // Alert all valid
+        // eslint-disable-next-line no-undef
+        const alert = ejs.render(validationWarningAlertTemplate, {
+          type: 'success',
+          messageTitle: 'Success:',
+          message: 'All inputs valid. Submission enabled.',
+        });
+        $('div.main-alert-target').html(alert);
+      }
     } else {
       // Alert in valid
       // eslint-disable-next-line no-undef
@@ -446,24 +462,27 @@ $('#event-div').on('click', '#validate-btn', function() {
 });
 
 // Manual change value on table inputs
-$('#event-div').on('change', 'input.table-input', function(){
+$('#event-div').on('change', 'input.table-input', function() {
   $(this).attr('value', $(this).val());
 });
 
 // On change of any input remove classes, alert user, and disable submit button.
 $('#event-div').on('change', 'input,textarea,select', function() {
+  if ($(this).hasClass('is-valid')) {
+    // Alert change
+    // eslint-disable-next-line no-undef
+    const alert = ejs.render(validationWarningAlertTemplate, {
+      type: 'warning',
+      messageTitle: 'Warning:',
+      message: `Valid data changed revalidation 
+      or override required before submission.`,
+    });
+    $('div.main-alert-target').html(alert);
+  }
+
   $(this).removeClass('is-valid').removeClass('is-invalid');
   $(this).removeAttr('style');
   $('#submit-btn').prop('disabled', true);
-  // Alert change
-  // eslint-disable-next-line no-undef
-  const alert = ejs.render(validationWarningAlertTemplate, {
-    type: 'warning',
-    messageTitle: 'Warning:',
-    message: `Data changed revalidation 
-    or override required before submission.`,
-  });
-  $('div.main-alert-target').html(alert);
 });
 
 $('#event-div').on('click', '#override-btn', function() {

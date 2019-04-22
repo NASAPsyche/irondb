@@ -96,16 +96,21 @@ $('#event-div').on('click', '#validate-btn-edit', function() {
 
 // On change of any input remove classes, alert user, and disable submit button.
 $('#event-div').on('change', 'input,textarea,select', function() {
+  if ($(this).hasClass('is-valid')) {
+    // Alert change
+    // eslint-disable-next-line no-undef
+    const alert = ejs.render(validationWarningAlertTemplate, {
+      type: 'warning',
+      messageTitle: 'Warning:',
+      message: `Valid data changed revalidation 
+      or override required before submission.`,
+    });
+    $('div.main-alert-target').html(alert);
+  }
+
   $(this).removeClass('is-valid').removeClass('is-invalid');
+  $(this).removeAttr('style');
   $('#submit-btn').prop('disabled', true);
-  // Alert change
-  const alert = ejs.render(validationWarningAlertTemplate, {
-    type: 'warning',
-    messageTitle: 'Warning:',
-    message: `Data changed revalidation 
-    or override required before submission.`,
-  });
-  $('div.main-alert-target').html(alert);
 });
 /* eslint-enable no-undef*/
 

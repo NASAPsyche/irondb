@@ -1,55 +1,55 @@
 <!-- Component of meteorite form elements for editor -->
 <div class="form-row meteorite-header" id="meteorite0">
     <h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>
-    <i class="fas fa-plus-circle fa-lg add-meteorite mt-2 text-danger"></i>
+    <i class="fas fa-plus-circle fa-lg mt-2 text-danger" id="first-meteorite-header"></i>
 </div>
 
 <div class="form-row">
     <div class="col-md-1">
-        <i class="far fa-times-circle fa-lg remove remove-meteorite pt-4 text-danger" title="Press to remove meteorite and all associated measurements."></i>
+        <i class="far fa-times-circle fa-lg remove pt-4 text-danger" title="Press to remove meteorite and all associated measurements." id="first-meteorite"></i>
     </div>
     <div class="form-group col-md-6">
         <label for="bodyName">Meteorite</label>
-        <input type="text" class="form-control" id="bodyName0" name="bodyName0" required="true">
+        <input type="text" class="form-control" id="bodyName0" name="bodyName0" required="true" disabled>
     </div>
     <div class="form-group col-md-2">
         <label for="group">Group</label>
-        <input type="text" class="form-control" id="group0" name="group0" required="true">
+        <input type="text" class="form-control" id="group0" name="group0" required="true" disabled>
     </div>
 </div>
 
 <div class="form-row">
     <h5 class="pt-1 mr-2 pl-3"><strong>Measurements</strong></h5>
-    <i class="fas fa-plus-circle fa-lg add-measurement mt-2 text-danger"></i>
+    <i class="fas fa-plus-circle fa-lg mt-2 text-danger" id="first-add-measurement"></i>
 </div>
 
 <div class="form-row">
     <div class="col-md-1 p-0">
-        <i class="far fa-times-circle fa-lg remove remove-inline pt-4 text-danger" title="Press to remove measurement."></i>
+        <i class="far fa-times-circle fa-lg remove pt-4 text-danger" title="Press to remove measurement." id="first-measurement"></i>
     </div>
     <div class="form-group col-md-1 mr-3">
         <label for="element0_0">Element</label>
-        <select class="form-control p-1" id="element0_0" name="element0_0" required="true">
+        <select class="form-control p-1" id="element0_0" name="element0_0" required="true" disabled>
             <% for(var i=0; i < Elements.length; i++) { %>
                 <option value="<%= Elements[i].symbol.toLowerCase()%>"><%= Elements[i].symbol %></option> 
             <% } %>                   
         </select>
     </div>
     <div class="form-check-inline col-md-1">
-        <input class="form-check-input" type="checkbox" id="lessThan0_0">
+        <input class="form-check-input" type="checkbox" id="lessThan0_0" disabled>
         <label class="form-check-label" for="lessThan0_0">&lt;</label>
     </div>
     <div class="form-group col-md-2">
         <label for="measurement">Measurement</label>
-        <input type="text" class="form-control" id="measurement0_0" name="measurement0_0" required="true" min="0">
+        <input type="text" class="form-control" id="measurement0_0" name="measurement0_0" required="true" min="0" disabled>
     </div>
     <div class="form-group col-md-1">
         <label for="deviation">(&plusmn;)</label>
-        <input type="number" class="form-control" id="deviation0_0" name="deviation0_0" value="0" min="0">
+        <input type="number" class="form-control" id="deviation0_0" name="deviation0_0" value="0" min="0" disabled>
     </div>
     <div class="form-group col-md-2">
         <label for="units">Units</label>
-        <select class="form-control" id="units0_0" name="units0_0" required="true">
+        <select class="form-control" id="units0_0" name="units0_0" required="true" disabled>
             <option value="wt_percent">wt%</option>
             <option value="ppm">ppm</option>
             <option value="ppb">ppb</option>
@@ -60,7 +60,7 @@
     </div>
     <div class="form-group col-md-2">
         <label for="technique0_0">Technique</label>
-        <select class="form-control p-1" id="technique0_0" name="technique0_0" required="true">
+        <select class="form-control p-1" id="technique0_0" name="technique0_0" required="true" disabled>
             <% for(var i=0; i < Technique.length; i++) { %>
                 <option value="<%= Technique[i].abbreviation%>"><%= Technique[i].abbreviation %></option> 
             <% } %>                   
@@ -68,7 +68,7 @@
     </div>
     <div class="form-group col-md-1">
         <label for="page">Page</label>
-        <input type="number" class="form-control p-1" id="page0_0" name="page0_0" min="1" required>
+        <input type="number" class="form-control p-1" id="page0_0" name="page0_0" min="1" required disabled>
     </div>
     <div class="form-group">
         <input type="hidden" id="sigfig0_0" name="sigfig0_0" value="0">
