@@ -316,7 +316,7 @@ $('#event-div').on('click', '#validate-btn', function() {
 
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
-    $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+    // $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
 
     const parsedData = JSON.parse(data[0]);
     // Set classes on all attributes
