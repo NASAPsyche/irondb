@@ -96,7 +96,7 @@ $('#event-div').on('click', '#validate-btn', function() {
         $('#first-meteorite-header').addClass('add-meteorite');
         $('#first-add-measurement').addClass('add-measurement');
         $('#first-measurement').addClass('remove-inline');
-        
+
         $('#note-header').addClass('add-note');
         $('#first-note').addClass('remove-note');
       } else {
