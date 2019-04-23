@@ -41,7 +41,7 @@
 ======================================================================================================================
 """
 
-#Just don't touch anything okay.
+# Just don't touch anything okay.
 
 """
 nlp4metadata.py: Extracts metadata attributes from the text of a pdf using NLP
@@ -52,31 +52,32 @@ __version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
-import os, io, re, string, json, sys
+import sys, os, io, json, re, string
 import nltk
 from nltk.corpus import words
-from rake_nltk import Rake, Metric
+#from nltk.corpus import stopwords
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
-#from nltk.corpus import stopwords
+from rake_nltk import Rake, Metric
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 # global variables
-# path = os.path.abspath('pdfs') + '/'
-j = json.loads(sys.argv[1])
-fileName = j['fileName']
-paper = fileName
-path = '/usr/app/public/temp/'
-page_num_title = 1 #shouldn't be global, make it local
-page_num_authors = 1 #shouldn't be global, make it local
+path = os.path.abspath('pdfs') + '/'
+# j = json.loads(sys.argv[1])
+# fileName = j['fileName']
+# paper = fileName
+# path = '/usr/app/public/temp/'
+# page_num_title = 1 #shouldn't be global, make it local
+# page_num_authors = 1 #shouldn't be global, make it local
 
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger') # pos_tag dependency
-nltk.download('maxent_ne_chunker') # ne_chunk dependency
-nltk.download('words') # ne_chunk dependency
+# nltk.download('punkt')
+# nltk.download('averaged_perceptron_tagger') #pos_tag dependency
+# nltk.download('maxent_ne_chunker') #ne_chunk dependency
+# nltk.download('words') #ne_chunk dependency
+
 
 # retrieves raw text from any given pdf
 def convert_pdf_to_txt(path, pageNo=0):
@@ -303,34 +304,72 @@ def date_extract(pdf_name):
 def source_extract(pdf_name):
     page = convert_pdf_to_txt(path + pdf_name)
     relevant_text = page.split("Abstract")[0]
-    source_tagword = "Vol"
-    source = "Source not found."
+    source = ""
+    journal_tagword = "journal"
+    volume_tagword = " vol "
+    issue_tagword = " no "
 
     ######################################################################
     #OPTIMIZE: Pull out journal names from online catalogue and find match
     ######################################################################
     for line in relevant_text.split('\n\n'):
-        if ((source_tagword in line) or (source_tagword.lower() in line) or
-            ("Acta"in line) or ("acta"in line)):
+        if ((journal_tagword in line.lower())
+        	or (volume_tagword in line.lower().replace(".", ""))
+        	or (issue_tagword in line.lower().replace(".", ""))
+        	or ("acta" in line.lower())):
             source = line
 
-    if (("Copyright" in source) and 
-        (source_tagword not in source.split("Copyright")[1]) and 
-        (source_tagword.lower() not in source.split("Copyright")[1])):
+    if (("copyright" in source.lower()) and 
+        (volume_tagword not in source.lower().replace(".", "").split("copyright")[1])):
         source = source.split("Copyright")[0]
 
     return source
 
 
+def journal_extract(pdf_name):
+	source = source_extract(pdf_name)
+	journal = ""
 
-# paper = input("Enter name of paper with extension (.pdf): ")
-#print()
-#print("TITLE: " + title_extract(paper) + '\n')
-#print("AUTHOR(S): " + authors_extract(paper) + '\n')
-#print("SOURCE: " + source_extract(paper) + '\n')
-#print("DATE: " + date_extract(paper) + '\n')
+	if len(source) > 0:
+		segmented = source.split(",")
+		if len(segmented) > 1:
+			for phrase in segmented:
+				if phrase.replace(" ", "").isalpha():
+					journal = phrase
+		else:
+			for word in segmented[0].split():
+				if word.isalpha():
+					journal += " " + word
 
-attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
-			  'source': source_extract(paper), 'date': date_extract(paper)}
-attributes_json = json.dumps(attributes)
-print(attributes_json)
+		tagwords = [" vol ", " vol. ", " Vol ", " Vol. ", " no ", " no. ", " No ", " No. "]
+		for tag in tagwords:
+			journal = journal.split(tag)[0]
+		if journal.startswith(" "):
+			journal = journal[1:]
+		if journal.endswith(" "):
+			journal = journal[:-1]
+
+	return journal
+
+
+
+papers = ['Choietal_GCA_1995.pdf', 'Kracheretal_GCA_1980.pdf', 'Litasov2018_Article_TraceElementCompositionAndClas.pdf', 
+			'Malvinetal_GCA_1984.pdf', 'Ruzicka2014.pdf', 'RuzickaandHutson2010.pdf', 
+			'ScottandWasson_GCA_1976.pdf', 'Wasson_2004.pdf', 'Wasson_2010.pdf', 
+			'Wasson_GCA_2017.pdf', 'Wasson_Icarus_1970.pdf', 'WassonandChoe_GCA_2009.pdf', 
+			'WassonandChoi_2003.pdf', 'WassonandKallemeyn_GCA_2002.pdf', 'WassonandKimberlin_GCA_1967.pdf', 
+			'WassonandOuyang 1990.pdf', 'WassonandRichardson_GCA_2011.pdf', 'WassonandRubinandHassanzadeh_1990.pdf', 
+			'WassonandSchaudy_Icarus_1971.pdf', 'Wassonetal_GCA_2007.pdf']
+i = 2
+print()
+print("TITLE: " + title_extract(papers[i]) + '\n')
+print("AUTHOR(S): " + authors_extract(papers[i]) + '\n')
+print("JOURNAL: " + journal_extract(papers[i]) + '\n')
+#print("VOLUME: " + volume_extract(papers[i]) + '\n')
+#print("ISSUE: " + issue_extract(papers[i]) + '\n')
+print("DATE: " + date_extract(papers[i]) + '\n')
+
+# attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
+# 			  'source': source_extract(paper), 'date': date_extract(paper)}
+# attributes_json = json.dumps(attributes)
+# print(attributes_json)
