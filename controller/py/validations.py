@@ -23,14 +23,14 @@ data = json.loads(sys.argv[1])
 
 
 # checks if a periodic element is valid using an external catalogue
-def is_element(df_value):
-    el_list = []
-    for el in elements:
-        el_list.append(str(el.symbol))
-    for each_el in el_list:
-        if bool(re.search(r'\s' + each_el + '\s', " " + df_value + " ") and len(str(df_value)) < 10):
-            return True
-    return False
+def is_element(value):
+	el_list = []
+	for el in elements:
+		el_list.append(str(el.symbol))
+	if value in el_list:
+		return True
+
+	return False
 
 
 # validates all data staged for import into the database
@@ -104,7 +104,7 @@ def form_validate(form):
 
 		# validates single meteorite entries
 		if 'bodyName' in key or 'group' in key:
-			if any(word.isalpha() for word in form[key].split()):
+			if any(letter.isalpha() for letter in form[key]):
 				form[key] = "success"
 			else:
 				form[key] = "invalid"
@@ -156,7 +156,7 @@ def form_validate(form):
 
 									else:
 										if k2 == 'meteorite_name':
-											if any(word.isalpha() for word in v2.split()):
+											if any(letter.isalpha() for letter in v2):
 												cell[k2] = "success"
 											else:
 												cell[k2] = "invalid"
