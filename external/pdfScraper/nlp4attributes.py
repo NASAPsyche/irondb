@@ -272,36 +272,6 @@ def authors_extract(pdf_name):
     return authors_full
 
 
-# extracts publishing date from the pdf text using RegEx
-def date_extract(pdf_name):
-    page = convert_pdf_to_txt(path + pdf_name)
-    relevant_text = page.split("Abstract")[0].lower()
-    source = source_extract(pdf_name)
-    date = ""
-
-    if "publish" in relevant_text:
-        relevant_text = relevant_text.rsplit("publish", 1)[1]
-    elif "available" in relevant_text:
-        relevant_text = relevant_text.rsplit("available", 1)[1]
-    elif "accept" in relevant_text:
-        relevant_text = relevant_text.rsplit("accept", 1)[1]
-
-    date = re.search(r'[1-2][0-9]{3}', source)
-    if date != None:
-        while int(date.group()) < 1665:
-            source = source.replace(date.group(), "")
-            date = re.search(r'[1-2][0-9]{3}', source)
-    else:
-        date = re.search(r'[1-2][0-9]{3}', relevant_text)
-
-    if date != None:
-        date = date.group()
-    else:
-        date = ""
-
-    return date
-
-
 # extracts journal source from the pdf text using tagwords
 def source_extract(pdf_name):
     page = convert_pdf_to_txt(path + pdf_name)
@@ -386,6 +356,36 @@ def issue_extract(pdf_name):
                 issue = vol_regex[0]
 
     return issue
+
+
+# extracts publishing date from the pdf text using RegEx
+def date_extract(pdf_name):
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = page.split("Abstract")[0].lower()
+    source = source_extract(pdf_name)
+    date = ""
+
+    if "publish" in relevant_text:
+        relevant_text = relevant_text.rsplit("publish", 1)[1]
+    elif "available" in relevant_text:
+        relevant_text = relevant_text.rsplit("available", 1)[1]
+    elif "accept" in relevant_text:
+        relevant_text = relevant_text.rsplit("accept", 1)[1]
+
+    date = re.search(r'[1-2][0-9]{3}', source)
+    if date != None:
+        while int(date.group()) < 1665:
+            source = source.replace(date.group(), "")
+            date = re.search(r'[1-2][0-9]{3}', source)
+    else:
+        date = re.search(r'[1-2][0-9]{3}', relevant_text)
+
+    if date != None:
+        date = date.group()
+    else:
+        date = ""
+
+    return date
 
 
 
