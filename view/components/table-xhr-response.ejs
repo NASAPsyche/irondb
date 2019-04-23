@@ -1,46 +1,148 @@
-<div class="table-div mt-3">
-    <h4 class="table-label">Table</h4>
+<% try { %>
+    <% if (Results[0] !== '-1000') { %>
+        <% for (var r = 0; r < Results.length; r++) { %>
+            <% var currentObj = JSON.parse(Results[r]);%>
 
-    <% var rowCount  = Object.keys(Results[0]).length; %>
-    <% var columnCount = Object.keys(Results).length; %>
+            <% var rowCount  = Object.keys(currentObj.Table[0]).length; %>
+            <% var columnCount = Object.keys(currentObj.Table).length; %>
+            <% var keys = Object.keys(currentObj.Table); %>
 
-    <div class="embedded-values">
-        <!-- Emmbedding row and column lengths -->
-        <p class="row-count" hidden="true"><%= rowCount %></p>
-        <p class="col-count" hidden="true"><%= columnCount %></p>
-    </div>
-    
-    <table class="table table-sm table-responsive">
-        <tbody>
-            <!-- First row all analysis technique -->
+
+            <!-- Row Validation, checking that all rows are of same length -->
+            <% var isValid = false; %>
+            <% var countMismatchFound = false; %>
             <% for(var i = 0; i < columnCount; i++) { %>
-                <th>
-                    <select class="form-control">
-                        <option value="None">None</option>
-                        <% for(var k=0; k < Technique.length; k++) { %>
-                            <option value="<%= Technique[k].abbreviation%>"><%= Technique[k].abbreviation %></option> 
-                        <% } %>                   
-                    </select>
-                </th>
-            <% } %>
-
-
-
-
-            <!-- Data rows -->
-            <% for(let i=0; i < rowCount; i++) { %>
-                <tr>
-                <% for(let j=0; j < columnCount; j++) { %>
-                    <% if (Results[j][i] === null) { %>
-                        <th><input type="text" value=""></th>
-                    <% } else { %>
-                        <th><input type="text" value="<%= Results[j][i] %>"></th>
-                    <% } %>
+                <% var currentLength = Object.keys(currentObj.Table[keys[i]]).length; %>
+                <% if (currentLength !== rowCount) { %>
+                    <% countMismatchFound = true; %>
                 <% } %>
-                </tr>
-
             <% } %>
-        </tbody>
-    </table>
 
-</div>
+            <% if (countMismatchFound === false ) { %>
+                <% isValid = true; %>
+            <% } %>
+
+            <% if (isValid) { %>
+                <div class="table mt-5">
+                    <div class="row ml-2">
+                        <h5 class="table-label">Table <small>(Page <%= currentObj.pdf_page %>)</small>
+                            <i class="far fa-times-circle fa-lg remove-table text-danger" title="Press to remove this table."></i>
+                        </h5>
+                    </div>
+
+                    <div class="row page-row ml-2">
+                        <div class="form-group">
+                            <label>Page Number:
+                                <% if (currentObj.actual_page > 0) { %>
+                                    <input class="ml-2 pl-2 page-number" type="number" value="<%= currentObj.actual_page %>">
+                                <% } else { %>
+                                    <input class="ml-2 pl-2 page-number" type="number" value="" style="outline: 3px solid #FBDCD7">
+                                <% } %>
+                            </label>
+                        </div>
+                    </div>
+                    
+
+                    <div class="embedded-values">
+                        <!-- Emmbedding row and column lengths -->
+                        <p class="row-count" hidden="true"><%= rowCount %></p>
+                        <p class="col-count" hidden="true"><%= columnCount %></p>
+                    </div>
+
+                    <a class="btn btn-outline-danger mb-2 table-update-btn">Toggle Table Controls</a>
+                    
+                    <!-- Table control form -->
+                    <div aria-expanded="false" class="collapse">
+                        <div class="table-alert-target"></div>
+
+                        <div class="form-inline table-control-form">
+                            <label class="sr-only" for="command">Command</label>
+                            <select class="form-control my-1 mx-2 px-2 command" name="command">
+                                <option selected>Add/Del</option>
+                                <option value="add">Add</option>
+                                <option value="delete">Delete</option>
+                            </select>
+
+                            <label class="sr-only" for="type">Type</label>
+                            <select class="form-control my-1 mx-2 px-2 type" name="type">
+                                <option value="row" selected>Row</option>
+                                <option value="column">Column</option>
+                            </select>
+
+                            <label class="sr-only" for="row-number">Row Number</label>
+                            <select class="form-control my-1 mx-2 px-2 row-number" name="row-number">
+                                <option selected>Number</option>
+                                <% for(var i = 0; i <= rowCount; i++) { %>
+                                    <option value="<%= i%>"><%= i%></option>
+                                <% } %>
+                            </select>
+
+                            <label class="sr-only" for="col-number">Columne Number</label>
+                            <select class="form-control my-1 mx-2 px-2 col-number" name="col-number" hidden="true">
+                                <option selected>Number</option>
+                                <% for(var i = 0; i <= columnCount; i++) { %>
+                                    <option value="<%= i%>"><%= i%></option>
+                                <% } %>
+                            </select>
+                            
+                            <a class="btn btn-outline-danger mb-1 ml-2 table-control-update">Update</a>
+                        </div>
+                        <p><small>Add function adds row/column after selected column/row</small></p>
+                    </div>
+
+                    <table class="table table-sm table-responsive">
+                        <tbody>
+                            <!-- First row all analysis technique -->
+                            <% for(var i = 0; i < columnCount; i++) { %>
+                                <th>
+                                    <select class="form-control">
+                                        <option value="None">None</option>
+                                        <% for(var k=0; k < Technique.length; k++) { %>
+                                            <option value="<%= Technique[k].abbreviation%>"><%= Technique[k].abbreviation %></option> 
+                                        <% } %>                   
+                                    </select>
+                                </th>
+                            <% } %>
+
+
+                            <!-- Data rows -->
+                            <% for(let i=0; i < rowCount; i++) { %>
+                                <tr>
+                                <% for(let j=0; j < columnCount; j++) { %>
+                                    <% if (currentObj.Table[keys[j]][i] === null) { %>
+                                        <th><input type="text" value=""></th>
+                                    <% } else { %>
+                                        <th><input type="text" value="<%= currentObj.Table[keys[j]][i] %>"></th>
+                                    <% } %>
+                                <% } %>
+                                </tr>
+
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        <% } %>
+        
+    <% } else { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Warning: </strong>
+            Page selected has no tables present.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <% } %>
+<% } catch (err) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error: </strong>
+        <% if (Alert === 'auto') { %>
+            Failed to render table data. Please try the single page getter.
+        <% } else { %>
+            Failed to render table data.
+        <% } %>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %>

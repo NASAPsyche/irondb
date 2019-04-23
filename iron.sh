@@ -11,7 +11,7 @@
 
 # Displays a brief help message
 function show_short_help() {
-  helpString= helpString='Make sure Docker is running before performing any operations.
+  helpString='Make sure Docker is running before performing any operations.
 Common commands:
 
 Initial/Clean install
@@ -71,16 +71,18 @@ When exiting the attached shell, the containers will stop.
 Use -g instead to simulate an attached Shell.
 
 The order of the flags is not important. -lpae is the same as -aepl.
+
 --------------
 --------------
-Advanced Options: can be used with -l flag in chain ( e.g., ./iron.sh -lp ).
+Advanced Options: Can be used with -l flag in chain ( e.g., ./iron.sh -lp ).
 -g    Attach logs: Opens a live feed of the docker logs, CTRL+C to exit 
       logs. This simulates an attached shell, but will not close the servers 
       when exited.
 -a    Attach shell: When launching the containers, attach the shell to the
       Node server. CTRL+C to quit, this shuts down the server. This is for
       diagnostic purposes only and should not be used in production. Cannot
-      generate mock users if using this option.
+      generate mock users when using this option. Cannot backup or restore
+      database when using this option.
 -e    Reset environment: Install the local Node dependencies and runs tasks
       specified by Gulp.
 -p    Reset/populate database: This will DELETE the local database. When the
@@ -88,23 +90,21 @@ Advanced Options: can be used with -l flag in chain ( e.g., ./iron.sh -lp ).
       files ( ./model/db-init/*.sql ).
 -m    Mock users: Adds the mock users. Cannot be used with -a in chain.
       NOT for production.
+--------------
+Docker Operations: Always executed first when used in a chain.
 -c    Clean Docker environment: Removes dangling containers and volumes to
       free up space. This is done automatically when launching the containers.
 -x    Reset Docker environment: A complete refresh of your Docker environment.
-      -x and -c are always executed first
 --------------
-Database operations: the containers must be running.
+Database Operations: The containers must be running.
 -b    Backup database: creates a backup of the current database
 -r    Restore database: restore the database from the most recent backup.
       For more advanced database manipulation, refer to Postgresql docs. 
 --------------
---------------
-Initial install
+Basic Commands
 -i    Initial/Clean install: If this is your first time, or you need to 
       rebuild your containers, then select this option. The containers will
       launch once they are built.
---------------
-
 -l    Launch containers: Launches the containers, by default the shell is 
       detached from the containers.
 -s    Stop containers: Stops the containers after executing all other
@@ -210,6 +210,29 @@ function set_creds ()
       fi
     fi
   done
+}
+
+function randomSecret() {
+  NEWSECRET=$(LC_CTYPE=C tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= < /dev/urandom | head -c 32 | xargs)
+  SECRETPLACEHOLDER="%%SECRET%%"
+  MYENV="$(uname -s)"
+  LINUXENV="Linux"
+  MACENV="Darwin"
+
+  if [ -f "./controller/app.js" ]; then
+    rm -f ./controller/app.js
+  fi 
+
+  if [[ "$MYENV" == "$MACENV"  ]] ; then
+    cp ./docker/template/app.js  ./controller/app.js 
+    sed -i '' -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./controller/app.js
+    break
+  elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
+    cp ./docker/template/app.js  ./controller/app.js 
+    sed -i -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./controller/app.js
+    break
+  fi
+
 }
 
 # Install the global dependencies
@@ -356,6 +379,15 @@ function restore_recent ()
 # if a chain of parameters. only wait once to check if containers are started
 hasWaited=false
 # Wait for containers to be available
+# This function is a workaround for maximizing portability. The cleaner solution would be
+# to use a psql client to make calls to the psql server to check for health.
+# However, not all environments will have a psql client installed and adding it as a dependency
+# is not justifiable since there are workarounds. Instead, we will parse the docker-compose logs
+# and look for key phrases that indicate if there are complications during postgres startup
+# that are likely to cause a delay. This relies on 1) the docker logs having reliable output
+# and 2) on using preset sleep intervals to mimic checking the health directly.
+# TODO: Implement a cleaner solution that doesn't rely on arbitrary wait times while still
+# maintaining maximum portability.
 function wait_for_containers ()
 {
   echo " "
@@ -656,6 +688,7 @@ fi
 
 if [[ "$initInstall" = true ]] ; then
   set_creds
+  randomSecret
   stop_containers
   install_global_deps
   install_node_deps

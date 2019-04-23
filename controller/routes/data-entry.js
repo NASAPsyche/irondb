@@ -5,6 +5,8 @@ const {isLoggedIn} = require('../middleware/auth');
 const createError = require('http-errors');
 const formidable = require('formidable');
 const path = require('path');
+const {PythonShell} = require('python-shell');
+const sPath = path.join(__dirname, ('../../external/pdfScraper'));
 const fs = require('fs');
 
 // Mounting Routers
@@ -13,6 +15,15 @@ router.use('/approve', approvalRouter);
 
 const insertRouter = require('./data-entry/insert');
 router.use('/insert', insertRouter);
+
+const updateRouter = require('./data-entry/update');
+router.use('/insert/update', updateRouter);
+
+const editRouter = require('./data-entry/edit');
+router.use('/edit', editRouter);
+
+const deleteRouter = require('./data-entry/delete');
+router.use('/delete', deleteRouter);
 
 const resumeRouter = require('./data-entry/resume');
 router.use('/resume', resumeRouter);
@@ -26,7 +37,7 @@ router.use('/tool', toolRouter);
 
 // Routes
 router.get('/', isLoggedIn, function(req, res, next) {
-  res.render('data-entry');
+  res.render('data-entry', {Alert: '', AlertType: ''});
 });
 
 router.post('/', isLoggedIn, async function(req, res, next) {
@@ -63,24 +74,67 @@ router.post('/', isLoggedIn, async function(req, res, next) {
             );
           }
           fs.rename(oldpath, newpath, async function(err) {
-            if (err) next(createError(500));
-            req.session.fileName = newpath.slice(21);
-            let resObj = [];
-            try {
-              const Elements = db.aQuery(
-                  'SELECT symbol FROM element_symbols', []);
-              const Technique = db.aQuery(
-                  'SELECT abbreviation FROM analysis_techniques', []);
-              resObj = await Promise.all([Elements, Technique]);
-            } catch (err) {
+            if (err) {
               next(createError(500));
-            } finally {
-              res.render('tool', {
-                data: newpath.slice(15),
-                username: req.user.username,
-                Elements: resObj[0].rows,
-                Technique: resObj[1].rows,
-              });
+            } else {
+            // Get text and number of page
+              req.session.fileName = newpath.slice(21);
+              const options = {
+                mode: 'text',
+                // pythonPath: '../py',
+                pythonOptions: ['-u'], // get print results in real-time
+                scriptPath: sPath,
+                args: [JSON.stringify(req.session)],
+              };
+              PythonShell.run('pdf_num_pages.py',
+                  options, async function(err, result) {
+                    console.log(result);
+                    if (err || result[0] === '-1') {
+                      console.log(err);
+                      // Failed to read or error
+                      // Delete upload before alerting user
+                      fs.unlink(newpath, async (err) => {
+                        if (err) {
+                          console.log(err);
+                          res.render('data-entry', {Alert:
+                            `Uploaded pdf is Invalid. 
+                            Please try another pdf or use the manual editor.
+                            (Failed to delete upload)`,
+                          AlertType: 'error',
+                          });
+                        } else {
+                          res.render('data-entry', {Alert:
+                            `Uploaded pdf is Invalid. 
+                            Please try another pdf or use the manual editor.`,
+                          AlertType: 'error',
+                          });
+                        }
+                      });
+                    } else {
+                      req.session.textHolder = result;
+                      console.log(result);
+                      // get pages
+                      // Render checklitst template
+                      let resObj = [];
+                      try {
+                        const Elements = db.aQuery(
+                            'SELECT symbol FROM element_symbols', []);
+                        const Technique = db.aQuery(
+                            'SELECT abbreviation FROM analysis_techniques', []);
+                        resObj = await Promise.all([Elements, Technique]);
+                      } catch (err) {
+                        next(createError(500));
+                      } finally {
+                        res.render('tool', {
+                          data: newpath.slice(15),
+                          username: req.user.username,
+                          Elements: resObj[0].rows,
+                          Technique: resObj[1].rows,
+                          numOfPages: result[0],
+                        });
+                      }
+                    }
+                  });
             }
           });
         });

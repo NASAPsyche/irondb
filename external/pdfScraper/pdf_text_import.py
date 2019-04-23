@@ -17,17 +17,6 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
-# j = json.loads(sys.argv[1])
-# # fileName = j['fileName']
-# fileName = '/usr/app/controller/py/WassonandChoe_GCA_2009.pdf'
-# pageNum = int(j['pageNum'])
-# taskNum = int(j['taskNum'])
-# flipDir = int(j['flipDir'])
-# coordsLeft = j['coordsLeft']
-# coordsTop = j['coordsTop']
-# coordsWidth = j['coordsWidth']
-# coordsHeight = j['coordsHeight']
-
 
 # START This function imports raw text import from a chosen pdf request.
 def convert_pdf_to_txt(path, pageNo=0):
@@ -56,11 +45,3 @@ def convert_pdf_to_txt_looper(path, total_pages):
         # print(individual_pages[check])
     return individual_pages
 # END This function puts each page of text in its own slot in an array of strings
-
-
-
-
-
-
-
-

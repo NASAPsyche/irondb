@@ -2,8 +2,11 @@
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
 
+
 // eslint-disable-next-line no-undef
 ElementsArr = Elements.slice(0, -1).split(',');
+
+
 // eslint-disable-next-line no-undef
 TechniqueArr = Technique.slice(0, -1).split(',');
 
@@ -11,47 +14,230 @@ TechniqueArr = Technique.slice(0, -1).split(',');
 /** ----------------------------- */
 /**         Tool Specific         */
 /** ----------------------------- */
-// Render pdf
+// Render pdf and set filename value on checklist hidden input
 $('document').ready(function() {
   const fp = $( '#filepath' ).attr('value');
   const panel = $( '#pdf-panel' );
   // eslint-disable-next-line
   PDFObject.embed(fp, panel);
+
+  // Set hidden input
+  $('#fileName-checklist').attr('value', $('#filepath').attr('value').slice(6));
 });
+
+
+// No extraction checkbox
+$( '#event-div' ).on( 'click', '#manual', function() {
+  if ($('#manual').prop('checked') === true) {
+    // on check of manual, uncheck all other checkboxes
+    $('#collapse').collapse('hide');
+    $( '#attributes' ).prop( 'checked', false ).prop('disabled', true);
+    $( '#allTables' ).prop( 'checked', false ).prop('disabled', true);
+    $( '#singleTable' ).prop( 'checked', false ).prop('disabled', true);
+  } else {
+    // on uncheck renable other checkboxes
+    $( '#attributes' ).prop('disabled', false);
+    $( '#allTables' ).prop('disabled', false);
+    $( '#singleTable' ).prop('disabled', false);
+  }
+});
+
+// On select of allTables unselect single table
+$( '#event-div' ).on( 'click', '#allTables', function() {
+  if ($('#allTables').prop('checked') === true) {
+    // if all tables uncheck single table and close collapse
+    $('#collapse').collapse('hide');
+    $( '#singleTable' ).prop( 'checked', false );
+  }
+});
+
+// On select of single tables unselect allTables
+$( '#event-div' ).on( 'click', '#singleTable', function() {
+  if ($('#singleTable').prop('checked') === true) {
+    // if single tables selected uncheck all tables
+    $( '#allTables' ).prop( 'checked', false );
+  }
+});
+
 
 // Submit checklist and replace with ui
 $( '#checklist-form' ).on( 'submit', function( event ) {
   event.preventDefault();
-  // eslint-disable-next-line no-invalid-this
-  $.post('/data-entry/tool/', $(this).serialize(), function( data ) {
-    // Remove checklist and replace with ui panel
-    $('#secondary-panel').replaceWith( data );
-    $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
-  });
+
+  // JSON of checklist inputs
+  const formData = $('#checklist-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    postData[formData[i].name] = formData[i].value;
+  }
+
+  if (
+    postData.hasOwnProperty('attributes') ||
+    postData.hasOwnProperty('allTables') ||
+    postData.hasOwnProperty('singleTable') ||
+    postData.hasOwnProperty('manual')
+  ) {
+    // eslint-disable-next-line no-invalid-this
+    $.post('/data-entry/tool/', postData, function( data ) {
+      // Remove checklist and replace with ui panel
+      $('#secondary-panel').replaceWith( data );
+      $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
+
+      if (postData.hasOwnProperty('attributes')
+      && postData.attributes === 'on') {
+        $.post('/data-entry/tool/attributes', postData, function(data) {
+          $('#attributes-target').replaceWith(data);
+        });
+      }
+
+      if (postData.hasOwnProperty('singleTable')
+          && postData.singleTable === 'on') {
+        $.post('/data-entry/tool/onePageTables', postData, function(data) {
+          $('#table-target').append(data);
+          $('#table-loader').remove();
+        });
+      }
+
+      if (postData.hasOwnProperty('allTables')
+          && postData.allTables === 'on') {
+        $.post('/data-entry/tool/allPagesTables', postData, function(data) {
+          $('#table-target').append(data);
+          $('#table-loader').remove();
+        });
+      }
+    });
+  } else {
+    // No checkbox selected
+    const alertMessage = `
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Error: </strong>
+      Please upload pdf before attempting to use tool with pdf.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>`;
+
+    $('#alert-target').replaceWith(alertMessage);
+  }
 });
 
-// Table button ajax post
-$( '#event-div' ).on('submit', '#single-page-form', function( event ) {
-  event.preventDefault();
 
-  $('#modal-table').prop('disabled', true);
+// Table button ajax post
+$( '#table-div' ).on('submit', '#single-page-form', function( event ) {
+  event.preventDefault();
+  $('#get-btn').prop('disabled', true);
   // eslint-disable-next-line no-invalid-this
   $.post('/data-entry/tool/onePageTables',
       $(this).serialize(), function( data ) {
         $('#table-target').append(data);
-        $('#tableModal').modal('hide');
-        $('#modal-table').prop('disabled', false);
+        showEditor();
+        $('#get-btn').prop('disabled', false);
       });
 });
 
+// remove inline style on change
+$('#event-div').on('change', 'input.page-number', function() {
+  $(this).removeAttr('style');
+});
+
+// Remove Table X-Button
+$('#event-div').on('click', 'i.remove-table', function() {
+  // remove closest div.table
+  $(this).closest('div.table').remove();
+});
+
+// Table control toggle collapsed form
+$('#event-div').on('click', 'a.table-update-btn', function() {
+  // Toggle confirmation visibility
+  $(this).siblings('div.collapse').collapse('toggle');
+});
+
+// On select of col/row show associated number select
+$('#event-div').on('change', 'select.type', function() {
+  if ($(this).val() === 'row') {
+    $(this).siblings('select.row-number').prop('hidden', false);
+    $(this).siblings('select.col-number').prop('hidden', true);
+  } else if ($(this).val() === 'column') {
+    $(this).siblings('select.row-number').prop('hidden', true);
+    $(this).siblings('select.col-number').prop('hidden', false);
+  }
+});
+
+/* eslint-disable max-len*/
+const tableAlertTemplate = `<div 
+class="alert alert-danger alert-dismissible fade show" role="alert">
+<strong>Warning: </strong>
+Cannot delete <%= type %> 0.
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>`;
+/* eslint-enable max-len*/
+
+// Call function for table control form
+$('#event-div').on('click', 'a.table-control-update', function() {
+  // Remove any previous alerts
+  $(this).parent().siblings('div.table-alert-target').empty();
+
+  // Collect options
+  const options = {};
+  options.command = $(this).siblings('select.command').val();
+  options.type = $(this).siblings('select.type').val();
+  const table = $(this).closest('div.collapse').siblings('table');
+
+  // Execute specified command
+  if (options.type === 'row') {
+    const select = $(this).siblings('select.row-number');
+    options.number = select.val();
+
+    if ( options.command === 'add' ) {
+      addRow(table, options.number, select);
+    } else if ( options.command === 'delete' ) {
+      if (options.number !== '0') {
+        deleteRow(table, options.number, select);
+      } else {
+        // eslint-disable-next-line
+        const tableAlert = ejs.render(tableAlertTemplate, {type: options.type});
+        $(this).parent().siblings('div.table-alert-target').html(tableAlert);
+      }
+    }
+  } else if (options.type === 'column') {
+    const select = $(this).siblings('select.col-number');
+    options.number = select.val();
+    if ( options.command === 'add' ) {
+      addColumn(table, options.number, select);
+    } else if ( options.command === 'delete' ) {
+      if (options.number !== '0') {
+        deleteColumn(table, options.number, select);
+      } else {
+        // eslint-disable-next-line
+        const tableAlert = ejs.render(tableAlertTemplate, {type: options.type});
+        $(this).parent().siblings('div.table-alert-target').html(tableAlert);
+      }
+    }
+  }
+  console.log(options);
+});
+
+// Single Table Form Button
+$('#event-div').on('click', '#tableToggle', function() {
+  hideEditor();
+});
+
+
+// Cancel Button
+$('#table-div').on('click', '#cancel-btn', function() {
+  showEditor();
+});
+
+// Validation button
 $('#event-div').on('click', '#validate-btn', function() {
   if ($('#table-data-input').length) {
     // serialize all tables
     const tables = [];
-    const tableObjects = $('#table-target').children('div.table-div');
+    const tableObjects = $('#table-target').children('div.table');
     $.each( tableObjects, function(tableIndex, table) {
-      const rows = $(table).children('table').children('tbody').children();
-      tables.push(serializeTable(rows));
+      tables.push(serializeTable(table));
     });
     $('#table-data-input').attr('value', JSON.stringify(tables));
   }
@@ -64,57 +250,220 @@ $('#event-div').on('click', '#validate-btn', function() {
       !formData[i].name.includes('convertedMeasurement') &&
       !formData[i].name.includes('sigfig')
     ) {
-      postData[formData[i].name] = formData[i].value;
+      if (formData[i].name.includes('primaryName') ||
+          formData[i].name.includes('firstName') ||
+          formData[i].name.includes('middleName') ||
+          formData[i].name.includes('bodyName')
+      ) {
+        const input = $('input[name="' + formData[i].name + '"]');
+        input.val(input.val().charAt(0).toUpperCase() + input.val().slice(1));
+        postData[formData[i].name.toString()] = input.val();
+      } else {
+        postData[formData[i].name.toString()] = formData[i].value;
+      }
     }
   }
 
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
-    console.log(data);
+    $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+    // console.log(data);
   });
 });
+
 
 $('#event-div').on('click', '#override-btn', function() {
   $('#submit-btn').prop('disabled', false);
 });
 
-
-$( '#event-div' ).on('click', 'button.table-edit', function() {
-  console.log('clicked edit');
-});
+/** ---------------------------- */
+/**    Functions Declarations    */
+/** ---------------------------- */
 
 /**
- * @param  {object} rows JQuery collection of rows
- * @return {json} json serialization of table
+ * @param  {object} table html element of given table div
+ * @return {json} json serialization of table xhr response div
  */
-function serializeTable(rows) {
-  // Serialize table
-  const tableData = {};
+function serializeTable(table) {
+  const rows = $(table).children('table').children('tbody').children();
+  const pageNumber = $(table).children('div.page-row')
+      .children('div').children('label').children('input').val();
+  const tableObj = {};
+
+  const cellData = [];
+  const techniqueColumns = [];
+  const elementColums = [];
+  const unitColumns = [];
+  const meteoriteRows = [];
+
   $.each( rows, function(rowIndex, value) {
     $.each( $(this).children(), function(columnIndex, value) {
-      if (tableData.hasOwnProperty(columnIndex.toString()) === false) {
-        tableData[columnIndex] = {};
-      }
-
-      if (rowIndex === 0) {
-        // Set cell equal to it's value or null if empty
-        tableData[columnIndex][rowIndex] = $(value)
+      if (columnIndex === 0) {
+        // meteorite name
+        meteoriteRows[rowIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      } else if (rowIndex === 0) {
+        // Analysis Technique
+        techniqueColumns[columnIndex] = $(value)
             .children('select').attr('value') === '' ? null : $(value)
                 .children('select').val();
-      } else {
-        // Set cell equal to it's value or null if empty
-        tableData[columnIndex][rowIndex] = $(value)
+      } else if (rowIndex === 1 && columnIndex !== 0) {
+        // Element
+        elementColums[columnIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      } else if (rowIndex === 2 && columnIndex !== 0) {
+        // Unit
+        unitColumns[columnIndex] = $(value)
             .children('input').attr('value') === '' ? null : $(value)
                 .children('input').val();
       }
     });
   });
-  return tableData;
+
+  // Add each cell with accompanying values to table array
+  let temp = {};
+  $.each( rows, function(rowIndex, value) {
+    $.each( $(this).children(), function(columnIndex, value) {
+      if (columnIndex > 0 && rowIndex > 2) {
+        // Fill temp with cells attributes
+        temp.analysis_technique = techniqueColumns[columnIndex];
+        temp.meteorite_name = meteoriteRows[rowIndex];
+        temp.element = elementColums[columnIndex];
+        temp.units = unitColumns[columnIndex];
+        if ($(value).children('input').attr('value').charAt(0) === '<') {
+          temp.less_than = true;
+          temp.measurement = $(value)
+              .children('input').attr('value').slice(1);
+        } else {
+          temp.less_than = false;
+          temp.measurement = $(value)
+              .children('input').attr('value') === '' ? null : $(value)
+                  .children('input').val();
+        }
+        temp.column = columnIndex;
+        temp.row = rowIndex;
+
+        // Push and reset temp
+        cellData.push(temp);
+        temp = {};
+      }
+    });
+  });
+
+  tableObj.page_number = pageNumber;
+  tableObj.cells = cellData;
+  return tableObj;
 }
 
-/** ---------------------------- */
-/**    Functions Declarations    */
-/** ---------------------------- */
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function addRow(table, num, select) {
+  // Add row after selected row
+  const target = table.children('tbody').children('tr').eq(num);
+  let rowStr = '<tr>';
+  for ( let i = 0; i < target.children().length; i++ ) {
+    rowStr += '<th><input type="text"></th>';
+  }
+  rowStr += '</tr>';
+  target.after(rowStr);
+
+  // Update select
+  const count = parseInt(select.children('option').last().val()) + 1;
+  select.append('<option value="'+ count +'">'+ count +'</option>');
+}
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function deleteRow(table, num, select) {
+  // Remove specified row
+  table.children('tbody').children('tr').eq(num).remove();
+  // Update select
+  select.children('option').last().remove();
+}
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function addColumn(table, num, select) {
+  /* eslint-disable max-len*/
+  const techniqueSelectTemplate = `<th>
+  <select class="form-control">
+      <option value="None">None</option>
+      <% for(var k=0; k < Technique.length; k++) { %>
+          <option value="<%= Technique[k] %>"><%= Technique[k] %></option> 
+      <% } %>                   
+  </select>
+  </th>`;
+  /* eslint-enable max-len*/
+
+  // Render technique select
+  // eslint-disable-next-line
+  const techniqueSelect = ejs.render(techniqueSelectTemplate, {Technique: TechniqueArr});
+
+  // Add column after specified column
+  const rows = table.children('tbody').children('tr');
+  for (let i = 0; i <= rows.length; i++) {
+    if (i === 0) {
+      if ((num - 1) === -1) {
+        rows.eq(i).children().eq(num).before(techniqueSelect);
+      } else {
+        rows.eq(i).children().eq(num - 1).after(techniqueSelect);
+      }
+    } else {
+      if ((num - 1) === -1) {
+        rows.eq(i).children()
+            .eq(num).before('<th><input type="text"></th>');
+      } else {
+        rows.eq(i).children().eq(num - 1).after('<th><input type="text"></th>');
+      }
+    }
+  }
+
+  // Update select
+  const count = parseInt(select.children('option').last().val()) + 1;
+  select.append('<option value="'+ count +'">'+ count +'</option>');
+}
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function deleteColumn(table, num, select) {
+  // Remove specified column
+  const rows = table.children('tbody').children('tr');
+  for (let i = 0; i <= rows.length; i++) {
+    rows.eq(i).children().eq(num - 1).remove();
+  }
+  // Update select
+  select.children('option').last().remove();
+}
+
+/**
+ * @description Hides Editor to visible and Toggles signle table form to visible
+ */
+function hideEditor() {
+  $('#event-div').prop('hidden', true);
+  $('#table-div').prop('hidden', false);
+}
+
+/**
+ * @description Toggles Editor to visible and hides single table form
+ */
+function showEditor() {
+  $('#event-div').prop('hidden', false);
+  $('#table-div').prop('hidden', true);
+}
 
 
 /**
@@ -165,7 +514,7 @@ const authorTemplate = `
 <div class="form-group col-md-3">
   <label for="<%- middleNameID %>">Middle Name</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
-  name="<%- middleNameID %>">
+  name="<%- middleNameID %>" placeholder="optional">
 </div>
 </div>
 `;
@@ -673,14 +1022,15 @@ $( '#event-div' ).on('submit', '#insert-form', function(event) {
 
   // Submit if checks pass
   if (allValid === true) {
-    // serialize all tables
-    const tables = [];
-    const tableObjects = $('#table-target').children('div.table-div');
-    $.each( tableObjects, function(tableIndex, table) {
-      const rows = $(table).children('table').children('tbody').children();
-      tables.push(serializeTable(rows));
-    });
-    $('#table-data-input').attr('value', JSON.stringify(tables));
+    if ($('#table-data-input').length) {
+      // serialize all tables
+      const tables = [];
+      const tableObjects = $('#table-target').children('div.table');
+      $.each( tableObjects, function(tableIndex, table) {
+        tables.push(serializeTable(table));
+      });
+      $('#table-data-input').attr('value', JSON.stringify(tables));
+    }
 
     return; // submit
   } else {

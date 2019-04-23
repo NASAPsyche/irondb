@@ -10,40 +10,16 @@ __date__ = "11/7/18"
 
 import PyPDF2
 from tabula import read_pdf
-import re
-import sys
 from copy import deepcopy
-import json
+import sys, json
 import pdf_text_import as pti
 import table_cleaner as tc
 import table_page_finder as tpf
 
-pdf = ["pdfs/WassonandRichardson_GCA_2011.pdf",
-       "pdfs/WassonandChoe_GCA_2009.pdf",
-       "pdfs/Wasson_GCA_2017.pdf",
-       "pdfs/WassonandChoi_2003.pdf",
-       "pdfs/Litasov2018_Article_TraceElementCompositionAndClas.pdf",
-       "pdfs/Wasson_2010.pdf",
-       "pdfs/Wasson_2004.pdf",
-       "pdfs/Wassonetal_GCA_2007.pdf",
-       "pdfs/Ruzicka2014.pdf",
-       "pdfs/WassonandKallemeyn_GCA_2002.pdf",
-       "pdfs/RuzickaandHutson2010.pdf"]
 
-fileName = pdf[9]
-# print(fileName)
-
-# j = json.loads(sys.argv[1])
-# fileName = j['fileName']
-# fileName = '/usr/app/controller/py/WassonandChoe_GCA_2009.pdf'
-# pageNum = int(j['pageNum'])
-# taskNum = int(j['taskNum'])
-# flipDir = int(j['flipDir'])
-# coordsLeft = j['coordsLeft']
-# coordsTop = j['coordsTop']
-# coordsWidth = j['coordsWidth']
-# coordsHeight = j['coordsHeight']
-
+j = json.loads(sys.argv[1])
+fileName = j['fileName']
+fileName = '/usr/app/public/temp/' + fileName
 
 tables = []
 json_pages_confirmed = []
@@ -66,9 +42,6 @@ for page in range(len(json_pages)):
             tables.append(table)
             json_pages_confirmed.append(json_pages[page])
 
-
-# START Make sure tables exist on pages.
-# json_master_pages_with_tables_confirmed = confirm_tables_exist()
 
 # START Make a pristine copy of list of tables before mark up.
 tables_pristine = deepcopy(tables)
@@ -94,9 +67,11 @@ tc.empty_table_remover(tables, tables_pristine, json_pages_confirmed)
 # Put original values back in fields marked for removal by mistake
 tc.marked_field_clean_up(tables, tables_pristine)
 
-for ind in range(len(tables)):
-    tables[ind] = '{\"actual_page\":' + str(json_pages_confirmed[ind]["actual_page"]) \
-                  + ',\"pdf_page\": ' + str(json_pages_confirmed[ind]["pdf_page"]) \
-                  + ', \"Table\":' + tables[ind].to_json() + '}'
-    # print(tables[ind])
-print(tables)
+if len(tables) > 0:
+    for ind in range(len(tables)):
+        tables[ind] = '{\"actual_page\":' + str(json_pages_confirmed[ind]["actual_page"]) \
+                      + ',\"pdf_page\": ' + str(json_pages_confirmed[ind]["pdf_page"]) \
+                      + ', \"Table\":' + tables[ind].to_json() + '}'
+        print(tables[ind])
+else:
+    print("-1000")
