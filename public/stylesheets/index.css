@@ -19,6 +19,10 @@ h3 {
 	padding-right: auto;
 }
 
+p { 
+	font-size: 0.4rem;
+}
+
 #top-container {
 	border-top: 1px solid rgba(0, 0, 0, 50);
 	-webkit-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
