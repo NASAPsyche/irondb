@@ -78,40 +78,16 @@ $('#event-div').on('click', '#validate-btn', function() {
     });
 
     if (allValid) {
-      // Check if first time validating
-      if ($('#note0').prop('disabled')) {
-        // Enable rest of form
-        $('#bodyName0').prop('disabled', false);
-        $('#group0').prop('disabled', false);
-        $('#element0_0').prop('disabled', false);
-        $('#lessThan0_0').prop('disabled', false);
-        $('#measurement0_0').prop('disabled', false);
-        $('#deviation0_0').prop('disabled', false);
-        $('#units0_0').prop('disabled', false);
-        $('#technique0_0').prop('disabled', false);
-        $('#page0_0').prop('disabled', false);
-        $('#note0').prop('disabled', false);
-
-        // Add event binding classes
-        $('#first-meteorite').addClass('remove-meteorite');
-        $('#first-meteorite-header').addClass('add-meteorite');
-        $('#first-add-measurement').addClass('add-measurement');
-        $('#first-measurement').addClass('remove-inline');
-
-        $('#note-header').addClass('add-note');
-        $('#first-note').addClass('remove-note');
-      } else {
-        // If all valid enable submit
-        $('#submit-btn').prop('disabled', false);
-        // Alert all valid
-        // eslint-disable-next-line no-undef
-        const alert = ejs.render(validationWarningAlertTemplate, {
-          type: 'success',
-          messageTitle: 'Success:',
-          message: 'All inputs valid. Submission enabled.',
-        });
-        $('div.main-alert-target').html(alert);
-      }
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
     } else {
       // Alert in valid
       // eslint-disable-next-line no-undef
@@ -200,7 +176,7 @@ const authorTemplate = `
   required="true" placeholder="required">
 </div>
 <div class="form-group col-md-3">
-  <label for="<%- middleNameID %>">Middle Name</label>
+  <label for="<%- middleNameID %>">Middle Initial</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
   name="<%- middleNameID %>" placeholder="optional">
 </div>

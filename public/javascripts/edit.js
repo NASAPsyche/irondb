@@ -134,7 +134,7 @@ const authorInsertTemplate = `<div class="author-insert">
         <input type="text" class="form-control" id="<%= firstNameID %>" name="<%= firstNameID %>" required="true" placeholder="required"> 
     </div>
     <div class="form-group col-md-3">
-        <label for="<%= middleNameID %>" >Middle Name</label>
+        <label for="<%= middleNameID %>" >Middle Initial</label>
         <input type="text" class="form-control" id="<%= middleNameID %>" name="<%= middleNameID %>" placeholder="optional"> 
     </div>
 </div>

@@ -86,6 +86,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
       // Disable validate button if not manual
       if (!postData.hasOwnProperty('manual')) {
         $('#validate-btn').prop('disabled', true);
+        $('#validate-tables-btn').prop('disabled', true);
       }
 
       let processCount = 0;
@@ -97,6 +98,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
           $('#attributes-target').replaceWith(data);
           if (processCount === 0) {
             $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
           }
         });
       }
@@ -106,15 +108,11 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
         processCount++;
         $.post('/data-entry/tool/onePageTables', postData, function(data) {
           processCount--;
-          $('#table-target').before(
-              `<p id="validation-msg">Please validate 
-              basic information before entering data.</p>`
-          );
           $('#table-target').append(data);
-          $('#table-target :input').prop('disabled', true);
           $('#table-loader').remove();
           if (processCount === 0) {
             $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
           }
         });
       }
@@ -124,15 +122,11 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
         processCount++;
         $.post('/data-entry/tool/allPagesTables', postData, function(data) {
           processCount--;
-          $('#table-target').before(
-              `<p id="validation-msg">Please validate 
-              basic information before entering data.</p>`
-          );
           $('#table-target').append(data);
-          $('#table-target :input').prop('disabled', true);
           $('#table-loader').remove();
           if (processCount === 0) {
             $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
           }
         });
       }
@@ -273,23 +267,16 @@ class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
 /* eslint-enable max-len*/
 
 
-// Set global flag
-let basicValidated = false;
-
 // Validation button
 $('#event-div').on('click', '#validate-btn', function() {
   if ($('#table-data-input').length) {
-    if (basicValidated === true) {
-      // serialize all tables
-      const tables = [];
-      const tableObjects = $('#table-target').children('div.table');
-      $.each( tableObjects, function(tableIndex, table) {
-        tables.push(serializeTable(table));
-      });
-      $('#table-data-input').attr('value', JSON.stringify(tables));
-    } else {
-      $('#table-data-input').attr('value', JSON.stringify([]));
-    }
+    // serialize all tables
+    const tables = [];
+    const tableObjects = $('#table-target').children('div.table');
+    $.each( tableObjects, function(tableIndex, table) {
+      tables.push(serializeTable(table));
+    });
+    $('#table-data-input').attr('value', JSON.stringify(tables));
   }
 
   const formData = $('#insert-form').serializeArray();
@@ -429,49 +416,177 @@ $('#event-div').on('click', '#validate-btn', function() {
 
     console.log(allValid);
     if (allValid) {
-      // Check if first time validating
-      if ($('#note0').prop('disabled')) {
-        if ($('#tableToggle').length) {
-          basicValidated = true;
-          $('#tableToggle').prop('disabled', false);
-          $('#table-target :input').prop('disabled', false);
-          $('#validation-msg').remove();
-        } else {
-          // Enable rest of form
-          $('#bodyName0').prop('disabled', false);
-          $('#group0').prop('disabled', false);
-          $('#element0_0').prop('disabled', false);
-          $('#lessThan0_0').prop('disabled', false);
-          $('#measurement0_0').prop('disabled', false);
-          $('#deviation0_0').prop('disabled', false);
-          $('#units0_0').prop('disabled', false);
-          $('#technique0_0').prop('disabled', false);
-          $('#page0_0').prop('disabled', false);
-
-          // Add event binding classes
-          $('#first-meteorite').addClass('remove-meteorite');
-          $('#first-meteorite-header').addClass('add-meteorite');
-          $('#first-add-measurement').addClass('add-measurement');
-          $('#first-measurement').addClass('remove-inline');
-        }
-
-        $('#note0').prop('disabled', false);
-        $('#note-header').addClass('add-note');
-        $('#first-note').addClass('remove-note');
-      } else {
-        // If all valid enable submit
-        $('#submit-btn').prop('disabled', false);
-        // Alert all valid
-        // eslint-disable-next-line no-undef
-        const alert = ejs.render(validationWarningAlertTemplate, {
-          type: 'success',
-          messageTitle: 'Success:',
-          message: 'All inputs valid. Submission enabled.',
-        });
-        $('div.main-alert-target').html(alert);
-      }
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
     } else {
-      // Alert in valid
+      // Alert invalid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
+});
+
+// Validation table button
+$('#event-div').on('click', '#validate-tables-btn', function() {
+  if ($('#table-data-input').length) {
+    // serialize all tables
+    const tables = [];
+    const tableObjects = $('#table-target').children('div.table');
+    $.each( tableObjects, function(tableIndex, table) {
+      tables.push(serializeTable(table));
+    });
+    $('#table-data-input').attr('value', JSON.stringify(tables));
+  }
+
+  const formData = $('#insert-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    if (
+      !formData[i].name.includes('convertedDeviation') &&
+      !formData[i].name.includes('convertedMeasurement') &&
+      !formData[i].name.includes('sigfig')
+    ) {
+      if (formData[i].name.includes('primaryName') ||
+          formData[i].name.includes('firstName') ||
+          formData[i].name.includes('middleName') ||
+          formData[i].name.includes('bodyName')
+      ) {
+        const input = $('input[name="' + formData[i].name + '"]');
+        input.val(input.val().charAt(0).toUpperCase() + input.val().slice(1));
+        postData[formData[i].name.toString()] = input.val();
+      } else {
+        postData[formData[i].name.toString()] = formData[i].value;
+      }
+    }
+  }
+
+  // Call Post Request for validation with all data
+  $.post('/data-entry/tool/validate', postData, function( data ) {
+    // $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+
+    const parsedData = JSON.parse(data[0]);
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      if ( entry[0] === 'tableData') {
+        // Parse table data
+        if (typeof entry[1] !== 'string') {
+          const tables = $('div.table');
+          for (let i = 0; i < entry[1].length; i++) {
+            // for each table parse feedback
+            const tableDiv = tables.eq(i);
+            const pageNumObj = tableDiv.children('div.page-row')
+                .children().children().children('input');
+            const rows = tableDiv.children('table')
+                .children('tbody').children();
+
+            if (entry[1][i]['page_number'] === 'invalid') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-invalid');
+              pageNumObj.attr('style', 'outline: 3px solid #FBDCD7');
+            } else if (entry[1][i]['page_number'] === 'success') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-valid');
+              pageNumObj.attr('style', 'outline: 2px solid #78BE20');
+            }
+
+            // Set analysis technique to valid
+            $(rows[0]).children().children('select').addClass('is-valid');
+
+            const elements = $(rows[1]).children().children('input');
+            const units = $(rows[2]).children().children('input');
+
+            // Check measurements
+            entry[1][i]['cells'].map(function(cell) {
+              const input = $(rows[cell.row]).children()
+                  .eq(cell.column).children('input');
+              const element = elements.eq(cell.column);
+              const unit = units.eq(cell.column);
+              const meteorite = $(rows[cell.row])
+                  .children().eq(0).children('input');
+
+
+              if (cell.measurement === 'invalid') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                input.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.measurement === 'success') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                input.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.element === 'invalid') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                element.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.element === 'success') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                element.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.units === 'invalid') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                unit.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.units === 'success') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                unit.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.meteorite_name === 'invalid') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                meteorite.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.meteorite_name === 'success') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                meteorite.attr('style', 'outline: 2px solid #78BE20');
+              }
+            });
+          }
+        }
+      }
+      // Do nothing for none tables
+    });
+
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid')) {
+        allValid = false;
+      }
+    });
+
+    console.log(allValid);
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert invalid
       // eslint-disable-next-line no-undef
       const alert = ejs.render(validationWarningAlertTemplate, {
         type: 'danger',
@@ -747,7 +862,7 @@ const authorTemplate = `
   required="true" placeholder="required">
 </div>
 <div class="form-group col-md-3">
-  <label for="<%- middleNameID %>">Middle Name</label>
+  <label for="<%- middleNameID %>">Middle Initial</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
   name="<%- middleNameID %>" placeholder="optional">
 </div>
