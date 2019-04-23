@@ -41,7 +41,7 @@
 ======================================================================================================================
 """
 
-#Just don't touch anything okay.
+# Just don't touch anything okay.
 
 """
 nlp4metadata.py: Extracts metadata attributes from the text of a pdf using NLP
@@ -52,20 +52,19 @@ __version__ = "2.3"
 __email__ = "hajar.boughoula@gmail.com"
 __date__ = "02/06/19"
 
-import os, io, re, string, json, sys
+import sys, os, io, json, re, string
 import nltk
 from nltk.corpus import words
-from rake_nltk import Rake, Metric
+#from nltk.corpus import stopwords
 #from nltk.tokenize import word_tokenize
 #rom nltk.tag import pos_tag
-#from nltk.corpus import stopwords
+from rake_nltk import Rake, Metric
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 # global variables
-# path = os.path.abspath('pdfs') + '/'
 j = json.loads(sys.argv[1])
 fileName = j['fileName']
 paper = fileName
@@ -77,6 +76,7 @@ nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger') # pos_tag dependency
 nltk.download('maxent_ne_chunker') # ne_chunk dependency
 nltk.download('words') # ne_chunk dependency
+
 
 # retrieves raw text from any given pdf
 def convert_pdf_to_txt(path, pageNo=0):
@@ -103,8 +103,6 @@ def convert_pdf_to_txt(path, pageNo=0):
 
 # stages the relevant parts of the pdf using NLTK sentence tokenization
 def stage_text(txt):
-    #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
-
     try:
         sentences = nltk.word_tokenize(txt)
     except LookupError:
@@ -274,11 +272,99 @@ def authors_extract(pdf_name):
     return authors_full
 
 
+# extracts journal source from the pdf text using tagwords
+def source_extract(pdf_name):
+    page = convert_pdf_to_txt(path + pdf_name)
+    relevant_text = page.split("Abstract")[0]
+    source = ""
+    journal_tagword = "journal"
+    volume_tagword = " vol "
+    issue_tagword = " no "
+
+    ######################################################################
+    #OPTIMIZE: Pull out journal names from online catalogue and find match
+    ######################################################################
+    for line in relevant_text.split('\n\n'):
+        if ((journal_tagword in line.lower())
+        	or (volume_tagword in line.lower().replace(".", ""))
+        	or (issue_tagword in line.lower().replace(".", ""))
+        	or ("acta" in line.lower())):
+            source = line
+
+    if (("copyright" in source.lower()) and 
+        (volume_tagword not in source.lower().replace(".", "").split("copyright")[1])):
+        source = source.split("Copyright")[0]
+
+    return source
+
+
+def journal_extract(pdf_name):
+	source = source_extract(pdf_name)
+	journal = ""
+
+	if len(source) > 0:
+		segmented = source.split(",")
+		if len(segmented) > 1:
+			for phrase in segmented:
+				if phrase.replace(" ", "").isalpha():
+					journal = phrase
+		else:
+			for word in segmented[0].split():
+				if word.isalpha():
+					journal += " " + word
+
+		tagwords = [" vol ", " vol. ", " Vol ", " Vol. ", " no ", " no. ", " No ", " No. "]
+		for tag in tagwords:
+			journal = journal.split(tag)[0]
+		if journal.startswith(" "):
+			journal = journal[1:]
+		if journal.endswith(" "):
+			journal = journal[:-1]
+
+	return journal
+
+
+def volume_extract(pdf_name):
+    source = source_extract(pdf_name).replace(",", "").replace(".", "")
+    journal = journal_extract(pdf_name).replace(",", "").replace(".", "")
+    volume = ""
+
+    if len(source) > 0:
+        tagwords = [" vol ", " vol. ", " Vol ", " Vol. "]
+        for tag in tagwords:
+            if tag in source:
+                vol_regex = re.findall(r'%s(\d+)' % tag, source, re.IGNORECASE)
+                volume = vol_regex[0]
+
+    if volume == "":
+        vol_num = source.split(journal)[1].split()[0]
+        if any(char.isdigit() for char in vol_num):
+            volume = vol_num
+
+    return volume
+
+
+def issue_extract(pdf_name):
+    source = source_extract(pdf_name).replace(",", "").replace(".", "")
+    issue = ""
+
+    if len(source) > 0:
+        tagwords = [" no ", " no. ", " No ", " No. "]
+        for tag in tagwords:
+            if tag in source:
+                vol_regex = re.findall(r'%s(\d+)' % tag, source, re.IGNORECASE)
+                issue = vol_regex[0]
+
+    return issue
+
+
 # extracts publishing date from the pdf text using RegEx
 def date_extract(pdf_name):
     page = convert_pdf_to_txt(path + pdf_name)
     relevant_text = page.split("Abstract")[0].lower()
     source = source_extract(pdf_name)
+    date = ""
+
     if "publish" in relevant_text:
         relevant_text = relevant_text.rsplit("publish", 1)[1]
     elif "available" in relevant_text:
@@ -286,51 +372,25 @@ def date_extract(pdf_name):
     elif "accept" in relevant_text:
         relevant_text = relevant_text.rsplit("accept", 1)[1]
 
-    date = re.search(r'[1-3][0-9]{3}', source)
-    while date != None and int(date.group()) < 1665: #make this check in the regex
-        date = re.search(r'[1-3][0-9]{3}', source.replace(date.group(), ""))
-    if date is None:
-        date = re.search(r'[1-3][0-9]{3}', relevant_text)
+    date = re.search(r'[1-2][0-9]{3}', source)
+    if date != None:
+        while int(date.group()) < 1665:
+            source = source.replace(date.group(), "")
+            date = re.search(r'[1-2][0-9]{3}', source)
+    else:
+        date = re.search(r'[1-2][0-9]{3}', relevant_text)
 
     if date != None:
-        return date.group()
+        date = date.group()
     else:
-        date = "Date not found."
-        return date
+        date = ""
+
+    return date
 
 
-# extracts journal source from the pdf text using tagwords
-def source_extract(pdf_name):
-    page = convert_pdf_to_txt(path + pdf_name)
-    relevant_text = page.split("Abstract")[0]
-    source_tagword = "Vol"
-    source = "Source not found."
-
-    ######################################################################
-    #OPTIMIZE: Pull out journal names from online catalogue and find match
-    ######################################################################
-    for line in relevant_text.split('\n\n'):
-        if ((source_tagword in line) or (source_tagword.lower() in line) or
-            ("Acta"in line) or ("acta"in line)):
-            source = line
-
-    if (("Copyright" in source) and 
-        (source_tagword not in source.split("Copyright")[1]) and 
-        (source_tagword.lower() not in source.split("Copyright")[1])):
-        source = source.split("Copyright")[0]
-
-    return source
-
-
-
-# paper = input("Enter name of paper with extension (.pdf): ")
-#print()
-#print("TITLE: " + title_extract(paper) + '\n')
-#print("AUTHOR(S): " + authors_extract(paper) + '\n')
-#print("SOURCE: " + source_extract(paper) + '\n')
-#print("DATE: " + date_extract(paper) + '\n')
 
 attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
-			  'source': source_extract(paper), 'date': date_extract(paper)}
+			  'journal_name': journal_extract(paper), 'volume': volume_extract(paper), 
+              'issue': issue_extract(paper), 'date': date_extract(paper)}
 attributes_json = json.dumps(attributes)
 print(attributes_json)
