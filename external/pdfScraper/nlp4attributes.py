@@ -352,6 +352,26 @@ def journal_extract(pdf_name):
 	return journal
 
 
+def volume_extract(pdf_name):
+    source = source_extract(pdf_name).replace(",", "").replace(".", "")
+    journal = journal_extract(pdf_name).replace(",", "").replace(".", "")
+    volume = ""
+
+    if len(source) > 0:
+        tagwords = [" vol ", " vol. ", " Vol ", " Vol. "]
+        for tag in tagwords:
+            if tag in source:
+                vol_regex = re.findall(r'%s(\d+)' % tag, source, re.IGNORECASE)
+                volume = vol_regex[0]
+
+    if volume == "":
+        vol_num = source.split(journal)[1].split()[0]
+        if any(char.isdigit() for char in vol_num):
+            volume = vol_num
+
+    return volume
+
+
 
 papers = ['Choietal_GCA_1995.pdf', 'Kracheretal_GCA_1980.pdf', 'Litasov2018_Article_TraceElementCompositionAndClas.pdf', 
 			'Malvinetal_GCA_1984.pdf', 'Ruzicka2014.pdf', 'RuzickaandHutson2010.pdf', 
@@ -365,7 +385,7 @@ print()
 print("TITLE: " + title_extract(papers[i]) + '\n')
 print("AUTHOR(S): " + authors_extract(papers[i]) + '\n')
 print("JOURNAL: " + journal_extract(papers[i]) + '\n')
-#print("VOLUME: " + volume_extract(papers[i]) + '\n')
+print("VOLUME: " + volume_extract(papers[i]) + '\n')
 #print("ISSUE: " + issue_extract(papers[i]) + '\n')
 print("DATE: " + date_extract(papers[i]) + '\n')
 
