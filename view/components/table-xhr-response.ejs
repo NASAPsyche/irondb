@@ -110,9 +110,9 @@
                                 <tr>
                                 <% for(let j=0; j < columnCount; j++) { %>
                                     <% if (currentObj.Table[keys[j]][i] === null) { %>
-                                        <th><input type="text" value=""></th>
+                                        <th><input class="table-input" type="text" value=""></th>
                                     <% } else { %>
-                                        <th><input type="text" value="<%= currentObj.Table[keys[j]][i] %>"></th>
+                                        <th><input class="table-input" type="text" value="<%- currentObj.Table[keys[j]][i] %>"></th>
                                     <% } %>
                                 <% } %>
                                 </tr>
