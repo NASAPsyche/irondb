@@ -65,7 +65,6 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 # global variables
-#path = os.path.abspath('pdfs') + '/'
 j = json.loads(sys.argv[1])
 fileName = j['fileName']
 paper = fileName
@@ -104,8 +103,6 @@ def convert_pdf_to_txt(path, pageNo=0):
 
 # stages the relevant parts of the pdf using NLTK sentence tokenization
 def stage_text(txt):
-    #tokenizer = tokenize.RegexpTokenizer(r'\w+|\S+')
-
     try:
         sentences = nltk.word_tokenize(txt)
     except LookupError:
@@ -280,6 +277,8 @@ def date_extract(pdf_name):
     page = convert_pdf_to_txt(path + pdf_name)
     relevant_text = page.split("Abstract")[0].lower()
     source = source_extract(pdf_name)
+    date = ""
+
     if "publish" in relevant_text:
         relevant_text = relevant_text.rsplit("publish", 1)[1]
     elif "available" in relevant_text:
@@ -287,17 +286,20 @@ def date_extract(pdf_name):
     elif "accept" in relevant_text:
         relevant_text = relevant_text.rsplit("accept", 1)[1]
 
-    date = re.search(r'[1-3][0-9]{3}', source)
-    while date != None and int(date.group()) < 1665: #make this check in the regex
-        date = re.search(r'[1-3][0-9]{3}', source.replace(date.group(), ""))
-    if date is None:
-        date = re.search(r'[1-3][0-9]{3}', relevant_text)
+    date = re.search(r'[1-2][0-9]{3}', source)
+    if date != None:
+        while int(date.group()) < 1665:
+            source = source.replace(date.group(), "")
+            date = re.search(r'[1-2][0-9]{3}', source)
+    else:
+        date = re.search(r'[1-2][0-9]{3}', relevant_text)
 
     if date != None:
-        return date.group()
+        date = date.group()
     else:
-        date = "Date not found."
-        return date
+        date = ""
+
+    return date
 
 
 # extracts journal source from the pdf text using tagwords
@@ -386,22 +388,6 @@ def issue_extract(pdf_name):
     return issue
 
 
-
-# papers = ['Choietal_GCA_1995.pdf', 'Kracheretal_GCA_1980.pdf', 'Litasov2018_Article_TraceElementCompositionAndClas.pdf', 
-# 			'Malvinetal_GCA_1984.pdf', 'Ruzicka2014.pdf', 'RuzickaandHutson2010.pdf', 
-# 			'ScottandWasson_GCA_1976.pdf', 'Wasson_2004.pdf', 'Wasson_2010.pdf', 
-# 			'Wasson_GCA_2017.pdf', 'Wasson_Icarus_1970.pdf', 'WassonandChoe_GCA_2009.pdf', 
-# 			'WassonandChoi_2003.pdf', 'WassonandKallemeyn_GCA_2002.pdf', 'WassonandKimberlin_GCA_1967.pdf', 
-# 			'WassonandOuyang 1990.pdf', 'WassonandRichardson_GCA_2011.pdf', 'WassonandRubinandHassanzadeh_1990.pdf', 
-# 			'WassonandSchaudy_Icarus_1971.pdf', 'Wassonetal_GCA_2007.pdf']
-# i = 2
-# print()
-# print("TITLE: " + title_extract(papers[i]) + '\n')
-# print("AUTHOR(S): " + authors_extract(papers[i]) + '\n')
-# print("JOURNAL: " + journal_extract(papers[i]) + '\n')
-# print("VOLUME: " + volume_extract(papers[i]) + '\n')
-# print("ISSUE: " + issue_extract(papers[i]) + '\n')
-# print("DATE: " + date_extract(papers[i]) + '\n')
 
 attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
 			  'journal_name': journal_extract(paper), 'volume': volume_extract(paper), 
