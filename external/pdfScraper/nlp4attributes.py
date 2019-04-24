@@ -65,20 +65,24 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 
 # global variables
-j = json.loads(sys.argv[1])
-fileName = j['fileName']
-paper = fileName
-path = '/usr/app/public/temp/'
-page_num_title = 1 #shouldn't be global, make it local
-page_num_authors = 1 #shouldn't be global, make it local
+path = os.path.abspath('pdfs') + '/'
+# j = json.loads(sys.argv[1])
+# fileName = j['fileName']
+# paper = fileName
+# path = '/usr/app/public/temp/'
+# page_num_title = 1 #shouldn't be global, make it local
+# page_num_authors = 1 #shouldn't be global, make it local
 
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger') # pos_tag dependency
-nltk.download('maxent_ne_chunker') # ne_chunk dependency
-nltk.download('words') # ne_chunk dependency
+# nltk.download('punkt')
+# nltk.download('averaged_perceptron_tagger') # pos_tag dependency
+# nltk.download('maxent_ne_chunker') # ne_chunk dependency
+# nltk.download('words') # ne_chunk dependency
 
 
 # retrieves raw text from any given pdf
+# *********************
+# DO CONCATENATION HERE
+# *********************
 def convert_pdf_to_txt(path, pageNo=0):
     text = ""
     rsrcmgr = PDFResourceManager()
@@ -277,6 +281,7 @@ def source_extract(pdf_name):
     page = convert_pdf_to_txt(path + pdf_name)
     relevant_text = page.split("Abstract")[0]
     source = ""
+    line_clean = ""
     journal_tagword = "journal"
     volume_tagword = " vol "
     issue_tagword = " no "
@@ -285,15 +290,21 @@ def source_extract(pdf_name):
     #OPTIMIZE: Pull out journal names from online catalogue and find match
     ######################################################################
     for line in relevant_text.split('\n\n'):
-        if ((journal_tagword in line.lower())
-        	or (volume_tagword in line.lower().replace(".", ""))
-        	or (issue_tagword in line.lower().replace(".", ""))
-        	or ("acta" in line.lower())):
-            source = line
+    	if (len(line.split()) > 1 and ((journal_tagword in line.lower()) 
+    		or (volume_tagword in line.lower().replace(".", "")) 
+    		or (issue_tagword in line.lower().replace(".", "")) 
+    		or ("acta" in line.lower()) or ("erde" in line.lower()))):
+    		for word in line.split():
+    			line_clean += word + " "
+    		source = line_clean
 
     if (("copyright" in source.lower()) and 
         (volume_tagword not in source.lower().replace(".", "").split("copyright")[1])):
         source = source.split("Copyright")[0]
+
+    # if source != "":
+    # 	for word in source.split():
+    # 		source_full += word + " "
 
     return source
 
@@ -311,9 +322,11 @@ def journal_extract(pdf_name):
 		else:
 			for word in segmented[0].split():
 				if word.isalpha():
-					journal += " " + word
+					journal += word + " "
 
-		tagwords = [" vol ", " vol. ", " Vol ", " Vol. ", " no ", " no. ", " No ", " No. "]
+		tagwords = [" vol ", " vol. ", " Vol ", " Vol. ", 
+					" no ", " no. ", " No ", " No. ", 
+					"published in", "Published in"]
 		for tag in tagwords:
 			journal = journal.split(tag)[0]
 		if journal.startswith(" "):
@@ -336,7 +349,7 @@ def volume_extract(pdf_name):
                 vol_regex = re.findall(r'%s(\d+)' % tag, source, re.IGNORECASE)
                 volume = vol_regex[0]
 
-    if volume == "":
+    if (volume == "") and (len(journal) > 0) and (journal in source):
         vol_num = source.split(journal)[1].split()[0]
         if any(char.isdigit() for char in vol_num):
             volume = vol_num
@@ -353,7 +366,8 @@ def issue_extract(pdf_name):
         for tag in tagwords:
             if tag in source:
                 vol_regex = re.findall(r'%s(\d+)' % tag, source, re.IGNORECASE)
-                issue = vol_regex[0]
+                if len(vol_regex) > 0:
+                	issue = vol_regex[0]
 
     return issue
 
@@ -374,7 +388,7 @@ def date_extract(pdf_name):
 
     date = re.search(r'[1-2][0-9]{3}', source)
     if date != None:
-        while int(date.group()) < 1665:
+        while 2222 < int(date.group()) < 1665:
             source = source.replace(date.group(), "")
             date = re.search(r'[1-2][0-9]{3}', source)
     else:
@@ -389,8 +403,25 @@ def date_extract(pdf_name):
 
 
 
-attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
-			  'journal_name': journal_extract(paper), 'volume': volume_extract(paper), 
-              'issue': issue_extract(paper), 'date': date_extract(paper)}
-attributes_json = json.dumps(attributes)
-print(attributes_json)
+papers = ['Choietal_GCA_1995.pdf', 'Kracheretal_GCA_1980.pdf', 'Litasov2018_Article_TraceElementCompositionAndClas.pdf', 
+			'Malvinetal_GCA_1984.pdf', 'Ruzicka2014.pdf', 'RuzickaandHutson2010.pdf', 
+			'ScottandWasson_GCA_1976.pdf', 'Wasson_2004.pdf', 'Wasson_2010.pdf', 
+			'Wasson_GCA_2017.pdf', 'Wasson_Icarus_1970.pdf', 'WassonandChoe_GCA_2009.pdf', 
+			'WassonandChoi_2003.pdf', 'WassonandKallemeyn_GCA_2002.pdf', 'WassonandKimberlin_GCA_1967.pdf', 
+			'WassonandOuyang 1990.pdf', 'WassonandRichardson_GCA_2011.pdf', 'WassonandRubinandHassanzadeh_1990.pdf', 
+			'WassonandSchaudy_Icarus_1971.pdf', 'Wassonetal_GCA_2007.pdf']
+
+for paper in papers:
+	print()
+	# print(paper + " TITLE: " + title_extract(papers[i]) + '\n')
+	# print(paper + " AUTHOR(S): " + authors_extract(papers[i]) + '\n')
+	print(paper + " JOURNAL: " + journal_extract(paper) + '\n')
+	print(paper + " VOLUME: " + volume_extract(paper) + '\n')
+	print(paper + " ISSUE: " + issue_extract(paper) + '\n')
+	print(paper + " DATE: " + date_extract(paper) + '\n')
+
+# attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
+# 			  'journal_name': journal_extract(paper), 'volume': volume_extract(paper), 
+#               'issue': issue_extract(paper), 'date': date_extract(paper)}
+# attributes_json = json.dumps(attributes)
+# print(attributes_json)
