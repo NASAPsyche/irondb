@@ -327,8 +327,11 @@ def journal_extract(pdf_name):
 		tagwords = [" vol ", " vol. ", " Vol ", " Vol. ", 
 					" no ", " no. ", " No ", " No. ", 
 					"published in", "Published in"]
-		for tag in tagwords:
+		for tag in tagwords[0:8]:
 			journal = journal.split(tag)[0]
+		for tag in tagwords[8:10]:
+			if tag in journal:
+				journal = journal.split(tag)[1]
 		if journal.startswith(" "):
 			journal = journal[1:]
 		if journal.endswith(" "):
@@ -388,7 +391,7 @@ def date_extract(pdf_name):
 
     date = re.search(r'[1-2][0-9]{3}', source)
     if date != None:
-        while 2222 < int(date.group()) < 1665:
+        while (int(date.group()) < 1665) or (int(date.group()) > 2222):
             source = source.replace(date.group(), "")
             date = re.search(r'[1-2][0-9]{3}', source)
     else:
@@ -413,8 +416,8 @@ papers = ['Choietal_GCA_1995.pdf', 'Kracheretal_GCA_1980.pdf', 'Litasov2018_Arti
 
 for paper in papers:
 	print()
-	# print(paper + " TITLE: " + title_extract(papers[i]) + '\n')
-	# print(paper + " AUTHOR(S): " + authors_extract(papers[i]) + '\n')
+	# print(paper + " TITLE: " + title_extract(paper) + '\n')
+	# print(paper + " AUTHOR(S): " + authors_extract(paper) + '\n')
 	print(paper + " JOURNAL: " + journal_extract(paper) + '\n')
 	print(paper + " VOLUME: " + volume_extract(paper) + '\n')
 	print(paper + " ISSUE: " + issue_extract(paper) + '\n')
