@@ -611,8 +611,8 @@ $('#event-div').on('change', 'input,textarea,select', function() {
     const alert = ejs.render(validationWarningAlertTemplate, {
       type: 'warning',
       messageTitle: 'Warning:',
-      message: `Valid data changed revalidation 
-      or override required before submission.`,
+      message: `Valid data changed, revalidation 
+      required before submission.`,
     });
     $('div.main-alert-target').html(alert);
   }
