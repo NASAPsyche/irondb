@@ -26,18 +26,18 @@
                 </div>
             </div>
 
-            <div class="col-sm-11 col-md-6" id="table-div" hidden="true">
+            <div class="col-sm-11 col-md-6  mt-5" id="table-div" hidden="true">
                 <div class="container-fluid pt-1 pb-1 px-0">
                     <div class="d-flex flex-row align-items-center justify-content-center">
-                        <div class="card text-center border-dark">
+                        <div class="card border-dark">
                             <div class="card-header bg-danger">
-                                <h3 class="card-title text-warning">Single Page Table(s) Getter</h3>
+                                <h3 class="card-title text-center text-warning">Single Page Table(s) Getter</h3>
                             </div>
             
                             <div class="card-body tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="insert" role="tabpanel" aria-labelledby="insert-tab">
-                                    <form method="POST" action="/data-entry/tool/tables" class=" align-top mx-auto" id="single-page-form">
-                                        <small>Select page of pdf to extract tables from.</small>
+                                <div class="tab-pane fade show active" id="table-tab" role="tabpanel" aria-labelledby="table-tab">
+                                    <form method="POST" action="/data-entry/tool/tables" class=" align-top" id="single-page-form">
+                                        <small>Select page number of the pdf to extract tables from.</small>
                                         <!-- This will remain hidden -->
                                         <div class="form-group">
                                             <label for="fileName" class="sr-only">filenam</label>
@@ -47,7 +47,7 @@
                                         <!-- This will be a drop down, I'll need some way of grabing the number of pages before rendering this -->
                                         <!-- currently giving you 1-20 -->
                                         <div class="form-group">
-                                            <label for="pageNum">Page Number <small><em><sup>*</sup>required</em></small></label>
+                                            <h5><strong><label for="pageNum">Page Number <small><em><sup>*</sup>required</em></small></label></strong></h5>
                                             <select class="form-control" name="pageNum" id="pageNum">
                                                 <% for (var i = 0; i < numOfPages; i++) { %>
                                                     <option value="<%= i + 1 %>"><%= i + 1 %></option>
@@ -56,7 +56,7 @@
                                         </div>
                                         <!-- Some form of directional input, probably just number -360 to 360 -->
                                         <div class="form-group">
-                                            <label for="flipDir">Flip Direction <small>(Degrees rotating clockwise)</small></label>
+                                            <h5><strong><label for="flipDir">Flip Direction <small>(Degrees rotating clockwise)</small></label></strong></h5>
                                             <select class="form-control" id="flipDir" name="flipDir">
                                                 <option value="0">0</option>
                                                 <option value="90">90</option>

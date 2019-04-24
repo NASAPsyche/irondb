@@ -48,6 +48,9 @@ $( '#event-div' ).on( 'click', '#allTables', function() {
     // if all tables uncheck single table and close collapse
     $('#collapse').collapse('hide');
     $( '#singleTable' ).prop( 'checked', false );
+    $( '#singleTable' ).prop('disabled', true);
+  } else {
+    $( '#singleTable' ).prop('disabled', false);
   }
 });
 
@@ -56,8 +59,25 @@ $( '#event-div' ).on( 'click', '#singleTable', function() {
   if ($('#singleTable').prop('checked') === true) {
     // if single tables selected uncheck all tables
     $( '#allTables' ).prop( 'checked', false );
+    $( '#allTables' ).prop('disabled', true);
+  } else {
+    $( '#allTables' ).prop('disabled', false);
   }
 });
+
+
+// On select of any
+$( '#event-div' ).on( 'click', 
+    '#attributes,#allTables, #singleTable', function() {
+      if ($('#attributes').prop('checked') === true ||
+      $('#allTables').prop('checked') === true ||
+      $('#singleTable').prop('checked') === true
+      ) {
+        $( '#manual' ).prop('disabled', true);
+      } else {
+        $( '#manual' ).prop('disabled', false);
+      }
+    });
 
 
 // Submit checklist and replace with ui
