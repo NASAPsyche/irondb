@@ -135,8 +135,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     // No checkbox selected
     const alertMessage = `
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <strong>Error: </strong>
-      Please upload pdf before attempting to use tool with pdf.
+      Please select one of the options before submitting checklist.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
