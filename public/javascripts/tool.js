@@ -65,9 +65,8 @@ $( '#event-div' ).on( 'click', '#singleTable', function() {
   }
 });
 
-
 // On select of any
-$( '#event-div' ).on( 'click', 
+$( '#event-div' ).on( 'click',
     '#attributes,#allTables, #singleTable', function() {
       if ($('#attributes').prop('checked') === true ||
       $('#allTables').prop('checked') === true ||
@@ -164,7 +163,6 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     $('#alert-target').replaceWith(alertMessage);
   }
 });
-
 
 // Table button ajax post
 $( '#table-div' ).on('submit', '#single-page-form', function( event ) {
@@ -266,6 +264,8 @@ $('#event-div').on('click', 'a.table-control-update', function() {
 // Single Table Form Button
 $('#event-div').on('click', '#tableToggle', function() {
   hideEditor();
+  // Scroll to top of window
+  window.scrollTo(0, 0);
 });
 
 
