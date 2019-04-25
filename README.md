@@ -24,11 +24,11 @@ To install follow the instructions for your operating sytem [here](https://docs.
 3. Docker
 
 #### To Run with Docker-Compose Automatic
-Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.
-1. `cd irondb` - change directory to root
-2. `./iron.sh` - Builds and launches the Docker Composition. Use `./iron.sh -h` for help.
-To install the servers and launch them `./iron.sh -i`
-To launch from previously built containers `./iron.sh -l`
+Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.  
+1. `cd irondb` - change directory to root  
+2. `./iron.sh` - Builds and launches the Docker Composition. Use `./iron.sh -h` for help  
+To install the servers and launch them `./iron.sh -i`  
+To launch from previously built containers `./iron.sh -l`  
 
 #### To Run with Docker-Compose Manual
 Prerequisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
