@@ -140,7 +140,7 @@ Notes: control-c to exit, then `docker-compose down` to gracefully stop images i
 ```
 
 ## Architecture Explanation
-The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data.
+The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data. Two docker containers comprise the execution environment. Server and scripts are ran in one container, while the database is run in another. The Iron Shell (iron.sh) provides a utility for running and managing the docker aspects of the project.
 
 ### **Model**: Defines the database and data representation. 
 #### **Main Files (db-init)**:
@@ -166,7 +166,7 @@ The Iron Meteorite Database implements a Model-View-Controller architecture leve
 Used to render views on the server with Bootstrap and JQuery used as the primary front-end tools. Each template has in view is used for the corresponding route. Components are used to break up commonly used code snippets as well as define template responses for AJAX calls.
 #### **Important notes**:
 - Bootstrap component used on all pages to provide access to bootstrap and it's dependencies. 
-- The public folder is very tied to the views:
+- The public folder is tied to the views in many ways:
 	- Each template has some added styles through css found in public/stylesheets.
 	- Front-end functionality written in JQuery found in the public/javascripts folder.
 	- public/images folder used to store static images used by the site.
@@ -187,7 +187,12 @@ Used to render views on the server with Bootstrap and JQuery used as the primary
 - **utils:** Functions used throughout the application
 - **app.js** The core of the application. Combines all routers defines the overall flow of requests into the server.
 
-
+### Other important libraries used in the application (for full list see package.json):
+[bcrypt](https://www.npmjs.com/package/bcrypt): For salting and hashing passwords. (app.js and auth routes such as register)
+[formidable](https://www.npmjs.com/package/formidable): For pdf upload. (Used exclusively in data-entry router)
+[json2csv](https://www.npmjs.com/package/json2csv): For converting serialized export data into downloadable csv. (Used in database router)
+[pdfobject](https://www.npmjs.com/package/pdfobject): For pdf display on the front-end. (Used in all template where a pdf is displayed)
+[python-shell](https://www.npmjs.com/package/python-shell): For managing the running of python scripts. (Used in tool routes)
 
 ## Testing
 
