@@ -69,8 +69,8 @@ Notes: control^c to exit, then `docker-compose down` to gracefully stop images i
 │ 	│ 
 │ 	├── template			# Templates for iron.sh
 │ 	│ 
-│ 	└── wait-for-it.sh 		# Script used in docker-compose to wait to start up 
-│ 					# server until database is ready
+│ 	└── wait-for-it.sh 		# Script used in docker-compose to wait for 
+│ 					# starting up the server until database is ready
 │
 │
 ├── external			# External python scripts for 
@@ -83,7 +83,7 @@ Notes: control^c to exit, then `docker-compose down` to gracefully stop images i
 ├── model				# Database init files
 │
 │
-├── controller			# Handles business logic and routing.
+├── controller			# Handles business logic and routing
 │	│
 │ 	├── db					# Database access layer
 │	│
@@ -95,38 +95,38 @@ Notes: control^c to exit, then `docker-compose down` to gracefully stop images i
 │	│
 │ 	├── utils				# Utility functions
 │ 	│ 
-│ 	└── app.js 				# Primary server file.
+│ 	└── app.js 				# Primary server file
 │ 
-├── public 				# Directory containing public static assets.
+├── public 				# Directory containing public static assets
 │	│
-│ 	├── images				# Directory containing image assets.
+│ 	├── images				# Directory containing image assets
 │	│
-│ 	├── temp				# Directory where pdfs written to.
+│ 	├── temp				# Directory where pdfs written to
 │	│
-│	├── javascripts			# Directory containing js assets. 
-│	│				# Target for bootstrap js dependencies.
+│	├── javascripts			# Directory containing js assets 
+│	│				# Target for bootstrap js dependencies
 │	│
 │	└── stylesheets			# Directory containing css assets. Target for bootstrap.css.
 │
-├──	views				# EJS templates.
+├──	views				# EJS templates
 │	│
-│	├── bootstrap			# Directory containing templates for bootstrap tags.
+│	├── bootstrap			# Directory containing templates for bootstrap tags
 │	│
-│	└── components			# EJS component template.
+│	└── components			# EJS component template
 │
-├── .dockerignore			# File defines files docker ignores.
+├── .dockerignore			# File defines files docker ignores
 │
-├── .eslintignore			# Eslint ignore rules.
+├── .eslintignore			# Eslint ignore rules
 │
-├── .eslintrc.json			# ESLinfr config gile.
+├── .eslintrc.json			# ESLinfr config file
 │
-├── .gitignore				# File defines files git ignore tracking. 
+├── .gitignore				# File defines files git ignore tracking 
 │
-├── README.md 				# Project read me file.
+├── README.md 				# Project readme file
 │
 ├── docker-compose.yml		# Controller for running containers
 │
-├── gulpfile.js 			# Gulp task script.
+├── gulpfile.js 			# Gulp task script
 │
 ├── iron.sh					# Controller for running containers
 │
