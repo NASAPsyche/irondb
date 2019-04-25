@@ -142,7 +142,7 @@ Notes: control-c to exit, then `docker-compose down` to gracefully stop images i
 ## Architecture Explanation
 The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data.
 
-### **Model**: Defines the database and way data is used. 
+### **Model**: Defines the database and data representation. 
 #### **Main Files (db-init)**:
 - 00-init.sql
 	- Creates database with owner for use in iron shell, allowing the shell script to set the postgres credentials during initialization.
@@ -174,6 +174,20 @@ Used to render views on the server with Bootstrap and JQuery used as the primary
 - Naming convention to name route, template, stylesheet, and public javascripts for a single page a similar, if not same, name.
 
 ### **Controller**: Coordinates all request and handling of data. 
+#### Components:
+- db: Database access layer, defines connection to postgres database using [node-postgres](node-postgres.com) and stores several of the core database transaction logic.
+    - **index.js** Instantiates the connection pool and exposes node-postgres query functions. Pool exported for direct client usage when executing database calls as transaction [see here](https://node-postgres.com/features/transactions) for example.
+    - **entry-parser.js** Parser for manual editor and tool without tables.
+    - **insert-entry.js** Module inserts entry from entry parser.
+    - **update-entry.js** Module takes an object with an array of database commands and runs the commands.
+- middleware:
+    - **auth.js** Defines middleware to protect routes with authentication using [passport.js](http://www.passportjs.org/)
+- **py:** Internal python scripts. Provides validations for editor.
+- **routes:** Each file defines a router with routes related to its name. In the case of data-entry and database some routers have been nested to be attached to their respective router before being attached to the root application.
+- **utils:** Functions used throughout the application
+- **app.js** The core of the application. Combines all routers defines the overall flow of requests into the server.
+
+
 
 ## Testing
 
