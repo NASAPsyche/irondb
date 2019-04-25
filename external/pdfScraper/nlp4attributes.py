@@ -80,9 +80,6 @@ path = os.path.abspath('pdfs') + '/'
 
 
 # retrieves raw text from any given pdf
-# *********************
-# DO CONCATENATION HERE
-# *********************
 def convert_pdf_to_txt(path, pageNo=0):
     text = ""
     rsrcmgr = PDFResourceManager()
@@ -128,7 +125,10 @@ def keyword_extract(pdf_name, below=" ", above=" ", pageNo=0):
     if below == " " and above == " ":
         relevant_text = page
     else:
-        relevant_text = (page.split(below)[1]).split(above)[0]
+    	if below in page:
+    		relevant_text = page.split(below)[1]
+    	if above in page:
+    		relevant_text = page.split(above)[0]
 
     r = Rake(ranking_metric=Metric.WORD_FREQUENCY)
     keywords = r.extract_keywords_from_text(relevant_text)
@@ -153,9 +153,13 @@ def truncated_title(pdf_name):
 
 # extracts full title from the first page of the pdf using RAKE and NLTK
 def title_extract(pdf_name):
-    title_full = "Title not found"
     page = convert_pdf_to_txt(path + pdf_name)
-    relevant_text = page.split("Abstract")[0].replace(source_extract(pdf_name), "")
+    title_full = ""
+    date = date_extract(pdf_name)
+    if "Abstract" in page:
+    	relevant_text = page.split("Abstract")[0].replace(source_extract(pdf_name), "")
+    else:
+    	relevant_text = page
     kywrd_tagword = " "
     if "introduction" in page.lower():
         kywrd_tagword = page[page.find("introduction")]
@@ -166,12 +170,16 @@ def title_extract(pdf_name):
     ##########################################################################
     #OPTIMIZE: Organize keywords list by most significant instead of frequency
     ##########################################################################
-    for tpl in keywords:
-        for kywrd in tpl[1].split():
-            for line in relevant_text.split('\n\n'):
-                if any(kywrd.lower()==wrd.lower() for wrd in line.split()):
-                    title_full = line
-                    return title_full #find a better way to  exit nested loops
+    if len(keywords) > 0:
+    	for tpl in keywords:
+    		for kywrd in tpl[1].split():
+    			for line in relevant_text.split('\n\n'):
+    				if ((1 < len(line.split()) < 20) and ("www." not in line.lower()) 
+    					and (date not in line) and (str(int(date)+1) not in line) 
+    					and (str(int(date)-1) not in line)):
+    					if any(kywrd.lower()==wrd.lower() for wrd in line.split()):
+    						title_full = line
+    						return title_full
 
     #pattern = "NOUN-PHRASE: {<DT><NNP><NN><NN><JJ><NN><IN><DT><NNP><NN>}"
     #chunkr = nltk.RegexpParser(pattern)
@@ -208,9 +216,12 @@ def truncated_authors(pdf_name):
 
 # extracts authors from the first page of the pdf using NLTK named entity recognition
 def authors_extract(pdf_name):
-    authors_full = ""
     page = convert_pdf_to_txt(path + pdf_name)
-    relevant_text = (page.split(title_extract(pdf_name))[1]).split("Abstract")[0]
+    relevant_text = ""
+    title = title_extract(pdf_name)
+    authors_full = ""
+    if (title != "") and (title in page):
+    	relevant_text = (page.split(title)[1]).split("Abstract")[0]
 
     tokenized = stage_text(relevant_text)
     tagged = nltk.pos_tag(tokenized)
@@ -238,9 +249,7 @@ def authors_extract(pdf_name):
                 	authors_full += relevant_text.split('\n\n')[line_index+1]
         line_index += 1
 
-    if authors_full == "":
-    	return "Author(s) not found."
-    else:
+    if authors_full != "":
         for element in authors_full:
             if element.isdigit() or element == "*":
                 authors_full = authors_full.replace(element, "")
@@ -252,7 +261,8 @@ def authors_extract(pdf_name):
         begin = 0
         end = 3
         for author in authors_full.split(','):
-        	superscripts += author[-1]
+        	if len(author) > 0:
+        		superscripts += author[-1]
         while end <= len(superscripts):
             if superscripts[begin:end].lower() in string.ascii_lowercase:
                 russian_authors = ""
@@ -281,10 +291,10 @@ def source_extract(pdf_name):
     page = convert_pdf_to_txt(path + pdf_name)
     relevant_text = page.split("Abstract")[0]
     source = ""
-    line_clean = ""
     journal_tagword = "journal"
     volume_tagword = " vol "
     issue_tagword = " no "
+    line_clean = ""
 
     ######################################################################
     #OPTIMIZE: Pull out journal names from online catalogue and find match
@@ -301,10 +311,6 @@ def source_extract(pdf_name):
     if (("copyright" in source.lower()) and 
         (volume_tagword not in source.lower().replace(".", "").split("copyright")[1])):
         source = source.split("Copyright")[0]
-
-    # if source != "":
-    # 	for word in source.split():
-    # 		source_full += word + " "
 
     return source
 
@@ -407,7 +413,7 @@ def date_extract(pdf_name):
 
 
 papers = ['Choietal_GCA_1995.pdf', 'Kracheretal_GCA_1980.pdf', 'Litasov2018_Article_TraceElementCompositionAndClas.pdf', 
-			'Malvinetal_GCA_1984.pdf', 'Ruzicka2014.pdf', 'RuzickaandHutson2010.pdf', 
+			'Malvinetal_GCA_1984.pdf', 'RuzickaandHutson2010.pdf', 
 			'ScottandWasson_GCA_1976.pdf', 'Wasson_2004.pdf', 'Wasson_2010.pdf', 
 			'Wasson_GCA_2017.pdf', 'Wasson_Icarus_1970.pdf', 'WassonandChoe_GCA_2009.pdf', 
 			'WassonandChoi_2003.pdf', 'WassonandKallemeyn_GCA_2002.pdf', 'WassonandKimberlin_GCA_1967.pdf', 
@@ -416,12 +422,15 @@ papers = ['Choietal_GCA_1995.pdf', 'Kracheretal_GCA_1980.pdf', 'Litasov2018_Arti
 
 for paper in papers:
 	print()
-	# print(paper + " TITLE: " + title_extract(paper) + '\n')
-	# print(paper + " AUTHOR(S): " + authors_extract(paper) + '\n')
+	print(paper + " TITLE: " + title_extract(paper) + '\n')
+	print(paper + " AUTHOR(S): " + authors_extract(paper) + '\n')
 	print(paper + " JOURNAL: " + journal_extract(paper) + '\n')
 	print(paper + " VOLUME: " + volume_extract(paper) + '\n')
 	print(paper + " ISSUE: " + issue_extract(paper) + '\n')
 	print(paper + " DATE: " + date_extract(paper) + '\n')
+
+# 'Ruzicka2014.pdf'
+# print(papers[4] + " AUTHOR(S): " + authors_extract(papers[4]) + '\n')
 
 # attributes = {'title': title_extract(paper), 'authors': authors_extract(paper), 
 # 			  'journal_name': journal_extract(paper), 'volume': volume_extract(paper), 
