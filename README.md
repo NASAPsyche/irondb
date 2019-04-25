@@ -16,45 +16,94 @@ To install Gulp run `npm install gulp-cli -g`
 * [Docker](https://www.docker.com/) - Container Engine
 To install follow the instructions for your given operating sytem [here](https://docs.docker.com/v17.12/install/). 
 
-## Structure
+## Architecture
 
 ```bash
+├── __test__			# Jest unit tests
+│
 ├── bin					# Scripts
 │	│
-│ 	└── www					# Server startup bash script.
+│ 	├── www					# Server startup bash script.
+│	│
+│	└── scss				# Bootstrap sass override file
 │
-├── docker					# Docker support files
+├── deployment			# Deployment documentation
+│
+├── docker				# Docker support files and mock user scripts
+│	│
+│ 	├── mock				# Mock user scripts
+│	│
+│ 	├── node				# Node image files
+│ 	│ 
+│ 	├── postgres			# Postgres database files
+│ 	│ 
+│ 	├── template			# Templates for iron.sh
+│ 	│ 
+│ 	└── wait-for-it.sh 		# Script used in docker-compose to wait to start up server until database is ready
+│
+│
+├── external			# External python scripts for natural language process and data extraction
+│	│
+│ 	├── anaconda 			# Python environment for external development
+│ 	│ 
+│ 	└── pdfScraper			# Python scripts for data extraction
+│
+├── model				# Database init files
+│
 │
 ├── controller			# Handles business logic and routing.
 │	│
-│ 	├── routes
-│ 	│ 	└── index.js 		# Index router - file defines logic for the "/" route.
+│ 	├── db					# Database access layer
+│	│
+│ 	├── middleware			# Middleware functions
 │ 	│ 
-│ 	└── app.js 			# Primary server file.
+│ 	├── py					# Internal python scripts
+│ 	│ 
+│ 	├── routes		 		# All website routes
+│	│
+│ 	├── utils				# Utility functions
+│ 	│ 
+│ 	└── app.js 				# Primary server file.
 │ 
-├── public 					# Directory containing public static assets.
+├── public 				# Directory containing public static assets.
+│	│
+│ 	├── images				# Directory containing image assests.
+│	│
+│ 	├── temp				# Directory where pdfs written to.
 │	│
 │	├── javascripts			# Directory containing js assests. Target for bootstrap js dependencies.
 │	│
 │	└── stylesheets			# Directory containing css assests. Target for bootstrap.css.
 │
-├──	views
+├──	views				# EJS templates.
 │	│
 │	├── bootstrap			# Directory containing templates for bootstrap tags.
 │	│
-│	└── index.ejs			# Example EJS template.
+│	└── components			# EJS component template.
 │
-├── .gitignore			# File defines files git ignore tracking.
+├── .dockerignore			# File defines files docker ignores.
 │
-├── gulpfile.js 		# Gulp task script.
+├── .eslintignore			# Eslint ignore rules.
 │
-├── iron.sh				# Controller for running containers
+├── .eslintrc.json			# ESLinfr config gile.
 │
-├── package.json		# NPM package manager project config.
+├── .gitignore				# File defines files git ignore tracking. 
 │
-└── README.md 			# Project documentation file.
+├── README.md 				# Project read me file.
+│
+├── docker-compose.yml		# Controller for running containers
+│
+├── gulpfile.js 			# Gulp task script.
+│
+├── iron.sh					# Controller for running containers
+│
+├── package-lock.json		# NPM tree structure
+│
+└── package.json			# NPM package manager project config
 ```
 
+## Architecture Explanation
+The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data.
 
 
 ## Install and run the project
@@ -107,11 +156,6 @@ ESLint is used to enforce style guides for Javascript. ESLint is currently set t
 To run ESLint on the entire project:
 `cd irondb`
 `npm run pretest`
-
-
-### Example Route Walkthrough
-[Tech Stack Walkthrough Playlist](https://www.youtube.com/playlist?list=PL9InapyRWXwmENss1Vw9GdUahwmh0o9nU) - 
-Playlist of videos demonstrating writing an example route with the project tech stack.
 
 
 Base project initialized using [Express Generator](https://expressjs.com/en/starter/generator.html).
