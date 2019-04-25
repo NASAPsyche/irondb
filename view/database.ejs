@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Iron Meteorite Database</title>
+    <%- include('components/favicon'); %>
     <%- include('components/font-awesome'); %>
     <%- include('bootstrap/css'); %>
     <link rel='stylesheet' href='/stylesheets/database.css' />
@@ -47,7 +48,7 @@
               <div class="col-md-2">
                 <label class="sr-only" for="group">group</label>
                 <select class="form-control" name="group">
-                  <option>Group</option>
+                  <option value="group">group</option>
                   <% for(var i=0; i < Groups.length; i++) { %>
                     <option value="<%= Groups[i].classification_group %>"><%= Groups[i].classification_group %></option>
                   <% } %>                
@@ -191,7 +192,7 @@
     </div>
 
 
-    <div class="container-fluid p-0" id="results">
+    <div class="container-fluid p-0 pb-5" id="results">
       <table class="table table-striped table-bordered table-hover ">
         <thead class="thead-dark">
           <tr>

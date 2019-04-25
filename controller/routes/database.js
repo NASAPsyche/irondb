@@ -63,7 +63,7 @@ router.post('/', async (req, res, next) => {
       currentQueryIndex++;
     }
 
-    if (req.body.group !== 'Group') {
+    if (req.body.group !== 'group') {
       argsArray.push(req.body.group);
       // eslint-disable-next-line max-len
       queryString += ('AND classification_group=$' + currentQueryIndex + ' ');
@@ -188,7 +188,7 @@ router.post('/', async (req, res, next) => {
       currentQueryIndex++;
     }
 
-    if (req.body.group !== 'Group') {
+    if (req.body.group !== 'group') {
       argsArray.push(req.body.group);
       // eslint-disable-next-line max-len
       queryString += ('AND classification_group=$' + currentQueryIndex + ' ');

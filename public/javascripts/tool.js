@@ -48,6 +48,9 @@ $( '#event-div' ).on( 'click', '#allTables', function() {
     // if all tables uncheck single table and close collapse
     $('#collapse').collapse('hide');
     $( '#singleTable' ).prop( 'checked', false );
+    $( '#singleTable' ).prop('disabled', true);
+  } else {
+    $( '#singleTable' ).prop('disabled', false);
   }
 });
 
@@ -56,8 +59,24 @@ $( '#event-div' ).on( 'click', '#singleTable', function() {
   if ($('#singleTable').prop('checked') === true) {
     // if single tables selected uncheck all tables
     $( '#allTables' ).prop( 'checked', false );
+    $( '#allTables' ).prop('disabled', true);
+  } else {
+    $( '#allTables' ).prop('disabled', false);
   }
 });
+
+// On select of any
+$( '#event-div' ).on( 'click',
+    '#attributes,#allTables, #singleTable', function() {
+      if ($('#attributes').prop('checked') === true ||
+      $('#allTables').prop('checked') === true ||
+      $('#singleTable').prop('checked') === true
+      ) {
+        $( '#manual' ).prop('disabled', true);
+      } else {
+        $( '#manual' ).prop('disabled', false);
+      }
+    });
 
 
 // Submit checklist and replace with ui
@@ -135,8 +154,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     // No checkbox selected
     const alertMessage = `
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <strong>Error: </strong>
-      Please upload pdf before attempting to use tool with pdf.
+      Please select one of the options before submitting checklist.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -145,7 +163,6 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     $('#alert-target').replaceWith(alertMessage);
   }
 });
-
 
 // Table button ajax post
 $( '#table-div' ).on('submit', '#single-page-form', function( event ) {
@@ -247,6 +264,8 @@ $('#event-div').on('click', 'a.table-control-update', function() {
 // Single Table Form Button
 $('#event-div').on('click', '#tableToggle', function() {
   hideEditor();
+  // Scroll to top of window
+  window.scrollTo(0, 0);
 });
 
 
@@ -611,8 +630,8 @@ $('#event-div').on('change', 'input,textarea,select', function() {
     const alert = ejs.render(validationWarningAlertTemplate, {
       type: 'warning',
       messageTitle: 'Warning:',
-      message: `Valid data changed revalidation 
-      or override required before submission.`,
+      message: `Valid data changed, revalidation 
+      required before submission.`,
     });
     $('div.main-alert-target').html(alert);
   }
