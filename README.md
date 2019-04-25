@@ -142,7 +142,7 @@ Notes: control-c to exit, then `docker-compose down` to gracefully stop images i
 ## Architecture Explanation
 The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data.
 
-#### **Model**: Defines the database and way data is used. 
+### **Model**: Defines the database and way data is used. 
 #### **Main Files (db-init)**:
 - 00-init.sql
 	- Creates database with owner for use in iron shell, allowing the shell script to set the postgres credentials during initialization.
@@ -161,6 +161,19 @@ The Iron Meteorite Database implements a Model-View-Controller architecture leve
 	- Mock data most useful for public facing front-end examples. (Database and database export pages primarily)
 	- Mock data missing tie to submission and therefore is not used for the data-entry flows or views shown on pages requiring authentication. (Features where data is tied directly to their submission)
 
+### **View**: Defines what the user sees. 
+#### EJS templating engine:
+Used to render views on the server with Bootstrap and JQuery used as the primary front-end tools. Each template has in view is used for the corresponding route. Components are used to break up commonly used code snippets as well as define template responses for AJAX calls.
+#### **Important notes**:
+- Bootstrap component used on all pages to provide access to bootstrap and it's dependencies. 
+- The public folder is very tied to the views:
+	- Each template has some added styles through css found in public/stylesheets.
+	- Front-end functionality written in JQuery found in the public/javascripts folder.
+	- public/images folder used to store static images used by the site.
+	- public/temp folder used to temporarily store pdf uploads while the data is being entered. (pdf deleted upon complete approval of the submission.)
+- Naming convention to name route, template, stylesheet, and public javascripts for a single page a similar, if not same, name.
+
+### **Controller**: Coordinates all request and handling of data. 
 
 ## Testing
 
