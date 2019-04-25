@@ -136,16 +136,16 @@ Notes: control^c to exit, then `docker-compose down` to gracefully stop images i
 ```
 
 ## Architectural Notes
-The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data. 
+The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. The app uses Bootstrap and JQuery front-end on top of EJS templates, the web server is built on Express and Node.js to handle requests, and Postgres Database stores all collected data. 
 
 ### **Docker**: Supporting files for the build of containers for running the server and database. 
-Two docker containers comprise the execution environment. Server and scripts are ran in one container, while the database is run in another. The Iron Shell (iron.sh) provides a utility for running and managing the docker aspects of the project. Repository files are copied into the server image and postgres image is initialized using the files in db-init of the model directory. (Note: docker-compose.yml in root of repository as well as iron.sh used to manage and run docker containers)
+Two docker containers comprise the execution environment. Server and scripts are run in one container, while the database is run in another. The Iron Shell (iron.sh) provides a utility for running and managing the docker aspects of the project. Repository files are copied into the server image and postgres image is initialized using the files in db-init of the model directory. (Note: docker-compose.yml in root of repository as well as iron.sh used to manage and run docker containers.)
 #### **Components**:
 - **mock:** Directory containing scripts used by iron.sh to add mock users to the application. This is necessary as password hashes are stored, not passwords.
 - **node:** Directory containing node image and accompanying build files.
 - **postgres:** Directory containing postgres image and accompanying build files.
 - **template:** Template files used when initializing for the first time with iron.sh. These files allow the shell script to provide the user with options to set parameters like the database username and password as well as dynamically generating the app secret.
-- **wait-for-it.sh** [Bash script](https://github.com/vishnubob/wait-for-it) used to stager the deployment of docker containers so the database is up and ready to accept connections before the server is started.
+- **wait-for-it.sh** [Bash script](https://github.com/vishnubob/wait-for-it) used to stage the deployment of docker containers so the database is up and ready to accept connections before the server is started.
 
 
 ### **Model**: Defines the database and data representation. 
@@ -154,23 +154,23 @@ Two docker containers comprise the execution environment. Server and scripts are
 	- Creates database with owner for use in iron shell, allowing the shell script to set the postgres credentials during initialization.
 - 01-init.sql
 	- Main file defining the tables of the database.
-	- For each main table (bodies, element_entries, papers, etc.) there is a status table with meta data about that table. 
-	- In action the submissions table is meant to tie the metadata together by submission for logical binding of all parts of a submission.
+	- For each main table (bodies, element_entries, papers, etc.) there is a status table with metadata about that table. 
+	- In action, the submissions table is meant to tie the metadata together by submission for logical binding of all parts of a submission.
 - 02-init.sql
 	- File defines database views used by the application to get data.
 	- **Audit required**, some views no longer in use.
 - 03-init.sql
 	- File defines and populates two tables: analysis_techniques and element_symbols.
-	- These tables are used to populate all UI select elements that represent element selection and technique selection.
+	- These tables are used to populate all UI selected elements that represent element selection and technique selection.
 
 - 99-init.sql
 	- File defines mock data.
 	- Mock data most useful for public facing front-end examples. (Database and database export pages primarily)
-	- Mock data missing tie to submission and therefore is not used for the data-entry flows or views shown on pages requiring authentication. (Features where data is tied directly to their submission)
+	- Mock data missing tie to submission and therefore is not used for the data-entry flows or views shown on pages requiring authentication. (Features where data is tied directly to their submission.)
 
 ### **View**: Defines what the user sees. 
 #### EJS templating engine:
-Used to render views on the server with Bootstrap and JQuery used as the primary front-end tools. Each template has in view is used for the corresponding route. Components are used to break up commonly used code snippets as well as define template responses for AJAX calls.
+Used to render views on the server with Bootstrap and JQuery used as the primary front-end tools. Each template in view is used for the corresponding route. Components are used to break up commonly used code snippets as well as to define template responses for AJAX calls.
 #### **Important notes**:
 - Bootstrap component used on all pages to provide access to bootstrap and it's dependencies. 
 - The public folder is tied to the views in many ways:
@@ -178,9 +178,9 @@ Used to render views on the server with Bootstrap and JQuery used as the primary
 	- Front-end functionality written in JQuery found in the public/javascripts folder.
 	- public/images folder used to store static images used by the site.
 	- public/temp folder used to temporarily store pdf uploads while the data is being entered. (pdf deleted upon complete approval of the submission.)
-- Naming convention to name route, template, stylesheet, and public javascripts for a single page a similar, if not same, name.
+- Naming convention to name route, template, stylesheet, and public javascripts for a single page: similar, if not same, name.
 
-### **Controller**: Coordinates all request and handling of data. 
+### **Controller**: Coordinates all requests and handling of data. 
 #### Components:
 - **db:** Database access layer, defines connection to postgres database using [node-postgres](node-postgres.com) and stores several of the core database transaction logic.
     - **index.js** Instantiates the connection pool and exposes node-postgres query functions. Pool exported for direct client usage when executing database calls as transaction [see here](https://node-postgres.com/features/transactions) for example.
@@ -191,7 +191,7 @@ Used to render views on the server with Bootstrap and JQuery used as the primary
     - **auth.js** Defines middleware to protect routes with authentication using [passport.js](http://www.passportjs.org/)
 - **py:** Internal python scripts. Provides validations for editor.
 - **routes:** Each file defines a router with routes related to its name. In the case of data-entry and database some routers have been nested to be attached to their respective router before being attached to the root application.
-- **utils:** Functions used throughout the application
+- **utils:** Functions used throughout the application.
 - **app.js** The core of the application. Combines all routers defines the overall flow of requests into the server.
 
 ### Other important libraries used on the server (for full list see package.json):
@@ -208,7 +208,7 @@ Used to render views on the server with Bootstrap and JQuery used as the primary
 	-  **nlp4metadata.py:** Extracts paper attributes from the text of a pdf using NLP. Attributes include: title, authors, source (journal, volume, issue), and publishing date.
 	- **Files beginning with table:** Prepare, extract, and clean table data from pdfs.
 	
-### Other Files of Note
+### Other Files to Note
 - **package.json/package-lock.json:** Node Package Manager files defining the dependency tree and external packages used in the project.
 - **iron.sh:** The iron shell is a shell script for the management and deployment of all aspects of the project.
 - **gulpfile.js:** Gulp task file, defining task to be run with the gulp task runner. This is used to prepare bootstrap files and dependencies for deploying the project.
@@ -219,7 +219,7 @@ Used to render views on the server with Bootstrap and JQuery used as the primary
 ## Testing
 
 #### Coverage
-To run tasks using gulp run command `gulp jest`, jest-cli may be required locally, to install run `sudo npm install -g jest-cli`.
+To run tasks using gulp run command `gulp jest`, jest-cli may be required locally (to install run `sudo npm install -g jest-cli`.)
 
 Coverage details can be found in the /coverage directory after running tests.
 
