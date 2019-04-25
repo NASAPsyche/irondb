@@ -36,7 +36,8 @@ Prerequisite - Must have docker and gulp cli installed, and docker must be runni
 4. `gulp js` - move JS dependencies into public directory
 5. `mkdir pg-data` - create pg-data directory for postgres data
 6. `docker-compose up --build` - use docker compose to build and run images
-	- You can also run up and build commands separately, i.e. `docker-compose build` and `docker-compose up`.  
+	- You can also run up and build commands separately, i.e. `docker-compose build` and `docker-compose up`.
+  
 Notes: control^c to exit, then `docker-compose down` to gracefully stop images if they are not already down. Gulp tasks must be run manually before building the image to ensure proper bootstrap integration. 
 
 #### Useful docker-compose commands:
