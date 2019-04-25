@@ -16,6 +16,40 @@ To install Gulp run `npm install gulp-cli -g`
 * [Docker](https://www.docker.com/) - Container Engine
 To install follow the instructions for your given operating sytem [here](https://docs.docker.com/v17.12/install/). 
 
+## Install and run the project
+
+#### Required Dependencies
+1. Node
+2. Gulp
+3. Docker
+
+#### To Run without docker
+It is no longer possible to run the project without Docker installed and running. Please follow the instructions To Run with Docker-Compose Automatic
+
+#### To Run with Docker-Compose Automatic
+Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.
+1. `cd irondb` - change directory to root
+2. `./iron.sh` - Builds and launches the Docker Composition. Use `./iron.sh -h` for help.
+To install the servers and launch them `./iron.sh -i`
+To launch from previously built containers `./iron.sh -l`
+
+#### To Run with Docker-Compose Manual
+Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
+1. `cd irondb` - change directory to root
+2. `npm install` - Install dependencies.
+3. `gulp sass` - Compile bootstrap sass and move to public directory.
+4. `gulp js` - Move JS dependencies into public directory.
+5. `mkdir pg-data` - Create pg-data directory for postgres data. 
+6. `docker-compose up --build` - Use docker compose to build and run images.
+	- You can also run up and build commands separately, i.e. `docker-compose build` and `docker-compose up`.
+Notes: control-c to exit, then `docker-compose down` to gracefully stop images if they are not already down. Gulp tasks must be run manually before building the image to ensure proper bootstrap integration. 
+
+#### Useful docker-compose commands:
+* `docker-compose build` - Build images defined by the current directories docker-compose.yml file, but don't run containers.
+* `docker-compose up` - Run containers defined by the current directories docker-compose.yml file.
+* `docker-compose up --build` - Build and run containers.
+* `docker-compose down` - Gracefully stop containers.
+
 ## Architecture
 
 ```bash
@@ -105,40 +139,25 @@ To install follow the instructions for your given operating sytem [here](https:/
 ## Architecture Explanation
 The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data.
 
+#### **Model**: Defines the database and way data is used. 
+#### **Main Files (db-init)**:
+- 00-init.sql
+	- Creates database with owner for use in iron shell, allowing the shell script to set the postgres credentials during initialization.
+- 01-init.sql
+	- Main file defining the tables of the database.
+	- For each main table (bodies, element_entries, papers, etc.) there is a status table with meta data about that table. 
+	- In action the submissions table is meant to tie the metadata together by submission for logical binding of all parts of a submission.
+- 02-init.sql
+	- File defines database views used by the application to get data.
+	- **Audit required**, some views no longer in use.
+- 03-init.sql
+	- File defines and populates two tables: analysis_techniques and element_symbols.
+	- These tables are used to populate all UI select elements that represent element selection and technique selection.
+- 99-init.sql
+	- File defines mock data.
+	- Mock data most useful for public facing front-end examples. (Database and database export pages primarily)
+	- Mock data missing tie to submission and therefore is not used for the data-entry flows or views shown on pages requiring authentication. (Features where data is tied directly to their submission)
 
-## Install and run the project
-
-#### Required Dependencies
-1. Node
-2. Gulp
-3. Docker
-
-#### To Run without docker
-It is no longer possible to run the project without Docker installed and running. Please follow the instructions To Run with Docker-Compose Automatic
-
-#### To Run with Docker-Compose Automatic
-Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.
-1. `cd irondb` - change directory to root
-2. `./iron.sh` - Builds and launches the Docker Composition. Use `./iron.sh -h` for help.
-To install the servers and launch them `./iron.sh -i`
-To launch from previously built containers `./iron.sh -l`
-
-#### To Run with Docker-Compose Manual
-Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
-1. `cd irondb` - change directory to root
-2. `npm install` - Install dependencies.
-3. `gulp sass` - Compile bootstrap sass and move to public directory.
-4. `gulp js` - Move JS dependencies into public directory.
-5. `mkdir pg-data` - Create pg-data directory for postgres data. 
-6. `docker-compose up --build` - Use docker compose to build and run images.
-	- You can also run up and build commands separately, i.e. `docker-compose build` and `docker-compose up`.
-Notes: control-c to exit, then `docker-compose down` to gracefully stop images if they are not already down. Gulp tasks must be run manually before building the image to ensure proper bootstrap integration. 
-
-#### Useful docker-compose commands:
-* `docker-compose build` - Build images defined by the current directories docker-compose.yml file, but don't run containers.
-* `docker-compose up` - Run containers defined by the current directories docker-compose.yml file.
-* `docker-compose up --build` - Build and run containers.
-* `docker-compose down` - Gracefully stop containers.
 
 ## Testing
 
@@ -146,6 +165,8 @@ Notes: control-c to exit, then `docker-compose down` to gracefully stop images i
 To run tasks using gulp run command `gulp jest`, jest-cli may be required locally, to install run `sudo npm install -g jest-cli`.
 
 Coverage details can be found in the /coverage directory after running tests.
+
+## Code Style
 
 #### ESLint
 ESLint is used to enforce style guides for Javascript. ESLint is currently set to enforce:
