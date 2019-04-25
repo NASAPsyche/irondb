@@ -23,9 +23,6 @@ To install follow the instructions for your operating sytem [here](https://docs.
 2. Gulp
 3. Docker
 
-#### To Run without docker
-It is no longer possible to run the project without Docker installed and running. Please follow the instructions To Run with Docker-Compose Automatic
-
 #### To Run with Docker-Compose Automatic
 Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.
 1. `cd irondb` - change directory to root
