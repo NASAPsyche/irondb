@@ -34,7 +34,7 @@ To install the servers and launch them `./iron.sh -i`
 To launch from previously built containers `./iron.sh -l`
 
 #### To Run with Docker-Compose Manual
-Pre-requisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
+Prerequisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
 1. `cd irondb` - change directory to root
 2. `npm install` - Install dependencies.
 3. `gulp sass` - Compile bootstrap sass and move to public directory.
@@ -103,14 +103,14 @@ Notes: control-c to exit, then `docker-compose down` to gracefully stop images i
 │ 
 ├── public 				# Directory containing public static assets.
 │	│
-│ 	├── images				# Directory containing image assests.
+│ 	├── images				# Directory containing image assets.
 │	│
 │ 	├── temp				# Directory where pdfs written to.
 │	│
-│	├── javascripts			# Directory containing js assests. 
+│	├── javascripts			# Directory containing js assets. 
 │	│				# Target for bootstrap js dependencies.
 │	│
-│	└── stylesheets			# Directory containing css assests. Target for bootstrap.css.
+│	└── stylesheets			# Directory containing css assets. Target for bootstrap.css.
 │
 ├──	views				# EJS templates.
 │	│
