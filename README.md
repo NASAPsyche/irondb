@@ -208,9 +208,17 @@ Used to render views on the server with Bootstrap and JQuery used as the primary
 ### **External**: Module for extracting paper attributes and table data from uploaded pdfs.
 - [Anaconda](https://anaconda.org/) environment provided for developing python scripts externally from server development.
 - **pdfScraper:** 
-	- ** Files begining with pdf:** 
-	- **nlp4metadata.py:** Extracts paper attributes from the text of a pdf using NLP. Attributes include: title, authors, source (journal, volume, issue), and publishing date
-	- 
+	-  **Files beginning with pdf:** Import and prepare pdf text for natural language processing and table extraction.
+	-  **nlp4metadata.py:** Extracts paper attributes from the text of a pdf using NLP. Attributes include: title, authors, source (journal, volume, issue), and publishing date.
+	- **Files beginning with table:** Prepare, extract, and clean table data from pdfs.
+	
+### Other Files of Note
+- **package.json/package-lock.json:** Node Package Manager files defining the dependency tree and external packages used in the project.
+- **iron.sh:** The iron shell is a shell script for the management and deployment of all aspects of the project.
+- **gulpfile.js:** Gulp task file, defining task to be run with the gulp task runner. This is used to prepare bootstrap files and dependencies for deploying the project.
+- **docker-compose.yml:** File defines usage of docker images via docker-compose.
+
+
 
 ## Testing
 
