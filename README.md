@@ -24,27 +24,27 @@ To install follow the instructions for your operating sytem [here](https://docs.
 3. Docker
 
 #### To Run with Docker-Compose Automatic
-Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.  
-1. `cd irondb` - change directory to root  
-2. `./iron.sh` - builds and launches the Docker Composition. Use `./iron.sh -h` for help. To install the servers and launch them: `./iron.sh -i`. To launch from previously built containers: `./iron.sh -l`  
+Docker must be running. This will allow you to install dependencies, build the containers, run the containers, and close the containers. This is the recommended method for deployment.
+1. `cd irondb` - change directory to root.
+2. `./iron.sh` - builds and launches the Docker Composition. Use `./iron.sh -h` for help. To install the servers and launch them: `./iron.sh -i`. To launch from previously built containers: `./iron.sh -l`.
 
 #### To Run with Docker-Compose Manual
 Prerequisite - Must have docker and gulp cli installed, and docker must be running. See Tool section above for installation details.
-1. `cd irondb` - change directory to root
-2. `npm install` - install dependencies
-3. `gulp sass` - compile bootstrap sass and move to public directory
-4. `gulp js` - move JS dependencies into public directory
-5. `mkdir pg-data` - create pg-data directory for postgres data
-6. `docker-compose up --build` - use docker compose to build and run images
+1. `cd irondb` - change directory to root.
+2. `npm install` - install dependencies.
+3. `gulp sass` - compile bootstrap sass and move to public directory.
+4. `gulp js` - move JS dependencies into public directory.
+5. `mkdir pg-data` - create pg-data directory for postgres data.
+6. `docker-compose up --build` - use docker compose to build and run images.
 	- You can also run up and build commands separately, i.e. `docker-compose build` and `docker-compose up`.
 
 Notes: control^c to exit, then `docker-compose down` to gracefully stop images if they are not already down. Gulp tasks must be run manually before building the image to ensure proper bootstrap integration. 
 
 #### Useful docker-compose commands:
-* `docker-compose build` - Build images defined by the current directories docker-compose.yml file, but don't run containers.
-* `docker-compose up` - Run containers defined by the current directories docker-compose.yml file.
-* `docker-compose up --build` - Build and run containers.
-* `docker-compose down` - Gracefully stop containers.
+* `docker-compose build` - build images defined by the current directories docker-compose.yml file, but don't run containers.
+* `docker-compose up` - run containers defined by the current directories docker-compose.yml file.
+* `docker-compose up --build` - build and run containers.
+* `docker-compose down` - gracefully stop containers.
 
 ## Architecture
 
