@@ -1,8 +1,8 @@
 # irondb - Iron Meteorite Database
 
 ## Dependencies and documentation
-* [Node JS](https://nodejs.org/en/) - Server-side JS Runtime
-* [Express.JS](https://expressjs.com/en/4x/api.html) - Web Application Framework
+* [Node.js](https://nodejs.org/en/) - Server-side JS Runtime
+* [Express.js](https://expressjs.com/en/4x/api.html) - Web Application Framework
 * [EJS](http://ejs.co/) - Templating Engine
 * [Bootstrap](https://getbootstrap.com/docs/4.1/getting-started/introduction/) - Front-end Framework
 * [JQuery](https://api.jquery.com/) - JavaScript Library
