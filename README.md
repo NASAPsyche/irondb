@@ -14,7 +14,7 @@
 * [Gulp](https://gulpjs.com/) - Task Runner  
 To install Gulp run `npm install gulp-cli -g`
 * [Docker](https://www.docker.com/) - Container Engine  
-To install follow the instructions for your given operating sytem [here](https://docs.docker.com/v17.12/install/). 
+To install follow the instructions for your operating sytem [here](https://docs.docker.com/v17.12/install/). 
 
 ## Install and run the project
 
