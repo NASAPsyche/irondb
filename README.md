@@ -139,8 +139,18 @@ Notes: control-c to exit, then `docker-compose down` to gracefully stop images i
 └── package.json			# NPM package manager project config
 ```
 
-## Architecture Explanation
-The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data. Two docker containers comprise the execution environment. Server and scripts are ran in one container, while the database is run in another. The Iron Shell (iron.sh) provides a utility for running and managing the docker aspects of the project.
+## Architectural Notes
+The Iron Meteorite Database implements a Model-View-Controller architecture leveraging an external module of scripts to provide tools for extracting element compositional data of iron meteorites from research papers. App uses Bootstrap and JQuery front-end on top of EJS templates, Web server built on Express and Node.js to handle requests, and Postgres Database stores all collected data. 
+
+### **Docker**: Supporting files for the build of containers for running the server and database. 
+Two docker containers comprise the execution environment. Server and scripts are ran in one container, while the database is run in another. The Iron Shell (iron.sh) provides a utility for running and managing the docker aspects of the project. Repository files are copied into the server image and postgres image is initialized using the files in db-init of the model directory. (Note: docker-compose.yml in root of repository as well as iron.sh used to manage and run docker containers)
+#### **Components**:
+- **mock:** Directory containing scripts used by iron.sh to add mock users to the application. This is necessary as password hashes are stored, not passwords.
+- **node:** Directory containing node image and accompanying build files.
+- **postgres:** Directory containing postgres image and accompanying build files.
+- **template:** Template files used when initializing for the first time with iron.sh. These files allow the shell script to provide the user with options to set parameters like the database username and password as well as dynamically generating the app secret.
+- **wait-for-it.sh** [Bash script](https://github.com/vishnubob/wait-for-it) used to stager the deployment of docker containers so the database is up and ready to accept connections before the server is started.
+
 
 ### **Model**: Defines the database and data representation. 
 #### **Main Files (db-init)**:
@@ -156,6 +166,7 @@ The Iron Meteorite Database implements a Model-View-Controller architecture leve
 - 03-init.sql
 	- File defines and populates two tables: analysis_techniques and element_symbols.
 	- These tables are used to populate all UI select elements that represent element selection and technique selection.
+
 - 99-init.sql
 	- File defines mock data.
 	- Mock data most useful for public facing front-end examples. (Database and database export pages primarily)
@@ -175,24 +186,31 @@ Used to render views on the server with Bootstrap and JQuery used as the primary
 
 ### **Controller**: Coordinates all request and handling of data. 
 #### Components:
-- db: Database access layer, defines connection to postgres database using [node-postgres](node-postgres.com) and stores several of the core database transaction logic.
+- **db:** Database access layer, defines connection to postgres database using [node-postgres](node-postgres.com) and stores several of the core database transaction logic.
     - **index.js** Instantiates the connection pool and exposes node-postgres query functions. Pool exported for direct client usage when executing database calls as transaction [see here](https://node-postgres.com/features/transactions) for example.
     - **entry-parser.js** Parser for manual editor and tool without tables.
     - **insert-entry.js** Module inserts entry from entry parser.
     - **update-entry.js** Module takes an object with an array of database commands and runs the commands.
-- middleware:
+- **middleware**:
     - **auth.js** Defines middleware to protect routes with authentication using [passport.js](http://www.passportjs.org/)
 - **py:** Internal python scripts. Provides validations for editor.
 - **routes:** Each file defines a router with routes related to its name. In the case of data-entry and database some routers have been nested to be attached to their respective router before being attached to the root application.
 - **utils:** Functions used throughout the application
 - **app.js** The core of the application. Combines all routers defines the overall flow of requests into the server.
 
-### Other important libraries used in the application (for full list see package.json):
-[bcrypt](https://www.npmjs.com/package/bcrypt): For salting and hashing passwords. (app.js and auth routes such as register)
-[formidable](https://www.npmjs.com/package/formidable): For pdf upload. (Used exclusively in data-entry router)
-[json2csv](https://www.npmjs.com/package/json2csv): For converting serialized export data into downloadable csv. (Used in database router)
-[pdfobject](https://www.npmjs.com/package/pdfobject): For pdf display on the front-end. (Used in all template where a pdf is displayed)
-[python-shell](https://www.npmjs.com/package/python-shell): For managing the running of python scripts. (Used in tool routes)
+### Other important libraries used on the server (for full list see package.json):
+- [bcrypt](https://www.npmjs.com/package/bcrypt): For salting and hashing passwords. (app.js and auth routes such as register)
+- [formidable](https://www.npmjs.com/package/formidable): For pdf upload. (Used exclusively in data-entry router)
+- [json2csv](https://www.npmjs.com/package/json2csv): For converting serialized export data into downloadable csv. (Used in database router)
+- [pdfobject](https://www.npmjs.com/package/pdfobject): For pdf display on the front-end. (Used in all template where a pdf is displayed)
+- [python-shell](https://www.npmjs.com/package/python-shell): For managing the running of python scripts. (Used in tool routes)
+
+### **External**: Module for extracting paper attributes and table data from uploaded pdfs.
+- [Anaconda](https://anaconda.org/) environment provided for developing python scripts externally from server development.
+- **pdfScraper:** 
+	- ** Files begining with pdf:** 
+	- **nlp4metadata.py:** Extracts paper attributes from the text of a pdf using NLP. Attributes include: title, authors, source (journal, volume, issue), and publishing date
+	- 
 
 ## Testing
 
