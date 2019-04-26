@@ -31,3 +31,7 @@ p {
     background-color: #592651;
     color: rgb(255, 255, 255);
 }
+
+h1 {
+	font-family: 'Space Mono', monospace;
+}
