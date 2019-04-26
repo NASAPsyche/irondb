@@ -21,7 +21,19 @@ router.get('/', async (req, res, next) => {
     next(createError(500));
   } finally {
     // eslint-disable-next-line max-len
-    res.render('register', {isSignedIn: isSignedIn, Users: resObj[0].rows, UserTotal: resObj[0].rowCount});
+    let Alert = '';
+    if ( req.header('Referer') !== undefined &&
+    req.header('Referer').slice(-9) === '/register') {
+      Alert = 'Failed to regisester ';
+    }
+
+    res.render('register', {
+      isSignedIn: isSignedIn,
+      Users: resObj[0].rows,
+      UserTotal: resObj[0].rowCount,
+      Alert: Alert,
+      AlertType: 'error',
+    });
   }
 });
 
