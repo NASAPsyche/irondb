@@ -90,7 +90,7 @@
                         <p><small>Add function adds row/column after selected column/row</small></p>
                     </div>
 
-                    <table class="table table-sm table-responsive">
+                    <table class="table table-sm table-responsive pb-2">
                         <tbody>
                             <!-- First row all analysis technique -->
                             <% for(var i = 0; i < columnCount; i++) { %>
@@ -110,9 +110,9 @@
                                 <tr>
                                 <% for(let j=0; j < columnCount; j++) { %>
                                     <% if (currentObj.Table[keys[j]][i] === null) { %>
-                                        <th><input type="text" value=""></th>
+                                        <th><input class="table-input" type="text" value=""></th>
                                     <% } else { %>
-                                        <th><input type="text" value="<%= currentObj.Table[keys[j]][i] %>"></th>
+                                        <th><input class="table-input" type="text" value="<%- currentObj.Table[keys[j]][i] %>"></th>
                                     <% } %>
                                 <% } %>
                                 </tr>

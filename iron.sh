@@ -226,11 +226,9 @@ function randomSecret() {
   if [[ "$MYENV" == "$MACENV"  ]] ; then
     cp ./docker/template/app.js  ./controller/app.js 
     sed -i '' -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./controller/app.js
-    break
   elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
     cp ./docker/template/app.js  ./controller/app.js 
     sed -i -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./controller/app.js
-    break
   fi
 
 }

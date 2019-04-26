@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Iron Meteorite Database</title>
+    <%- include('components/favicon'); %>
     <%- include('components/font-awesome'); %>
     <%- include('bootstrap/css'); %>
     <link rel='stylesheet' href='/stylesheets/db-export.css' />
@@ -304,7 +305,7 @@
       </table>
     </div>
 
-    <div class="container-fluid">
+    <div class="container-fluid pb-5">
       <div class="d-flex flex-row-reverse">
         <form action="/database/export" method="POST" id="export-form">
           <label class="sr-only" for="tableData">table data for export request</label>

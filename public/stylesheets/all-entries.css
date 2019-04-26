@@ -1,5 +1,5 @@
 h1 {
-    color: #FFC627;
+    color: #f9a000;
 }
 
 table {
@@ -7,14 +7,14 @@ table {
 }
 
 .card {
-    background-color: #8c1d40;
+    background-color: #592651;
     box-shadow: 8px 8px 6px grey;
 }
 
 .fill {
-    background-color: #8c1d40;
+    background-color: #592651;
     border: none;
-    border-color: #8c1d40;
+    border-color: #592651;
     width: 20rem;
 }
 

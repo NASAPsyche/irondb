@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Data Entry - Approval</title>
+    <%- include('components/favicon'); %>
     <%- include('components/font-awesome'); %>
     <%- include('bootstrap/css'); %>
     <link rel='stylesheet' href='/stylesheets/data-entry.css' />
@@ -27,6 +28,7 @@
                     <% if (pdfPath === 'null') { %>
                         <p>No pdf found for this submission.</p>
                     <% } %>
+                    <div class="main-alert-target"></div>
 
                     <form method="POST" action="/data-entry/edit/submit" class="align-top mx-auto text-left" id="edit-form">
                         <!-- Basic -->
@@ -100,7 +102,7 @@
                                         <input type="text" class="form-control" id="<%= 'firstName' + i %>" name="<%= 'firstName' + i %>" required="true" value="<%= Authors[i].first_name %>"> 
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <label for="<%= 'middleName' + i %>" >Middle Name</label>
+                                        <label for="<%= 'middleName' + i %>" >Middle Initial</label>
                                         <input type="text" class="form-control" id="<%= 'middleName' + i %>" name="<%= 'middleName' + i %>" value="<%= Authors[i].middle_name %>"> 
                                     </div>
                                 </div>

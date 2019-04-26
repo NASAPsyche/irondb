@@ -44,14 +44,18 @@ card {
 	max-width: 400px;
 	border-radius: 0.5em;
 	background-color: #d3d3d3;
-  }
+}
 
 #checklist-form {
 	width: 100%;
 	padding: 5px;
 	border-radius: 0.5em;
 	background-color: #d3d3d3;
-  }
+}
+
+#table-tab {
+  width: 27em;
+}
 
 #pageNum, #flipDir {
 	max-width: 3rem;

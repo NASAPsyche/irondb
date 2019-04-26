@@ -12,6 +12,18 @@ TechniqueArr = Technique.slice(0, -1).split(',');
 /**      Validate Button         */
 /** ---------------------------- */
 
+/* eslint-disable max-len*/
+const validationWarningAlertTemplate = `<div 
+class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+<strong><%= messageTitle %> </strong>
+<%= message %>
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>`;
+/* eslint-enable max-len*/
+
+
 $('#event-div').on('click', '#validate-btn', function() {
   const formData = $('#insert-form').serializeArray();
   const postData = {};
@@ -35,12 +47,77 @@ $('#event-div').on('click', '#validate-btn', function() {
     }
   }
 
-  console.log(postData);
-
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
-    console.log(data);
-  });
+    // $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+    const parsedData = JSON.parse(data[0]);
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      const selector = '#' + entry[0];
+      const object = $(selector);
+      // Parse Attributes
+      if (entry[1] === 'invalid') {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-invalid');
+      } else if (entry[1] === 'success') {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-valid');
+      } else {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-valid');
+      }
+    });
+
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid')) {
+        allValid = false;
+      }
+    });
+
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert in valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
+});
+
+// On change of any input remove classes, alert user, and disable submit button.
+$('#event-div').on('change', 'input,textarea,select', function() {
+  if ($(this).hasClass('is-valid')) {
+    // Alert change
+    // eslint-disable-next-line no-undef
+    const alert = ejs.render(validationWarningAlertTemplate, {
+      type: 'warning',
+      messageTitle: 'Warning:',
+      message: `Valid data changed revalidation 
+      or override required before submission.`,
+    });
+    $('div.main-alert-target').html(alert);
+  }
+
+  $(this).removeClass('is-valid').removeClass('is-invalid');
+  $(this).removeAttr('style');
+  $('#submit-btn').prop('disabled', true);
 });
 
 $('#event-div').on('click', '#override-btn', function() {
@@ -99,7 +176,7 @@ const authorTemplate = `
   required="true" placeholder="required">
 </div>
 <div class="form-group col-md-3">
-  <label for="<%- middleNameID %>">Middle Name</label>
+  <label for="<%- middleNameID %>">Middle Initial</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
   name="<%- middleNameID %>" placeholder="optional">
 </div>

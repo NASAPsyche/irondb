@@ -48,6 +48,9 @@ $( '#event-div' ).on( 'click', '#allTables', function() {
     // if all tables uncheck single table and close collapse
     $('#collapse').collapse('hide');
     $( '#singleTable' ).prop( 'checked', false );
+    $( '#singleTable' ).prop('disabled', true);
+  } else {
+    $( '#singleTable' ).prop('disabled', false);
   }
 });
 
@@ -56,8 +59,24 @@ $( '#event-div' ).on( 'click', '#singleTable', function() {
   if ($('#singleTable').prop('checked') === true) {
     // if single tables selected uncheck all tables
     $( '#allTables' ).prop( 'checked', false );
+    $( '#allTables' ).prop('disabled', true);
+  } else {
+    $( '#allTables' ).prop('disabled', false);
   }
 });
+
+// On select of any
+$( '#event-div' ).on( 'click',
+    '#attributes,#allTables, #singleTable', function() {
+      if ($('#attributes').prop('checked') === true ||
+      $('#allTables').prop('checked') === true ||
+      $('#singleTable').prop('checked') === true
+      ) {
+        $( '#manual' ).prop('disabled', true);
+      } else {
+        $( '#manual' ).prop('disabled', false);
+      }
+    });
 
 
 // Submit checklist and replace with ui
@@ -83,26 +102,51 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
       $('#secondary-panel').replaceWith( data );
       $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
 
+      // Disable validate button if not manual
+      if (!postData.hasOwnProperty('manual')) {
+        $('#validate-btn').prop('disabled', true);
+        $('#validate-tables-btn').prop('disabled', true);
+      }
+
+      let processCount = 0;
       if (postData.hasOwnProperty('attributes')
       && postData.attributes === 'on') {
+        processCount++;
         $.post('/data-entry/tool/attributes', postData, function(data) {
+          processCount--;
           $('#attributes-target').replaceWith(data);
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
+          }
         });
       }
 
       if (postData.hasOwnProperty('singleTable')
           && postData.singleTable === 'on') {
+        processCount++;
         $.post('/data-entry/tool/onePageTables', postData, function(data) {
+          processCount--;
           $('#table-target').append(data);
           $('#table-loader').remove();
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
+          }
         });
       }
 
       if (postData.hasOwnProperty('allTables')
           && postData.allTables === 'on') {
+        processCount++;
         $.post('/data-entry/tool/allPagesTables', postData, function(data) {
+          processCount--;
           $('#table-target').append(data);
           $('#table-loader').remove();
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
+          }
         });
       }
     });
@@ -110,8 +154,7 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     // No checkbox selected
     const alertMessage = `
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <strong>Error: </strong>
-      Please upload pdf before attempting to use tool with pdf.
+      Please select one of the options before submitting checklist.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -120,7 +163,6 @@ $( '#checklist-form' ).on( 'submit', function( event ) {
     $('#alert-target').replaceWith(alertMessage);
   }
 });
-
 
 // Table button ajax post
 $( '#table-div' ).on('submit', '#single-page-form', function( event ) {
@@ -222,6 +264,8 @@ $('#event-div').on('click', 'a.table-control-update', function() {
 // Single Table Form Button
 $('#event-div').on('click', '#tableToggle', function() {
   hideEditor();
+  // Scroll to top of window
+  window.scrollTo(0, 0);
 });
 
 
@@ -229,6 +273,18 @@ $('#event-div').on('click', '#tableToggle', function() {
 $('#table-div').on('click', '#cancel-btn', function() {
   showEditor();
 });
+
+/* eslint-disable max-len*/
+const validationWarningAlertTemplate = `<div 
+class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+<strong><%= messageTitle %> </strong>
+<%= message %>
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>`;
+/* eslint-enable max-len*/
+
 
 // Validation button
 $('#event-div').on('click', '#validate-btn', function() {
@@ -266,11 +322,324 @@ $('#event-div').on('click', '#validate-btn', function() {
 
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
-    $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
-    // console.log(data);
-  });
+    // $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+
+    const parsedData = JSON.parse(data[0]);
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      const selector = '#' + entry[0];
+      const object = $(selector);
+      if ( entry[0] === 'tableData') {
+        // Parse table data
+        if (typeof entry[1] !== 'string') {
+          const tables = $('div.table');
+          for (let i = 0; i < entry[1].length; i++) {
+            // for each table parse feedback
+            const tableDiv = tables.eq(i);
+            const pageNumObj = tableDiv.children('div.page-row')
+                .children().children().children('input');
+            const rows = tableDiv.children('table')
+                .children('tbody').children();
+
+            if (entry[1][i]['page_number'] === 'invalid') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-invalid');
+              pageNumObj.attr('style', 'outline: 3px solid #FBDCD7');
+            } else if (entry[1][i]['page_number'] === 'success') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-valid');
+              pageNumObj.attr('style', 'outline: 2px solid #78BE20');
+            }
+
+            // Set analysis technique to valid
+            $(rows[0]).children().children('select').addClass('is-valid');
+
+            const elements = $(rows[1]).children().children('input');
+            const units = $(rows[2]).children().children('input');
+
+            // Check measurements
+            entry[1][i]['cells'].map(function(cell) {
+              const input = $(rows[cell.row]).children()
+                  .eq(cell.column).children('input');
+              const element = elements.eq(cell.column);
+              const unit = units.eq(cell.column);
+              const meteorite = $(rows[cell.row])
+                  .children().eq(0).children('input');
+
+
+              if (cell.measurement === 'invalid') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                input.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.measurement === 'success') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                input.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.element === 'invalid') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                element.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.element === 'success') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                element.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.units === 'invalid') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                unit.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.units === 'success') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                unit.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.meteorite_name === 'invalid') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                meteorite.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.meteorite_name === 'success') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                meteorite.attr('style', 'outline: 2px solid #78BE20');
+              }
+            });
+          }
+        }
+      } else {
+        // Parse Attributes
+        if (entry[1] === 'invalid') {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-invalid');
+        } else if (entry[1] === 'success') {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-valid');
+        } else {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-valid');
+        }
+      }
+    });
+
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid')) {
+        allValid = false;
+      }
+    });
+
+    console.log(allValid);
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert invalid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
 });
 
+// Validation table button
+$('#event-div').on('click', '#validate-tables-btn', function() {
+  if ($('#table-data-input').length) {
+    // serialize all tables
+    const tables = [];
+    const tableObjects = $('#table-target').children('div.table');
+    $.each( tableObjects, function(tableIndex, table) {
+      tables.push(serializeTable(table));
+    });
+    $('#table-data-input').attr('value', JSON.stringify(tables));
+  }
+
+  const formData = $('#insert-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    if (
+      !formData[i].name.includes('convertedDeviation') &&
+      !formData[i].name.includes('convertedMeasurement') &&
+      !formData[i].name.includes('sigfig')
+    ) {
+      if (formData[i].name.includes('primaryName') ||
+          formData[i].name.includes('firstName') ||
+          formData[i].name.includes('middleName') ||
+          formData[i].name.includes('bodyName')
+      ) {
+        const input = $('input[name="' + formData[i].name + '"]');
+        input.val(input.val().charAt(0).toUpperCase() + input.val().slice(1));
+        postData[formData[i].name.toString()] = input.val();
+      } else {
+        postData[formData[i].name.toString()] = formData[i].value;
+      }
+    }
+  }
+
+  // Call Post Request for validation with all data
+  $.post('/data-entry/tool/validate', postData, function( data ) {
+    // $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+
+    const parsedData = JSON.parse(data[0]);
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      if ( entry[0] === 'tableData') {
+        // Parse table data
+        if (typeof entry[1] !== 'string') {
+          const tables = $('div.table');
+          for (let i = 0; i < entry[1].length; i++) {
+            // for each table parse feedback
+            const tableDiv = tables.eq(i);
+            const pageNumObj = tableDiv.children('div.page-row')
+                .children().children().children('input');
+            const rows = tableDiv.children('table')
+                .children('tbody').children();
+
+            if (entry[1][i]['page_number'] === 'invalid') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-invalid');
+              pageNumObj.attr('style', 'outline: 3px solid #FBDCD7');
+            } else if (entry[1][i]['page_number'] === 'success') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-valid');
+              pageNumObj.attr('style', 'outline: 2px solid #78BE20');
+            }
+
+            // Set analysis technique to valid
+            $(rows[0]).children().children('select').addClass('is-valid');
+
+            const elements = $(rows[1]).children().children('input');
+            const units = $(rows[2]).children().children('input');
+
+            // Check measurements
+            entry[1][i]['cells'].map(function(cell) {
+              const input = $(rows[cell.row]).children()
+                  .eq(cell.column).children('input');
+              const element = elements.eq(cell.column);
+              const unit = units.eq(cell.column);
+              const meteorite = $(rows[cell.row])
+                  .children().eq(0).children('input');
+
+
+              if (cell.measurement === 'invalid') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                input.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.measurement === 'success') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                input.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.element === 'invalid') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                element.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.element === 'success') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                element.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.units === 'invalid') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                unit.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.units === 'success') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                unit.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.meteorite_name === 'invalid') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                meteorite.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.meteorite_name === 'success') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                meteorite.attr('style', 'outline: 2px solid #78BE20');
+              }
+            });
+          }
+        }
+      }
+      // Do nothing for none tables
+    });
+
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid')) {
+        allValid = false;
+      }
+    });
+
+    console.log(allValid);
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert invalid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
+});
+
+// Manual change value on table inputs
+$('#event-div').on('change', 'input.table-input', function() {
+  $(this).attr('value', $(this).val());
+});
+
+// On change of any input remove classes, alert user, and disable submit button.
+$('#event-div').on('change', 'input,textarea,select', function() {
+  if ($(this).hasClass('is-valid')) {
+    // Alert change
+    // eslint-disable-next-line no-undef
+    const alert = ejs.render(validationWarningAlertTemplate, {
+      type: 'warning',
+      messageTitle: 'Warning:',
+      message: `Valid data changed, revalidation 
+      required before submission.`,
+    });
+    $('div.main-alert-target').html(alert);
+  }
+
+  $(this).removeClass('is-valid').removeClass('is-invalid');
+  $(this).removeAttr('style');
+  $('#submit-btn').prop('disabled', true);
+});
 
 $('#event-div').on('click', '#override-btn', function() {
   $('#submit-btn').prop('disabled', false);
@@ -512,7 +881,7 @@ const authorTemplate = `
   required="true" placeholder="required">
 </div>
 <div class="form-group col-md-3">
-  <label for="<%- middleNameID %>">Middle Name</label>
+  <label for="<%- middleNameID %>">Middle Initial</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
   name="<%- middleNameID %>" placeholder="optional">
 </div>

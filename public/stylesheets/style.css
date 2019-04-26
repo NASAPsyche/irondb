@@ -3,18 +3,3 @@ body {
 	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	padding: 3.4rem 0 0 0;
 }
-
-/* ASU Style Guide Link Styles */
-a {
-	border-bottom: 1px dotted #8c1d40;
-	color: #8c1d40;
-	text-decoration: none;
-	transition: all 0.25s ease-in-out 0s;
-	text-decoration: underline;
-}
-
-a.hover, a.focus {
-	border-bottom: 1px dotted #d23153;
-	color: #d23153;
-	text-decoration: underline;
-}
