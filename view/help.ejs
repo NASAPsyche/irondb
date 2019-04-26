@@ -34,7 +34,7 @@
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
                     <h5>
-                        Welcome to the Iron Meteorite Database, created as a componenet of <a href="https://psyche.asu.edu/">NASA's Psyche Mission</a> and aiming to benefit the entire scientific community. As the premiere database for curated information on iron meteorites, we strive to provide the most complete and most accurate collection of meteorite data by using a mixture of natural language processing algorithms and human-guided data entry.
+                        Welcome to the Iron Meteorite Database, created as a componenet of <a href="https://psyche.asu.edu/">NASA's Psyche Mission</a> and aiming to benefit the entire scientific community. As the premiere database for curated information on iron meteorites, we strive to provide the most complete and most accurate collection of meteorite data by using a mixture of natural language processing algorithms and human-guided data entry. Learn more <a href="https://psyche.asu.edu/get-involved/capstone-projects/capstone-projects-iron-class/iron-meteorite-database/">here</a>.
                     </h5>
                 </div>
                 <div class="col-sm-1"></div>
@@ -131,10 +131,7 @@
                         </center>
                     </p>
                     <p>
-                    	You will be redirected to the "Export Data" page. Verify that the listed data is what you wish to export and delete any unwanted entries.
-                    </p>
-                    <p>
-                    	You can choose to export this data separated by the analysis techniques used for each meteorite (this can result in multiple rows for a single meteorite that has multiple analysis techniques), or you can choose to discard the analysis techniques and export each meteorite in a single row of the CSV.
+                    	You will be redirected to the "Export Data" page. Verify that the listed data is what you wish to export and delete any unwanted entries. You can choose to export this data separated by the analysis techniques used for each meteorite (this can result in multiple rows for a single meteorite that has multiple analysis techniques), or you can choose to discard the analysis techniques and export each meteorite in a single row of the CSV.
                     </p>
                     <p>
                         <center>
@@ -167,7 +164,7 @@
                     	<u>Automated Tool: (recommended)</u>
                     </h5>
                     <p>
-                    	If you would like to use the automated tool to extract information from the paper, select "With PDF", choose the PDF to upload, then click "Submit".
+                    	If you would like to use the automated tool to extract information from the paper, select "With PDF", choose a PDF to upload, then click "Submit".
                     </p>
                     <p>
                         <center>
@@ -189,8 +186,8 @@
                             <img src="/images/help/DataEntry/attributes_tables_form.png" alt="data entry form for automatically extracted attributes and tables">
                         </center>
                     </p>
-                    <p>
-                    	This works fairly well for newer publications (post 1999.) It will try its best to extract info from older publications, but will often return nothing. You are still welcome to try!
+                    <p class="text-green">
+                    	Note: This works fairly well for newer publications (post 1999.) It will try its best to extract info from older publications, but will often return nothing. You are still welcome to try!
                     </p>
                     <p class="pt-2">
                     	<strong>Extract Tables by Page:</strong>
@@ -211,7 +208,7 @@
                     </p>
                     <p>
                     	<u>Flip Direction:</u>
-                    	If a table on a particular page is presented sideways instead of horizontally, the “Extract all Tables” tool will have a difficult time extracting the table. You can fix this by using the tool to rotate the table in degrees (clockwise).
+                    	If a table on a particular page is presented sideways instead of horizontally, the “Extract all Tables” tool will have a difficult time extracting it. You can fix this by using the tool to rotate the table in degrees (clockwise).
                     </p>
                     <p>
                         <center>
@@ -229,7 +226,7 @@
                         </center>
                     </p>
                     <p>
-                    	To find the coordinates using MacOs, you can use the Preview application. Open the PDF in Preview. Then go to the page of the table you are trying to extract and under the <strong>Tools</strong> menu option, select the tool called <strong>Show Inspector</strong>.
+                    	To find the coordinates using MacOs, you can use the Preview application. Open the PDF in Preview, then scroll to the page of the table you are trying to extract. Under the "<strong>Tools</strong>"" menu option, select "<strong>Show Inspector</strong>".
                     </p>
                     <p>
                         <center>
@@ -238,7 +235,7 @@
                         </center>
                     </p>
                     <p>
-                    	Make sure Rectangular Selection tool is selected as your pointer in Preview (in <strong>Tools</strong>). This will allow you to drag your curser over the PDF to show the coordinates of the selection. Try to be as precise as possible. You will notice that the numbers may include  a decimal in them. Please round to whole numbers when you enter them into the coordinates tool. (Helpful hint: round down for the Left and the Top edge, and round up for the Width and Height.)
+                    	Make sure Rectangular Selection is selected as your pointer in Preview (under "<strong>Tools</strong>""). This will allow you to drag your curser over the PDF to find the coordinates of the selection. Try to be as precise as possible. You will notice that the numbers may include  a decimal in them. Please round to whole numbers when you enter them into the coordinates tool. (Helpful hint: round down for the "Left" and the "Top" edge, and round up for the "Width" and "Height".)
                     </p>
                     <p>
                         <center>
@@ -261,7 +258,7 @@
                     	<strong class="text-red"><u>Please Note:</u></strong>
                     </p>
                     <p class="text-red">
-                        When selecting to use the automated tool, you will be provided with a selection of data to extract from your PDF. While we strive to have the highest levels of accuracy, that isn't always possible. Because of this, the information extracted must be verified for accuracy before submitting your entry. After submitting a paper to the Iron Meteorite Database, your information will be pending approval by the admins.
+                        When selecting to use the automated tool, you will be presented with a selection of data extracted from your PDF. While we strive to have the highest levels of accuracy, that isn't always possible. Because of this, the information extracted must be verified for accuracy before submitting your entry. After submitting a paper to the Iron Meteorite Database, your information will be pending approval by the admins.
                     </p>
                     <h5 class="pt-4">
                     	<u>Manual Data Entry:</u>
@@ -288,7 +285,7 @@
                 <div class="col-sm-10">
                     <h3 class="section-head">Submission</h3>
                     <p class="pt-3">
-                    	Before you can submit an entry to the database, it needs to be validated. Check all your entries carefully. If you have automatically extracted tables, click "Validate Tables" first. Invalid values will be highlighted in red. Update those values then validate again. After validating all your table entries, click "Validate All" (or simply "Validate" if no tables exist), then check the "Basic Information" section above "Tables" for any invalid values. Update those values as well and validate again until all entries have been marked as valid.
+                    	Before you can submit an entry to the database, it needs to be validated. Check all your entries carefully. If you have automatically extracted tables, click "Validate Tables" first. Invalid values will be highlighted in red. Update those values then validate again. After validating all your table entries, click "Validate All" (or simply "Validate" if no tables exist), then check the "Basic Information" section for any invalid values. Update those values as well and validate again until all entries have been marked as valid.
                     </p>
                     <p>
                         <center>
@@ -308,19 +305,19 @@
                         </center>
                     </p>
                     <p>
-                    	<strong><u>Elements</u></strong> - Must be a <emp>symbol</emp> from the periodic table, not full names.
+                    	<strong><u>Elements</u></strong> - Must be a <emp>symbol</emp> from the periodic table, not full element names.
                     </p>
                     <p>
-                    	<strong><u>Measurements</u></strong> - Measurements can be any number; .08 must be written as 0.08. Less than < symbol can be included before a measurement.
+                    	<strong><u>Measurements</u></strong> - Measurements can be any number, but decimals in the form of .08 must be written as 0.08. The less than < symbol can be included before a measurement.
                     </p>
                     <p>
-                    	<strong><u>Units</u></strong> - Accepted units are: wt%, ppm, ppb, mg/g, µ/g, ug/g, lg/g, ng/g. Note: our table extraction tool extracts “µ/g” as “ug/g”, “lg/g” but we accept µ as an input.
+                    	<strong><u>Units</u></strong> - Accepted units are: wt%, ppm, ppb, mg/g, µ/g, ug/g, lg/g, ng/g. Note: our table extraction tool extracts “µ/g” as “ug/g” or “lg/g” but we accept µ as an input.
                     </p>
                     <p>
                     	<strong><u>Page Number</u></strong> - Please enter the printed page number of the PDF in this field.
                     </p>
                     <p>
-                    	<strong><u>Blank Values</u></strong> - For fields that are meant to be left blank intentionally, enter “empty” (no quotation marks) in the field. Please keep in mind that some tables have blank spots for measurements; those need to be replaced with “empty” as well.
+                    	<strong><u>Blank Values</u></strong> - For fields that are meant to be left blank intentionally, write “empty” (no quotation marks) in the field. Please keep in mind that some tables have blank spots for measurements; those need to be replaced with “empty” as well.
                     </p>
                     <p>
                     	<strong><u>Analysis technique</u></strong> - You will ideally have an analysis technique to put in this field, if not you can leave it blank.

@@ -10,6 +10,10 @@
     color: red;
 }
 
+.text-green {
+    color: rgb(0, 188, 0);
+}
+
 p { 
     font-size: 1rem;
 }
