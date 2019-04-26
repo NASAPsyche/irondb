@@ -1,19 +1,19 @@
 #top-container {
-    background-color: #8c1d40;
+    background-color: #592651;
     box-shadow: 8px 8px 6px grey;
 }
 
 .h1 {
-    color: #FFC627;
+    color: #f9a000;
 }
 
 .h2 {
-    color: #FFC627;
+    color: #f9a000;
 }
 
 #fill {
-    background-color: #8c1d40;
-    border-color: #8c1d40;
+    background-color: #592651;
+    border-color: #592651;
 }
 
 table {

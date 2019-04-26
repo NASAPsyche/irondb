@@ -1,10 +1,10 @@
 .card {
-    background-color:#8c1d40;
+    background-color:#592651;
     box-shadow: 8px 8px 6px grey;
 }
 
 h1 {
-    color: #FFC627;
+    color: #f9a000;
 }
 
 .btn-md {
@@ -13,6 +13,6 @@ h1 {
 }
 
 .input-group-text {
-    background-color: #FFC627;
+    background-color: #f9a000;
     color: black;
 }
