@@ -1,10 +1,10 @@
 #report {
-    background-color:#8c1d40;
+    background-color:#592651;
     box-shadow: 8px 8px 6px grey;
 }
 
 .card {
-    background-color: #8c1d40;
+    background-color:#592651;
     box-shadow: 8px 8px 6px grey;
 }
 .table {
@@ -20,11 +20,11 @@
 }
 
 .label {
-    color: #FFC627;
+    color: #f9a000;
 }
 
 .entry {
-    color: #FFC627;
+    color: #f9a000;
     font-size: 26px;
     text-decoration: underline;
 }
