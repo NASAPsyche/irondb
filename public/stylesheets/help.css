@@ -7,5 +7,9 @@
 }
 
 p { 
-	font-size: 1rem;
+    font-size: 1rem;
+}
+
+img {
+    max-width: 40%;
 }

@@ -16,7 +16,7 @@
     <%- include('components/navbar'); %>
     <% } %>
 
-    <div class="container-fluid pt-3 pb-4" id="top-container">
+    <div class="container-fluid pt-3 pb-5" id="top-container">
         <div class="row">
             <div class="col-md-8 pt-4 ml-5">
                 <div class="row">
@@ -64,51 +64,53 @@
                     <h3 class="section-head">Search</h3>
                     <p class="pt-3">
                         If you know the <strong>meteorite name</strong> you are searching for, or the name of the <strong>paper</strong> or <strong>author</strong>, you can search for this on the <a href="/">landing page</a>.
-                        For more advanced searches, select <a href="/database">"Enter the Database"</a>.
                     </p>
                     <p>
                         <center>
-                            <img src="/images/help/simple_search.png" alt="simple search">
+                            <img src="/images/help/Search/simple_search.png" alt="simple search">
                         </center>
                     </p>
                     <p>
-                    	<p class="pt-3">
+                    	<p>
                     		For advanced searches, navigate to the <a href="/database">database page</a> (or click <a href="/database">"Enter the Database"</a>.)
                     	</p>
-                    	<p>
-                        <center>
-                            [insert screenshots]
-                        </center>
-                    </p>
-                    	<h5>
+                    	<h5 class="pt-4">
                     		Search by <strong>source</strong> of meteorite study:
                     	</h5>
                     	<p>
-                    		Click on the plus + button on the left to expand search fields for <strong>journal name, volume, or page number</strong> of the research paper in which the meteorite appears:
+                    		Click on the plus + or minus - square button on the left to expand or minimize search fields for <strong>journal name, volume, or page number</strong> of the research paper in which the meteorite appears:
                     	</p>
                         <p>
-                        <center>
-                            [insert screenshots]
-                        </center>
-                    </p>
-                        <p>
-                        	Click the plus + button on the right to expand search fields for <strong>date of publication</strong> of the research paper in which the meteorite appears:
+                            <center>
+                                <img src="/images/help/Search/source_expand.png" alt="expand source">
+                            </center>
                         </p>
                         <p>
-                        <center>
-                            [insert screenshots]
-                        </center>
-                    </p>
+                        	Click on the plus + or minus - square button on the right to expand or minimize search fields for <strong>date of publication</strong> of the research paper in which the meteorite appears:
+                        </p>
+                        <p>
+                            <center>
+                                <img src="/images/help/Search/date_expand.png" alt="expand date">
+                            </center>
+                        </p>
                         <h5>
                         	Search by meteorite <strong>composition</strong>:
                         </h5>
                         <p>
-                        	Click the plus + or minus - signs next to "composition" to add or remove elements in your search:
+                        	Click the plus + or minus - signs next to "Composition" to expand or minimize search fields for the <strong>chemical composition</strong> of the meteorite:
                         </p>
                         <p>
-                        	<center>
-                        		[insert screenshots]
-                        	</center>
+                            <center>
+                                <img src="/images/help/Search/composition_expand.png" alt="expand composition">
+                            </center>
+                        </p>
+                        <p class="pt-4">
+                            You can then click "Search" to submit your query, or click "Reset" to clear all fields.
+                        </p>
+                        <p>
+                            <center>
+                                <img src="/images/help/Search/reset_search.png" alt="expand composition">
+                            </center>
                         </p>
                     </p>
                 </div>
@@ -125,32 +127,27 @@
                 	</p>
                 	 <p>
                         <center>
-                            [insert screenshots]
+                            <img src="/images/help/Export/export_page.png" alt="export page">
                         </center>
                     </p>
                     <p>
                     	You will be redirected to the "Export Data" page. Verify that the listed data is what you wish to export and delete any unwanted entries.
                     </p>
                     <p>
-                    	<center>
-                    		[insert screenshots]
-                    	</center>
+                        <center>
+                            <img src="/images/help/Export/data.png" alt="data to export">
+                        </center>
                     </p>
                     <p>
-                    	You can choose to export this data with separated by the analysis techniques used for each meteorite (this can result in multiple rows for each meteorite that has multiple analysis techniques), or you can choose to discard the analysis techniques and export each meteorite in a single row of the CSV.
+                    	You can choose to export this data separated by the analysis techniques used for each meteorite (this can result in multiple rows for a single meteorite that has multiple analysis techniques), or you can choose to discard the analysis techniques and export each meteorite in a single row of the CSV.
                     </p>
                     <p>
-                    	<center>
-                    		[insert screenshots]
-                    	</center>
+                        <center>
+                            <img src="/images/help/Export/analysis_vs_row.png" alt="export by analysis technique vs single row">
+                        </center>
                     </p>
-                    <p>
+                    <p class="pt-5">
                     	Once you are done customizing your export, you can click "Export Data" to download the CSV file on your local machine.
-                    </p>
-                    <p>
-                    	<center>
-                    		[insert screenshots]
-                    	</center>
                     </p>
                 </div>
                 <div class="col-sm-1"></div>
@@ -277,17 +274,17 @@
                     </p>
                     <p>
                         <center>
-                            <img src="/images/help/register2.png" alt="register user">
+                            <img src="/images/help/register.png" alt="register user">
                         </center>
                     </p>
-                    <p class="pt-1">
+                    <p>
                         <ul>
                             <li>
-                                Your username must be unique and at least 5 characters.
+                                Your username must be unique and at least 5 characters long.
                             </li>
                             <li> A valid email that is currently not registered with the Iron Meteorite Database is required.</li>
                             <li>
-                                Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number. The minimum length is 8 and the maximum is 25.
+                                Your password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number. The minimum length is 8 and the maximum is 25.
                             </li>
                         </ul>
                     </p>
