@@ -587,7 +587,7 @@ $('#event-div').on('click', '#validate-tables-btn', function() {
     const allInputs = $('input,textarea,select');
     let allValid = true;
     allInputs.each(function() {
-      if ($(this).hasClass('is-invalid')) {
+      if ($(this).hasClass('is-invalid') || !$(this).hasClass('is-valid')) {
         allValid = false;
       }
     });
