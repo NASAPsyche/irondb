@@ -63,7 +63,7 @@ router.post('/', async (req, res, next) => {
       currentQueryIndex++;
     }
 
-    if (req.body.group !== 'Group') {
+    if (req.body.group !== 'group') {
       argsArray.push(req.body.group);
       // eslint-disable-next-line max-len
       queryString += ('AND classification_group=$' + currentQueryIndex + ' ');
@@ -188,7 +188,7 @@ router.post('/', async (req, res, next) => {
       currentQueryIndex++;
     }
 
-    if (req.body.group !== 'Group') {
+    if (req.body.group !== 'group') {
       argsArray.push(req.body.group);
       // eslint-disable-next-line max-len
       queryString += ('AND classification_group=$' + currentQueryIndex + ' ');
@@ -232,50 +232,103 @@ router.post('/', async (req, res, next) => {
 
 
 /* GET /database/export */
-router.get('/export', function(req, res, next) {
-  // check if signed in
-  db.query(
-      'SELECT * FROM export_table',
-      [],
-      (dbErr, dbRes) => {
-        if (dbErr) {
-          return next(dbErr);
-        }
+router.get('/export', async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery('SELECT * FROM export_table', []);
+    const BodyIDs = db.aQuery('SELECT DISTINCT body_id FROM export_table', []);
+    const Major = db.aQuery(
+        'SELECT DISTINCT ON (element_symbol) element_symbol '
+        + 'FROM export_major_element_symbols'
+        , []);
+    const Minor = db.aQuery(
+        'SELECT DISTINCT ON (element_symbol) element_symbol '
+        + 'FROM export_minor_element_symbols'
+        , []);
+    const Trace = db.aQuery(
+        'SELECT DISTINCT ON (element_symbol) element_symbol '
+        + 'FROM export_trace_element_symbols'
+        , []);
+    resObj = await Promise.all([Entries, BodyIDs, Major, Minor, Trace]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    const major = resObj[2].rows;
+    const minor = resObj[3].rows;
+    const trace = resObj[4].rows;
 
-        // element symbols with categories
-        // Refactor to db queries
-        const major = [];
-        const minor = [];
-        const trace = [];
-        for (const row in dbRes.rows) {
-          if (dbRes.rows[row].measurement > 10000000) {
-            if (!major.includes(dbRes.rows[row].element_symbol)) {
-              major.push(dbRes.rows[row].element_symbol);
-            }
-          } else if (dbRes.rows[row].measurement <= 10000000
-          && dbRes.rows[row].measurement >= 1000000) {
-            if (!minor.includes(dbRes.rows[row].element_symbol)) {
-              minor.push(dbRes.rows[row].element_symbol);
-            }
-          } else if (dbRes.rows[row].measurement < 1000000) {
-            if (!trace.includes(dbRes.rows[row].element_symbol)) {
-              trace.push(dbRes.rows[row].element_symbol);
-            }
-          }
-        }
+    const Entries = resObj[0].rows;
+    const Entries2 = resObj[0].rows;
 
-        res.render('db-export', {
-          Entries: dbRes.rows,
-          major: major, minor: minor,
-          trace: trace, isSignedIn: req.isAuthenticated(),
-          _: ejsUnitConversion,
-        });
-      });
+    // separate entries into rows by meteorite and analysis technique
+    const Rows = [];
+    let temp = [];
+    let currentTechnique = '';
+    let currentID = -1;
+    for (let i = 0; i < Entries.length; i++) {
+      if (i === 0) {
+        currentTechnique = Entries[i].technique;
+        currentID = Entries[i].body_id;
+      }
+
+      if (Entries[i].body_id === currentID
+        && Entries[i].technique === currentTechnique) {
+        temp.push(Entries[i]);
+      } else {
+        Rows.push(temp);
+        temp = [];
+        currentTechnique = Entries[i].technique;
+        currentID = Entries[i].body_id;
+        temp.push(Entries[i]);
+      }
+
+      if (i === Entries.length - 1) {
+        Rows.push(temp);
+      }
+    }
+
+    // separate entries into rows by meteorite and analysis technique
+    const Rows2 = [];
+    temp = [];
+    currentTechnique = '';
+    currentID = -1;
+    for (let i = 0; i < Entries2.length; i++) {
+      if (i === 0) {
+        currentID = Entries2[i].body_id;
+      }
+
+      if (Entries2[i].body_id === currentID) {
+        temp.push(Entries2[i]);
+      } else {
+        Rows2.push(temp);
+        temp = [];
+        currentID = Entries2[i].body_id;
+        temp.push(Entries2[i]);
+      }
+
+      if (i === Entries2.length - 1) {
+        Rows2.push(temp);
+      }
+    }
+
+
+    res.render('db-export', {
+      Rows: Rows,
+      Rows2: Rows2,
+      Body_IDs: resObj[1].rows,
+      major: major.map((row) => row.element_symbol),
+      minor: minor.map((row) => row.element_symbol),
+      trace: trace.map((row) => row.element_symbol),
+      numColumns: major.length + minor.length + trace.length,
+      isSignedIn: req.isAuthenticated(),
+      _: ejsUnitConversion,
+    });
+  }
 });
 
 
 /* POST /database/export */
-router.post('/export', function(req, res, next) {
+router.post('/export', async (req, res, next) => {
   if (req.body.hasOwnProperty('export')) {
     // get arrays from request
     const tableData = JSON.parse(req.body.tableData);
@@ -311,109 +364,174 @@ router.post('/export', function(req, res, next) {
       next(createError(500));
     }
   } else {
-    // build query
-    let queryString = '';
-    if (!req.body.hasOwnProperty('export')) {
-      // if not export select corresponding rows from export table
-      queryString += 'SELECT * FROM export_table WHERE published_year > 1900 ';
-    }
-
-    const argsArray = [];
-    let currentQueryIndex = 1;
-
     if (!req.body.hasOwnProperty('entries')) {
-      // If request does not have ids for search
+      // If request does not have ids for search, bad request
       next(createError(400));
     }
 
-    if (req.body.entries.length >= 2) {
+    // Build constraints
+    let constraints = ' WHERE ';
+    const argsArray = [];
+    let currentQueryIndex = 1;
+
+    if (typeof req.body.entries == 'string') {
+      // single body
+      argsArray.push(parseInt(req.body.entries));
+      constraints += ('body_id=$' + currentQueryIndex);
+    } else {
+      // multiple bodies
       req.body.entries.forEach(function(element) {
         argsArray.push(element);
         if (currentQueryIndex === 1) {
-          // Set AND for first element added to query
-          queryString += ('AND body_id=$' + currentQueryIndex + ' ');
+          // No OR for first body
+          constraints += ('body_id=$' + currentQueryIndex + ' ');
         } else {
-          queryString += ('OR body_id=$' + currentQueryIndex + ' ');
+          constraints += ('OR body_id=$' + currentQueryIndex + ' ');
         }
         currentQueryIndex++;
       });
-    } else if (req.body.entries.length === 1) {
-      argsArray.push(req.body.entries[0]);
-      queryString += ('AND body_id=$' + currentQueryIndex + ' ');
     }
 
-    db.query(queryString, argsArray, (dbErr, dbRes) => {
-      if (dbErr) {
-        return next(dbErr);
-      }
+    // Build query strings
+    const entriesQuery = 'SELECT * FROM export_table' + constraints;
+    const bodyQuery = 'SELECT DISTINCT body_id FROM export_table' + constraints;
+    const majorQuery =
+        'SELECT DISTINCT ON (element_symbol) element_symbol '
+        + 'FROM export_major_element_symbols' + constraints;
+    const minorQuery =
+        'SELECT DISTINCT ON (element_symbol) element_symbol '
+        + 'FROM export_minor_element_symbols' + constraints;
+    const traceQuery =
+        'SELECT DISTINCT ON (element_symbol) element_symbol '
+        +'FROM export_trace_element_symbols' + constraints;
 
-      // element symbols with categories
-      // Refactor to db queries
-      const major = [];
-      const minor = [];
-      const trace = [];
-      for (const row in dbRes.rows) {
-        if (dbRes.rows[row].measurement > 10000000) {
-          if (!major.includes(dbRes.rows[row].element_symbol)) {
-            major.push(dbRes.rows[row].element_symbol);
-          }
-        } else if (dbRes.rows[row].measurement <= 10000000
-          && dbRes.rows[row].measurement >= 1000000) {
-          if (!minor.includes(dbRes.rows[row].element_symbol)) {
-            minor.push(dbRes.rows[row].element_symbol);
-          }
-        } else if (dbRes.rows[row].measurement < 1000000) {
-          if (!trace.includes(dbRes.rows[row].element_symbol)) {
-            trace.push(dbRes.rows[row].element_symbol);
-          }
+
+    let resObj = [];
+    try {
+      const Entries = db.aQuery(entriesQuery, argsArray);
+      const BodyIDs = db.aQuery(bodyQuery, argsArray);
+      const Major = db.aQuery(majorQuery, argsArray);
+      const Minor = db.aQuery(minorQuery, argsArray);
+      const Trace = db.aQuery(traceQuery, argsArray);
+      resObj = await Promise.all([Entries, BodyIDs, Major, Minor, Trace]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+      const major = resObj[2].rows;
+      const minor = resObj[3].rows;
+      const trace = resObj[4].rows;
+
+      const Entries = resObj[0].rows;
+      const Entries2 = resObj[0].rows;
+
+      // separate entries into rows by meteorite and analysis technique
+      const Rows = [];
+      let temp = [];
+      let currentTechnique = '';
+      let currentID = -1;
+      for (let i = 0; i < Entries.length; i++) {
+        if (i === 0) {
+          currentTechnique = Entries[i].technique;
+          currentID = Entries[i].body_id;
+        }
+
+        if (Entries[i].body_id === currentID
+          && Entries[i].technique === currentTechnique) {
+          temp.push(Entries[i]);
+        } else {
+          Rows.push(temp);
+          temp = [];
+          currentTechnique = Entries[i].technique;
+          currentID = Entries[i].body_id;
+          temp.push(Entries[i]);
+        }
+
+        if (i === Entries.length - 1) {
+          Rows.push(temp);
         }
       }
 
+      // separate entries into rows by meteorite and analysis technique
+      const Rows2 = [];
+      temp = [];
+      currentTechnique = '';
+      currentID = -1;
+      for (let i = 0; i < Entries2.length; i++) {
+        if (i === 0) {
+          currentID = Entries2[i].body_id;
+        }
+
+        if (Entries2[i].body_id === currentID) {
+          temp.push(Entries2[i]);
+        } else {
+          Rows2.push(temp);
+          temp = [];
+          currentID = Entries2[i].body_id;
+          temp.push(Entries2[i]);
+        }
+
+        if (i === Entries2.length - 1) {
+          Rows2.push(temp);
+        }
+      }
+
+
       res.render('db-export', {
-        Entries: dbRes.rows,
-        major: major, minor: minor,
-        trace: trace, isSignedIn: req.isAuthenticated(),
+        Rows: Rows,
+        Rows2: Rows2,
+        Body_IDs: resObj[1].rows,
+        major: major.map((row) => row.element_symbol),
+        minor: minor.map((row) => row.element_symbol),
+        trace: trace.map((row) => row.element_symbol),
+        numColumns: major.length + minor.length + trace.length,
+        isSignedIn: req.isAuthenticated(),
         _: ejsUnitConversion,
       });
-    });
+    }
   }
 });
 
 
+// Unimplemented due to timeline limitation
 /* GET /database/reported */
-router.get('/reported', isLoggedIn, function(req, res, next) {
-  db.query(
-      'SELECT * FROM flagged_entries_panel', [],
-      (dbErr1, dbRes1) => {
-        if (dbErr1) {
-          return next(dbErr1);
-        }
-        db.query(
-        /* eslint-disable-next-line max-len */
-            'SELECT * FROM inactive_entries_panel', [], (dbErr2, dbRes2) => {
-              if (dbErr2) {
-                return next(dbErr2);
-              }
-              res.render('db-reported', {
-                Reported: dbRes1.rows,
-                Inactive: dbRes2.rows,
-              });
-            });
-      });
-});
+// router.get('/reported', isLoggedIn, function(req, res, next) {
+//   db.query(
+//       'SELECT * FROM flagged_entries_panel', [],
+//       (dbErr1, dbRes1) => {
+//         if (dbErr1) {
+//           return next(dbErr1);
+//         }
+//         db.query(
+//         /* eslint-disable-next-line max-len */
+//             'SELECT * FROM inactive_entries_panel', [], (dbErr2, dbRes2) => {
+//               if (dbErr2) {
+//                 return next(dbErr2);
+//               }
+//               res.render('db-reported', {
+//                 Reported: dbRes1.rows,
+//                 Inactive: dbRes2.rows,
+//               });
+//             });
+//       });
+// });
 
 
 /* GET /database/unapproved */
-router.get('/unapproved', isLoggedIn, function(req, res, next) {
-  db.query(
-      'SELECT * FROM pending_entries_panel', [], (dbErr, dbRes) => {
-        if (dbErr) {
-          return next(dbErr);
-        }
-        res.render('db-unapproved', {
-          Entries: dbRes.rows,
-        });
-      });
+router.get('/unapproved', isLoggedIn, async function(req, res, next) {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery(
+        'SELECT DISTINCT ON (paper_id) * FROM pending_entries_panel',
+        []
+    );
+    resObj = await Promise.all([Entries]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('db-unapproved', {
+      Entries: resObj[0].rows,
+    });
+  }
 });
 
 /* GET /database/all */
@@ -426,6 +544,22 @@ router.get('/all', isAdmin, async (req, res, next) => {
     next(createError(500));
   } finally {
     res.render('all-entries', {Entries: resObj[0].rows});
+  }
+});
+
+/* GET /database/own */
+router.get('/own', isLoggedIn, async (req, res, next) => {
+  let resObj = [];
+  try {
+    const Entries = db.aQuery(
+        'SELECT * FROM all_papers_with_authors WHERE submitted_by = $1',
+        [req.user.username]
+    );
+    resObj = await Promise.all([Entries]);
+  } catch (err) {
+    next(createError(500));
+  } finally {
+    res.render('own-entries', {Entries: resObj[0].rows});
   }
 });
 

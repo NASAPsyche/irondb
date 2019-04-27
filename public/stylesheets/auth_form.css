@@ -7,3 +7,14 @@ form {
   max-width: 300px;
   padding: 10px;
 }
+
+#users {
+  display: none;
+}
+
+.alert-danger {
+	background-color: #FEEEEE;
+	border-color: #FBDCD7;
+	color: black;
+	border-width: 3px;
+}

@@ -1,4 +1,4 @@
-
+/* eslint-disable max-len */
 /**
  * Functions for supporting inserting entries into DB
  */
@@ -15,6 +15,7 @@ const pg = require('./index'); // postgres conx
  * @param  {Array} bodies
  * @param  {Array} notes
  * @param  {string} username
+ * @param  {string} pdfPath
  * @param  {string} status default 'pending'
  * @return {number} 0 - normal, 1 - failure
  */
@@ -25,13 +26,32 @@ async function insertEntry(
     bodies,
     notes,
     username,
+    pdfPath,
     status = 'pending'
 ) {
   const client = await pg.pool.connect();
   let journalId = null;
   let paperId = null;
+  let submissionId = null;
   try {
     await client.query('BEGIN');
+    // START A SUBMISSION
+    {
+      const submissionQuery =`
+      INSERT INTO
+      submissions(pdf_path, username)
+      VALUES($1, $2)
+      RETURNING submission_id
+      `;
+      const submissionValue = [pdfPath, username];
+      const {rows} = await client.query(submissionQuery, submissionValue);
+      submissionId = rows[0].submission_id;
+      if ( submissionId == null || submissionId == '') {
+        throw new Error( 'invalid submission ID');
+      }
+    }
+    // END SUBMISSION TRANSACTION
+
     // START JOURNAL TRANSACTION
     {
       const journalQuery = `
@@ -49,8 +69,8 @@ async function insertEntry(
       ];
       let {rows} = await client.query(journalQuery, journalValue);
       const journalStatusQuery = `
-      INSERT INTO journal_status(journal_id, current_status, submitted_by)
-      VALUES($1, $2, $3)
+      INSERT INTO journal_status(journal_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
       RETURNING status_id
       `;
       const journalId_ = rows[0].journal_id;
@@ -62,6 +82,7 @@ async function insertEntry(
         journalId,
         status,
         username,
+        submissionId,
       ];
       rows = await client.query(journalStatusQuery, journalStatusValue);
 
@@ -100,14 +121,15 @@ async function insertEntry(
       }
       const paperStatusQuery = `
       INSERT INTO
-      paper_status(paper_id, current_status, submitted_by)
-      VALUES($1, $2, $3)
+      paper_status(paper_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
       RETURNING status_id
       `;
       const paperStatusValue = [
         paperId,
         status,
         username,
+        submissionId,
       ];
       rows = await client.query(paperStatusQuery, paperStatusValue);
       const statusIdPaper = rows.rows[0].status_id;
@@ -146,14 +168,15 @@ async function insertEntry(
       const authorId = rows[0].author_id;
       const authorStatusQuery = `
       INSERT INTO
-      author_status(author_id, current_status, submitted_by)
-      VALUES($1, $2, $3)
+      author_status(author_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
       RETURNING status_id
       `;
       const authorStatusValue = [
         authorId,
         status,
         username,
+        submissionId,
       ];
       rows = await client.query(authorStatusQuery, authorStatusValue);
 
@@ -185,14 +208,15 @@ async function insertEntry(
       const attrId = rows.rows[0].attribution_id;
       const attrStatusQuery = `
       INSERT INTO
-      attribution_status(attribution_id, current_status, submitted_by)
-      VALUES($1, $2, $3)
+      attribution_status(attribution_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
       RETURNING status_id
       `;
       const attrStatusValue = [
         attrId,
         status,
         username,
+        submissionId,
       ];
       rows = await client.query(attrStatusQuery, attrStatusValue);
       const statusIdAttr = rows.rows[0].status_id;
@@ -225,14 +249,15 @@ async function insertEntry(
       const bodyId = rows[0].body_id;
       const bodyStatusQuery = `
       INSERT INTO
-      body_status(body_id, current_status, submitted_by)
-      VALUES($1, $2, $3)
+      body_status(body_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
       RETURNING status_id
       `;
       const bodyStatusValue = [
         bodyId,
         status,
         username,
+        submissionId,
       ];
       rows = await client.query(bodyStatusQuery, bodyStatusValue);
 
@@ -264,14 +289,15 @@ async function insertEntry(
       const groupId = rows.rows[0].group_id;
       const groupStatusQuery = `
       INSERT INTO
-      group_status(group_id, current_status, submitted_by)
-      VALUES($1, $2, $3)
+      group_status(group_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
       RETURNING status_id
       `;
       const groupStatusValue = [
         groupId,
         status,
         username,
+        submissionId,
       ];
       rows = await client.query(groupStatusQuery, groupStatusValue);
 
@@ -306,14 +332,15 @@ async function insertEntry(
         const classId = rows[0].classification_id;
         const classStatusQuery = `
         INSERT INTO
-        classification_status(classification_id, current_status, submitted_by)
-        VALUES($1, $2, $3)
+        classification_status(classification_id, current_status, submitted_by, submission_id)
+        VALUES($1, $2, $3, $4)
         RETURNING status_id
         `;
         const classStatusValue = [
           classId,
           status,
           username,
+          submissionId,
         ];
         rows = await client.query(classStatusQuery, classStatusValue);
 
@@ -385,8 +412,8 @@ async function insertEntry(
         const elementId = rows[0].element_id;
         const measureStatusQuery = `
         INSERT INTO
-        element_status(element_id, current_status, submitted_by)
-        VALUES($1, $2, $3)
+        element_status(element_id, current_status, submitted_by, submission_id)
+        VALUES($1, $2, $3, $4)
         RETURNING
         status_id
         `;
@@ -394,6 +421,7 @@ async function insertEntry(
           elementId,
           status,
           username,
+          submissionId,
         ];
         rows = await client.query(measureStatusQuery, measureStatusValue);
 
@@ -429,14 +457,15 @@ async function insertEntry(
       const noteId = rows[0].note_id;
       const noteStatusQuery = `
       INSERT INTO
-      note_status(note_id, current_status, submitted_by)
-      VALUES($1, $2, $3)
+      note_status(note_id, current_status, submitted_by, submission_id)
+      VALUES($1, $2, $3, $4)
       RETURNING status_id
       `;
       const noteStatusValue = [
         noteId,
         status,
         username,
+        submissionId,
       ];
       rows = await client.query(noteStatusQuery, noteStatusValue);
 

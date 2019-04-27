@@ -333,7 +333,28 @@ CREATE VIEW export_table AS (
   t1.published_year
   FROM elements_with_bodies_papers_journals_active_with_id as t1 
   INNER JOIN aggregated_authors_by_paper_id as t2 on t1.paper_id = t2.paper_id
-  ORDER BY body_id, title, page_number, measurement DESC
+  ORDER BY body_id ASC, technique DESC, measurement DESC, element_symbol ASC, title, page_number
+);
+
+CREATE VIEW export_major_element_symbols AS (
+  SELECT body_id, element_symbol
+  FROM export_table
+  WHERE measurement > 10000000
+  ORDER BY element_symbol
+);
+
+CREATE VIEW export_minor_element_symbols AS (
+  SELECT body_id, element_symbol
+  FROM export_table
+  WHERE measurement <= 10000000 AND measurement >= 1000000
+  ORDER BY element_symbol
+);
+
+CREATE VIEW export_trace_element_symbols AS (
+  SELECT body_id, element_symbol
+  FROM export_table
+  WHERE measurement < 1000000
+  ORDER BY element_symbol
 );
 
 CREATE VIEW papers_pending AS (
@@ -524,7 +545,8 @@ CREATE VIEW pending_elements_with_bodies_papers_journals AS (
 );
 
 CREATE VIEW full_attributions_pending AS (
-  SELECT t1.nomenclature,
+  SELECT t1.paper_id,
+    t1.nomenclature,
     t1.title,
     t1.published_year,
     t2.authors
@@ -533,13 +555,21 @@ CREATE VIEW full_attributions_pending AS (
 );
 
 CREATE VIEW pending_entries_panel AS (
-  select t1.body_id,
-  t1.nomenclature,
+  -- All papers associated with a pending submission
+  -- Currently in use
+  SELECT t1.paper_id,
   t1.title,
   t2.submission_date,
-  t2.submitted_by
-  from pending_elements_with_bodies_papers_journals as t1
-  inner join body_status as t2 on t1.body_id = t2.body_id and t2.current_status='pending'
+  t2.submitted_by,
+  t2.submission_id
+  FROM papers AS t1
+  JOIN (SELECT submission_date, t4.submitted_by, t3.submission_id, paper_id 
+        FROM paper_status AS t3
+        JOIN (SELECT username as submitted_by, submission_id 
+              FROM submissions
+              WHERE pending = true) AS t4
+        ON t3.submission_id = t4.submission_id) AS t2
+  ON t1.paper_id = t2.paper_id
 );
 
 CREATE VIEW flagged_entries_panel AS ( 
@@ -637,7 +667,8 @@ CREATE VIEW authors_all AS (
     t1.first_name || ' ' || t1.middle_name || ' ' || t1.primary_name as author_name,
     t1.single_entity
     FROM authors as t1 
-    INNER JOIN author_status as t2 on t1.status_id = t2.status_id 
+    INNER JOIN author_status as t2 on t1.status_id = t2.status_id
+    WHERE current_status != 'rejected'
 );
 
 CREATE VIEW attributions_all AS (
@@ -698,13 +729,21 @@ CREATE VIEW all_aggregated_authors_by_paper_id AS (
 );
 
 CREATE VIEW all_papers_with_authors AS (
- SELECT DISTINCT  t1.paper_id,
+SELECT DISTINCT t1.paper_id,
    t1.title,
    t1.published_year,
    t2.authors,
-   t1.current_status
-   FROM full_attributions_all as t1
-   INNER JOIN all_aggregated_authors_by_paper_id as t2 on t1.paper_id = t2.paper_id
+   t1.current_status,
+   t3.submitted_by,
+   t3.submission_id
+   FROM full_attributions_all AS t1
+   INNER JOIN all_aggregated_authors_by_paper_id AS t2 ON t1.paper_id = t2.paper_id
+   JOIN (SELECT t4.paper_id, t4.submission_id, 
+         t5.username as submitted_by FROM paper_status AS t4
+         JOIN submissions AS t5 ON t4.submission_id = t5.submission_id
+         WHERE t4.submission_id IS NOT NULL 
+         AND current_status != 'rejected') 
+   AS t3 ON t1.paper_id = t3.paper_id
    ORDER BY t1.current_status ASC
 );
 
@@ -920,4 +959,17 @@ CREATE VIEW monolith_paper_pending as (
     t4.issue,
     t4.series,
     t4.published_year
+);
+
+-- Joining 'users' and 'user_info' table without password
+CREATE VIEW users_with_info AS (
+  SELECT t1.user_id,
+  t1.username,
+  t2.first_name,
+  t2.last_name,
+  t2.email_address,
+  t1.role_of
+  FROM users AS t1
+  INNER JOIN user_info as t2 ON t1.user_id = t2.user_id
+  ORDER BY t1.role_of ASC
 );

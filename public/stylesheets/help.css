@@ -1,11 +1,23 @@
-.section-head{
-    background-color:#8c1d40;
+.section-head {
+    background-color: #592651;
     color: white;
     padding: 0.15em;
     padding-left: 2em;
     box-shadow: 8px 8px 6px grey;
 }
 
+.text-red {
+    color: red;
+}
+
+.text-green {
+    color: rgb(0, 188, 0);
+}
+
+p { 
+    font-size: 1rem;
+}
+
 img {
-    box-shadow: 10px 10px 7px grey;
+    max-width: 40%;
 }

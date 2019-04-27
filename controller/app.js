@@ -1,6 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-const PgSession = require('connect-pg-simple')(session);
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -9,6 +8,9 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const db = require('./db');
+
+const expressSanitizer = require('express-sanitizer');
+const pgSession = require('connect-pg-simple')(session);
 
 // Define individual route routers
 const indexRouter = require('./routes/index');
@@ -108,19 +110,24 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
+const oneWeek = 604800000;
+const pgPool = db.pool;
 app.use(session({
-  store: new PgSession({
-    pool: db.pool,
+  // eslint-disable-next-line new-cap
+  store: new pgSession({
+    pool: pgPool, // Connection pool
+    tableName: 'user_session',
   }),
   secret: 'Temporary_Example_Secret_Hide_Real_Secret_When_in_Production',
   resave: false,
   saveUninitialized: false,
-  // maxAge set to 60 mins, param in miliseconds
-  cookie: {maxAge: 60 * 60 * 1000},
+  cookie: {maxAge: oneWeek},
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(expressSanitizer());
 
 // Define routers for given routes
 app.use('/', indexRouter);
@@ -156,6 +163,10 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  if (req.app.get('env') === 'development') {
+    console.log(err);
+  }
 
   // check if logged in
   let isSignedIn = false;

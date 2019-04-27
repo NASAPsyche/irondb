@@ -3,6 +3,7 @@
 
 <head>
   <title>Admin Panel</title>
+  <%- include('components/favicon'); %>
   <%- include('bootstrap/css'); %>
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <link rel='stylesheet' href='/stylesheets/admin.css' />
@@ -15,20 +16,24 @@
     <div class='container-fluid mt-4 mb-2'>
       <h1> Admin Panel</h1>
     </div>
+    <div>
+      <a href="/panel/analysis-technique/" class="badge badge-warning" id="new-at">Add New Analysis Technique</a>
+    </div>
 
-    <div class='container-fluid'>
+    <div class='container-fluid pt-3'>
 
       <!-- Row 1 -->
       <div class="row">
         <!-- Col 1-->
         <div class="card col-md mr-2 pt-2">
           <div>
-            <a class="btn btn-danger btn-large p-2 text-warning " href="../database/all" role="button"> <u>Manage
-                Database</u>
+            <a class="btn btn-danger btn-large p-2 text-warning " href="../database/all" role="button"> <u>Database
+                Entries
+              </u>
               <span class="h1 badge badge-light">
-                <!-- Uncomment for badge to display 3+--!>
+                <!-- Uncomment for badge to display 3+
               <% let dCount = databaseCount <= 3 ? userCount : "3+" %>
-              <!-- -->
+              -->
                 <%= databaseCount %></span>
             </a>
           </div>
@@ -73,7 +78,7 @@
         </div>
 
         <!-- Col 2-->
-        <div class="card col-md ml-2 pt-2">
+        <div class="card col-md ml-md-2  mt-3 mt-md-0 pt-2">
           <div>
             <a class="btn btn-danger btn-large p-2 text-warning " href="../users" role="button"> <u>Manage
                 Users</u>
@@ -120,7 +125,7 @@
       </div>
 
       <!--Row 2 -->
-      <div class="row mt-2 mb-4">
+      <div class="row mt-2 mb-4 pb-4">
         <!--Col 1-->
         <div class="card col-md mr-2 mt-2 pt-2">
           <div>
@@ -135,10 +140,10 @@
             <table class="table table-stripd table-bordered">
               <thead class="thead-dark">
                 <tr>
-                  <th>Body</th>
-                  <th>Title</th>
-                  <th>Year</th>
-                  <th>Author(s)</th>
+                  <th>Paper ID</th>
+                  <th>Paper Title</th>
+                  <th>Date Imported</th>
+                  <th>Imported by</th>
                 </tr>
               </thead>
               <tbody class='table-light'>
@@ -146,16 +151,16 @@
                 <% for(var i=0; i < pending; i++) { %>
                 <tr>
                   <th>
-                    <%= Pending[i].nomenclature %>
+                    <%= Pending[i].paper_id %>
                   </th>
                   <th>
                     <%= Pending[i].title %>
                   </th>
                   <th>
-                    <%= Pending[i].published_year %>
+                    <%= Pending[i].submission_date %>
                   </th>
                   <th>
-                    <%= Pending[i].authors %>
+                    <%= Pending[i].submitted_by %>
                   </th>
                 </tr>
                 <% } %>
@@ -171,10 +176,11 @@
             </a>
           </div>
           <% } %>
-        </div>
+        <!-- </div> -->
 
         <!--Col 2-->
-        <div class="card col-md ml-2 mt-2 pt-2">
+        <!--  Unimplemented due to timeline limitation -->
+        <!-- <div class="card col-md ml-2 mt-2 pt-2">
           <div>
             <a class="btn btn-danger btn-large p-2 text-warning " href="../database/reported" role="button"><u>Reported
                 Entries</u>
@@ -222,7 +228,7 @@
             </a>
           </div>
           <% } %>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

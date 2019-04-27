@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Data Entry - Approval</title>
+    <%- include('components/favicon'); %>
+    <%- include('components/font-awesome'); %>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/data-entry.css' />
+  </head>
+  <body>
+    <%- include('components/navbar_signed_in'); %>
+  
+
+    <div class="container-fluid mt-5">
+        <div class="row p-2" id="alert-target">
+            <% if (pdfPath !== null && pdfPath !== 'null' && pdfPath.slice(pdfPath.length - 4) === '.pdf') { %>
+                <% console.log(pdfPath); %>
+                <div class="col-sm-12 col-md-5 pl-1 mb-3 mt-5">
+                    <div class="sticky-top" id="pdf-panel"></div>
+                </div>
+                <div class="col-sm-11 col-md-7 border border-dark rounded pb-2" id="event-div">
+            <% } else { %>
+                <div class="container-fluid border border-dark rounded ml-md-5 mr-md-5 mb-3 pb-2" id="event-div">
+            <% } %>
+                    <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
+                        <h1>Approval</h1>
+                    </div>
+                    <% if (pdfPath === 'null') { %>
+                        <p>No pdf found for this submission.</p>
+                    <% } %>
+
+                    <h5 class="pt-1 pr-1 mr-2">
+                        <% if (Paper.current_status === 'pending') { %>
+                            <form class="form-inline" action="/data-entry/approve/update" method="POST">
+                                <strong>Basic Information</strong>
+
+                                <label class="sr-only" for="type">request type</label>
+                                <input type="hidden" name="type" value="basic">
+
+                                <label class="sr-only" for="submissionID">ID of submission</label>
+                                <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+
+                                <label class="sr-only" for="paperID">ID of current paper</label>
+                                <input type="hidden" name="paperID" value=<%= Paper.paper_id %>>
+
+                                <label class="sr-only" for="paperStatus">ID of status entry for paper</label>
+                                <input type="hidden" name="paperStatus" value=<%= Paper.status_id %>>
+
+                                <label class="sr-only" for="journalID">ID of current journal</label>
+                                <input type="hidden" name="journalID" value=<%= Journal.journal_id %>>
+
+                                <label class="sr-only" for="journalStatus">ID of status entry for journal</label>
+                                <input type="hidden" name="journalStatus" value=<%= Journal.status_id %>>
+                                
+                                <button class="btn btn-primary btn-sm ml-1" type="submit" id="basic-approve">Approve</button>
+                            </form>
+                        <% } else { %>
+                            <strong>Basic Information</strong>
+                            <em>(Basic information already approved, but shown for reference)</em>
+                        <% } %>
+                    </h5>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="paperTitle">Paper Title</label>
+                            <input type="text" class="form-control" name="paperTitle" id="paperTitle" readonly value="<%= Paper.title %>">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="doi">DOI</label>
+                            <input type="text" class="form-control" id="doi" name="doi" readonly value="<%= Paper.doi %>">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-7">
+                            <label for="journalName">Journal Name</label>
+                            <input type="text" class="form-control" id="journalName" name="journalName" readonly value="<%= Journal.journal_name %>">
+                        </div>
+                        <div class="form-group offset-md-1 col-md-4">
+                            <label for="pub_year">Year Published</label>
+                            <input type="number" class="form-control" id="pubYear" name="pubYear" readonly value="<%= Journal.published_year %>">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="volume">Volume</label>
+                            <input type="text" class="form-control" id="volume" name="volume" readonly value="<%= Journal.volume %>">
+                        </div>
+                        <div class="form-group offset-md-1 col-md-3">
+                            <label for="issue">Issue</label>
+                            <input type="text" class="form-control" id="issue" name="issue" readonly value="<%= Journal.issue %>">
+                        </div>
+                        <div class="form-group offset-md-1 col-md-3">
+                            <label for="series">ISSN</label>
+                            <input type="text" class="form-control" id="series" name="series" readonly value="<%= Journal.series %>">
+                        </div>
+                    </div>
+                         
+                    <% for(var i=0; i < AuthorsWithAttribution.length; i++) { %>
+                        <div class="form-row author-header">
+                            <form class="form-inline" action="/data-entry/approve/update" method="POST">
+                                <p class="pt-1 mr-2">Author(<%= i + 1 %> of <%= AuthorsWithAttribution.length %>)</p>
+                                <label class="sr-only" for="type">request type</label>
+                                <input type="hidden" name="type" value="author">
+
+                                <label class="sr-only" for="submissionID">ID of submission</label>
+                                <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+
+                                <label class="sr-only" for="authorID">ID of current author</label>
+                                <input type="hidden" name="authorID" value=<%= AuthorsWithAttribution[i].author_id %>>
+
+                                <label class="sr-only" for="authorStatus">ID of status entry for author</label>
+                                <input type="hidden" name="authorStatus" value=<%= AuthorsWithAttribution[i].status_id %>>
+
+                                <label class="sr-only" for="attributionID">ID of current attribution</label>
+                                <input type="hidden" name="attributionID" value=<%= AuthorsWithAttribution[i].attribution_id %>>
+
+                                <label class="sr-only" for="attributionStatus">ID of status entry for attribution</label>
+                                <input type="hidden" name="attributionStatus" value=<%= AuthorsWithAttribution[i].attribution_status_id %>>
+
+                                <label class="sr-only" for="paperStatus">ID of status entry for paper</label>
+                                <input type="hidden" name="paperStatus" value=<%= Paper.status_id %>>
+
+                                <button class="btn btn-primary btn-sm ml-1" type="submit">Approve</button>
+                            </form>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="primaryName">Last Name</label>
+                                <input type="text" class="form-control" name="primaryName" readonly value="<%= AuthorsWithAttribution[i].primary_name %>"> 
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" name="firstName" required="true" readonly value="<%= AuthorsWithAttribution[i].first_name %>"> 
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="middleName" >Middle Name</label>
+                                <input type="text" class="form-control" name="middleName" readonly value="<%= AuthorsWithAttribution[i].middle_name %>"> 
+                            </div>
+                        </div>
+
+                    <% } %>
+
+                    <% for(var i=0; i < Bodies.length; i++) { %>
+                        <div class="form-row meteorite-header">
+                            <h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>
+                        </div>
+                            
+                        <div class="form-row">
+                            <div class="col-md-2 pt-4">
+                                <form class="form-inline" action="/data-entry/approve/update" method="POST">
+                                    <label class="sr-only" for="type">request type</label>
+                                    <input type="hidden" name="type" value="meteorite">
+
+                                    <label class="sr-only" for="submissionID">ID of submission</label>
+                                    <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+
+                                    <label class="sr-only" for="bodyID">ID of current body</label>
+                                    <input type="hidden" name="bodyID" value=<%= Bodies[i].body_id %>>
+
+                                    <label class="sr-only" for="bodyStatus">ID of status entry for body</label>
+                                    <input type="hidden" name="bodyStatus" value=<%= Bodies[i].status_id %>>
+
+                                    <label class="sr-only" for="groupID">ID of current group</label>
+                                    <input type="hidden" name="groupID" value=<%= Groups[i].group_id %>>
+
+                                    <label class="sr-only" for="groupStatus">ID of status entry for group</label>
+                                    <input type="hidden" name="groupStatus" value=<%= Groups[i].status_id %>>
+
+                                    <button class="btn btn-primary btn-sm ml-1" type="submit">Approve</button>
+                                </form>
+                            </div>
+                            <div class="form-group col-md-6 ml-2">
+                                <label for="bodyName">Meteorite</label>
+                                <input type="text" class="form-control" name="bodyName" readonly value="<%= Bodies[i].nomenclature %>">
+                            </div>
+                            
+                            <% for(var j=0; j < Groups.length; j++) { %>
+                                <% if (Groups[j].body_id === Bodies[i].body_id) { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="group">Group</label>
+                                        <input type="text" class="form-control" name="group" readonly value="<%= Groups[j].the_group %>">
+                                    </div>
+                                <% } %>
+                            <% } %>
+                        </div>
+
+                        <% for(var k=0; k < ElementEntries.length; k++) { %>
+                            <% if (ElementEntries[k].body_id === Bodies[i].body_id) { %>
+                                <div class="form-row">
+                                    <div class="col-md-2">
+                                        <form class="form-inline pt-4 pr-2" action="/data-entry/approve/update" method="POST">
+                                            <label class="sr-only" for="type">request type</label>
+                                            <input type="hidden" name="type" value="element">
+
+                                            <label class="sr-only" for="submissionID">ID of submission</label>
+                                            <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+        
+                                            <label class="sr-only" for="elementID">ID of current element</label>
+                                            <input type="hidden" name="elementID" value=<%= ElementEntries[k].element_id %>>
+        
+                                            <label class="sr-only" for="elementStatus">ID of status entry for element</label>
+                                            <input type="hidden" name="elementStatus" value=<%= ElementEntries[k].status_id %>>
+        
+                                            <button class="btn btn-primary btn-sm ml-1" type="submit">Approve</button>
+                                        </form>
+                                    </div>
+                                    <div class="form-group col-md-1 mr-3">
+                                        <label for="element">Element</label>
+                                        <input type="text" class="form-control" name="element" readonly value="<%= ElementEntries[k].element_symbol.charAt(0).toUpperCase() + ElementEntries[k].element_symbol.slice(1) %>">
+                                    </div>
+                                    <div class="form-check-inline col-auto">
+                                        <input class="form-check-input" type="checkbox" <% if (ElementEntries[k].less_than == 'true') { %> checked <% } %> disabled >
+                                        <label class="form-check-label" for="lessThan">&lt;</label>
+                                    </div>
+
+                                    <% if (ElementEntries[k].original_unit === "wt_percent") { %>
+                                        <div class="form-group col-md-2">
+                                            <label for="measurement">Measurement</label>
+                                            <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToPercent(ElementEntries[k].ppb_mean, ElementEntries[k].sigfig) %>">
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label for="deviation">(&plusmn;)</label>
+                                            <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToPercent(ElementEntries[k].deviation, ElementEntries[k].sigfig) %>">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="units">Units</label>
+                                            <input type="text" class="form-control"  name="units" readonly value="wt%">
+                                        </div>
+                                    <% } else if (ElementEntries[k].original_unit === "ppm") { %>
+                                        <div class="form-group col-md-2">
+                                            <label for="measurement">Measurement</label>
+                                            <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToPPM(ElementEntries[k].ppb_mean, ElementEntries[k].sigfig) %>">
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label for="deviation">(&plusmn;)</label>
+                                            <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToPPM(ElementEntries[k].deviation, ElementEntries[k].sigfig) %>">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="units">Units</label>
+                                            <input type="text" class="form-control"  name="units" readonly value="ppm">
+                                        </div>
+                                    <% } else if (ElementEntries[k].original_unit === "ppb") { %>
+                                        <div class="form-group col-md-2">
+                                            <label for="measurement">Measurement</label>
+                                            <input type="number" class="form-control"  name="measurement" readonly value="<%= ElementEntries[k].ppb_mean %>">
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label for="deviation">(&plusmn;)</label>
+                                            <input type="number" class="form-control" name="deviation" readonly value="<%= ElementEntries[k].deviation %>">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="units">Units</label>
+                                            <input type="text" class="form-control"  name="units" readonly value="ppb">
+                                        </div>
+                                    <% } else if (ElementEntries[k].original_unit === "mg_g") { %>
+                                        <div class="form-group col-md-2">
+                                            <label for="measurement">Measurement</label>
+                                            <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToMilligramsPerGram(ElementEntries[k].ppb_mean, ElementEntries[k].sigfig) %>">
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label for="deviation">(&plusmn;)</label>
+                                            <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToMilligramsPerGram(ElementEntries[k].deviation, ElementEntries[k].sigfig) %>">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="units">Units</label>
+                                            <input type="text" class="form-control"  name="units" readonly value="mg/g">
+                                        </div>
+                                    <% } else if (ElementEntries[k].original_unit === "ug_g") { %>
+                                        <div class="form-group col-md-2">
+                                            <label for="measurement">Measurement</label>
+                                            <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToMicrogramsPerGram(ElementEntries[k].ppb_mean, ElementEntries[k].sigfig) %>">
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label for="deviation">(&plusmn;)</label>
+                                            <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToMicrogramsPerGram(ElementEntries[k].deviation, ElementEntries[k].sigfig) %>">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="units">Units</label>
+                                            <input type="text" class="form-control"  name="units" readonly value="&micro;g/g">
+                                        </div>
+                                    <% } else if (ElementEntries[k].original_unit === "ng_g") { %>
+                                        <div class="form-group col-md-2">
+                                            <label for="measurement">Measurement</label>
+                                            <input type="number" class="form-control"  name="measurement" readonly value="<%= ElementEntries[k].ppb_mean %>">
+                                        </div>
+                                        <div class="form-group col-md-1">
+                                            <label for="deviation">(&plusmn;)</label>
+                                            <input type="number" class="form-control" name="deviation" readonly value="<%= ElementEntries[k].deviation %>">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="units">Units</label>
+                                            <input type="text" class="form-control"  name="units" readonly value="ng/g">
+                                        </div>
+                                    <% } %>
+
+                                    <div class="form-group col-md-2">
+                                        <label for="technique">Technique</label>
+                                        <input type="text" class="form-control"  name="technique" readonly value="<%= ElementEntries[k].technique %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="page">Page</label>
+                                        <input type="number" class="form-control p-1" name="page" readonly value="<%= ElementEntries[k].page_number %>">
+                                    </div>
+                                </div>
+
+                            <% } %>
+                        <% } %>
+                    <% } %>
+
+                    <% var currentName = ''; %>
+                    <% for(var k=0; k < UnattachedElementEntries.length; k++) { %>
+                        <% if (UnattachedElementEntries[k].nomenclature !== currentName) { %>
+                            <h3>Measurements for: <%= UnattachedElementEntries[k].nomenclature %></h3>
+                            <% var currentName = UnattachedElementEntries[k].nomenclature; %>
+                        
+                        <% } %>
+                            <div class="form-row">
+                                <div class="col-md-2">
+                                    <form class="form-inline pt-4 pr-2" action="/data-entry/approve/update" method="POST">
+                                        <label class="sr-only" for="type">request type</label>
+                                        <input type="hidden" name="type" value="element">
+
+                                        <label class="sr-only" for="submissionID">ID of submission</label>
+                                        <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+    
+                                        <label class="sr-only" for="elementID">ID of current element</label>
+                                        <input type="hidden" name="elementID" value=<%= UnattachedElementEntries[k].element_id %>>
+    
+                                        <label class="sr-only" for="elementStatus">ID of status entry for element</label>
+                                        <input type="hidden" name="elementStatus" value=<%= UnattachedElementEntries[k].status_id %>>
+    
+                                        <button class="btn btn-primary btn-sm ml-1" type="submit">Approve</button>
+                                    </form>
+                                </div>
+                                <div class="form-group col-md-1 mr-3">
+                                    <label for="element">Element</label>
+                                    <input type="text" class="form-control" name="element" readonly value="<%= UnattachedElementEntries[k].element_symbol.charAt(0).toUpperCase() + UnattachedElementEntries[k].element_symbol.slice(1) %>">
+                                </div>
+                                <div class="form-check-inline col-auto">
+                                    <input class="form-check-input" type="checkbox" <% if (UnattachedElementEntries[k].less_than == 'true') { %> checked <% } %> disabled >
+                                    <label class="form-check-label" for="lessThan">&lt;</label>
+                                </div>
+
+                                <% if (UnattachedElementEntries[k].original_unit === "wt_percent") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToPercent(UnattachedElementEntries[k].ppb_mean, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToPercent(UnattachedElementEntries[k].deviation, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="wt%">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "ppm") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToPPM(UnattachedElementEntries[k].ppb_mean, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToPPM(UnattachedElementEntries[k].deviation, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="ppm">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "ppb") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= UnattachedElementEntries[k].ppb_mean %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= UnattachedElementEntries[k].deviation %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="ppb">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "mg_g") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToMilligramsPerGram(UnattachedElementEntries[k].ppb_mean, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToMilligramsPerGram(UnattachedElementEntries[k].deviation, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="mg/g">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "ug_g") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= _.ppbToMicrogramsPerGram(UnattachedElementEntries[k].ppb_mean, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= _.ppbToMicrogramsPerGram(UnattachedElementEntries[k].deviation, UnattachedElementEntries[k].sigfig) %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="&micro;g/g">
+                                    </div>
+                                <% } else if (UnattachedElementEntries[k].original_unit === "ng_g") { %>
+                                    <div class="form-group col-md-2">
+                                        <label for="measurement">Measurement</label>
+                                        <input type="number" class="form-control"  name="measurement" readonly value="<%= UnattachedElementEntries[k].ppb_mean %>">
+                                    </div>
+                                    <div class="form-group col-md-1">
+                                        <label for="deviation">(&plusmn;)</label>
+                                        <input type="number" class="form-control" name="deviation" readonly value="<%= UnattachedElementEntries[k].deviation %>">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label for="units">Units</label>
+                                        <input type="text" class="form-control"  name="units" readonly value="ng/g">
+                                    </div>
+                                <% } %>
+
+                                <div class="form-group col-md-2">
+                                    <label for="technique">Technique</label>
+                                    <input type="text" class="form-control"  name="technique" readonly value="<%= UnattachedElementEntries[k].technique %>">
+                                </div>
+                                <div class="form-group col-md-1">
+                                    <label for="page">Page</label>
+                                    <input type="number" class="form-control p-1" name="page" readonly value="<%= UnattachedElementEntries[k].page_number %>">
+                                </div>
+                            </div>
+                    <% } %>
+
+                    <% for(var i=0; i < Notes.length; i++) { %>
+                        <div class="form-row pt-1">
+                            <label for="note">Note:
+                                <form class="form-inline" action="/data-entry/approve/update" method="POST">
+                                    <label class="sr-only" for="type">request type</label>
+                                    <input type="hidden" name="type" value="note">
+
+                                    <label class="sr-only" for="submissionID">ID of submission</label>
+                                    <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+
+                                    <label class="sr-only" for="noteID">ID of current note</label>
+                                    <input type="hidden" name="noteID" value=<%= Notes[i].note_id %>>
+
+                                    <label class="sr-only" for="noteStatus">ID of status entry for note</label>
+                                    <input type="hidden" name="noteStatus" value=<%= Notes[i].status_id %>>
+
+                                    <button class="btn btn-primary btn-sm ml-1" type="submit">Approve</button>
+                                </form>
+                            </label>
+                            <textarea class="form-control" name="note" rows="5" readonly><%= Notes[i].note %></textarea>
+                        </div>
+                    <% } %>
+                </div>
+        </div>
+    </div>
+
+    <% if (pdfPath !== null && pdfPath !== 'null' && pdfPath.slice(pdfPath.length - 4) === '.pdf') { %>
+        <div hidden="true" id="filepath" value="<%- pdfPath %>"><%- pdfPath %></div>
+    <% } %>
+
+    <%- include('bootstrap/js'); %>
+    <%- include('components/ejs'); %>
+    <script src='/javascripts/pdfobject.min.js'></script>
+    <% if (pdfPath !== null && pdfPath !== 'null' && pdfPath.slice(pdfPath.length - 4) === '.pdf') { %>
+        <script>
+            $('document').ready( function() {
+                const fp = $( '#filepath' ).attr('value');
+                const panel = $( '#pdf-panel' );
+                PDFObject.embed(fp, panel);
+            });
+        </script>
+    <% } %>
+    <script src="/javascripts/approve.js"></script>
+    <script src="/javascripts/editor/pdf.js"></script>
+  </body>
+</html>

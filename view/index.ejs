@@ -2,7 +2,9 @@
 <html>
   <head>
     <title>Iron Meteorite Database</title>
+    <%- include('components/favicon'); %>
     <%- include('bootstrap/css'); %>
+    <link href="https://fonts.googleapis.com/css?family=Space+Mono" rel="stylesheet"> 
     <link rel='stylesheet' href='/stylesheets/index.css' />
   </head>
   <body>
@@ -12,48 +14,9 @@
       <%- include('components/navbar'); %>
     <% } %>
 
-  	<div class="container-fluid pt-3 pb-4" id="top-container">
-      <div class="row">
-
-        <div class="col-sm-1 offset-sm-2">
-          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 96 96" style="enable-background:new 0 0 96 96;" xml:space="preserve" width="150px">
-            <style type="text/css">
-              .st0{fill:url(#lgrad);}
-            </style>
-            <g id="XMLID_1_">
-              <path id="XMLID_7_" class="st0" d="M48,80.5c-15.4,0-27.9-4.2-27.9-9.3v-9.3c0-0.8,0.4-1.6,1-2.3c3.1,4,13.9,7,26.9,7
-                s23.8-3,26.9-7c0.6,0.7,1,1.5,1,2.3v9.3C75.9,76.3,63.4,80.5,48,80.5z M48,61.9c-15.4,0-27.9-4.2-27.9-9.3v-9.3
-                c0-0.5,0.2-1,0.4-1.4l0.6-0.9c3.1,4,13.9,7,26.9,7s23.8-3,26.9-7l0.6,0.9c0.2,0.5,0.4,1,0.4,1.4v9.3C75.9,57.8,63.4,61.9,48,61.9z
-                 M48,43.4c-15.4,0-27.9-4.2-27.9-9.3v-4.6v-4.6c0-5.1,12.5-9.3,27.9-9.3s27.9,4.2,27.9,9.3v4.6v4.6C75.9,39.2,63.4,43.4,48,43.4z
-                 M48,20.1c-10.3,0-18.6,2.1-18.6,4.6s8.3,4.6,18.6,4.6s18.6-2.1,18.6-4.6S58.3,20.1,48,20.1z"/>
-            </g>
-            <defs>
-              <linearGradient id="lgrad" x1="0%" y1="48%" x2="100%" y2="52%" >
-                <stop offset="0%" style="stop-color:rgb(249,160,0);stop-opacity:1" />
-                <stop offset="34%" style="stop-color:rgb(249,160,0);stop-opacity:1" />
-                <stop offset="76%" style="stop-color:rgb(244,124,51);stop-opacity:1" />
-                <stop offset="100%" style="stop-color:rgb(244,124,51);stop-opacity:1" />
-              </linearGradient>
-            </defs> 
-          </svg>
-        </div>
-
-        <div class="col-md-8 pt-4 ml-5">
-
-          <div class="row">
-            <div class="offset-sm-0 offset-md-1 offset-lg-0">
-              <h2>Welcome to the ...</h2>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="offset-md-1 offset-xl-2">
-              <h1>Iron Meteorite Database</h1>
-            </div>
-          </div>
-
-        </div>
-
+  	<div class="container-fluid pt-3 pb-5" id="top-container">
+      <div class="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
+          <h1>Iron Meteorite Database</h1>
       </div>
   	</div>
 
@@ -72,7 +35,7 @@
             <div class="col-md-2">
               <label class="sr-only" for="group">group</label>
               <select class="form-control" name="group">
-                <option>Group</option>
+                <option value="group">group</option>
                 <% for(var i=0; i < Groups.length; i++) { %>
                   <option value="<%= Groups[i].classification_group %>"><%= Groups[i].classification_group %></option>
                 <% } %>                
@@ -98,9 +61,21 @@
       </div>
 
       <div class="d-flex flex-row align-items-center justify-content-center">
-        <a href="/database" class="btn btn-dark btn-lg">Enter the database</a>
+        <a href="/database" class="btn btn-warning">Enter the Database</a>
       </div>
 
+    </div>
+
+    <div class="container-fluid fixed-bottom">
+      <div class="d-flex flex-row align-items-center justify-content-center mb-0">
+        <p><small>This website and work were created in partial fulfillment of Arizona State University Capstone Course “SER 401-402.”
+           The work is a result of the Psyche Student Collaborations component of NASA’s Psyche Mission (<a href="https://psyche.asu.edu">https://psyche.asu.edu</a>).
+           “Psyche: A Journey to a Metal World” [Contract number NNM16AA09C] is part of the NASA Discovery Program mission to solar system targets. 
+            Trade names and trademarks of ASU and NASA are used in this website for identification only. 
+            Their usage does not constitute an official endorsement, either expressed or implied, by Arizona State University or National Aeronautics and Space Administration. 
+            The content is solely the responsibility of the authors and does not necessarily represent the official views of ASU or NASA.
+        </small></p>
+      </div>
     </div>
 
     <%- include('bootstrap/js'); %>

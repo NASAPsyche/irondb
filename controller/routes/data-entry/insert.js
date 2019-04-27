@@ -1,13 +1,18 @@
-// const createError = require('http-errors');
-// const pg = require('../../db');
 const parser = require('../../db/entry-parser');
 const inserter = require('../../db/insert-entry');
 const Router = require('express-promise-router');
 const router = new Router();
+const {isLoggedIn} = require('../../middleware/auth');
 
-router.post('/', async (req, res, next) => {
+
+router.post('/', isLoggedIn, async (req, res, next) => {
   const reqBody = req.body;
   const username = req.user.username;
+  let pdfPath = 'null';
+  if (req.session.hasOwnProperty('fileName')
+      && req.session.fileName.length > 0) {
+    pdfPath = ('/temp/' + req.session.fileName);
+  }
 
   /* Get Keys */
   // Get an array of the keys, needed for filtering
@@ -23,8 +28,14 @@ router.post('/', async (req, res, next) => {
 
   // Insert the entry as pending
   await inserter.insertEntry(
-      journal, paper, authors, bodies, notes, username, 'pending'
+      journal, paper, authors, bodies, notes, username, pdfPath, 'pending'
   );
+
+  // remove attribute
+  if (req.session.hasOwnProperty('fileName')
+  && req.session.fileName.length > 0) {
+    req.session.fileName = undefined;
+  }
 
   // Redirect to panel when done
   res.redirect('/panel');

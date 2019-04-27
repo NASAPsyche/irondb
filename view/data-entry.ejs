@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Data Entry</title>
+    <%- include('components/favicon'); %>
     <%- include('bootstrap/css'); %>
     <link rel='stylesheet' href='/stylesheets/data-entry.css' />
   </head>
@@ -9,26 +10,37 @@
     <%- include('components/navbar_signed_in'); %>
 
     <div class="container-fluid pt-3" id="content">
+      <% if (Alert !== "") { %>
+        <% if (AlertType === "error") { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error: </strong>
+            <%= Alert%>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <% } else { %>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>Success: </strong>
+              <%= Alert%>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+        <% } %>
+      <% } %>
       <div class="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
         <h3>Select a data entry approach below:</h3>
       </div>
 
       <div class="d-flex flex-row align-items-center justify-content-center pt-3">
-        <button class="btn btn-secondary btn-lg mr-3" id="tool">Automated Tool</button>
-        <h3> - or - </h3>
-        <button class="btn btn-secondary btn-lg ml-3" id="editor">Manual Editor</button>
+        <a class="btn btn-danger btn-lg text-light" id="tool">With PDF</a>
+        <h3 class="mx-4 mb-2"> - or - </h3>
+        <a href="/data-entry/editor" class="btn btn-danger btn-lg">Without PDF</a>
       </div>
 
       <div class="d-flex flex-row align-items-center justify-content-center pt-3">
-          <form method="POST" action="/data-entry" enctype="multipart/form-data" class="border border-dark align-top mx-auto bg p-3" id="pdf-form">
-            <div class="form-group">
-              <label for="tool_select" class="sr-only">Boolean for selecting the Automated tool when tool button selected.</label>
-              <input id="tool_select" name="tool_select" type="hidden" value="false">
-            </div>
-            <div class="form-group">
-              <label for="editor_select" class="sr-only">Boolean for selecting the manual editor when editor button selected.</label>
-              <input id="editor_select" name="editor_select" type="hidden" value="false">
-            </div>
+          <form method="POST" action="/data-entry" enctype="multipart/form-data" class="border border-dark align-top mx-auto bg p-3" id="pdf-form" hidden="true">
             <div class="form-group">
                 <label for="filetoupload">Choose file to upload</label>
                 <input type="file" id="pdf" name="filetoupload"

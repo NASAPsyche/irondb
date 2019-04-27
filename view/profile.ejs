@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Profile</title>
+    <%- include('components/favicon'); %>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/profile.css' />
+</head>
+
+<body>
+    <%- include('components/navbar_signed_in'); %>
+
+    <div class='container-fluid mt-5 col-8 pb-4'>
+        <div class='card mt-5'>
+            <div class="container-fluid">
+                <div class="pt-3 h1">
+                    <label>User:
+                        <%= User[0].first_name %>
+                        <%= User[0].last_name %></label>
+                </div>
+
+                <form action="/profile/update" method="post" id="user-update-form">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="form-control" id="username" value=" <%= User[0].username %>" readonly>
+                    </div>
+
+                    <div class="form-row form-group">
+                        <div class="col">
+                            <label>First Name</label>
+                            <input type="text" class="form-control" id="firstname" value="<%= User[0].first_name %>"
+                                readonly required>
+                        </div>
+                        <div class="col">
+                            <label>Last Name</label>
+                            <input type="text" class="form-control" id="lastname" value="<%= User[0].last_name %>"
+                                readonly required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email address</label>
+                        <input type="email" class="form-control" id="email" value=" <%= User[0].email_address %>"
+                            readonly>
+                    </div>
+                    <div class="
+                            form-group">
+                        <label>Role</label>
+                        <input type="text" class="form-control" id="role" value="<%= User[0].role_of %>" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label id="passwordLabel">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="************" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label hidden="true" id="confirmLabel">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirm_password" readonly hidden=true>
+
+                    </div>
+                    <div class="form-group" id="passCheckBox" hidden="true">
+                        <input type="checkbox" id="updatepassword">
+                        <label class="control-label" id="updateLabel" for="updatepassword">Update Password?</label>
+                        <small id="usernameHelpBlock" class="form-text text-muted text-left">
+                            Your password must be between 8 and 25 characters long and must contain at least 1
+                            uppercase, 1
+                            lowercase
+                            and 1 number. Save will unlock when passwords match. Unchecking box will not save changes
+                            to password.
+                        </small>
+
+                    </div>
+
+                    <div class="text-right form-group pb-2">
+                        <button class='btn btn-warning' type="button" id='update-btn'>Edit</button>
+                        <button class='btn btn-warning' type='submit' id='save-btn' disabled="false" hidden="true">Save</button>
+                    </div>
+
+                    <!-- Hidden user id-->
+                    <input type="hidden" hidden=true id="userID" value=" <%= User[0].user_id %>">
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <%- include('bootstrap/js'); %>
+    <script src="/javascripts/profile.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js"></script>
+
+</body>
+
+</html>

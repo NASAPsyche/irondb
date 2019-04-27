@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Data Entry - Approval</title>
+    <%- include('components/favicon'); %>
+    <%- include('components/font-awesome'); %>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/data-entry.css' />
+  </head>
+  <body>
+    <%- include('components/navbar_signed_in'); %>
+  
+
+    <div class="container-fluid mt-5">
+        <div class="row p-2" id="alert-target">
+            <% if (pdfPath !== null && pdfPath !== 'null' && pdfPath.slice(pdfPath.length - 4) === '.pdf') { %>
+                <div class="col-sm-12 col-md-5 pl-1 mb-3 mt-5">
+                    <div class="sticky-top" id="pdf-panel"></div>
+                </div>
+                <div class="col-sm-11 col-md-7 border border-dark rounded pb-2 text-center" id="event-div">
+            <% } else { %>
+                <div class="container-fluid border border-dark rounded ml-md-5 mr-md-5 mb-3 pb-2 text-center" id="event-div">
+            <% } %>
+                    <div class="d-flex flex-row align-items-center justify-content-center mt-2 mb-2">
+                        <h1>Edit</h1>
+                    </div>
+                    <p>Submission last owned by <%= username %></p>
+                    <% if (pdfPath === 'null') { %>
+                        <p>No pdf found for this submission.</p>
+                    <% } %>
+                    <div class="main-alert-target"></div>
+
+                    <form method="POST" action="/data-entry/edit/submit" class="align-top mx-auto text-left" id="edit-form">
+                        <!-- Basic -->
+                        <div class="basic">
+                            <input type="hidden" name="paperID" id="paperID" value="<%= Paper.paper_id %>">
+                            <input type="hidden" name="journalID" value="<%= Journal.journal_id %>">
+                        
+                            <h5 class="pt-1 pr-1 mr-2"><strong>Basic Information</strong></h5>
+                            <div class="form-row">
+                                <div class="form-group col-md-8">
+                                    <label for="paperTitle">Paper Title</label>
+                                    <input type="text" class="form-control" id="paperTitle" name="paperTitle" required="true" value="<%= Paper.title %>"> 
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="doi">DOI</label>
+                                    <input type="text" class="form-control" id="doi" name="doi" value="<%= Paper.doi %>">
+                                </div>
+                            </div>
+                        
+                            <div class="form-row">
+                                <div class="form-group col-md-7">
+                                    <label for="journalName">Journal Name</label>
+                                    <input type="text" class="form-control" id="journalName" name="journalName" required="true" value="<%= Journal.journal_name %>">
+                                </div>
+                                <div class="form-group offset-md-1 col-md-4">
+                                    <label for="pub_year">Year Published</label>
+                                    <input type="number" class="form-control" id="pubYear" name="pubYear" required="true" min="1900" Max="2100" step="1" value="<%= Journal.published_year %>">
+                                </div>
+                            </div>
+                        
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="volume">Volume</label>
+                                    <input type="text" class="form-control" id="volume" name="volume" required="true" value="<%= Journal.volume %>">
+                                </div>
+                                <div class="form-group offset-md-1 col-md-3">
+                                    <label for="issue">Issue</label>
+                                    <input type="text" class="form-control" id="issue" name="issue" value="<%= Journal.issue %>">
+                                </div>
+                                <div class="form-group offset-md-1 col-md-3">
+                                    <label for="series">ISSN</label>
+                                    <input type="text" class="form-control" id="series" name="series" value="<%= Journal.series %>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Authors -->
+
+                        <div class="form-row author-header">
+                            <p class="pt-1 mr-2">Author(s)</p>
+                            <i class="fas fa-plus-circle fa-lg add-author-edit mt-2 text-danger"></i>
+                        </div>
+
+                        <!-- iterate over all authors -->
+                        <% for (let i=0; i < Authors.length; i++) { %>
+                            <div class="author-update">
+
+                                <input type="hidden" name="paperID" value="<%= Paper.paper_id %>">
+                                <input type="hidden" name="authorID" value="<%= Authors[i].author_id %>">
+                                
+                                <div class="form-row">
+                                    <div class="col-md-1">
+                                        <i class="far fa-times-circle fa-lg remove remove-author pt-4 text-danger" title="Press to remove author."></i>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="<%= 'primaryName' + i %>">Last Name</label>
+                                        <input type="text" class="form-control" id="<%= 'primaryName' + i %>" name="<%= 'primaryName' + i %>" required="true" value="<%= Authors[i].primary_name %>"> 
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="<%= 'firstName' + i %>">First Name</label>
+                                        <input type="text" class="form-control" id="<%= 'firstName' + i %>" name="<%= 'firstName' + i %>" required="true" value="<%= Authors[i].first_name %>"> 
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="<%= 'middleName' + i %>" >Middle Initial</label>
+                                        <input type="text" class="form-control" id="<%= 'middleName' + i %>" name="<%= 'middleName' + i %>" value="<%= Authors[i].middle_name %>"> 
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+
+                        <div class="authors-end"></div>
+                        <!-- End Authors -->
+
+
+                        <!-- Bodies -->
+                        <% for(var i=0; i < Bodies.length; i++) { %>
+                            <div class="body-update">
+                                <label class="sr-only" for="paperID">ID of current body</label>
+                                <input type="hidden" name="paperID" value="<%= Paper.paper_id %>">
+
+                                <label class="sr-only" for="bodyID">ID of current body</label>
+                                <input type="hidden" name="bodyID" value="<%= Bodies[i].body_id %>">
+        
+                                <div class="form-row meteorite-header" id="<%= 'meteorite' + i %>">
+                                    <h5 class="pt-1 mr-2"><strong>Meteorite</strong></h5>
+                                    <i class="fas fa-plus-circle fa-lg add-meteorite-edit mt-2 text-danger"></i>
+                                </div>
+        
+                                <div class="form-row">
+                                    <div class="col-md-1">
+                                        <i class="far fa-times-circle fa-lg remove remove-body-edit pt-4 text-danger" title="Press to remove meteorite and all associated measurements."></i>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="<%= 'bodyName' + i %>">Meteorite</label>
+                                        <input type="text" class="form-control" id="<%= 'bodyName' + i %>" name="<%= 'bodyName' + i %>" required="true" value="<%= Bodies[i].nomenclature %>">
+                                    </div>
+        
+        
+                                      <% for(var j=0; j < Groups.length; j++) { %>
+                                        <% if (Groups[j].body_id === Bodies[i].body_id) { %>
+        
+                                            <div class="form-group col-md-2">
+                                                <label for="<%= 'group' + i %>">Group</label>
+                                                <input type="text" class="form-control" id="<%= 'group' + i %>" name="<%= 'group' + i %>" required="true" value="<%= Groups[j].the_group %>">
+                                            </div>
+        
+                                            <label class="sr-only" for="groupID">ID of current group</label>
+                                            <input type="hidden" name="groupID" value="<%= Groups[j].group_id %>">
+        
+                                        <% } %>
+                                    <% } %>
+                                </div>
+        
+                                <div class="form-row">
+                                    <h5 class="pt-1 mr-2 pl-3"><strong>Measurements</strong></h5>
+                                    <i class="fas fa-plus-circle fa-lg add-measurement-edit mt-2 text-danger"></i>
+                                </div>
+        
+                                <% for(var k=0; k < ElementEntries.length; k++) { %>
+                                    <% if (ElementEntries[k].body_id === Bodies[i].body_id) { %>
+                                        <div class="element element-update">
+                                            <label class="sr-only" for="elementID">ID of current element</label>
+                                            <input type="hidden" name="elementID" value="<%= ElementEntries[k].element_id %>">
+        
+                                            <div class="form-row">
+                                                <div class="col-md-1 p-0">
+                                                    <i class="far fa-times-circle fa-lg remove remove-element-edit pt-4 text-danger" title="Press to remove measurement."></i>
+                                                </div>
+        
+                                                <div class="form-group col-md-1 mr-3">
+                                                    <label for="<%= 'element' + i + '_' + k %>">Element</label>
+                                                    <select class="form-control p-1" id="<%= 'element' + i + '_' + k %>" name="<%= 'element' + i + '_' + k %>" required="true">
+                                                        <% for( var x=0; x < Elements.length; x++) { %>
+                                                            <% if (Elements[x].symbol.toLowerCase() === ElementEntries[k].element_symbol) { %>
+                                                                <option selected value="<%= Elements[x].symbol.toLowerCase()%>"><%= Elements[x].symbol %></option> 
+                                                            <% } else { %>
+                                                                <option value="<%= Elements[x].symbol.toLowerCase()%>"><%= Elements[x].symbol %></option> 
+                                                            <% } %>
+                                                        <% } %>                   
+                                                    </select>
+                                                </div>
+        
+                                                <div class="form-check-inline col-md-1">
+                                                    <input class="form-check-input" type="checkbox" id="<%= 'lessThan' + i + '_' + k %>" <% if (ElementEntries[k].less_than == 'true') { %> checked <% } %> >
+                                                    <label class="form-check-label" for="<%= 'lessThan' + i + '_' + k %>">&lt;</label>
+                                                </div>
+        
+                                                <% if (ElementEntries[k].original_unit === "wt_percent") { %>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'measurement' + i + '_' + k %>">Measurement</label>
+                                                        <input type="text" class="form-control" id="<%= 'measurement' + i + '_' + k %>" name="<%= 'measurement' + i + '_' + k %>" required="true" min="0" value="<%= _.ppbToPercent(ElementEntries[k].ppb_mean, ElementEntries[k].sigfig) %>">
+                                                    </div>
+                                                    <div class="form-group col-md-1">
+                                                        <label for="<%= 'deviation' + i + '_' + k %>">(&plusmn;)</label>
+                                                        <input type="number" class="form-control" id="<%= 'deviation' + i + '_' + k %>" name="<%= 'deviation' + i + '_' + k %>" value="0" min="0" value="<%= _.ppbToPercent(ElementEntries[k].deviation, ElementEntries[k].sigfig) %>">
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'units' + i + '_' + k %>">Units</label>
+                                                        <select class="form-control" id="<%= 'units' + i + '_' + k %>" name="<%= 'units' + i + '_' + k %>" required="true">
+                                                            <option selected value="wt_percent">wt%</option>
+                                                            <option value="ppm">ppm</option>
+                                                            <option value="ppb">ppb</option>
+                                                            <option value="mg_g">mg/g</option>
+                                                            <option value="ug_g">&micro;g/g</option>
+                                                            <option value="ng_g">ng/g</option>
+                                                        </select>
+                                                    </div>
+                                                <% } else if (ElementEntries[k].original_unit === "ppm") { %>
+                                                     <div class="form-group col-md-2">
+                                                        <label for="<%= 'measurement' + i + '_' + k %>">Measurement</label>
+                                                        <input type="text" class="form-control" id="<%= 'measurement' + i + '_' + k %>" name="<%= 'measurement' + i + '_' + k %>" required="true" min="0" value="<%= _.ppbToPPM(ElementEntries[k].ppb_mean, ElementEntries[k].sigfig) %>">
+                                                    </div>
+                                                    <div class="form-group col-md-1">
+                                                        <label for="<%= 'deviation' + i + '_' + k %>">(&plusmn;)</label>
+                                                        <input type="number" class="form-control" id="<%= 'deviation' + i + '_' + k %>" name="<%= 'deviation' + i + '_' + k %>" value="0" min="0" value="<%= _.ppbToPPM(ElementEntries[k].deviation, ElementEntries[k].sigfig) %>">
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'units' + i + '_' + k %>">Units</label>
+                                                        <select class="form-control" id="<%= 'units' + i + '_' + k %>" name="<%= 'units' + i + '_' + k %>" required="true">
+                                                            <option value="wt_percent">wt%</option>
+                                                            <option selected value="ppm">ppm</option>
+                                                            <option value="ppb">ppb</option>
+                                                            <option value="mg_g">mg/g</option>
+                                                            <option value="ug_g">&micro;g/g</option>
+                                                            <option value="ng_g">ng/g</option>
+                                                        </select>
+                                                    </div>
+                                                <% } else if (ElementEntries[k].original_unit === "ppb") { %>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'measurement' + i + '_' + k %>">Measurement</label>
+                                                        <input type="text" class="form-control" id="<%= 'measurement' + i + '_' + k %>" name="<%= 'measurement' + i + '_' + k %>" required="true" min="0" value="<%= ElementEntries[k].ppb_mean %>">
+                                                    </div>
+                                                    <div class="form-group col-md-1">
+                                                        <label for="<%= 'deviation' + i + '_' + k %>">(&plusmn;)</label>
+                                                        <input type="number" class="form-control" id="<%= 'deviation' + i + '_' + k %>" name="<%= 'deviation' + i + '_' + k %>" value="0" min="0" value="<%= ElementEntries[k].deviation %>">
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'units' + i + '_' + k %>">Units</label>
+                                                        <select class="form-control" id="<%= 'units' + i + '_' + k %>" name="<%= 'units' + i + '_' + k %>" required="true">
+                                                            <option value="wt_percent">wt%</option>
+                                                            <option value="ppm">ppm</option>
+                                                            <option selected value="ppb">ppb</option>
+                                                            <option value="mg_g">mg/g</option>
+                                                            <option value="ug_g">&micro;g/g</option>
+                                                            <option value="ng_g">ng/g</option>
+                                                        </select>
+                                                    </div>
+                                                <% } else if (ElementEntries[k].original_unit === "mg_g") { %>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'measurement' + i + '_' + k %>">Measurement</label>
+                                                        <input type="text" class="form-control" id="<%= 'measurement' + i + '_' + k %>" name="<%= 'measurement' + i + '_' + k %>" required="true" min="0" value="<%= _.ppbToMilligramsPerGram(ElementEntries[k].ppb_mean, ElementEntries[k].sigfig) %>">
+                                                    </div>
+                                                    <div class="form-group col-md-1">
+                                                        <label for="<%= 'deviation' + i + '_' + k %>">(&plusmn;)</label>
+                                                        <input type="number" class="form-control" id="<%= 'deviation' + i + '_' + k %>" name="<%= 'deviation' + i + '_' + k %>" value="0" min="0" value="<%= _.ppbToMilligramsPerGram(ElementEntries[k].deviation, ElementEntries[k].sigfig) %>">
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'units' + i + '_' + k %>">Units</label>
+                                                        <select class="form-control" id="<%= 'units' + i + '_' + k %>" name="<%= 'units' + i + '_' + k %>" required="true">
+                                                            <option value="wt_percent">wt%</option>
+                                                            <option value="ppm">ppm</option>
+                                                            <option value="ppb">ppb</option>
+                                                            <option selected value="mg_g">mg/g</option>
+                                                            <option value="ug_g">&micro;g/g</option>
+                                                            <option value="ng_g">ng/g</option>
+                                                        </select>
+                                                    </div>
+                                                <% } else if (ElementEntries[k].original_unit === "ug_g") { %>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'measurement' + i + '_' + k %>">Measurement</label>
+                                                        <input type="text" class="form-control" id="<%= 'measurement' + i + '_' + k %>" name="<%= 'measurement' + i + '_' + k %>" required="true" min="0" value="<%= _.ppbToMicrogramsPerGram(ElementEntries[k].ppb_mean, ElementEntries[k].sigfig) %>">
+                                                    </div>
+                                                    <div class="form-group col-md-1">
+                                                        <label for="<%= 'deviation' + i + '_' + k %>">(&plusmn;)</label>
+                                                        <input type="number" class="form-control" id="<%= 'deviation' + i + '_' + k %>" name="<%= 'deviation' + i + '_' + k %>" value="0" min="0" value="<%= _.ppbToMicrogramsPerGram(ElementEntries[k].deviation, ElementEntries[k].sigfig) %>">
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'units' + i + '_' + k %>">Units</label>
+                                                        <select class="form-control" id="<%= 'units' + i + '_' + k %>" name="<%= 'units' + i + '_' + k %>" required="true">
+                                                            <option value="wt_percent">wt%</option>
+                                                            <option value="ppm">ppm</option>
+                                                            <option value="ppb">ppb</option>
+                                                            <option value="mg_g">mg/g</option>
+                                                            <option selected value="ug_g">&micro;g/g</option>
+                                                            <option value="ng_g">ng/g</option>
+                                                        </select>
+                                                    </div>
+                                                <% } else if (ElementEntries[k].original_unit === "ng_g") { %>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'measurement' + i + '_' + k %>">Measurement</label>
+                                                        <input type="text" class="form-control" id="<%= 'measurement' + i + '_' + k %>" name="<%= 'measurement' + i + '_' + k %>" required="true" min="0" value="<%= ElementEntries[k].ppb_mean %>">
+                                                    </div>
+                                                    <div class="form-group col-md-1">
+                                                        <label for="<%= 'deviation' + i + '_' + k %>">(&plusmn;)</label>
+                                                        <input type="number" class="form-control" id="<%= 'deviation' + i + '_' + k %>" name="<%= 'deviation' + i + '_' + k %>" value="0" min="0" value="<%= ElementEntries[k].deviation %>">
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="<%= 'units' + i + '_' + k %>">Units</label>
+                                                        <select class="form-control" id="<%= 'units' + i + '_' + k %>" name="<%= 'units' + i + '_' + k %>" required="true">
+                                                            <option value="wt_percent">wt%</option>
+                                                            <option value="ppm">ppm</option>
+                                                            <option value="ppb">ppb</option>
+                                                            <option value="mg_g">mg/g</option>
+                                                            <option value="ug_g">&micro;g/g</option>
+                                                            <option selected value="ng_g">ng/g</option>
+                                                        </select>
+                                                    </div>
+                                                <% } %>
+                                                <div class="form-group col-md-2">
+                                                    <label for="<%= 'technique' + i + '_' + k %>">Technique</label>
+                                                    <select class="form-control p-1" id="<%= 'technique' + i + '_' + k %>" name="<%= 'technique' + i + '_' + k %>" required="true">
+                                                        <% for(var z=0; z < Technique.length; z++) { %>
+                                                            <% if (Technique[z].abbreviation === ElementEntries[k].technique) { %>
+                                                                <option selected value="<%= Technique[z].abbreviation%>"><%= Technique[z].abbreviation %></option> 
+                                                            <% } else { %>
+                                                                <option value="<%= Technique[z].abbreviation%>"><%= Technique[z].abbreviation %></option> 
+                                                            <% } %>
+                                                        <% } %>                   
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-1">
+                                                    <label for="<%= 'page' + i + '_' + k %>">Page</label>
+                                                    <input type="number" class="form-control p-1" id="<%= 'page' + i + '_' + k %>" name="<%= 'page' + i + '_' + k %>" min="1" required value="<%= ElementEntries[k].page_number %>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="hidden" id="<%= 'sigfig' + i + '_' + k %>" name="<%= 'sigfig' + i + '_' + k %>" value="0">
+                                                    <input type="hidden" id="<%= 'convertedMeasurement' + i + '_' + k %>" name="<%= 'convertedMeasurement' + i + '_' + k %>" value="0">
+                                                    <input type="hidden" id="<%= 'convertedDeviation' + i + '_' + k %>" name="<%= 'convertedDeviation' + i + '_' + k %>" value="0">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                        <% } %>
+                        <!-- End Bodies -->
+
+
+                        <!-- Notes -->
+                        <div class="form-row notes-header">
+                            <h5 class="pt-1 mr-2"><strong>Notes</strong></h5>
+                            <i class="fas fa-plus-circle fa-lg add-note-edit mt-2 text-danger"></i>
+                        </div>
+                        
+                        <% for (let i = 0; i < Notes.length; i++) { %>
+                            <div class="note-update">
+                                <input type="hidden" name="paperID" value="<%= Paper.paper_id %>">
+                                <input type="hidden" name="noteID" value="<%= Notes[i].note_id %>">
+
+                                <div class="form-row pt-1">
+                                    <label for="<%= 'note' + i %>">Note:
+                                        <i class="far fa-times-circle fa-lg remove remove-note-edit pl-5 text-danger" title="Press to remove note."></i>
+                                    </label>
+                                    <textarea class="form-control" id="<%= 'note' + i %>" name="<%= 'note' + i %>" rows="5"><%= Notes[i].note %></textarea>
+                                </div>
+                            </div>
+                        <% } %>
+                        <!-- End Notes -->
+
+
+                        <input type="hidden" name="submissionID" value="<%= SubmissionID %>">
+                        <input type="hidden" name="actions" id="actions" value="">
+                        <button type="submit" class="btn btn-warning mt-2 float-right" disabled="true" title="Validate or override to enable" id="submit-btn">Submit</button>
+                        <button type="button" class="btn btn-danger mt-2 mr-3 float-right" id="validate-btn-edit">Validate</button>
+                        <button type="button" class="btn btn-danger mt-2 mr-5 float-left" id="override-btn">Override Validation</button>
+                    </form>
+                        
+                </div>
+        </div>
+    </div>
+
+    <% if (pdfPath !== null && pdfPath !== 'null' && pdfPath.slice(pdfPath.length - 4) === '.pdf') { %>
+        <div hidden="true" id="filepath" value="<%- pdfPath %>"><%- pdfPath %></div>
+    <% } %>
+
+    <%- include('bootstrap/js'); %>
+    <%- include('components/ejs'); %>
+    <%- include('components/drop-down-script'); %>
+    <% if (pdfPath !== null && pdfPath !== 'null' && pdfPath.slice(pdfPath.length - 4) === '.pdf') { %>
+        <script src='/javascripts/pdfobject.min.js'></script>
+        <script>
+            $('document').ready( function() {
+                const fp = $( '#filepath' ).attr('value');
+                const panel = $( '#pdf-panel' );
+                PDFObject.embed(fp, panel);
+            });
+        </script>
+        <script src="/javascripts/editor/pdf.js"></script>
+    <% } %>
+    <script src="/javascripts/editor.js"></script>
+    <!-- UI for this specific flow -->
+    <script src="/javascripts/edit.js"></script>
+    <script>
+        // Update counts to unmatched id count
+        primaryNameIDCount = 1000;
+        firstNameIDCount = 1000;
+        middleNameIDCount = 1000;
+        singleEntityIDCount = 1000;
+
+        noteIDCount = 1000;
+
+        elementIDCount = 1000;
+        lessThanIDCount = 1000;
+        measurementIDCount = 1000;
+        deviationIDCount = 1000;
+        unitsIDCount = 1000;
+        techniqueIDCount = 1000;
+        pageIDCount = 1000;
+        sigfigIDCount = 1000;
+        convertedMeasurementIDCount = 1000;
+        convertedDeviationIDCount = 1000;
+
+        meteoriteIDCount = 1000;
+        bodyNameIDCount = 1000;
+        groupIDCount = 1000;
+        classIDCount = 1000;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Analysis Technique</title>
+    <%- include('components/favicon'); %>
+    <%- include('bootstrap/css'); %>
+</head>
+
+<body>
+    <%- include('components/navbar_signed_in'); %>
+    <div class="container col-md-8 mt-5 mb-2 pt-3 pb-2">
+        <div class="alert alert-warning alert-dismissible fade show" hidden=true id="blank" role="alert">
+            <strong>Invalid Entry!</strong> Entry is blank.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-warning alert-dismissible fade show" hidden=true id="exists" role="alert">
+            <strong>Invalid Entry!</strong> Entry already exists in database.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="alert alert-success alert-dismissible fade show" hidden=true id="success" role="alert">
+            <strong>Success!</strong> Cancelled entry.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="row">
+            <div class="col-md-5 d-flex card mr-2 pt-3">
+
+                <h4>Analysis Techniques in Database:</h4>
+                <ul class="list-group list-group-flush" id="list">
+                    <% for(var i=0; i < Technique.length; i++) { %>
+                    <li class="list-group-item">
+                        <%= Technique[i].abbreviation %>
+                    </li>
+                    <% } %>
+                </ul>
+            </div>
+
+            <div class="col-md ml-2">
+                <div class="card-body">
+                    <h5 class="card-title">Add New Analysis Technique</h5>
+                    <div class="card-text pt-2 pb-2">
+                        <form action="/panel/analysis-technique" method="post" class="form-row" id="submission">
+                            <input class="form-control" type="text" id="new-technique">
+                    </div>
+                    <div>
+                        <button type="sumbit" class="btn btn-danger">Add To Database</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('bootstrap/js'); %>
+    <script src="/javascripts/analysis-technique.js"></script>
+</body>
+
+</html>

@@ -4,33 +4,27 @@
 
 // eslint-disable-next-line no-undef
 ElementsArr = Elements.slice(0, -1).split(',');
+
 // eslint-disable-next-line no-undef
 TechniqueArr = Technique.slice(0, -1).split(',');
-
-/** ---------------------------- */
-/**     Remove Hover Toggle      */
-/** ---------------------------- */
-$( 'document' ).ready(function() {
-  // All remove icons hidden on load.
-  $( 'i.remove' ).hide();
-});
-
-$( '#insert-form' ).on('mouseover', 'div.form-row', function( event ) {
-  // Show remove ui on mouseover of parent div
-  $(this).children().children( 'i.remove' ).show();
-});
-
-$( '#insert-form' ).on('mouseout', 'div.form-row', function( event ) {
-  // Hide remove ui on mouseout of parent div
-  $(this).children().children( 'i.remove' ).hide();
-});
-
 
 /** ---------------------------- */
 /**      Validate Button         */
 /** ---------------------------- */
 
-$('#insert-form').on('click', '#validate-btn', function() {
+/* eslint-disable max-len*/
+const validationWarningAlertTemplate = `<div 
+class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+<strong><%= messageTitle %> </strong>
+<%= message %>
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>`;
+/* eslint-enable max-len*/
+
+
+$('#event-div').on('click', '#validate-btn', function() {
   const formData = $('#insert-form').serializeArray();
   const postData = {};
   for (let i = 0; i < formData.length; i++) {
@@ -39,16 +33,95 @@ $('#insert-form').on('click', '#validate-btn', function() {
       !formData[i].name.includes('convertedMeasurement') &&
       !formData[i].name.includes('sigfig')
     ) {
-      postData[formData[i].name] = formData[i].value;
+      if (formData[i].name.includes('primaryName') ||
+          formData[i].name.includes('firstName') ||
+          formData[i].name.includes('middleName') ||
+          formData[i].name.includes('bodyName')
+      ) {
+        const input = $('input[name="' + formData[i].name + '"]');
+        input.val(input.val().charAt(0).toUpperCase() + input.val().slice(1));
+        postData[formData[i].name.toString()] = input.val();
+      } else {
+        postData[formData[i].name.toString()] = formData[i].value;
+      }
     }
   }
 
-  console.log(postData);
-
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
-    console.log(data);
-  });
+    // $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+    const parsedData = JSON.parse(data[0]);
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      const selector = '#' + entry[0];
+      const object = $(selector);
+      // Parse Attributes
+      if (entry[1] === 'invalid') {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-invalid');
+      } else if (entry[1] === 'success') {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-valid');
+      } else {
+        object.removeClass('is-valid')
+            .removeClass('is-invalid').addClass('is-valid');
+      }
+    });
+
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid')) {
+        allValid = false;
+      }
+    });
+
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert in valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
+});
+
+// On change of any input remove classes, alert user, and disable submit button.
+$('#event-div').on('change', 'input,textarea,select', function() {
+  if ($(this).hasClass('is-valid')) {
+    // Alert change
+    // eslint-disable-next-line no-undef
+    const alert = ejs.render(validationWarningAlertTemplate, {
+      type: 'warning',
+      messageTitle: 'Warning:',
+      message: `Valid data changed revalidation 
+      or override required before submission.`,
+    });
+    $('div.main-alert-target').html(alert);
+  }
+
+  $(this).removeClass('is-valid').removeClass('is-invalid');
+  $(this).removeAttr('style');
+  $('#submit-btn').prop('disabled', true);
+});
+
+$('#event-div').on('click', '#override-btn', function() {
+  $('#submit-btn').prop('disabled', false);
 });
 
 
@@ -103,9 +176,9 @@ const authorTemplate = `
   required="true" placeholder="required">
 </div>
 <div class="form-group col-md-3">
-  <label for="<%- middleNameID %>">Middle Name</label>
+  <label for="<%- middleNameID %>">Middle Initial</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
-  name="<%- middleNameID %>">
+  name="<%- middleNameID %>" placeholder="optional">
 </div>
 </div>
 `;
@@ -196,7 +269,7 @@ const meteoriteTemplate = `
   title="Press to remove meteorite and all associated measurements."></i>
 </div>
 <div class="form-group col-md-6">
-  <label for="<%- bodyNameID %>">Name</label>
+  <label for="<%- bodyNameID %>">Meteorite</label>
   <input type="text" class="form-control" id="<%- bodyNameID %>" 
   name="<%- bodyNameID %>" required>
 </div>
@@ -223,7 +296,6 @@ const meteoriteTemplate = `
 let primaryNameIDCount = 1;
 let firstNameIDCount = 1;
 let middleNameIDCount = 1;
-let singleEntityIDCount = 1;
 
 let noteIDCount = 1;
 
@@ -245,63 +317,59 @@ let classIDCount = 1;
 
 
 // Simple Add Event Handlers
-$( '#insert-form' ).on('click', 'i.add-author', ( event ) => {
-  addAuthor(this);
+$( '#event-div' ).on('click', 'i.add-author', function( event ) {
+  addAuthor(this, authorTemplate);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-note', function( event ) {
-  addNote(this);
+$( '#event-div' ).on('click', 'i.add-note', function( event ) {
+  addNote(this, noteTemplate);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-measurement', function( event ) {
-  addMeasurement(this);
+$( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
+  addMeasurement(this, measurementTemplate);
 });
 
 
-$( '#insert-form' ).on('click', 'i.add-meteorite', function( event ) {
-  addMeteorite(this);
+$( '#event-div' ).on('click', 'i.add-meteorite', function( event ) {
+  addMeteorite(this, meteoriteTemplate);
 });
 
 /**
  * @param  {object} e this
+ * @param {string} template the template to be rendered
  */
-function addAuthor( e ) {
+function addAuthor( e, template ) {
   // Dynamically create IDs
   const primaryNameID = 'primaryName' + primaryNameIDCount;
   const firstNameID = 'firstName' + firstNameIDCount;
   const middleNameID = 'middleName' + middleNameIDCount;
-  const singleEntityID = 'singleEntity' + singleEntityIDCount;
 
   // Assign IDs
   const idObj = {};
   idObj['primaryNameID'] = primaryNameID;
   idObj['firstNameID'] = firstNameID;
   idObj['middleNameID'] = middleNameID;
-  idObj['singleEntityID'] = singleEntityID;
 
   // Increment current counts
   primaryNameIDCount++;
   firstNameIDCount++;
   middleNameIDCount++;
-  singleEntityIDCount++;
 
   // Render Author template with current IDs
   // eslint-disable-next-line
-  const html = ejs.render(authorTemplate, idObj);
+  const html = ejs.render(template, idObj);
 
   // Insert template into DOM
-  $(e).parent().siblings('.meteorite-header').first().before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
+  $(e).parent().siblings('.authors-end').first().before(html);
 }
 
 /**
  * @param  {object} e this
+ * @param {string} template the template to be rendered
  */
-function addNote( e ) {
+function addNote( e, template ) {
   // Dynamically create IDs
   const noteID = 'note' + noteIDCount;
 
@@ -313,36 +381,34 @@ function addNote( e ) {
 
   // Render note template with current ID
   // eslint-disable-next-line
-  const html = ejs.render(noteTemplate, idObj);
+  const html = ejs.render(template, idObj);
 
   // Insert template into DOM
   $(e).parent().siblings('button:submit').before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /**
  * @param  {object} e this
+ * @param {string} template the template to be rendered
  */
-function addMeasurement( e ) {
+function addMeasurement( e, template ) {
   // Get parent meteorite
   const meteoriteID = $(e).parent()
       .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
 
   // Dynamically create IDs
-  const elementID = 'element' + meteoriteID + '-' + elementIDCount;
-  const lessThanID = 'lessThan' + meteoriteID + '-' + lessThanIDCount;
-  const measurementID = 'measurement' + meteoriteID + '-' + measurementIDCount;
-  const deviationID = 'deviation' + meteoriteID + '-' + deviationIDCount;
-  const unitsID = 'units' + meteoriteID + '-' + unitsIDCount;
-  const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
-  const pageID = 'page' + meteoriteID + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const elementID = 'element' + meteoriteID + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteID + '_' + lessThanIDCount;
+  const measurementID = 'measurement' + meteoriteID + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteID + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteID + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteID + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteID + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '_' + sigfigIDCount;
   const convertedMeasurementID =
-    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+    'convertedMeasurement' + meteoriteID + '_' + convertedMeasurementIDCount;
   const convertedDeviationID =
-    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
+    'convertedDeviation' + meteoriteID + '_' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -377,7 +443,7 @@ function addMeasurement( e ) {
 
   // Render note template with current ID
   // eslint-disable-next-line
-  const html = ejs.render(measurementTemplate, idObj);
+  const html = ejs.render(template, idObj);
 
   // Insert template into DOM
   const nextID = 'meteorite' + (1 + Number(meteoriteID));
@@ -387,33 +453,31 @@ function addMeasurement( e ) {
     $(e).parent().siblings('.notes-header')
         .first().before(html);
   }
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /**
  * @param  {object} e this
+ * @param {string} template the template to be rendered
  */
-function addMeteorite( e ) {
+function addMeteorite( e, template ) {
   // Dynamically create IDs
   const meteoriteID = 'meteorite' + meteoriteIDCount;
   const bodyNameID = 'bodyName' + bodyNameIDCount;
   const groupID = 'group' + groupIDCount;
   const classID = 'class' + classIDCount;
-  const elementID = 'element' + meteoriteIDCount + '-' + elementIDCount;
-  const lessThanID = 'lessThan' + meteoriteIDCount + '-' + lessThanIDCount;
+  const elementID = 'element' + meteoriteIDCount + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteIDCount + '_' + lessThanIDCount;
   const measurementID =
-  'measurement' + meteoriteIDCount + '-' + measurementIDCount;
-  const deviationID = 'deviation' + meteoriteIDCount + '-' + deviationIDCount;
-  const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
-  const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
-  const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteIDCount + '-' + sigfigIDCount;
+  'measurement' + meteoriteIDCount + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteIDCount + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteIDCount + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteIDCount + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteIDCount + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteIDCount + '_' + sigfigIDCount;
   const convertedMeasurementID =
-  'convertedMeasurement' + meteoriteIDCount + '-' + convertedMeasurementIDCount;
+  'convertedMeasurement' + meteoriteIDCount + '_' + convertedMeasurementIDCount;
   const convertedDeviationID =
-  'convertedDeviation' + meteoriteIDCount + '-' + convertedDeviationIDCount;
+  'convertedDeviation' + meteoriteIDCount + '_' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -453,34 +517,31 @@ function addMeteorite( e ) {
   convertedMeasurementIDCount++;
   convertedDeviationIDCount++;
 
-  // Render note template with current ID
+  // Render meteorite template with current ID
   // eslint-disable-next-line
-  const html = ejs.render(meteoriteTemplate, idObj);
+  const html = ejs.render(template, idObj);
 
   // Insert template into DOM
   $(e).parent().siblings('.notes-header').before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
 }
 
 /** ---------------------------- */
 /**        UI Remove Events      */
 /** ---------------------------- */
 
-$( '#insert-form' ).on('click', 'i.remove-note', function() {
+$( '#event-div' ).on('click', 'i.remove-note', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === false ) {
     $(this).parent().parent().remove();
   }
 });
 
-$( '#insert-form' ).on('click', 'i.remove-inline', function() {
+$( '#event-div' ).on('click', 'i.remove-inline', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === false ) {
     $(this).parent().parent().remove();
   }
 });
 
-$( '#insert-form' ).on('click', 'i.remove-meteorite', function() {
+$( '#event-div' ).on('click', 'i.remove-meteorite', function() {
   if ( $(this).parent().parent().hasClass('not-removable') === true ) {
     // Do not remove if saved
   } else {

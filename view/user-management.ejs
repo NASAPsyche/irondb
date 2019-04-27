@@ -1,15 +1,88 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>User Management</title>
-    <%- include('bootstrap/css'); %>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <%- include('components/navbar_signed_in'); %>
 
-    <h1>Placeholder user-management</h1>
-    
-    <%- include('bootstrap/js'); %>
-  </body>
+<head>
+  <title>User Management</title>
+  <%- include('components/favicon'); %>
+  <%- include('bootstrap/css'); %>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <link rel='stylesheet' href='/stylesheets/user-management.css' />
+</head>
+
+<body>
+  <%- include('components/navbar_signed_in'); %>
+  <div class='container mt-5'>
+    <div class="container card pt-3 pb-2">
+      <div>
+        <h1>Users
+          <span class="h1 badge badge-light">
+            <%= userCount %></span> </h1>
+        <div class='float-right input-group col-3 mb-2'>
+          <div class="input-group-prepend">
+            <span class="input-group-text">Search</span>
+          </div>
+          <input type="text" class="form-control" id=search>
+        </div>
+      </div>
+      <div>
+        <table class="table table-stripd table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th>User ID</th>
+              <th>Username</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Change To:</th>
+            </tr>
+          </thead>
+          <tbody class='table-light' id='tbl'>
+            <% for(var i=0; i < Users.length; i++) { %>
+            <tr>
+              <td>
+                <%= Users[i].user_id %>
+              </td>
+              <td>
+                <%= Users[i].username %>
+              </td>
+              <td>
+                <%= Users[i].first_name %>
+              </td>
+              <td>
+                <%= Users[i].last_name %>
+              </td>
+              <td>
+                <%= Users[i].email_address %>
+              </td>
+              <td id='current-role'>
+                <%= Users[i].role_of %>
+              </td>
+              <td id='user-role'>
+                <div class="form-group">
+                  <label class="sr-only" for="role">Role</label>
+                  <select class="form-control" name="role" id="role">
+                    <option selected></option>
+                    <option value="admin">admin</option>
+                    <option value="data-entry">data-entry</option>
+                    <option value="user">user</option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      <div class='text-right pb-2'>
+        <form action="/users/update" method="post" id="user-update-form">
+          <button class='btn btn-warning' type='submit' id='confirm' disabled='true'>Confirm Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <%- include('bootstrap/js'); %>
+  <script src="/javascripts/user-management.js"></script>
+</body>
+
 </html>

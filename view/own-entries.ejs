@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Own Entries</title>
+    <%- include('components/favicon'); %>
+    <%- include('bootstrap/css'); %>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/all-entries.css ' />
+</head>
+
+<body>
+    <%- include('components/navbar_signed_in'); %>
+
+    <div class='container card mt-5 mb-2 pt-3'>
+        <h1>All Owned Papers</h1>
+        <div id="alert-target"></div>
+
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Paper ID</th>
+                    <th>Title</th>
+                    <th>Year</th>
+                    <th>Author(s)</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class='table-light'>
+                <% for(var i=0; i < Entries.length; i++) { %>
+                <tr>
+                    <th>
+                        <%= Entries[i].paper_id %>
+                    </th>
+                    <th>
+                        <%= Entries[i].title %>
+                    </th>
+                    <th>
+                        <%= Entries[i].published_year %>
+                    </th>
+                    <th>
+                        <%= Entries[i].authors %>
+                    </th>
+                    <th>
+                        <%= Entries[i].current_status %>
+                    </th>
+                    <th class="fill pl-4">
+                        <div class="row">
+                            <form action="/data-entry/edit" method="POST">
+                                <label class="sr-only" for="submissionID">submission id of entry</label>
+                                <input type="hidden" name="submissionID" value=<%= Entries[i].submission_id %>>
+                                <button class="btn btn-warning px-4" type="submit">Edit</button>
+                            </form>
+                            <button class="btn btn-outline-warning ml-2 delete-btn" aria-expanded="false" aria-controls="collapse">Delete</button>
+                        </div>
+                        <div class="row collapse mt-2" aria-expanded="false">
+                            <p class="text-warning mb-2">Are you sure you want to delete this entry?</p>
+                            <button class="btn ml-3 btn-outline-light cancel-btn ">Cancel</button>
+                            <form action="/data-entry/delete" method="POST" class="delete-submission">
+                                <label class="sr-only" for="submissionID">submission id of entry</label>
+                                <input type="hidden" name="submissionID" value=<%= Entries[i].submission_id %>>
+                                <button class="btn btn-outline-warning ml-3" type="submit">Confirm</button>
+                            </form>
+                        </div>
+                    </th>
+                    <% } %>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <%- include('bootstrap/js'); %>
+    <script src="/javascripts/delete-UI.js"></script>
+</body>
+
+</html>

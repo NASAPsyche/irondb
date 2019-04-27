@@ -2,52 +2,301 @@
 // This file used on all editor templates
 /* eslint-disable no-invalid-this */
 
+
 // eslint-disable-next-line no-undef
 ElementsArr = Elements.slice(0, -1).split(',');
+
+
 // eslint-disable-next-line no-undef
 TechniqueArr = Technique.slice(0, -1).split(',');
+
 
 /** ----------------------------- */
 /**         Tool Specific         */
 /** ----------------------------- */
-// Render pdf
+// Render pdf and set filename value on checklist hidden input
 $('document').ready(function() {
   const fp = $( '#filepath' ).attr('value');
   const panel = $( '#pdf-panel' );
   // eslint-disable-next-line
   PDFObject.embed(fp, panel);
+
+  // Set hidden input
+  $('#fileName-checklist').attr('value', $('#filepath').attr('value').slice(6));
 });
+
+
+// No extraction checkbox
+$( '#event-div' ).on( 'click', '#manual', function() {
+  if ($('#manual').prop('checked') === true) {
+    // on check of manual, uncheck all other checkboxes
+    $('#collapse').collapse('hide');
+    $( '#attributes' ).prop( 'checked', false ).prop('disabled', true);
+    $( '#allTables' ).prop( 'checked', false ).prop('disabled', true);
+    $( '#singleTable' ).prop( 'checked', false ).prop('disabled', true);
+  } else {
+    // on uncheck renable other checkboxes
+    $( '#attributes' ).prop('disabled', false);
+    $( '#allTables' ).prop('disabled', false);
+    $( '#singleTable' ).prop('disabled', false);
+  }
+});
+
+// On select of allTables unselect single table
+$( '#event-div' ).on( 'click', '#allTables', function() {
+  if ($('#allTables').prop('checked') === true) {
+    // if all tables uncheck single table and close collapse
+    $('#collapse').collapse('hide');
+    $( '#singleTable' ).prop( 'checked', false );
+    $( '#singleTable' ).prop('disabled', true);
+  } else {
+    $( '#singleTable' ).prop('disabled', false);
+  }
+});
+
+// On select of single tables unselect allTables
+$( '#event-div' ).on( 'click', '#singleTable', function() {
+  if ($('#singleTable').prop('checked') === true) {
+    // if single tables selected uncheck all tables
+    $( '#allTables' ).prop( 'checked', false );
+    $( '#allTables' ).prop('disabled', true);
+  } else {
+    $( '#allTables' ).prop('disabled', false);
+  }
+});
+
+// On select of any
+$( '#event-div' ).on( 'click',
+    '#attributes,#allTables, #singleTable', function() {
+      if ($('#attributes').prop('checked') === true ||
+      $('#allTables').prop('checked') === true ||
+      $('#singleTable').prop('checked') === true
+      ) {
+        $( '#manual' ).prop('disabled', true);
+      } else {
+        $( '#manual' ).prop('disabled', false);
+      }
+    });
+
 
 // Submit checklist and replace with ui
 $( '#checklist-form' ).on( 'submit', function( event ) {
   event.preventDefault();
-  // eslint-disable-next-line no-invalid-this
-  $.post('/data-entry/tool/', $(this).serialize(), function( data ) {
-    // Remove checklist and replace with ui panel
-    $('#secondary-panel').replaceWith( data );
-    $( 'i.remove' ).hide();
-  });
+
+  // JSON of checklist inputs
+  const formData = $('#checklist-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    postData[formData[i].name] = formData[i].value;
+  }
+
+  if (
+    postData.hasOwnProperty('attributes') ||
+    postData.hasOwnProperty('allTables') ||
+    postData.hasOwnProperty('singleTable') ||
+    postData.hasOwnProperty('manual')
+  ) {
+    // eslint-disable-next-line no-invalid-this
+    $.post('/data-entry/tool/', postData, function( data ) {
+      // Remove checklist and replace with ui panel
+      $('#secondary-panel').replaceWith( data );
+      $('#fileName').attr('value', $('#filepath').attr('value').slice(6));
+
+      // Disable validate button if not manual
+      if (!postData.hasOwnProperty('manual')) {
+        $('#validate-btn').prop('disabled', true);
+        $('#validate-tables-btn').prop('disabled', true);
+      }
+
+      let processCount = 0;
+      if (postData.hasOwnProperty('attributes')
+      && postData.attributes === 'on') {
+        processCount++;
+        $.post('/data-entry/tool/attributes', postData, function(data) {
+          processCount--;
+          $('#attributes-target').replaceWith(data);
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
+          }
+        });
+      }
+
+      if (postData.hasOwnProperty('singleTable')
+          && postData.singleTable === 'on') {
+        processCount++;
+        $.post('/data-entry/tool/onePageTables', postData, function(data) {
+          processCount--;
+          $('#table-target').append(data);
+          $('#table-loader').remove();
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
+          }
+        });
+      }
+
+      if (postData.hasOwnProperty('allTables')
+          && postData.allTables === 'on') {
+        processCount++;
+        $.post('/data-entry/tool/allPagesTables', postData, function(data) {
+          processCount--;
+          $('#table-target').append(data);
+          $('#table-loader').remove();
+          if (processCount === 0) {
+            $('#validate-btn').prop('disabled', false);
+            $('#validate-tables-btn').prop('disabled', false);
+          }
+        });
+      }
+    });
+  } else {
+    // No checkbox selected
+    const alertMessage = `
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      Please select one of the options before submitting checklist.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>`;
+
+    $('#alert-target').replaceWith(alertMessage);
+  }
 });
 
 // Table button ajax post
-$( '#event-div' ).on('submit', '#single-page-form', function( event ) {
+$( '#table-div' ).on('submit', '#single-page-form', function( event ) {
   event.preventDefault();
+  $('#get-btn').prop('disabled', true);
   // eslint-disable-next-line no-invalid-this
-  $.post('/data-entry/tool/tables', $(this).serialize(), function( data ) {
-    $('#table-target').append(data);
-    $('#tableModal').modal('hide');
-  });
+  $.post('/data-entry/tool/onePageTables',
+      $(this).serialize(), function( data ) {
+        $('#table-target').append(data);
+        showEditor();
+        $('#get-btn').prop('disabled', false);
+      });
 });
 
+// remove inline style on change
+$('#event-div').on('change', 'input.page-number', function() {
+  $(this).removeAttr('style');
+});
+
+// Remove Table X-Button
+$('#event-div').on('click', 'i.remove-table', function() {
+  // remove closest div.table
+  $(this).closest('div.table').remove();
+});
+
+// Table control toggle collapsed form
+$('#event-div').on('click', 'a.table-update-btn', function() {
+  // Toggle confirmation visibility
+  $(this).siblings('div.collapse').collapse('toggle');
+});
+
+// On select of col/row show associated number select
+$('#event-div').on('change', 'select.type', function() {
+  if ($(this).val() === 'row') {
+    $(this).siblings('select.row-number').prop('hidden', false);
+    $(this).siblings('select.col-number').prop('hidden', true);
+  } else if ($(this).val() === 'column') {
+    $(this).siblings('select.row-number').prop('hidden', true);
+    $(this).siblings('select.col-number').prop('hidden', false);
+  }
+});
+
+/* eslint-disable max-len*/
+const tableAlertTemplate = `<div 
+class="alert alert-danger alert-dismissible fade show" role="alert">
+<strong>Warning: </strong>
+Cannot delete <%= type %> 0.
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>`;
+/* eslint-enable max-len*/
+
+// Call function for table control form
+$('#event-div').on('click', 'a.table-control-update', function() {
+  // Remove any previous alerts
+  $(this).parent().siblings('div.table-alert-target').empty();
+
+  // Collect options
+  const options = {};
+  options.command = $(this).siblings('select.command').val();
+  options.type = $(this).siblings('select.type').val();
+  const table = $(this).closest('div.collapse').siblings('table');
+
+  // Execute specified command
+  if (options.type === 'row') {
+    const select = $(this).siblings('select.row-number');
+    options.number = select.val();
+
+    if ( options.command === 'add' ) {
+      addRow(table, options.number, select);
+    } else if ( options.command === 'delete' ) {
+      if (options.number !== '0') {
+        deleteRow(table, options.number, select);
+      } else {
+        // eslint-disable-next-line
+        const tableAlert = ejs.render(tableAlertTemplate, {type: options.type});
+        $(this).parent().siblings('div.table-alert-target').html(tableAlert);
+      }
+    }
+  } else if (options.type === 'column') {
+    const select = $(this).siblings('select.col-number');
+    options.number = select.val();
+    if ( options.command === 'add' ) {
+      addColumn(table, options.number, select);
+    } else if ( options.command === 'delete' ) {
+      if (options.number !== '0') {
+        deleteColumn(table, options.number, select);
+      } else {
+        // eslint-disable-next-line
+        const tableAlert = ejs.render(tableAlertTemplate, {type: options.type});
+        $(this).parent().siblings('div.table-alert-target').html(tableAlert);
+      }
+    }
+  }
+  console.log(options);
+});
+
+// Single Table Form Button
+$('#event-div').on('click', '#tableToggle', function() {
+  hideEditor();
+  // Scroll to top of window
+  window.scrollTo(0, 0);
+});
+
+
+// Cancel Button
+$('#table-div').on('click', '#cancel-btn', function() {
+  showEditor();
+});
+
+/* eslint-disable max-len*/
+const validationWarningAlertTemplate = `<div 
+class="alert alert-<%= type %> alert-dismissible fade show" role="alert">
+<strong><%= messageTitle %> </strong>
+<%= message %>
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>`;
+/* eslint-enable max-len*/
+
+
+// Validation button
 $('#event-div').on('click', '#validate-btn', function() {
-  // serialize all tables
-  const tables = [];
-  const tableObjects = $('#table-target').children('div.table-div');
-  $.each( tableObjects, function(tableIndex, table) {
-    const rows = $(table).children('table').children('tbody').children();
-    tables.push(serializeTable(rows));
-  });
-  $('#table-data-input').attr('value', JSON.stringify(tables));
+  if ($('#table-data-input').length) {
+    // serialize all tables
+    const tables = [];
+    const tableObjects = $('#table-target').children('div.table');
+    $.each( tableObjects, function(tableIndex, table) {
+      tables.push(serializeTable(table));
+    });
+    $('#table-data-input').attr('value', JSON.stringify(tables));
+  }
 
   const formData = $('#insert-form').serializeArray();
   const postData = {};
@@ -57,228 +306,534 @@ $('#event-div').on('click', '#validate-btn', function() {
       !formData[i].name.includes('convertedMeasurement') &&
       !formData[i].name.includes('sigfig')
     ) {
-      postData[formData[i].name] = formData[i].value;
+      if (formData[i].name.includes('primaryName') ||
+          formData[i].name.includes('firstName') ||
+          formData[i].name.includes('middleName') ||
+          formData[i].name.includes('bodyName')
+      ) {
+        const input = $('input[name="' + formData[i].name + '"]');
+        input.val(input.val().charAt(0).toUpperCase() + input.val().slice(1));
+        postData[formData[i].name.toString()] = input.val();
+      } else {
+        postData[formData[i].name.toString()] = formData[i].value;
+      }
     }
   }
 
   // Call Post Request for validation with all data
   $.post('/data-entry/tool/validate', postData, function( data ) {
-    console.log(data);
-  });
-});
+    // $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+
+    const parsedData = JSON.parse(data[0]);
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      const selector = '#' + entry[0];
+      const object = $(selector);
+      if ( entry[0] === 'tableData') {
+        // Parse table data
+        if (typeof entry[1] !== 'string') {
+          const tables = $('div.table');
+          for (let i = 0; i < entry[1].length; i++) {
+            // for each table parse feedback
+            const tableDiv = tables.eq(i);
+            const pageNumObj = tableDiv.children('div.page-row')
+                .children().children().children('input');
+            const rows = tableDiv.children('table')
+                .children('tbody').children();
+
+            if (entry[1][i]['page_number'] === 'invalid') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-invalid');
+              pageNumObj.attr('style', 'outline: 3px solid #FBDCD7');
+            } else if (entry[1][i]['page_number'] === 'success') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-valid');
+              pageNumObj.attr('style', 'outline: 2px solid #78BE20');
+            }
+
+            // Set analysis technique to valid
+            $(rows[0]).children().children('select').addClass('is-valid');
+
+            const elements = $(rows[1]).children().children('input');
+            const units = $(rows[2]).children().children('input');
+
+            // Check measurements
+            entry[1][i]['cells'].map(function(cell) {
+              const input = $(rows[cell.row]).children()
+                  .eq(cell.column).children('input');
+              const element = elements.eq(cell.column);
+              const unit = units.eq(cell.column);
+              const meteorite = $(rows[cell.row])
+                  .children().eq(0).children('input');
 
 
-$( '#event-div' ).on('click', 'button.table-edit', function() {
-  console.log('clicked edit');
-});
+              if (cell.measurement === 'invalid') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                input.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.measurement === 'success') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                input.attr('style', 'outline: 2px solid #78BE20');
+              }
 
-/**
- * @param  {object} rows JQuery collection of rows
- * @return {json} json serialization of table
- */
-function serializeTable(rows) {
-  // Serialize table
-  const tableData = {};
-  $.each( rows, function(rowIndex, value) {
-    $.each( $(this).children(), function(columnIndex, value) {
-      if (tableData.hasOwnProperty(columnIndex.toString()) === false) {
-        tableData[columnIndex] = {};
+              if (cell.element === 'invalid') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                element.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.element === 'success') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                element.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.units === 'invalid') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                unit.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.units === 'success') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                unit.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.meteorite_name === 'invalid') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                meteorite.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.meteorite_name === 'success') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                meteorite.attr('style', 'outline: 2px solid #78BE20');
+              }
+            });
+          }
+        }
+      } else {
+        // Parse Attributes
+        if (entry[1] === 'invalid') {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-invalid');
+        } else if (entry[1] === 'success') {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-valid');
+        } else {
+          object.removeClass('is-valid')
+              .removeClass('is-invalid').addClass('is-valid');
+        }
       }
-
-      // Set cell equal to it's value or null if empty
-      tableData[columnIndex][rowIndex] = $(value)
-          .children('input').attr('value') === '' ? null : $(value)
-              .children('input').val();
     });
-  });
-  return tableData;
-}
 
-/** ---------------------------- */
-/**     Remove Hover Toggle      */
-/** ---------------------------- */
-$( '#event-div' ).on('mouseover', 'div.form-row', function( event ) {
-// Show remove ui on mouseover of parent div
-  $(this).children().children( 'i.remove' ).show();
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid')) {
+        allValid = false;
+      }
+    });
+
+    console.log(allValid);
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert invalid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
 });
 
-$( '#event-div' ).on('mouseout', 'div.form-row', function( event ) {
-// Hide remove ui on mouseout of parent div
-  $(this).children().children( 'i.remove' ).hide();
+// Validation table button
+$('#event-div').on('click', '#validate-tables-btn', function() {
+  if ($('#table-data-input').length) {
+    // serialize all tables
+    const tables = [];
+    const tableObjects = $('#table-target').children('div.table');
+    $.each( tableObjects, function(tableIndex, table) {
+      tables.push(serializeTable(table));
+    });
+    $('#table-data-input').attr('value', JSON.stringify(tables));
+  }
+
+  const formData = $('#insert-form').serializeArray();
+  const postData = {};
+  for (let i = 0; i < formData.length; i++) {
+    if (
+      !formData[i].name.includes('convertedDeviation') &&
+      !formData[i].name.includes('convertedMeasurement') &&
+      !formData[i].name.includes('sigfig')
+    ) {
+      if (formData[i].name.includes('primaryName') ||
+          formData[i].name.includes('firstName') ||
+          formData[i].name.includes('middleName') ||
+          formData[i].name.includes('bodyName')
+      ) {
+        const input = $('input[name="' + formData[i].name + '"]');
+        input.val(input.val().charAt(0).toUpperCase() + input.val().slice(1));
+        postData[formData[i].name.toString()] = input.val();
+      } else {
+        postData[formData[i].name.toString()] = formData[i].value;
+      }
+    }
+  }
+
+  // Call Post Request for validation with all data
+  $.post('/data-entry/tool/validate', postData, function( data ) {
+    // $('#event-div').append('<p>' + JSON.stringify(data) + '</p>');
+
+    const parsedData = JSON.parse(data[0]);
+    // Set classes on all attributes
+    Object.entries(parsedData).map(function(entry) {
+      if ( entry[0] === 'tableData') {
+        // Parse table data
+        if (typeof entry[1] !== 'string') {
+          const tables = $('div.table');
+          for (let i = 0; i < entry[1].length; i++) {
+            // for each table parse feedback
+            const tableDiv = tables.eq(i);
+            const pageNumObj = tableDiv.children('div.page-row')
+                .children().children().children('input');
+            const rows = tableDiv.children('table')
+                .children('tbody').children();
+
+            if (entry[1][i]['page_number'] === 'invalid') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-invalid');
+              pageNumObj.attr('style', 'outline: 3px solid #FBDCD7');
+            } else if (entry[1][i]['page_number'] === 'success') {
+              pageNumObj.removeClass('is-valid')
+                  .removeClass('is-invalid').addClass('is-valid');
+              pageNumObj.attr('style', 'outline: 2px solid #78BE20');
+            }
+
+            // Set analysis technique to valid
+            $(rows[0]).children().children('select').addClass('is-valid');
+
+            const elements = $(rows[1]).children().children('input');
+            const units = $(rows[2]).children().children('input');
+
+            // Check measurements
+            entry[1][i]['cells'].map(function(cell) {
+              const input = $(rows[cell.row]).children()
+                  .eq(cell.column).children('input');
+              const element = elements.eq(cell.column);
+              const unit = units.eq(cell.column);
+              const meteorite = $(rows[cell.row])
+                  .children().eq(0).children('input');
+
+
+              if (cell.measurement === 'invalid') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                input.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.measurement === 'success') {
+                input.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                input.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.element === 'invalid') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                element.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.element === 'success') {
+                element.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                element.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.units === 'invalid') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                unit.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.units === 'success') {
+                unit.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                unit.attr('style', 'outline: 2px solid #78BE20');
+              }
+
+              if (cell.meteorite_name === 'invalid') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-invalid');
+                meteorite.attr('style', 'outline: 3px solid #FBDCD7');
+              } else if (cell.meteorite_name === 'success') {
+                meteorite.removeClass('is-valid')
+                    .removeClass('is-invalid').addClass('is-valid');
+                meteorite.attr('style', 'outline: 2px solid #78BE20');
+              }
+            });
+          }
+        }
+      }
+      // Do nothing for none tables
+    });
+
+    // Check if all valid
+    const allInputs = $('input,textarea,select');
+    let allValid = true;
+    allInputs.each(function() {
+      if ($(this).hasClass('is-invalid') || !$(this).hasClass('is-valid')) {
+        allValid = false;
+      }
+    });
+
+    console.log(allValid);
+    if (allValid) {
+      // If all valid enable submit
+      $('#submit-btn').prop('disabled', false);
+      // Alert all valid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'success',
+        messageTitle: 'Success:',
+        message: 'All inputs valid. Submission enabled.',
+      });
+      $('div.main-alert-target').html(alert);
+    } else {
+      // Alert invalid
+      // eslint-disable-next-line no-undef
+      const alert = ejs.render(validationWarningAlertTemplate, {
+        type: 'danger',
+        messageTitle: 'Warning:',
+        message: 'Invalid inputs present. Please fix and revalidate.',
+      });
+      $('div.main-alert-target').html(alert);
+    }
+  }); // End validation post
 });
 
-
-/** ---------------------------- */
-/**      Save/Edit Events        */
-/** ---------------------------- */
-
-// Bacis section
-$( '#event-div' ).on( 'click', 'i.save-basic', function( event ) {
-// Disable all inputs in the basic information section.
-  $(this).parent().siblings().slice(0, 3)
-      .children().children('input').prop('readonly', true);
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $( 'i.edit-basic' ).prop('hidden', false);
+// Manual change value on table inputs
+$('#event-div').on('change', 'input.table-input', function() {
+  $(this).attr('value', $(this).val());
 });
 
-$( '#event-div' ).on( 'click', 'i.edit-basic', function( event ) {
-// Enable all inputs in the basic information section.
-  $(this).parent().siblings().slice(0, 3)
-      .children().children('input').prop('readonly', false);
+// On change of any input remove classes, alert user, and disable submit button.
+$('#event-div').on('change', 'input,textarea,select', function() {
+  if ($(this).hasClass('is-valid')) {
+    // Alert change
+    // eslint-disable-next-line no-undef
+    const alert = ejs.render(validationWarningAlertTemplate, {
+      type: 'warning',
+      messageTitle: 'Warning:',
+      message: `Valid data changed, revalidation 
+      required before submission.`,
+    });
+    $('div.main-alert-target').html(alert);
+  }
 
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $( 'i.save-basic' ).prop('hidden', false);
+  $(this).removeClass('is-valid').removeClass('is-invalid');
+  $(this).removeAttr('style');
+  $('#submit-btn').prop('disabled', true);
 });
 
-
-// Author(s) Section
-$( '#event-div' ).on( 'click', 'i.save-author', function( event ) {
-// Disable inputs
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-author' ).prop('hidden', false);
+$('#event-div').on('click', '#override-btn', function() {
+  $('#submit-btn').prop('disabled', false);
 });
-
-$( '#event-div' ).on( 'click', 'i.edit-author', function( event ) {
-// Enable inputs
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-author' ).prop('hidden', false);
-});
-
-
-// Meteorite Section
-$( '#event-div' ).on( 'click', 'i.save-meteorite', function( event ) {
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-meteorite' ).prop('hidden', false);
-});
-
-$( '#event-div' ).on( 'click', 'i.edit-meteorite', function( event ) {
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-meteorite' ).prop('hidden', false);
-});
-
-
-// Measurement Section
-$( '#event-div' ).on( 'click', 'i.save-measurement', function( event ) {
-  disableInline($(this));
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-measurement' ).prop('hidden', false);
-});
-
-$( '#event-div' ).on( 'click', 'i.edit-measurement', function( event ) {
-  enableInline($(this));
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-measurement' ).prop('hidden', false);
-});
-
-
-// Note Section
-$( '#event-div' ).on( 'click', 'i.save-note', function( event ) {
-// Disable textfield
-  $(this).parent().parent().children('textarea').prop('disabled', true);
-
-  // Give not-removable class
-  $(this).parent().parent().addClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.edit-note' ).prop('hidden', false);
-});
-
-$( '#event-div' ).on( 'click', 'i.edit-note', function( event ) {
-// Enable textfield
-  $(this).parent().parent().children('textarea').prop('disabled', false);
-
-  // Remove not-removable class
-  $(this).parent().parent().removeClass('not-removable');
-
-  // Toggle UI
-  $(this).prop('hidden', true);
-  $(this).siblings().closest( 'i.save-note' ).prop('hidden', false);
-});
-
 
 /** ---------------------------- */
 /**    Functions Declarations    */
 /** ---------------------------- */
 
-
 /**
- * @function disableInline
- * @param {Object} element - The clicked element
- * @description Function disables form controls associated with ui.
+ * @param  {object} table html element of given table div
+ * @return {json} json serialization of table xhr response div
  */
-function disableInline(element) {
-// Disable all inputs associated with element
-  element.parent().siblings().children('input').prop('readonly', true);
+function serializeTable(table) {
+  const rows = $(table).children('table').children('tbody').children();
+  const pageNumber = $(table).children('div.page-row')
+      .children('div').children('label').children('input').val();
+  const tableObj = {};
 
-  // Disable checkboxs associated with element
-  element.parent().siblings().children('select').prop('disabled', true);
+  const cellData = [];
+  const techniqueColumns = [];
+  const elementColums = [];
+  const unitColumns = [];
+  const meteoriteRows = [];
 
-  // Disable select groups associated with element
-  element.parent().siblings().children('input[type=checkbox]')
-      .prop('disabled', true);
+  $.each( rows, function(rowIndex, value) {
+    $.each( $(this).children(), function(columnIndex, value) {
+      if (columnIndex === 0) {
+        // meteorite name
+        meteoriteRows[rowIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      } else if (rowIndex === 0) {
+        // Analysis Technique
+        techniqueColumns[columnIndex] = $(value)
+            .children('select').attr('value') === '' ? null : $(value)
+                .children('select').val();
+      } else if (rowIndex === 1 && columnIndex !== 0) {
+        // Element
+        elementColums[columnIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      } else if (rowIndex === 2 && columnIndex !== 0) {
+        // Unit
+        unitColumns[columnIndex] = $(value)
+            .children('input').attr('value') === '' ? null : $(value)
+                .children('input').val();
+      }
+    });
+  });
+
+  // Add each cell with accompanying values to table array
+  let temp = {};
+  $.each( rows, function(rowIndex, value) {
+    $.each( $(this).children(), function(columnIndex, value) {
+      if (columnIndex > 0 && rowIndex > 2) {
+        // Fill temp with cells attributes
+        temp.analysis_technique = techniqueColumns[columnIndex];
+        temp.meteorite_name = meteoriteRows[rowIndex];
+        temp.element = elementColums[columnIndex];
+        temp.units = unitColumns[columnIndex];
+        if ($(value).children('input').attr('value').charAt(0) === '<') {
+          temp.less_than = true;
+          temp.measurement = $(value)
+              .children('input').attr('value').slice(1);
+        } else {
+          temp.less_than = false;
+          temp.measurement = $(value)
+              .children('input').attr('value') === '' ? null : $(value)
+                  .children('input').val();
+        }
+        temp.column = columnIndex;
+        temp.row = rowIndex;
+
+        // Push and reset temp
+        cellData.push(temp);
+        temp = {};
+      }
+    });
+  });
+
+  tableObj.page_number = pageNumber;
+  tableObj.cells = cellData;
+  return tableObj;
 }
 
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function addRow(table, num, select) {
+  // Add row after selected row
+  const target = table.children('tbody').children('tr').eq(num);
+  let rowStr = '<tr>';
+  for ( let i = 0; i < target.children().length; i++ ) {
+    rowStr += '<th><input type="text"></th>';
+  }
+  rowStr += '</tr>';
+  target.after(rowStr);
+
+  // Update select
+  const count = parseInt(select.children('option').last().val()) + 1;
+  select.append('<option value="'+ count +'">'+ count +'</option>');
+}
 
 /**
- * @function EnableInline
- * @param {Object} element - The clicked element
- * @description Function Enables form controls associated with ui.
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
  */
-function enableInline(element) {
-// Enable all inputs associated with element
-  element.parent().siblings().children('input').prop('readonly', false);
-
-  // Enable checkboxs associated with element
-  element.parent().siblings().children('select').prop('disabled', false);
-
-  // Enable select groups associated with element
-  element.parent().siblings().children('input[type=checkbox]')
-      .prop('disabled', false);
+function deleteRow(table, num, select) {
+  // Remove specified row
+  table.children('tbody').children('tr').eq(num).remove();
+  // Update select
+  select.children('option').last().remove();
 }
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function addColumn(table, num, select) {
+  /* eslint-disable max-len*/
+  const techniqueSelectTemplate = `<th>
+  <select class="form-control">
+      <option value="None">None</option>
+      <% for(var k=0; k < Technique.length; k++) { %>
+          <option value="<%= Technique[k] %>"><%= Technique[k] %></option> 
+      <% } %>                   
+  </select>
+  </th>`;
+  /* eslint-enable max-len*/
+
+  // Render technique select
+  // eslint-disable-next-line
+  const techniqueSelect = ejs.render(techniqueSelectTemplate, {Technique: TechniqueArr});
+
+  // Add column after specified column
+  const rows = table.children('tbody').children('tr');
+  for (let i = 0; i <= rows.length; i++) {
+    if (i === 0) {
+      if ((num - 1) === -1) {
+        rows.eq(i).children().eq(num).before(techniqueSelect);
+      } else {
+        rows.eq(i).children().eq(num - 1).after(techniqueSelect);
+      }
+    } else {
+      if ((num - 1) === -1) {
+        rows.eq(i).children()
+            .eq(num).before('<th><input type="text"></th>');
+      } else {
+        rows.eq(i).children().eq(num - 1).after('<th><input type="text"></th>');
+      }
+    }
+  }
+
+  // Update select
+  const count = parseInt(select.children('option').last().val()) + 1;
+  select.append('<option value="'+ count +'">'+ count +'</option>');
+}
+
+/**
+ * @param  {object} table JQuery table object
+ * @param {number} num number of row
+ * @param {object} select select of the associated form
+ */
+function deleteColumn(table, num, select) {
+  // Remove specified column
+  const rows = table.children('tbody').children('tr');
+  for (let i = 0; i <= rows.length; i++) {
+    rows.eq(i).children().eq(num - 1).remove();
+  }
+  // Update select
+  select.children('option').last().remove();
+}
+
+/**
+ * @description Hides Editor to visible and Toggles signle table form to visible
+ */
+function hideEditor() {
+  $('#event-div').prop('hidden', true);
+  $('#table-div').prop('hidden', false);
+}
+
+/**
+ * @description Toggles Editor to visible and hides single table form
+ */
+function showEditor() {
+  $('#event-div').prop('hidden', false);
+  $('#table-div').prop('hidden', true);
+}
+
 
 /**
  * @param  {string} num The number that you need
@@ -304,7 +859,6 @@ function getSigFig(num) {
   );
 }
 
-
 /** ----------------------------------- */
 /**        EJS Templates for Add        */
 /** ----------------------------------- */
@@ -327,9 +881,9 @@ const authorTemplate = `
   required="true" placeholder="required">
 </div>
 <div class="form-group col-md-3">
-  <label for="<%- middleNameID %>">Middle Name</label>
+  <label for="<%- middleNameID %>">Middle Initial</label>
   <input type="text" class="form-control" id="<%- middleNameID %>"
-  name="<%- middleNameID %>">
+  name="<%- middleNameID %>" placeholder="optional">
 </div>
 </div>
 `;
@@ -345,6 +899,7 @@ const noteTemplate = `
   </textarea>
 </div>
 `;
+
 
 const measurementTemplate = `
 <div class="form-row">
@@ -419,7 +974,7 @@ const meteoriteTemplate = `
   title="Press to remove meteorite and all associated measurements."></i>
 </div>
 <div class="form-group col-md-6">
-  <label for="<%- bodyNameID %>">Name</label>
+  <label for="<%- bodyNameID %>">Meteorite</label>
   <input type="text" class="form-control" id="<%- bodyNameID %>" 
   name="<%- bodyNameID %>" required>
 </div>
@@ -466,9 +1021,32 @@ let bodyNameIDCount = 1;
 let groupIDCount = 1;
 let classIDCount = 1;
 
+
 // Simple Add Event Handlers
 $( '#event-div' ).on('click', 'i.add-author', function( event ) {
-// Dynamically create IDs
+  addAuthor(this);
+});
+
+
+$( '#event-div' ).on('click', 'i.add-note', function( event ) {
+  addNote(this);
+});
+
+
+$( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
+  addMeasurement(this);
+});
+
+
+$( '#event-div' ).on('click', 'i.add-meteorite', function( event ) {
+  addMeteorite(this);
+});
+
+/**
+ * @param  {object} e this
+ */
+function addAuthor( e ) {
+  // Dynamically create IDs
   const primaryNameID = 'primaryName' + primaryNameIDCount;
   const firstNameID = 'firstName' + firstNameIDCount;
   const middleNameID = 'middleName' + middleNameIDCount;
@@ -489,18 +1067,17 @@ $( '#event-div' ).on('click', 'i.add-author', function( event ) {
 
   // Render Author template with current IDs
   // eslint-disable-next-line
-const html = ejs.render(authorTemplate, idObj);
+  const html = ejs.render(authorTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.meteorite-header').first().before(html);
+  $(e).parent().siblings('.authors-end').first().before(html);
+}
 
-  // Hide remove ui
-  $( 'i.remove' ).hide();
-});
-
-
-$( '#event-div' ).on('click', 'i.add-note', function( event ) {
-// Dynamically create IDs
+/**
+ * @param  {object} e this
+ */
+function addNote( e ) {
+  // Dynamically create IDs
   const noteID = 'note' + noteIDCount;
 
   // Assign IDs
@@ -511,34 +1088,33 @@ $( '#event-div' ).on('click', 'i.add-note', function( event ) {
 
   // Render note template with current ID
   // eslint-disable-next-line
-const html = ejs.render(noteTemplate, idObj);
+  const html = ejs.render(noteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('button:submit').before(html);
+  $(e).parent().siblings('button:submit').before(html);
+}
 
-  // Hide remove ui
-  $( 'i.remove' ).hide();
-});
-
-
-$( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
-// Get parent meteorite
-  const meteoriteID = $(this).parent()
+/**
+ * @param  {object} e this
+ */
+function addMeasurement( e ) {
+  // Get parent meteorite
+  const meteoriteID = $(e).parent()
       .prevAll( 'div.meteorite-header' ).first().attr('id').slice(9);
 
   // Dynamically create IDs
-  const elementID = 'element' + meteoriteID + '-' + elementIDCount;
-  const lessThanID = 'lessThan' + meteoriteID + '-' + lessThanIDCount;
-  const measurementID = 'measurement' + meteoriteID + '-' + measurementIDCount;
-  const deviationID = 'deviation' + meteoriteID + '-' + deviationIDCount;
-  const unitsID = 'units' + meteoriteID + '-' + unitsIDCount;
-  const techniqueID = 'technique' + meteoriteID + '-' + techniqueIDCount;
-  const pageID = 'page' + meteoriteID + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const elementID = 'element' + meteoriteID + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteID + '_' + lessThanIDCount;
+  const measurementID = 'measurement' + meteoriteID + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteID + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteID + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteID + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteID + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteID + '_' + sigfigIDCount;
   const convertedMeasurementID =
-    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+    'convertedMeasurement' + meteoriteID + '_' + convertedMeasurementIDCount;
   const convertedDeviationID =
-    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
+    'convertedDeviation' + meteoriteID + '_' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -573,41 +1149,40 @@ $( '#event-div' ).on('click', 'i.add-measurement', function( event ) {
 
   // Render note template with current ID
   // eslint-disable-next-line
-const html = ejs.render(measurementTemplate, idObj);
+  const html = ejs.render(measurementTemplate, idObj);
 
   // Insert template into DOM
   const nextID = 'meteorite' + (1 + Number(meteoriteID));
   if ( $( '#' + nextID ).length ) {
     $( '#' + nextID ).before(html);
   } else {
-    $(this).parent().siblings('.notes-header')
+    $(e).parent().siblings('.notes-header')
         .first().before(html);
   }
+}
 
-  // Hide remove ui
-  $( 'i.remove' ).hide();
-});
-
-$( '#event-div' ).on('click', 'i.add-meteorite', function( event ) {
-// Dynamically create IDs
+/**
+ * @param  {object} e this
+ */
+function addMeteorite( e ) {
+  // Dynamically create IDs
   const meteoriteID = 'meteorite' + meteoriteIDCount;
   const bodyNameID = 'bodyName' + bodyNameIDCount;
   const groupID = 'group' + groupIDCount;
   const classID = 'class' + classIDCount;
-  const elementID = 'element' + meteoriteIDCount + '-' + elementIDCount;
-  const lessThanID = 'lessThan' + meteoriteIDCount + '-' + lessThanIDCount;
-  // eslint-disable-next-line
-const measurementID = 'measurement' + meteoriteIDCount + '-' + measurementIDCount;
-  const deviationID = 'deviation' + meteoriteIDCount + '-' + deviationIDCount;
-  const unitsID = 'units' + meteoriteIDCount + '-' + unitsIDCount;
-  const techniqueID = 'technique' + meteoriteIDCount + '-' + techniqueIDCount;
-  const pageID = 'page' + meteoriteIDCount + '-' + pageIDCount;
-  const sigfigID = 'sigfig' + meteoriteID + '-' + sigfigIDCount;
+  const elementID = 'element' + meteoriteIDCount + '_' + elementIDCount;
+  const lessThanID = 'lessThan' + meteoriteIDCount + '_' + lessThanIDCount;
+  const measurementID =
+  'measurement' + meteoriteIDCount + '_' + measurementIDCount;
+  const deviationID = 'deviation' + meteoriteIDCount + '_' + deviationIDCount;
+  const unitsID = 'units' + meteoriteIDCount + '_' + unitsIDCount;
+  const techniqueID = 'technique' + meteoriteIDCount + '_' + techniqueIDCount;
+  const pageID = 'page' + meteoriteIDCount + '_' + pageIDCount;
+  const sigfigID = 'sigfig' + meteoriteIDCount + '_' + sigfigIDCount;
   const convertedMeasurementID =
-    'convertedMeasurement' + meteoriteID + '-' + convertedMeasurementIDCount;
+  'convertedMeasurement' + meteoriteIDCount + '_' + convertedMeasurementIDCount;
   const convertedDeviationID =
-    'convertedDeviation' + meteoriteID + '-' + convertedDeviationIDCount;
-
+  'convertedDeviation' + meteoriteIDCount + '_' + convertedDeviationIDCount;
 
   // Assign IDs
   const idObj = {};
@@ -649,14 +1224,11 @@ const measurementID = 'measurement' + meteoriteIDCount + '-' + measurementIDCoun
 
   // Render note template with current ID
   // eslint-disable-next-line
-const html = ejs.render(meteoriteTemplate, idObj);
+  const html = ejs.render(meteoriteTemplate, idObj);
 
   // Insert template into DOM
-  $(this).parent().siblings('.notes-header').before(html);
-
-  // Hide remove ui
-  $( 'i.remove' ).hide();
-});
+  $(e).parent().siblings('.notes-header').before(html);
+}
 
 /** ---------------------------- */
 /**        UI Remove Events      */
@@ -819,14 +1391,15 @@ $( '#event-div' ).on('submit', '#insert-form', function(event) {
 
   // Submit if checks pass
   if (allValid === true) {
-    // serialize all tables
-    const tables = [];
-    const tableObjects = $('#table-target').children('div.table-div');
-    $.each( tableObjects, function(tableIndex, table) {
-      const rows = $(table).children('table').children('tbody').children();
-      tables.push(serializeTable(rows));
-    });
-    $('#table-data-input').attr('value', JSON.stringify(tables));
+    if ($('#table-data-input').length) {
+      // serialize all tables
+      const tables = [];
+      const tableObjects = $('#table-target').children('div.table');
+      $.each( tableObjects, function(tableIndex, table) {
+        tables.push(serializeTable(table));
+      });
+      $('#table-data-input').attr('value', JSON.stringify(tables));
+    }
 
     return; // submit
   } else {

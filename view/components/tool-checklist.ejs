@@ -1,26 +1,94 @@
-<form method="POST" action="/data-entry/tool" class="border border-dark bg mx-auto p-3 pl-5" id="checklist-form">
+<form method="POST" action="/data-entry/tool" class="border border-dark bg mx-auto p-5 mt-5 mb-5" id="checklist-form">
     <h3 class="pb-1 align-items-center">Options</h3>
+    <div id="alert-target"></div>
+
+    <% if (numOfPages !== -1 ) { %>
     <div class="form-group">
-        <input class="form-check-input" type="checkbox" name="journal" id="journal">
-        <label class="form-check-label" for="journal">Journal Information</label>
+        <input class="form-check-input" type="checkbox" name="attributes" id="attributes">
+        <label class="form-check-label" for="attributes">
+            Extract Attributes <small>(Paper title, journal name, author(s), and year published)</small>
+        </label>
     </div>
     <div class="form-group">
-        <input class="form-check-input" type="checkbox" name="paper" id="paper">
-        <label class="form-check-label" for="paper">Paper Information</label>
+        <input class="form-check-input" type="checkbox" name="allTables" id="allTables">
+       <label class="form-check-label" for="allTables">Extract All Tables</label>
     </div>
     <div class="form-group">
-        <input class="form-check-input" type="checkbox" name="authors" id="authors">
-        <label class="form-check-label" for="authors">Author(s)</label>
+        <label class="form-check-label" for="singleTable">
+                <input class="form-check-input" type="checkbox" name="singleTable" id="singleTable" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="collapse"> Extract Tables by Page
+        </label>
     </div>
-    <div class="form-group">
-        <input class="form-check-input" type="checkbox" name="technique" id="technique">
-        <label class="form-check-label" for="technique">Analysis Technique</label>
+    <div id="collapse" aria-expanded="false" class="collapse">
+        <div class="well">
+            <small>Select page number of the pdf to extract tables from.</small>
+            <!-- This will remain hidden -->
+            <div class="form-group">
+                <label for="fileName" class="sr-only">filenam</label>
+                <input id="fileName-checklist" name="fileName" type="hidden" value="">
+            </div>
+        
+            <!-- This will be a drop down, I'll need some way of grabing the number of pages before rendering this -->
+            <!-- currently giving you 1-20 -->
+            <div class="form-group pl-3">
+                <label for="pageNum">Page Number <small><em><sup>*</sup>required</em></small></label>
+                <select class="form-control" name="pageNum" id="pageNum">
+                    <% for (var i = 0; i < numOfPages; i++) { %>
+                        <option value="<%= i + 1 %>"><%= i + 1 %></option>
+                    <% } %>
+                </select>
+            </div>
+            <!-- Some form of directional input, probably just number -360 to 360 -->
+            <div class="form-group pl-3">
+                <label for="flipDir">Flip Direction <small>(Degrees rotating clockwise)</small></label>
+                <select class="form-control" id="flipDir" name="flipDir">
+                    <option value="0">0</option>
+                    <option value="90">90</option>
+                    <option value="180">180</option>
+                    <option value="270">270</option>
+                </select>
+            </div>
+        
+            <!-- will discuss further when/if we get to it -->
+            <h5><strong>Coordinates:</strong></h5>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="coordsLeft">Left Coordinate:</label>
+                        <input class="pl-2" id="coordsLeft" name="coordsLeft" type="number" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="coordsTop">Top Coordinate:</label>
+                        <input class="pl-2" id="coordsTop" name="coordsTop" type="number" value="0">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label for="coordsWidth">Width Coordinate:</label>
+                        <input class="pl-2" id="coordsWidth" name="coordsWidth" type="number" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="coordsHeight">Height Coordinate:</label>
+                        <input class="pl-2" id="coordsHeight" name="coordsHeight" type="number" value="0">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <% } else { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error: </strong>
+            The pdf you uploaded is unable to be processed. Please continue manually or try uploading another pdf.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <% } %>
     <hr class="text-danger mt-1">
     <div class="form-group">
-        <input class="form-check-input" type="checkbox" name="tables" id="tables">
-        <label class="form-check-label" for="tables">Table Data</label>
+        <input class="form-check-input" type="checkbox" name="manual" id="manual" <% if (numOfPages === -1 ) { %> checked <% } %> >
+        <label class="form-check-label" for="manual">No Automatic Data Extraction</label>
     </div>
-    <button type="submit" class="btn btn-secondary float-right ml-3 mt-3">Submit</button>
+
+    <button type="submit" class="btn btn-secondary float-right">Submit</button>
 </form>

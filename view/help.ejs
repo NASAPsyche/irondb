@@ -3,6 +3,7 @@
 
 <head>
     <title>Help</title>
+    <%- include('components/favicon'); %>
     <%- include('bootstrap/css'); %>
     <link rel='stylesheet' href='/stylesheets/index.css' />
     <link rel='stylesheet' href='/stylesheets/help.css' />
@@ -15,7 +16,7 @@
     <%- include('components/navbar'); %>
     <% } %>
 
-    <div class="container-fluid pt-3 pb-4" id="top-container">
+    <div class="container-fluid pt-3 pb-5" id="top-container">
         <div class="row">
             <div class="col-md-8 pt-4 ml-5">
                 <div class="row">
@@ -27,17 +28,13 @@
         </div>
     </div>
 
-    <div class="container-fluid pt-3" id="bottom-container">
+    <div class="container-fluid pt-3 pb-4" id="bottom-container">
         <div>
             <div class="row">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
                     <h5>
-                        Welcome to the Iron Meteorite Database, a part of <a href="https://psyche.asu.edu/">
-                            Arizona State University's project Psyche</a>. This is the premiere database for curated
-                        information on iron meteorites. We strive to have the most complete and most accurate
-                        collection
-                        of data by using a mixture of natural language processing and traditional data entry.
+                        Welcome to the Iron Meteorite Database, created as a componenet of <a href="https://psyche.asu.edu/">NASA's Psyche Mission</a> and aiming to benefit the entire scientific community. As the premiere database for curated information on iron meteorites, we strive to provide the most complete and most accurate collection of meteorite data by using a mixture of natural language processing algorithms and human-guided data entry. Learn more <a href="https://psyche.asu.edu/get-involved/capstone-projects/capstone-projects-iron-class/iron-meteorite-database/">here</a>.
                     </h5>
                 </div>
                 <div class="col-sm-1"></div>
@@ -52,7 +49,6 @@
                         <a href="#exportData">Export Data</a>&nbsp;&nbsp;&nbsp;
                         <% if(isSignedIn){ %>
                         <a href="#dataEntry">Data Entry</a>&nbsp;&nbsp;&nbsp;
-                        <a href="#reportError">Report an Error</a>&nbsp;&nbsp;&nbsp;
                         <% } %>
                         <a href="#registration">Registration</a>&nbsp;&nbsp;&nbsp;
                     </center>
@@ -66,20 +62,56 @@
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
                     <h3 class="section-head">Search</h3>
-                    <p>
-                        If you know the name of the meteorite you are searching for,
-                        or you know the name of the paper or author you are looking for,
-                        you can search for this on the landing page. For more advanced searches,
-                        select "Enter the Database".
+                    <p class="pt-3">
+                        If you know the <strong>meteorite name</strong> you are searching for, or the name of the <strong>paper</strong> or <strong>author</strong>, you can search for this on the <a href="/">landing page</a>.
                     </p>
                     <p>
                         <center>
-                            <img src="/images/help/search1.png" alt="simple search">
+                            <img src="/images/help/Search/simple_search.png" alt="simple search">
                         </center>
                     </p>
-                    <!-- TODO: Add information about advanced search. BLOCKING: not yet designed -->
                     <p>
-                        For advanced search, ...
+                    	<p>
+                    		For advanced searches, navigate to the <a href="/database">database page</a> (or click <a href="/database">"Enter the Database"</a>.)
+                    	</p>
+                    	<h5 class="pt-4">
+                    		<u>Search by <strong>source</strong> of meteorite study:</u>
+                    	</h5>
+                    	<p>
+                    		Click on the plus + or minus - square button on the left to expand or minimize search fields for <strong>journal name, volume, or page number</strong> of the research paper in which the meteorite appears:
+                    	</p>
+                        <p>
+                            <center>
+                                <img src="/images/help/Search/source_expand.png" alt="expand source">
+                            </center>
+                        </p>
+                        <p>
+                        	Click on the plus + or minus - square button on the right to expand or minimize search fields for <strong>date of publication</strong> of the research paper in which the meteorite appears:
+                        </p>
+                        <p>
+                            <center>
+                                <img src="/images/help/Search/date_expand.png" alt="expand date">
+                            </center>
+                        </p>
+                        <h5>
+                        	<u>Search by meteorite <strong>composition</strong>:</u>
+                        </h5>
+                        <p>
+                        	Click the plus + or minus - signs next to "Composition" to expand or minimize search fields for the <strong>chemical composition</strong> of the meteorite:
+                        </p>
+                        <p>
+                            <center>
+                                <img src="/images/help/Search/composition_expand.png" alt="expand composition">
+                            </center>
+                        </p>
+                        <p class="pt-3">
+                            You can then click "Search" to submit your query, or click "Reset" to clear all fields.
+                        </p>
+                        <p>
+                            <center>
+                                <img src="/images/help/Search/reset_search.png" alt="expand composition">
+                            </center>
+                        </p>
                     </p>
                 </div>
                 <div class="col-sm-1"></div>
@@ -90,8 +122,26 @@
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
                     <h3 class="section-head">Export Data</h3>
-                    <p>... how to export data</p>
-                    <!-- TODO: Add information about exporting data. BLOCKING: feature not implemented -->
+                    <p class="pt-3">
+                    	If you would like to export a CSV of your search results, submit a query in the <a href="/database">database page</a>, then click the "Export" button.
+                	</p>
+                	 <p>
+                        <center>
+                            <img src="/images/help/Export/export_page.png" alt="export page">
+                        </center>
+                    </p>
+                    <p>
+                    	You will be redirected to the "Export Data" page. Verify that the listed data is what you wish to export and delete any unwanted entries. You can choose to export this data separated by the analysis techniques used for each meteorite (this can result in multiple rows for a single meteorite that has multiple analysis techniques), or you can choose to discard the analysis techniques and export each meteorite in a single row of the CSV.
+                    </p>
+                    <p>
+                        <center>
+                        	<img src="/images/help/Export/data.png" alt="data to export">
+                            <img src="/images/help/Export/analysis_vs_row.png" alt="export by analysis technique vs single row">
+                        </center>
+                    </p>
+                    <p class="pt-5">
+                    	Once you are done customizing your export, you can click "Export Data" to download the CSV file on your local machine.
+                    </p>
                 </div>
                 <div class="col-sm-1"></div>
             </div>
@@ -102,62 +152,188 @@
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
                     <h3 class="section-head">Data Entry</h3>
-                    <p>
-                        <!-- TODO: add link for request page. BLOCKER: not implemented -->
-                        Data entry is restricted to preapproved users. To request an invitiation,
-                        go to <a href="/">request page</a>. If you are an approved user, log in and
-                        go to the <a href="/data-entry">data entry page</a>.
-                    </p>
-                    <p>
-                        If you would like to use the automated tools to extract information from
-                        the paper, select "Automated Tool" and choose the PDF to upload. If you
-                        do not want to use the automated tools, you may choose to upload a PDF to
-                        work off of, or you may choose to do so later.
+                    <p class="pt-3">
+                    	Data entry is limited to pre-approved users. If you are an approved user, log in and go to the <a href="/data-entry">data entry page</a>.
                     </p>
                     <p>
                         <center>
-                            <img src="/images/help/dataentry1.png" alt="select entry method">
+                            <img src="/images/help/DataEntry/entry_approach.png" alt="data entry approach">
+                        </center>
+                    </p>
+                    <h5>
+                    	<u>Automated Tool: (recommended)</u>
+                    </h5>
+                    <p>
+                    	If you would like to use the automated tool to extract information from the paper, select "With PDF", choose a PDF to upload, then click "Submit".
+                    </p>
+                    <p>
+                        <center>
+                            <img src="/images/help/DataEntry/with_pdf.png" alt="data entry with pdf">
                         </center>
                     </p>
                     <p>
-                        If you chose not to upload a PDF, you can do so at any time by selecting
-                        "Upload PDF".
+                    	In the next page, select your preferences from a list of options.
+                    </p>
+                    <p class="pt-2">
+                    	<strong>Extract Attributes and/or All Tables:</strong>
+                    </p>
+                    <p>
+                    	Check the "Extract Attributes" box to automatically extract basic information of the research paper from the uploaded PDF (e.g. paper title, journal name, author(s), year published), and/or check the "Extract All Tables" box to automatically extract all tables recognized by the tool. Click submit and wait for the data to be automatically extracted (this may take a few minutes as the tool runs some natural language processing algorithms in the background.)
                     </p>
                     <p>
                         <center>
-                            <img src="/images/help/dataentry2.png" alt="select entry method">
+                            <img src="/images/help/DataEntry/attributes_tables.png" alt="automatically extract attributes and/or all tables">
+                            <img src="/images/help/DataEntry/attributes_tables_form.png" alt="data entry form for automatically extracted attributes and tables">
+                        </center>
+                    </p>
+                    <p class="text-green">
+                    	Note: This works fairly well for newer publications (post 1999.) It will try its best to extract info from older publications, but will often return nothing. You are still welcome to try!
+                    </p>
+                    <p class="pt-2">
+                    	<strong>Extract Tables by Page:</strong>
+                    </p>
+                    <p>
+                    	This option offers basic tools to extract tables from a PDF one page at a time in case “Extract All Tables” fails for any reason.
+
+                    </p>
+                    <p>
+                    	<u>Page Number:</u>
+                    	You can choose the page number from which you want to extract tables. You can add tables one by one to append to the list of tables that are already extracted.
+
+                    </p>
+                    <p>
+                        <center>
+                            <img src="/images/help/DataEntry/page_num.png" alt="list of page numbers">
                         </center>
                     </p>
                     <p>
-                        When selecting to use the automated tools, you will be provided with
-                        a selection of information to extract. While we strive to have the highest
-                        levels of accuracy, that isn't always possible. Because of this, the information
-                        extracted must be verified for accuracy before submitting the entry.
-                        After submitting a paper to the Iron Meteorite Database, your information will
-                        be pending approval by the admins.
+                    	<u>Flip Direction:</u>
+                    	If a table on a particular page is presented sideways instead of horizontally, the “Extract all Tables” tool will have a difficult time extracting it. You can fix this by using the tool to rotate the table in degrees (clockwise).
                     </p>
                     <p>
                         <center>
-                            <img src="/images/help/dataentry3.png" alt="select automated tools">
+                            <img src="/images/help/DataEntry/sideways_table.png" alt="sidways table">
+                            <img src="/images/help/DataEntry/flip_tool.png" alt="flip table tool">
                         </center>
                     </p>
                     <p>
+                    	<u>Coordinates:</u>
+                    	If a table is still not found after selecting the page that it is on or using all of the other tools, you can go in and select the area of the PDF page that contains the table.
+                    </p>
+                    <p>
                         <center>
-                            <img src="/images/help/dataentry4.png" alt="data entry page with PDF">
+                            <img src="/images/help/DataEntry/coordinates.png" alt="table coordinates">
+                        </center>
+                    </p>
+                    <p>
+                    	To find the coordinates using MacOs, you can use the Preview application. Open the PDF in Preview, then scroll to the page of the table you are trying to extract. Under the "<strong>Tools</strong>"" menu option, select "<strong>Show Inspector</strong>".
+                    </p>
+                    <p>
+                        <center>
+                        	<img src="/images/help/DataEntry/mac_inspect.png" alt="finding coordinates in mac">
+                            <img src="/images/help/DataEntry/mac_coords.png" alt="coordinates in mac">
+                        </center>
+                    </p>
+                    <p>
+                    	Make sure Rectangular Selection is selected as your pointer in Preview (under "<strong>Tools</strong>""). This will allow you to drag your curser over the PDF to find the coordinates of the selection. Try to be as precise as possible. You will notice that the numbers may include  a decimal in them. Please round to whole numbers when you enter them into the coordinates tool. (Helpful hint: round down for the "Left" and the "Top" edge, and round up for the "Width" and "Height".)
+                    </p>
+                    <p>
+                        <center>
+                        	<img src="/images/help/DataEntry/coords_select.png" alt="coordinates of a selection">
+                        </center>
+                    </p>
+                    <p class="pt-2">
+                    	<strong>No Automatic Data Extraction:</strong>
+                    </p>
+                    <p>
+                    	You can also choose not to extract any data automatically by checking the "No Automatic Data Extraction" box. This allows you to enter data manually but with the PDF hosted next to the form for a more interactive data entry experience.
+                    </p>
+                    <p>
+                        <center>
+                            <img src="/images/help/DataEntry/no_automatic.png" alt="no automatic extractions">
+                            <img src="/images/help/DataEntry/no_auto_form.png" alt="data entry form no automatic extractions">
+                        </center>
+                    </p>
+                    <p>
+                    	<strong class="text-red"><u>Please Note:</u></strong>
+                    </p>
+                    <p class="text-red">
+                        When selecting to use the automated tool, you will be presented with a selection of data extracted from your PDF. While we strive to have the highest levels of accuracy, that isn't always possible. Because of this, the information extracted must be verified for accuracy before submitting your entry. After submitting a paper to the Iron Meteorite Database, your information will be pending approval by the admins.
+                    </p>
+                    <h5 class="pt-4">
+                    	<u>Manual Data Entry:</u>
+                    </h5>
+                    <p>
+                    	If you would like to enter data manually without uploading a PDF, navigate to the <a href="/data-entry">data entry page</a>, and select "Without PDF".
+                    </p>
+                    <p>
+                    	This allows you to manually enter data directly into the editor, validate your data, and submit the form for approval. You may also choose to "Save" your progress and return to it later.
+                    </p>
+                    <p>
+                        <center>
+                        	<img src="/images/help/DataEntry/without_pdf.png" alt="data entry without pdf">
+                            <img src="/images/help/DataEntry/manual.png" alt="manual data entry tool">
                         </center>
                     </p>
                 </div>
                 <div class="col-sm-1"></div>
             </div>
-            <% } %>
 
-            <% if(isSignedIn){ %>
-            <a id="reportError"></a><br><br>
+            <a id="dataEntry"></a><br><br>
             <div class="row">
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
-                    <h3 class="section-head">Report an Error</h3>
-                    <p>... how to report an error</p>
+                    <h3 class="section-head">Submission</h3>
+                    <p class="pt-3">
+                    	Before you can submit an entry to the database, it needs to be validated. Check all your entries carefully. If you have automatically extracted tables, click "Validate Tables" first. Invalid values will be highlighted in red. Update those values then validate again. After validating all your table entries, click "Validate All" (or simply "Validate" if no tables exist), then check the "Basic Information" section for any invalid values. Update those values as well and validate again until all entries have been marked as valid.
+                    </p>
+                    <p>
+                        <center>
+                        	<img src="/images/help/DataEntry/invalid.png" alt="invalid entry">
+                            <img src="/images/help/DataEntry/valid.png" alt="valid entry">
+                        </center>
+                    </p>
+                    <p class="pt-2">
+                    	<strong>Table Validation Guide:</strong>
+                    </p>
+                    <p>
+                    	The following is a guide on how to input proper table data for validations.
+                    </p>
+                    <p>
+                        <center>
+                        	<img src="/images/help/DataEntry/table_guide.png" alt="table guide">
+                        </center>
+                    </p>
+                    <p>
+                    	<strong><u>Elements</u></strong> - Must be a <emp>symbol</emp> from the periodic table, not full element names.
+                    </p>
+                    <p>
+                    	<strong><u>Measurements</u></strong> - Measurements can be any number, but decimals in the form of .08 must be written as 0.08. The less than < symbol can be included before a measurement.
+                    </p>
+                    <p>
+                    	<strong><u>Units</u></strong> - Accepted units are: wt%, ppm, ppb, mg/g, µ/g, ug/g, lg/g, ng/g. Note: our table extraction tool extracts “µ/g” as “ug/g” or “lg/g” but we accept µ as an input.
+                    </p>
+                    <p>
+                    	<strong><u>Page Number</u></strong> - Please enter the printed page number of the PDF in this field.
+                    </p>
+                    <p>
+                    	<strong><u>Blank Values</u></strong> - For fields that are meant to be left blank intentionally, write “empty” (no quotation marks) in the field. Please keep in mind that some tables have blank spots for measurements; those need to be replaced with “empty” as well.
+                    </p>
+                    <p>
+                    	<strong><u>Analysis technique</u></strong> - You will ideally have an analysis technique to put in this field, if not you can leave it blank.
+                    </p>
+                    <p>
+                    	<strong><u>Meteorite Name</u></strong> - The meteorite name must contain at least one letter.
+                    </p>
+                    <p class="pt-4">
+                    	Once all your entries have been marked as valid, you can click "Submit" and your entry will show up in your user panel under "Approval Needed". They will be added to the database pending admin approval. 
+                    </p>
+                    <p>
+                        <center>
+                        	<img src="/images/help/DataEntry/panel.png" alt="user panel">
+                            <img src="/images/help/DataEntry/approvals.png" alt="approval form">
+                        </center>
+                    </p>
                 </div>
                 <div class="col-sm-1"></div>
             </div>
@@ -168,14 +344,25 @@
                 <div class="col-sm-1"></div>
                 <div class="col-sm-10">
                     <h3 class="section-head">Registration</h3>
-                    <p>
-                        To register a user, go to the <a href="/register">registration page</a>
-                        and enter a user name and password.
+                    <p class="pt-3">
+                        To register as a user, navigate to the <a href="/register">registration page</a>
+                        and fill out all fields.
                     </p>
                     <p>
                         <center>
-                            <img src="/images/help/register1.png" alt="register user">
+                            <img src="/images/help/register.png" alt="register user">
                         </center>
+                    </p>
+                    <p>
+                        <ul>
+                            <li>
+                                Your username must be unique and at least 5 characters long.
+                            </li>
+                            <li> A valid email that is currently not registered with the Iron Meteorite Database is required.</li>
+                            <li>
+                                Your password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number. The minimum length is 8 and the maximum is 25.
+                            </li>
+                        </ul>
                     </p>
                 </div>
                 <div class="col-sm-1"></div>
