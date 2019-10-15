@@ -158,7 +158,7 @@ function set_creds ()
       echo "You must enter a password"
     elif [[ "$pass1" =~ [\ \\\/\'\"\%\;] ]]; then
       echo "Illegal character: whitespace ' \" ; / \\ %"
-    elif [[ $size < 6 ]]; then
+    elif [[ $size -lt 6 ]]; then
       echo "password is too short, minimum 6 characters"
     else
       nameHolder="%%user%%"
