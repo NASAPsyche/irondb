@@ -14,5 +14,5 @@
 
 
 ## Requirements
-[Taiga User Story](https://tree.taiga.io/project/cbrobsto-iron-db/us/xx) <br>
+[Taiga User Story](https://tree.taiga.io/project/cbrobsto-iron-db/us/xx)
 [Taiga Task](https://tree.taiga.io/project/cbrobsto-iron-db/task/xx)
