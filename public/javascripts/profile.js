@@ -63,14 +63,39 @@ function validatePassword() {
 
     if (pwd === cnfm) {
       if (pwd.length >= 8) {
+        $('.passwordError').hide();
         const hasUpperCase = /[A-Z]/.test(pwd);
         const hasLowerCase = /[a-z]/.test(pwd);
         const hasNumbers = /\d/.test(pwd);
 
+        if (!hasUpperCase) {
+          $('.passwordError').text('Password must contain at least 1 upper case character!');
+          $('.passwordError').show();
+        }
+
+        if (!hasLowerCase) {
+          $('.passwordError').text('Password must contain at least 1 lower case character!');
+          $('.passwordError').show();
+        }
+
+        if (!hasNumbers) {
+          $('.passwordError').text('Password must contain at least 1 number!');
+          $('.passwordError').show();
+        }
+
         if (hasUpperCase && hasLowerCase && hasNumbers) {
+          $('.passwordError').hide();
           $('#save-btn').attr('disabled', false);
         }
+      } else {
+        // Password is too short!
+        $('.passwordError').text('Password must be at least 8 characters!');
+        $('.passwordError').show();
       }
+    } else {
+      // Password don't match!
+      $('.passwordError').text('Password do not match!');
+      $('.passwordError').show();
     }
   });
 }
