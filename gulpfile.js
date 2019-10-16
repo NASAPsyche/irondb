@@ -11,7 +11,7 @@ gulp.task('sass', function() {
 
 // Move JS files to public javascripts directory.
 gulp.task('js', function() {
-  return gulp.src(['node_modules/bootstrap/dist/js/bootstrap.min.js',
+  return gulp.src(['node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
     'node_modules/jquery/dist/jquery.min.js',
     'node_modules/tether/dist/js/tether.min.js',
     'node_modules/popper.js/dist/popper.min.js',
@@ -26,14 +26,14 @@ gulp.task('jest', function() {
   process.env.DATABASE_URL = 'postgres://group16:abc123@localhost:5433/postgres';
   return gulp.src('__tests__').pipe(jest({
     'preprocessorIgnorePatterns': [
-      'public/javascripts/bootstrap.min.js',
+      'public/javascripts/bootstrap.bundle.min.js',
       'public/javascripts/jquery.min.js',
       'public/javascripts/tether.min.js',
       'node_modules/',
     ],
     'collectCoverage': true,
     'coveragePathIgnorePatterns': [
-      'public/javascripts/bootstrap.min.js',
+      'public/javascripts/bootstrap.bundle.min.js',
       'public/javascripts/jquery.min.js',
       'public/javascripts/tether.min.js',
       'node_modules/',
