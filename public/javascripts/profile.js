@@ -124,7 +124,9 @@ $(document).ready(async function() {
     const jsonData = JSON.stringify(data);
     try {
       await postData(jsonData);
-      window.location.reload();
+      // Reset "update password?" state
+      $('#updatepassword').prop('checked', false);
+      $('#updatepassword').trigger('change');
     } catch (err) {
       alert(err);
       console.log(err);
@@ -146,6 +148,8 @@ async function postData(jsonString) {
     async: true,
     success: function(data, status, jqXHR) {
       console.log();
+      $('.passwordSuccess').text('Password updated!');
+      $('.passwordSuccess').show();
       return true;
     },
     error: function(jqXHR, status) {
