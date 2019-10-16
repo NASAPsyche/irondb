@@ -34,7 +34,6 @@ $( document ).ajaxComplete(function() {
 $( 'document' ).ready(function() {
   // hide hide ui
   $( 'i.hide-journal').prop('hidden', true);
-  $('i.hide-year').prop('hidden', true);
 });
 
 $( '#search-panel' ).on( 'click', 'i.show-journal', function( event ) {
