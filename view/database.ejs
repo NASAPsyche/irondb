@@ -32,7 +32,7 @@
         </div>
         <div class="col-sm-10">
           <form action="/database" method="POST" id="search-form">
-            <div class="form-row">
+            <div class="form-row mb-2">
               <div class="col-md-3 offset-md-1">
                 <label class="sr-only" for="name"></label>
                 <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name">
@@ -54,10 +54,15 @@
                   <% } %>                
                 </select>  
               </div>
+
+              <span class="expandSearch">
+                <i id="additional" class="far fa-minus-square fa-lg hide-journal text-warning" title="Hide additional options" hidden=""></i>
+                <i id="additional" class="far fa-plus-square fa-lg show-journal text-warning" title="Show additional options"></i>
+              </span>
+
             </div>
 
-            <i id="additional" class="far fa-plus-square fa-lg show-journal text-warning" title="Show additional options" ></i>
-            <i id="additional" class="far fa-minus-square fa-lg hide-journal text-warning" title="Hide additional options" ></i>
+        
             
             <div class="form-row journal" hidden="true">
               <div class="form-group col-md-3 offset-md-1">

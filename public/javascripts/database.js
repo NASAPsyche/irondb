@@ -37,17 +37,19 @@ $( 'document' ).ready(function() {
 });
 
 $( '#search-panel' ).on( 'click', 'i.show-journal', function( event ) {
-  $(this).siblings('div.journal').prop('hidden', false);
-  $(this).siblings('div.journal').children('div.form-group')
-      .children('input').prop('disabled', false);
+  $('.journal').prop('hidden', false);
+  $('.journal').children('div.form-group')
+  .children('input').prop('disabled', false);
+
   $(this).prop('hidden', true);
   $(this).siblings('i.hide-journal').prop('hidden', false);
 });
 
 $( '#search-panel' ).on( 'click', 'i.hide-journal', function( event ) {
-  $(this).siblings('div.journal').prop('hidden', true);
-  $(this).siblings('div.journal').children('div.form-group')
-      .children('input').prop('disabled', true);
+  $('.journal').prop('hidden', true);
+  $('.journal').children('div.form-group')
+  .children('input').prop('disabled', true);
+
   $(this).prop('hidden', true);
   $(this).siblings('i.show-journal').prop('hidden', false);
 });
