@@ -5,6 +5,8 @@ $( '#search-form' ).on( 'submit', function( event ) {
   $.post('/database', $( this ).serialize(), function( data ) {
     // Remove old table and replace with results
     $( '#results' ).replaceWith( data );
+    $('#results').css('margin-top',
+        $('#search-panel').outerHeight() + 15);
   });
 });
 
@@ -12,7 +14,7 @@ $( '#search-form' ).on( 'submit', function( event ) {
 $( document ).ajaxError( function() {
   $( '#results' ).replaceWith( '<p>Error: No results found.</p>' );
   $('#results').css('margin-top',
-      $('#search-panel').outerHeight() + $('nav').outerHeight());
+      $('#search-panel').outerHeight() + 15);
 });
 
 // On click, clear form elements
@@ -34,12 +36,14 @@ $( document ).ajaxComplete(function() {
 $( 'document' ).ready(function() {
   // hide hide ui
   $( 'i.hide-journal').prop('hidden', true);
+  $('#results').css('margin-top',
+      $('#search-panel').outerHeight() + 15);
 });
 
 $( '#search-panel' ).on( 'click', 'i.show-journal', function( event ) {
   $('.journal').prop('hidden', false);
   $('.journal').children('div.form-group')
-  .children('input').prop('disabled', false);
+      .children('input').prop('disabled', false);
 
   $(this).prop('hidden', true);
   $(this).siblings('i.hide-journal').prop('hidden', false);
@@ -48,7 +52,7 @@ $( '#search-panel' ).on( 'click', 'i.show-journal', function( event ) {
 $( '#search-panel' ).on( 'click', 'i.hide-journal', function( event ) {
   $('.journal').prop('hidden', true);
   $('.journal').children('div.form-group')
-  .children('input').prop('disabled', true);
+      .children('input').prop('disabled', true);
 
   $(this).prop('hidden', true);
   $(this).siblings('i.show-journal').prop('hidden', false);
@@ -109,7 +113,7 @@ $( '#search-panel' ).on( 'click', 'i.hide-element', function( event ) {
 
 $( '#search-panel' ).on( 'click', 'i', function( event ) {
   $('#results').css('margin-top',
-      $('#search-panel').outerHeight() + $('nav').outerHeight());
+      $('#search-panel').outerHeight() + 15);
 });
 
 /**
