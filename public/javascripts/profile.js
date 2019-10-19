@@ -9,6 +9,7 @@ $(document).ready(function() {
     $(':submit').removeAttr('hidden');
     $('#firstname').removeAttr('readonly');
     $('#lastname').removeAttr('readonly');
+    $(':checkbox:checked').prop('checked', false);
     $('#passCheckBox').removeAttr('hidden');
     $('#save-btn').attr('disabled', false);
   });
