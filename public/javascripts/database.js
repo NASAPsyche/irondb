@@ -5,6 +5,7 @@ $( '#search-form' ).on( 'submit', function( event ) {
   $.post('/database', $( this ).serialize(), function( data ) {
     // Remove old table and replace with results
     $( '#results' ).replaceWith( data );
+    // Add consistent spacing between search-panel and results
     $('#results').css('margin-top',
         $('#search-panel').outerHeight() + 15);
   });
@@ -13,6 +14,7 @@ $( '#search-form' ).on( 'submit', function( event ) {
 // On error, no results found
 $( document ).ajaxError( function() {
   $( '#results' ).replaceWith( '<p>Error: No results found.</p>' );
+  // Add consistent spacing between search-panel and results
   $('#results').css('margin-top',
       $('#search-panel').outerHeight() + 15);
 });
@@ -36,6 +38,7 @@ $( document ).ajaxComplete(function() {
 $( 'document' ).ready(function() {
   // hide hide ui
   $( 'i.hide-journal').prop('hidden', true);
+  // Add consistent spacing between search-panel and results
   $('#results').css('margin-top',
       $('#search-panel').outerHeight() + 15);
 });
@@ -56,30 +59,6 @@ $( '#search-panel' ).on( 'click', 'i.hide-journal', function( event ) {
 
   $(this).prop('hidden', true);
   $(this).siblings('i.show-journal').prop('hidden', false);
-});
-
-$( '#search-panel' ).on( 'click', 'i.show-year', function( event ) {
-  $(this).siblings('div.year')
-      .children('div.toggleable-offset').removeClass('offset-md-4');
-  $(this).siblings('div.year').children('div.year').prop('hidden', false);
-  $(this).siblings('div.year').children('div.year')
-      .children('input').prop('disabled', false);
-  $(this).siblings('div.year').children('div.year')
-      .children('select').prop('disabled', false);
-  $(this).prop('hidden', true);
-  $(this).siblings('i.hide-year').prop('hidden', false);
-});
-
-$( '#search-panel' ).on( 'click', 'i.hide-year', function( event ) {
-  $(this).siblings('div.year')
-      .children('div.toggleable-offset').addClass('offset-md-4');
-  $(this).siblings('div.year').children('div.year').prop('hidden', true);
-  $(this).siblings('div.year').children('div.year')
-      .children('input').prop('disabled', true);
-  $(this).siblings('div.year').children('div.year')
-      .children('select').prop('disabled', true);
-  $(this).prop('hidden', true);
-  $(this).siblings('i.show-year').prop('hidden', false);
 });
 
 $( '#search-panel' ).on( 'click', 'i.show-element', function( event ) {
@@ -112,6 +91,7 @@ $( '#search-panel' ).on( 'click', 'i.hide-element', function( event ) {
 });
 
 $( '#search-panel' ).on( 'click', 'i', function( event ) {
+  // Add consistent spacing between search-panel and results
   $('#results').css('margin-top',
       $('#search-panel').outerHeight() + 15);
 });
