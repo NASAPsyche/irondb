@@ -32,7 +32,7 @@
         </div>
         <div class="col-sm-10">
           <form action="/database" method="POST" id="search-form">
-            <div class="form-row">
+            <div class="form-row mb-2">
               <div class="col-md-3 offset-md-1">
                 <label class="sr-only" for="name"></label>
                 <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name">
@@ -54,39 +54,43 @@
                   <% } %>                
                 </select>  
               </div>
+
+              <span class="expandSearch">
+                <i id="additional" class="far fa-minus-square fa-lg hide-journal text-warning" title="Hide additional options" hidden=""></i>
+                <i id="additional" class="far fa-plus-square fa-lg show-journal text-warning" title="Show additional options"></i>
+              </span>
+
             </div>
-            <i class="far fa-plus-square fa-lg show-journal text-warning" title="Show journal options"></i>
-            <i class="far fa-minus-square fa-lg hide-journal text-warning" title="Hide journal options"></i>
-            <i class="far fa-plus-square fa-lg show-year text-warning" title="Show published year options"></i>
-            <i class="far fa-minus-square fa-lg hide-year text-warning" title="Hide published year options"></i>
+
+        
+            
             <div class="form-row journal" hidden="true">
               <div class="form-group col-md-3 offset-md-1">
                 <label class="sr-only" for="journal_name"></label>
                 <input type="text" name="journal_name" id="journal_name" class="form-control" placeholder="journal name" disabled="true">
               </div>
-              <div class="form-group col-md-3">
+              <div class="form-group col-md-2">
                 <label class="sr-only" for="volume"></label>
                 <input type="number" name="volume" id="volume" class="form-control" placeholder="volume" step="1" disabled="true">
               </div>
-              <div class="form-group col-md-2">
+              <div class="form-group col-md-1">
                 <label class="sr-only" for="page_number"></label>
-                <input type="text" name="page_number" id="page_number" class="form-control" placeholder="page number" disabled="true">
+                <input type="text" name="page_number" id="page_number" class="form-control" placeholder="pg" disabled="true">
               </div>
-            </div>
-            <div class="form-row year">
-              <div class="form-group col-md-1 offset-md-1 year" hidden="true">
+              <div class="form-group col-md-1 year">
                 <label class="sr-only" for="pub_yr_sign">published year modifier sign</label>
-                <select class="form-control" name="pub_yr_sign" disabled="true">
+                <select class="form-control" name="pub_yr_sign" >
                   <option value="equal" default>=</option>
                   <option value="less">&lt;</option>
                   <option value="greater">&gt;</option>
                 </select>
               </div>
-              <div class="form-group col-md-2 year" hidden="true">
+              <div class="form-group col-md-2 year" >
                 <label class="sr-only" for="pub_year">published year</label>
                 <input type="number" class="form-control" name="pub_year" id="pub_year" min="1900" Max="2019" step="1" placeholder="year" disabled="true">
               </div>
             </div>
+            
             <div class="form-row mt-3" id="composition0">
               <div class="col-md-2">
                 <h4 class="text-light">Composition:</h4>

@@ -18,6 +18,15 @@ select.element {
 	max-height: 3rem;
 }
 
+#additional {
+	margin-left:85%;
+}
+
+.expandSearch {
+	display: flex;
+	align-items:center;
+}
+
 /* Padding to top of body to push content below floating panel. */
 
 /* Bootstrap xs */
