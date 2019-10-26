@@ -33,9 +33,10 @@ $(document).ready(function() {
     } else {
       $('#confirm_password').attr('hidden', true);
       $('#confirmLabel').attr('hidden', true);
-      $('#password').attr('hidden', true);
+      $('#password').attr('hidden', false);
       $('#passwordLabel').attr('hidden', true);
-      $('#password').val('');
+      $('#password').val('************');
+      $('#password').attr('readonly', true);
       $('#confirm_password').val('');
       $('#save-btn').attr('disabled', false);
     }
