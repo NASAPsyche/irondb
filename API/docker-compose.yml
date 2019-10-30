@@ -14,7 +14,7 @@ services:
     depends_on:
       - pgdb
     environment:
-      - DATABASE_URL=postgres://group16:abc123@pgdb:5432/postgres
+      - DATABASE_URL=postgres://jrasmus4:*Jjrsx122497j*@pgdb:5432/postgres
     restart: on-failure
     container_name: irondb_web
     command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
@@ -28,8 +28,8 @@ services:
       - ./model/db-init:/docker-entrypoint-initdb.d/
       - ./pg-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: 'group16'
-      POSTGRES_PASSWORD: 'abc123'
+      POSTGRES_USER: 'jrasmus4'
+      POSTGRES_PASSWORD: '*Jjrsx122497j*'
       POSTGRES_DB: 'postgres'
     ports:
       - "5433:5432"

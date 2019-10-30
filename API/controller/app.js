@@ -8,9 +8,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const db = require('./db');
-
 const expressSanitizer = require('express-sanitizer');
-const pgSession = require('connect-pg-simple')(session);
+const cors = require('cors');
 
 // Define individual route routers
 const indexRouter = require('./routes/index');
@@ -109,19 +108,14 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
+app.use(cors());
 
-const oneWeek = 604800000;
-const pgPool = db.pool;
 app.use(session({
-  // eslint-disable-next-line new-cap
-  store: new pgSession({
-    pool: pgPool, // Connection pool
-    tableName: 'user_session',
-  }),
-  secret: 'Temporary_Example_Secret_Hide_Real_Secret_When_in_Production',
+  secret: 'v5+^RI6%%SECRET%%@yqEz69rctG$HEVAER9+k9jq',
   resave: false,
   saveUninitialized: false,
-  cookie: {maxAge: oneWeek},
+  // maxAge set to 60 mins, param in miliseconds
+  cookie: {maxAge: 60 * 60 * 1000},
 }));
 
 app.use(passport.initialize());
