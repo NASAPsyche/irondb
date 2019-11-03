@@ -1,10 +1,8 @@
 version: "3.7"
 services:
-
-  web:
-     
+  api:    
     build: 
-      context: .
+      context: ./API
       dockerfile: ./docker/node/Dockerfile
     volumes:
       - .:/usr/app/
@@ -14,22 +12,22 @@ services:
     depends_on:
       - pgdb
     environment:
-      - DATABASE_URL=postgres://jrasmus4:*Jjrsx122497j*@pgdb:5432/postgres
+      - DATABASE_URL=postgres://testUser:testPassword@pgdb:5432/postgres
     restart: on-failure
     container_name: irondb_web
-    command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
+    command: ["./API/docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./API/bin/www"]
 
   pgdb:
-    build: './docker/postgres'
+    build: './API/docker/postgres'
     container_name: postgres
     restart: always
     # image: postgres:11.0-alpine
     volumes:
-      - ./model/db-init:/docker-entrypoint-initdb.d/
-      - ./pg-data:/var/lib/postgresql/data
+      - ./API/model/db-init:/docker-entrypoint-initdb.d/
+      - ./API/pg-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: 'jrasmus4'
-      POSTGRES_PASSWORD: '*Jjrsx122497j*'
+      POSTGRES_USER: 'testUser'
+      POSTGRES_PASSWORD: 'testPassword'
       POSTGRES_DB: 'postgres'
     ports:
       - "5433:5432"
@@ -38,3 +36,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  
+  client:
+    build: ./client
+    ports:
+      - "8001:8000"
+    depends_on:
+      - api
