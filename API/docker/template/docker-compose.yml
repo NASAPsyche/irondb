@@ -1,16 +1,15 @@
 version: "3.7"
 services:
 
-  web:
-     
+  api:
     build: 
       context: .
-      dockerfile: ./docker/node/Dockerfile
+      dockerfile: ./API/docker/node/Dockerfile
     volumes:
-      - .:/usr/app/
-      - /usr/app/node_modules
+      - ./API:/usr/app/api
+      - /usr/app/api/node_modules
     ports:
-      - "3001:3000"
+      - "127.0.0.1:3001:3000"
     depends_on:
       - pgdb
     environment:
@@ -20,21 +19,31 @@ services:
     command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
 
   pgdb:
-    build: './docker/postgres'
+    build: './API/docker/postgres'
     container_name: postgres
     restart: always
     # image: postgres:11.0-alpine
     volumes:
-      - ./model/db-init:/docker-entrypoint-initdb.d/
-      - ./pg-data:/var/lib/postgresql/data
+      - ./API/model/db-init:/docker-entrypoint-initdb.d/
+      - ./API/pg-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: '%%user%%'
       POSTGRES_PASSWORD: '%%password%%'
       POSTGRES_DB: 'postgres'
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready  -d postgres -U group16"]
       interval: 10s
       timeout: 5s
       retries: 5
+  
+  client:
+    build: ./client
+    ports:
+      - "127.0.0.1:8001:8000"
+    depends_on:
+      - api
+    volumes:
+      - ./client:/usr/app/client
+      - /usr/app/client/node_modules

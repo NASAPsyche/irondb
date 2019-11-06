@@ -170,42 +170,42 @@ function set_creds ()
       fi
 
       if [[ "$MYENV" == "$MACENV"  ]] ; then
-      cp ./docker/template/docker-compose.yml ./docker-compose.yml
+      cp ./API/docker/template/docker-compose.yml ./docker-compose.yml
       sed -i '' -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
       sed -i '' -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
       elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
-      cp ./docker/template/docker-compose.yml ./docker-compose.yml
+      cp ./API/docker/template/docker-compose.yml ./docker-compose.yml
       sed -i -e 's/'"$nameHolder"'/'"$name"'/g' ./docker-compose.yml
       sed -i -e 's/'"$passHolder"'/'"$pass1"'/g' ./docker-compose.yml
       fi
 
 
       # add those credentials to the mock user info generator
-      if [ -f "./docker/mock/mock-user-info.py" ]; then
-        rm -f ./docker/mock/mock-user-info.py
+      if [ -f "./API/docker/mock/mock-user-info.py" ]; then
+        rm -f ./API/docker/mock/mock-user-info.py
       fi
 
       if [[ "$MYENV" == "$MACENV"  ]] ; then
-      cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
-      sed -i '' -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
-      sed -i '' -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+      cp ./API/docker/template/mock-user-info.py ./API/docker/mock/mock-user-info.py
+      sed -i '' -e 's/group16/'"$name"'/g' ./API/docker/mock/mock-user-info.py
+      sed -i '' -e 's/abc123/'"$pass1"'/g' ./API/docker/mock/mock-user-info.py
       elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
-      cp ./docker/template/mock-user-info.py ./docker/mock/mock-user-info.py
-      sed -i -e 's/group16/'"$name"'/g' ./docker/mock/mock-user-info.py
-      sed -i -e 's/abc123/'"$pass1"'/g' ./docker/mock/mock-user-info.py
+      cp ./API/docker/template/mock-user-info.py ./API/docker/mock/mock-user-info.py
+      sed -i -e 's/group16/'"$name"'/g' ./API/docker/mock/mock-user-info.py
+      sed -i -e 's/abc123/'"$pass1"'/g' ./API/docker/mock/mock-user-info.py
       fi
 
       #  set user in sql init
       if [ -f "./model/db-init/00-init.sql" ]; then
-        rm -f ./model/db-init/00-init.sql
+        rm -f ./API/model/db-init/00-init.sql
       fi 
       if [[ "$MYENV" == "$MACENV"  ]] ; then
-      cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
-      sed -i '' -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
+      cp ./API/docker/template/00-init.sql ./API/model/db-init/00-init.sql
+      sed -i '' -e 's/group16/'"$name"'/g' ./API/model/db-init/00-init.sql
       break
       elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
-      cp ./docker/template/00-init.sql ./model/db-init/00-init.sql
-      sed -i -e 's/group16/'"$name"'/g' ./model/db-init/00-init.sql
+      cp ./API/docker/template/00-init.sql ./API/model/db-init/00-init.sql
+      sed -i -e 's/group16/'"$name"'/g' ./API/model/db-init/00-init.sql
       break
       fi
     fi
@@ -219,16 +219,16 @@ function randomSecret() {
   LINUXENV="Linux"
   MACENV="Darwin"
 
-  if [ -f "./controller/app.js" ]; then
-    rm -f ./controller/app.js
+  if [ -f "./API/controller/app.js" ]; then
+    rm -f ./API/controller/app.js
   fi 
 
   if [[ "$MYENV" == "$MACENV"  ]] ; then
-    cp ./docker/template/app.js  ./controller/app.js 
-    sed -i '' -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./controller/app.js
+    cp ./API/docker/template/app.js  ./API/controller/app.js 
+    sed -i '' -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./API/controller/app.js
   elif [[ "$MYENV" == "$LINUXENV"  ]]; then 
-    cp ./docker/template/app.js  ./controller/app.js 
-    sed -i -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./controller/app.js
+    cp ./API/docker/template/app.js  ./API/controller/app.js 
+    sed -i -e 's/'"$SECRETPLACEHOLDER"'/'"$NEWSECRET"'/g' ./API/controller/app.js
   fi
 
 }
@@ -359,14 +359,14 @@ function remove_dangles ()
 function make_backup ()
 {
   echo ""
-  echo "Making backup to irondb/model/backup-pg/"
-  docker exec -t postgres pg_dump -c -U group16 -d postgres > model/backup-pg/pg_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+  echo "Making backup to irondb/API/model/backup-pg/"
+  docker exec -t postgres pg_dump -c -U group16 -d postgres > API/model/backup-pg/pg_`date +%d-%m-%Y"_"%H_%M_%S`.sql
 }
 
 # Restore most recent backup of db
 function restore_recent ()
 {
-  cd model/backup-pg
+  cd API/model/backup-pg
   STR="$(ls -tr | tail -1)"
   echo "Restoring from $STR"
   sleep 1
@@ -551,8 +551,8 @@ function populate_mock_data ()
 
   echo " "
   echo "Adding mock users"
-  node docker/mock/mock-users.js 
-  python docker/mock/mock-user-info.py 
+  node API/docker/mock/mock-users.js 
+  python API/docker/mock/mock-user-info.py 
 }
 
 function install_pip ()

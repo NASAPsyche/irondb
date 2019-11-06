@@ -1,21 +1,22 @@
 version: "3.7"
 services:
-  api:    
+
+  api:
     build: 
-      context: ./API
-      dockerfile: ./docker/node/Dockerfile
-    volumes:
-      - .:/usr/app/
-      - /usr/app/node_modules
+      context: .
+      dockerfile: ./API/docker/node/Dockerfile
+    #volumes:
+      #- ./API:/usr/app/api
+      #- /usr/app/api/node_modules
     ports:
-      - "3001:3000"
+      - "127.0.0.1:3001:3000"
     depends_on:
       - pgdb
     environment:
       - DATABASE_URL=postgres://testUser:testPassword@pgdb:5432/postgres
     restart: on-failure
     container_name: irondb_web
-    command: ["./API/docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./API/bin/www"]
+    command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
 
   pgdb:
     build: './API/docker/postgres'
@@ -30,7 +31,7 @@ services:
       POSTGRES_PASSWORD: 'testPassword'
       POSTGRES_DB: 'postgres'
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready  -d postgres -U group16"]
       interval: 10s
@@ -40,6 +41,9 @@ services:
   client:
     build: ./client
     ports:
-      - "8001:8000"
+      - "127.0.0.1:8001:8000"
     depends_on:
       - api
+    #volumes:
+    #  - ./client:/usr/app/client
+    #  - /usr/app/client/node_modules
