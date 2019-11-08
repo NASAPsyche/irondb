@@ -5,9 +5,9 @@ services:
     build: 
       context: .
       dockerfile: ./API/docker/node/Dockerfile
-    #volumes:
-      #- ./API:/usr/app/api
-      #- /usr/app/api/node_modules
+    volumes:
+      - ./API:/usr/app/api
+      - /usr/app/api/node_modules
     ports:
       - "127.0.0.1:3001:3000"
     depends_on:
@@ -44,6 +44,6 @@ services:
       - "127.0.0.1:8001:8000"
     depends_on:
       - api
-    #volumes:
-    #  - ./client:/usr/app/client
-    #  - /usr/app/client/node_modules
+    volumes:
+      - ./client:/usr/app/client
+      - /usr/app/client/node_modules
