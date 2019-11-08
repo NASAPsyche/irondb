@@ -196,7 +196,7 @@ function set_creds ()
       fi
 
       #  set user in sql init
-      if [ -f "./model/db-init/00-init.sql" ]; then
+      if [ -f "./API/model/db-init/00-init.sql" ]; then
         rm -f ./API/model/db-init/00-init.sql
       fi 
       if [[ "$MYENV" == "$MACENV"  ]] ; then
@@ -236,6 +236,7 @@ function randomSecret() {
 # Install the global dependencies
 function install_global_deps ()
 {
+  cd API
   echo "Installing global dependencies"
   # Global dependencies for testing node
   if [[ $EUID -ne 0 ]];
@@ -255,17 +256,20 @@ function install_global_deps ()
     npm install -g gulp-cli
     npm install -g jest-cli
   fi
+  cd ..
 }
 
 # Install the node dependencies for the server
 function install_node_deps ()
 {
+  cd API
   echo ""
   echo "Installing node dependencies"
   # Local dependencies for node
   npm install
   gulp sass
   gulp js 
+  cd ..
 }
 
 # Deletes the db folder that would prevent building fresh containers
