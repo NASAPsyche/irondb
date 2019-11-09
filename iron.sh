@@ -236,7 +236,6 @@ function randomSecret() {
 # Install the global dependencies
 function install_global_deps ()
 {
-  cd API
   echo "Installing global dependencies"
   # Global dependencies for testing node
   if [[ $EUID -ne 0 ]];
@@ -256,7 +255,6 @@ function install_global_deps ()
     npm install -g gulp-cli
     npm install -g jest-cli
   fi
-  cd ..
 }
 
 # Install the node dependencies for the server
