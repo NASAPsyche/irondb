@@ -2,6 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Database from './Database';
+import DataEntry from './DataEntry';
+import Help from './Help';
+import Panel from './Panel';
+import Profile from './Profile';
 import * as serviceWorker from './serviceWorker';
 import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
 
