@@ -1,10 +1,10 @@
 FROM node:12.13.0
 
-WORKDIR /app
+WORKDIR /user/app/client
 
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH /user/app/client/node_modules/.bin:$PATH
 
-COPY package.json /app/package.json
+COPY . .
 
 RUN npm install --silent
 RUN npm install react-scripts@3.2.0 -g --silent
