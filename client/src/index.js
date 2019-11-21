@@ -8,11 +8,12 @@ import Help from './components/Help';
 import Panel from './components/Panel';
 import Profile from './components/Profile';
 import Login from './components/Login';
+import Navbar from './components/Navbar';
 import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const simulatedAuth = {
-    isAuthenticated: false,
+    isAuthenticated: true,
     login(callback) {
       this.isAuthenticated = true;
       setTimeout(callback, 100); //simulate asynchronous code
@@ -35,6 +36,7 @@ function Routing() {
     return (
         <Router>
             <div>
+                <Navbar authenticated={simulatedAuth.isAuthenticated} />
                 <Route exact path="/" component={App}/>
                 <ProtectedRoute path="/database" component={Database}/>
                 <Route path="/help" component={Help}/>
