@@ -1,0 +1,11 @@
+# Project Level gitignore file
+
+# Dependencies
+**/node_modules
+
+# Postgres
+pg-data/
+
+# misc
+**/DS_Store
+.vscode/
