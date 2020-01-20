@@ -7,7 +7,7 @@ import DataEntry from './components/DataEntry';
 import Help from './components/Help';
 import Panel from './components/Panel';
 import Profile from './components/Profile';
-import Login from './components/Login';
+import Login from './components/pages/Login';
 import Navbar from './components/Navbar';
 import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';

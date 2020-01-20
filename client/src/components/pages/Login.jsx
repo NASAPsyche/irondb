@@ -1,6 +1,6 @@
 import React from 'react';
 //import { Link } from 'react-router-dom';
-import '../styles/Help.scss';
+//import '../styles/Help.scss';
 import AuthenticatedLogin from '../AuthenticatedLogin';
 
 
@@ -29,7 +29,7 @@ function Login(props) {
                     <label className="sr-only" for="password">password</label>
                     <input type="password" name="password" id="password" className="form-control" placeholder="password" required
                         minlength="6" maxlength="25" />
-                    <button className="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
+                    <button class="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
                     <a href="/register">Register Here</a>
                     </form>
                 </div>
