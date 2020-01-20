@@ -1,2 +1,2 @@
 -- Create and connect to irondb database 
-CREATE DATABASE irondb WITH OWNER = testUser; 
+CREATE DATABASE irondb WITH OWNER = root; 
