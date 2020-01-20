@@ -13,7 +13,7 @@ import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const simulatedAuth = {
-    isAuthenticated: true,
+    isAuthenticated: false,
     login(callback) {
       this.isAuthenticated = true;
       setTimeout(callback, 100); //simulate asynchronous code
@@ -43,7 +43,13 @@ function Routing() {
                 <ProtectedRoute path="/panel" component={Panel}/>
                 <ProtectedRoute path="/data-entry" component={DataEntry}/>
                 <ProtectedRoute path="/profile" component={Profile}/>
-                <Route path="/login" component={Login}/>
+
+
+                <Route
+                    path='/login'
+                    render={(props) => <Login {...props} authenticated={simulatedAuth.isAuthenticated}/>}
+                />
+
             </div>
         </Router>
     )
