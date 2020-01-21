@@ -4,7 +4,7 @@ import './index.css';
 import App from './components/App';
 import Database from './components/Database';
 import DataEntry from './components/DataEntry';
-import Help from './components/Help';
+import Help from './components/pages/Help';
 import Panel from './components/Panel';
 import Profile from './components/Profile';
 import Login from './components/Login';
@@ -13,7 +13,7 @@ import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const simulatedAuth = {
-    isAuthenticated: true,
+    isAuthenticated: false,
     login(callback) {
       this.isAuthenticated = true;
       setTimeout(callback, 100); //simulate asynchronous code
@@ -39,7 +39,9 @@ function Routing() {
                 <Navbar authenticated={simulatedAuth.isAuthenticated} />
                 <Route exact path="/" component={App}/>
                 <ProtectedRoute path="/database" component={Database}/>
-                <Route path="/help" component={Help}/>
+                <Route path="/help" 
+                    render={(props) => <Help {...props} authenticated={simulatedAuth.isAuthenticated} />}
+                />
                 <ProtectedRoute path="/panel" component={Panel}/>
                 <ProtectedRoute path="/data-entry" component={DataEntry}/>
                 <ProtectedRoute path="/profile" component={Profile}/>
