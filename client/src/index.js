@@ -9,6 +9,7 @@ import Panel from './components/Panel';
 import Profile from './components/Profile';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
+import Error from './components/Error';
 import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
@@ -44,6 +45,7 @@ function Routing() {
                 <ProtectedRoute path="/data-entry" component={DataEntry}/>
                 <ProtectedRoute path="/profile" component={Profile}/>
                 <Route path="/login" component={Login}/>
+                <Route exact path="/error" component={Error}/>
             </div>
         </Router>
     )
