@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import simulatedAuth from '../../index.js'; 
+import { Redirect} from 'react-router-dom';
 //import { Link } from 'react-router-dom';
 //import '../styles/Help.scss';
 
 
-function Login(props) {
+const Login = props => {
+
+
+    const [username, setUsername] = useState()
+
+    const handleChangeUsername = e => {
+      setUsername(e.target.value)
+
+    }
+    const handleLogin = event => {
+        event.preventDefault()
+        alert("Logging in for "+username)
+        simulatedAuth.login()
+        return(
+            <Redirect to="/"/>
+        )
+      }
 
     if (props.authenticated === true) {
         return(
@@ -19,12 +37,12 @@ function Login(props) {
             <div className="container mt-5">
                 <div className="row mt-5">
                 <div className="mt-5 col-sm-8 offset-sm-2 text-center">
-                    <form action="/login" method="POST">
+                    <form action="/login" onSubmit={handleLogin} >
                     <h1 className="h3">Log in</h1>
 
                     <label className="sr-only" for="username">username</label>
                     <input type="text" name="username" id="username" className="form-control" placeholder="username" required
-                        autofocus minlength="4" maxlength="25" />
+                        autofocus minlength="4" value={username} onChange={handleChangeUsername} maxlength="25" />
                     <label className="sr-only" for="password">password</label>
                     <input type="password" name="password" id="password" className="form-control" placeholder="password" required
                         minlength="6" maxlength="25" />
@@ -38,6 +56,8 @@ function Login(props) {
         
     );
     }
+
+
 
     function ReturnAlert(hasAlert) {
         if (hasAlert.error) {
