@@ -1,7 +1,6 @@
 import React from 'react';
 //import { Link } from 'react-router-dom';
 //import '../styles/Help.scss';
-import AuthenticatedLogin from '../AuthenticatedLogin';
 
 
 function Login(props) {
@@ -17,9 +16,9 @@ function Login(props) {
 
     } else {
         return (
-            <div className="container mt-4">
-                <div className="row">
-                <div className="col-sm-8 offset-sm-2 text-center">
+            <div className="container mt-5">
+                <div className="row mt-5">
+                <div className="mt-5 col-sm-8 offset-sm-2 text-center">
                     <form action="/login" method="POST">
                     <h1 className="h3">Log in</h1>
 
