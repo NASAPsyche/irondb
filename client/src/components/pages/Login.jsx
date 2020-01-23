@@ -7,7 +7,7 @@ import { Redirect} from 'react-router-dom';
 
 const Login = props => {
 
-
+    let loginSuccess = false
     const [username, setUsername] = useState()
 
     const handleChangeUsername = e => {
@@ -15,13 +15,21 @@ const Login = props => {
 
     }
     const handleLogin = event => {
+
+        //alert("Logging in for "+username)
+
+        simulatedAuth.login(() => {
+            loginSuccess=true
+            alert("Logged in for "+username)
+
+        })
+
+        loginSuccess = true;
         event.preventDefault()
-        alert("Logging in for "+username)
-        simulatedAuth.login()
-        return(
-            <Redirect to="/"/>
-        )
       }
+
+
+
 
     if (props.authenticated === true) {
         return(
