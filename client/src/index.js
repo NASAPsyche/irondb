@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
 import Database from './components/Database';
-import DataEntry from './components/DataEntry';
+import DataEntry from './components/pages/DataEntry';
 import Help from './components/pages/Help';
 import Panel from './components/Panel';
 import Profile from './components/Profile';
@@ -13,7 +13,7 @@ import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const simulatedAuth = {
-    isAuthenticated: false,
+    isAuthenticated: true,
     login(callback) {
       this.isAuthenticated = true;
       setTimeout(callback, 100); //simulate asynchronous code
