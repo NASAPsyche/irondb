@@ -12,6 +12,12 @@ import Navbar from './components/Navbar';
 import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
+
+//Setting up contexts and default values
+const currentUser = React.createContext({
+    isAuthenticated: false,
+  });
+
 const simulatedAuth = {
     isAuthenticated: false,
     login(callback) {
@@ -36,7 +42,15 @@ function Routing() {
     return (
         <Router>
             <div>
-                <Navbar authenticated={simulatedAuth.isAuthenticated} />
+                <currentUser.Provider value={simulatedAuth.isAuthenticated}>
+                    <currentUser.Consumer>    
+                        {isAuthenticated => (
+                            <Navbar authenticated={isAuthenticated} />
+                        )}
+                    </currentUser.Consumer>
+                </currentUser.Provider>
+                
+
                 <Route exact path="/" component={App}/>
                 <ProtectedRoute path="/database" component={Database}/>
                 <Route path="/help" component={Help}/>
@@ -44,11 +58,16 @@ function Routing() {
                 <ProtectedRoute path="/data-entry" component={DataEntry}/>
                 <ProtectedRoute path="/profile" component={Profile}/>
 
-
-                <Route
-                    path='/login'
-                    render={(props) => <Login {...props} authenticated={simulatedAuth.isAuthenticated}/>}
-                />
+                <currentUser.Provider value={simulatedAuth.isAuthenticated}>
+                    <currentUser.Consumer> 
+                    {isAuthenticated => (
+                        <Route
+                            path='/login'
+                            render={(props) => <Login {...props} authenticated={isAuthenticated}/>}
+                        />
+                     )}
+                    </currentUser.Consumer>
+                </currentUser.Provider>
 
             </div>
         </Router>

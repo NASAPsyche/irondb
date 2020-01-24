@@ -5,18 +5,17 @@ import { Redirect} from 'react-router-dom';
 //import '../styles/Help.scss';
 
 
+
 const Login = props => {
 
     let loginSuccess = false
     const [username, setUsername] = useState()
 
+
     const handleChangeUsername = e => {
       setUsername(e.target.value)
-
     }
     const handleLogin = event => {
-
-        //alert("Logging in for "+username)
 
         simulatedAuth.login(() => {
             loginSuccess=true
@@ -51,6 +50,7 @@ const Login = props => {
                     <label className="sr-only" for="username">username</label>
                     <input type="text" name="username" id="username" className="form-control" placeholder="username" required
                         autofocus minlength="4" value={username} onChange={handleChangeUsername} maxlength="25" />
+                        
                     <label className="sr-only" for="password">password</label>
                     <input type="password" name="password" id="password" className="form-control" placeholder="password" required
                         minlength="6" maxlength="25" />
