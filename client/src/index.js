@@ -38,7 +38,7 @@ function Routing() {
         <Router>
             <div>
 
-                <Navbar authenticated={isAuthenticated} />
+                <Navbar authenticated={simulatedAuth.isAuthenticated} />
  
 
                 <Route exact path="/" component={App}/>
@@ -51,7 +51,7 @@ function Routing() {
 
                         <Route
                             path='/login'
-                            render={(props) => <Login {...props} authenticated={isAuthenticated}/>}
+                            render={(props) => <Login {...props} authenticated={simulatedAuth.isAuthenticated}/>}
                         />
 
 
