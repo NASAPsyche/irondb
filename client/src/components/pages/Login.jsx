@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
 import simulatedAuth from '../../index.js'; 
-import { Redirect} from 'react-router-dom';
-//import { Link } from 'react-router-dom';
-//import '../styles/Help.scss';
-
-
 
 const Login = props => {
 
@@ -32,10 +27,12 @@ const Login = props => {
 
     if (props.authenticated === true) {
         return(
-            <div className="container mt-4">
-            <div className="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
-              <h1>You are already signed in.</h1>
-            </div>
+            <div className="container mt-5">
+                <div className="row mt-5">
+                    <div className="col-sm-8 offset-sm-2 text-center mt-5">
+                        <h1>You are already signed in.</h1>
+                    </div>
+                </div>
           </div>
         );
 
