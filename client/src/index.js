@@ -7,11 +7,12 @@ import DataEntry from './components/DataEntry';
 import Help from './components/pages/Help';
 import Panel from './components/Panel';
 import Profile from './components/Profile';
-import Login from './components/Login';
+import Login from './components/pages/Login';
 import Navbar from './components/Navbar';
 import Error from './components/Error';
 import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
+
 
 const simulatedAuth = {
     isAuthenticated: false,
@@ -37,7 +38,10 @@ function Routing() {
     return (
         <Router>
             <div>
+
                 <Navbar authenticated={simulatedAuth.isAuthenticated} />
+ 
+
                 <Route exact path="/" component={App}/>
                 <ProtectedRoute path="/database" component={Database}/>
                 <Route path="/help" 
@@ -46,8 +50,14 @@ function Routing() {
                 <ProtectedRoute path="/panel" component={Panel}/>
                 <ProtectedRoute path="/data-entry" component={DataEntry}/>
                 <ProtectedRoute path="/profile" component={Profile}/>
-                <Route path="/login" component={Login}/>
+
+                <Route
+                    path='/login'
+                    render={(props) => <Login {...props} authenticated={simulatedAuth.isAuthenticated}/>}
+                />
+
                 <Route exact path="/error" component={Error}/>
+
             </div>
         </Router>
     )
@@ -55,6 +65,7 @@ function Routing() {
 
 ReactDOM.render(<Routing />, document.getElementById('root'));
 
+export default simulatedAuth;
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
