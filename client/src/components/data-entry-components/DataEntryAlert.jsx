@@ -1,31 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const DataEntryAlert = ({ alert, alertType }) => {
+
+    const [hidden, setHidden] = useState(false);
+
     if (alert !== "") {
         if (alertType === "error") {
-            return (
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Error: </strong>
-                    {alert}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            );
+            if (!hidden) {
+                return (
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error: </strong>
+                        {alert}
+                        <button type="button" class="close" aria-label="Close" onClick={() => setHidden(true)}>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                );
+            } else {
+                return null;
+            }
         }
         else {
-            return (
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Success: </strong>
-                    {alert}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            );
+            if (!hidden) {
+                return (
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Success: </strong>
+                        {alert}
+                        <button type="button" class="close" aria-label="Close" onClick={() => setHidden(true)}>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                );
+            } else {
+                return null;
+            }
         }
     } else {
-        return null
+        return null;
     }
 }
 
