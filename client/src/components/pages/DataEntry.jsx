@@ -5,7 +5,7 @@ import '../styles/DataEntry.scss';
 
 const DataEntry = () => {
 
-    const [[alert, alertType], setAlert] = useState(['Alert','error']);
+    const [[alert, alertType], setAlert] = useState(['Alert','success']);
 
     return (
         <div className="data-entry">
@@ -16,7 +16,13 @@ const DataEntry = () => {
             </div>
 
             <div class="d-flex flex-row align-items-center justify-content-center pt-3">
-                <button class="btn btn-danger btn-lg text-light" id="tool">With PDF</button>
+                <button 
+                    class="btn btn-danger btn-lg text-light"
+                    id="tool"
+                    onClick={() => document.getElementById("pdf-form").removeAttribute("hidden")}
+                    >
+                    With PDF
+                </button>
                 <h3 class="mx-4 mb-2"> - or - </h3>
                 <a href="/data-entry/editor" class="btn btn-danger btn-lg">Without PDF</a>
             </div>
