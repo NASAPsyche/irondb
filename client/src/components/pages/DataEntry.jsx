@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import {
+    BrowserRouter as Router,
+    Link,
+    Switch,
+    Route,
+    useRouteMatch
+} from 'react-router-dom';
 import DataEntryAlert from '../data-entry-components/DataEntryAlert';
+import DataEntryEditor from '../data-entry-components/DataEntryEditor';
 import '../styles/DataEntry.scss';
 
 const DataEntry = () => {
 
-    const [[alert, alertType], setAlert] = useState(['Alert','success']);
+    let { path, url } = useRouteMatch();
+
+    const [[alert, alertType], setAlert] = useState(['Alert', 'success']);
 
     return (
         <div className="data-entry">
@@ -16,15 +25,18 @@ const DataEntry = () => {
             </div>
 
             <div class="d-flex flex-row align-items-center justify-content-center pt-3">
-                <button 
+                <button
                     class="btn btn-danger btn-lg text-light"
                     id="tool"
                     onClick={() => document.getElementById("pdf-form").removeAttribute("hidden")}
-                    >
+                >
                     With PDF
                 </button>
                 <h3 class="mx-4 mb-2"> - or - </h3>
-                <a href="/data-entry/editor" class="btn btn-danger btn-lg">Without PDF</a>
+                <Link 
+                    to={`${url}/editor`}
+                    class="btn btn-danger btn-lg" 
+                    onClick={() => document.getElementById("pdf-form").setAttribute("hidden", true)}>Without PDF</Link>
             </div>
 
             <div class="d-flex flex-row align-items-center justify-content-center pt-3">
@@ -37,6 +49,12 @@ const DataEntry = () => {
                     <button type="submit" class="btn btn-secondary float-right">Submit</button>
                 </form>
             </div>
+
+            <Switch>
+                <Route path={`${path}/editor`}>
+                    <DataEntryEditor />
+                </Route>
+            </Switch>
         </div>
     )
 }
