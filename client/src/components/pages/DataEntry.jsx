@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import DataEntryAlert from '../data-entry-components/DataEntryAlert';
 import DataEntryEditor from '../data-entry-components/DataEntryEditor';
+import DataEntryPDF from '../data-entry-components/DataEntryPDF'
 import '../styles/DataEntry.scss';
 
 const DataEntry = () => {
@@ -25,34 +26,28 @@ const DataEntry = () => {
             </div>
 
             <div class="d-flex flex-row align-items-center justify-content-center pt-3">
-                <button
+                <Link
+                    to={`${url}/pdf`}
                     class="btn btn-danger btn-lg text-light"
                     id="tool"
-                    onClick={() => document.getElementById("pdf-form").removeAttribute("hidden")}
                 >
                     With PDF
-                </button>
+                </Link>
                 <h3 class="mx-4 mb-2"> - or - </h3>
                 <Link 
                     to={`${url}/editor`}
-                    class="btn btn-danger btn-lg" 
-                    onClick={() => document.getElementById("pdf-form").setAttribute("hidden", true)}>Without PDF</Link>
-            </div>
-
-            <div class="d-flex flex-row align-items-center justify-content-center pt-3">
-                <form method="POST" action="/data-entry" enctype="multipart/form-data" class="border border-dark align-top mx-auto bg p-3" id="pdf-form" hidden="true">
-                    <div class="form-group">
-                        <label for="filetoupload">Choose file to upload</label>
-                        <input type="file" id="pdf" name="filetoupload"
-                            accept=".pdf" />
-                    </div>
-                    <button type="submit" class="btn btn-secondary float-right">Submit</button>
-                </form>
+                    class="btn btn-danger btn-lg"
+                >
+                    Without PDF
+                </Link>
             </div>
 
             <Switch>
                 <Route path={`${path}/editor`}>
                     <DataEntryEditor />
+                </Route>
+                <Route path={`${path}/pdf`}>
+                    <DataEntryPDF />
                 </Route>
             </Switch>
         </div>
