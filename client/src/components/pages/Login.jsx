@@ -15,15 +15,11 @@ const Login = props => {
         simulatedAuth.login(() => {
             loginSuccess=true
             alert("Logged in for "+username)
-
         })
 
         loginSuccess = true;
         event.preventDefault()
       }
-
-
-
 
     if (props.authenticated === true) {
         return(
