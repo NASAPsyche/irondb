@@ -37,14 +37,14 @@ const Register = props => {
 
 
 <div class="container mt-5 col-lg-8 col-xl-7 text-center">
-
-      <div className="mb-2"><h1 className="h3">Register <i className="fas fa-user-plus"></i></h1></div>
+     <div className="row mt-5"></div>
+      <div className="mt-5 mb-2"><h1 className="h3">Register <i className="fas fa-user-plus"></i></h1></div>
 
       <div>
         <form action="/register" method="POST" id="register-form">
           
 
-          <div className="alert alert-danger alert-dismissible fade show" style="display: none;" id="exists" role="alert">
+          <div className="alert alert-danger alert-dismissible fade show" style={{display: "none"}} id="exists" role="alert">
             <strong><i className="fas fa-user"></i></strong> Username already exists.
           </div>
 
@@ -83,7 +83,7 @@ const Register = props => {
             </div>
           </div>
 
-          <div className="alert alert-danger alert-dismissible fade show" style="display: none;" id="emails" role="alert">
+          <div className="alert alert-danger alert-dismissible fade show" style={{display: "none"}} id="emails" role="alert">
             <strong><i className="fas fa-envelope"></i></strong> Email already exists.
           </div>
 

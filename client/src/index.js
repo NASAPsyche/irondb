@@ -8,6 +8,7 @@ import Help from './components/pages/Help';
 import Panel from './components/Panel';
 import Profile from './components/Profile';
 import Login from './components/pages/Login';
+import Register from './components/pages/Register';
 import Navbar from './components/Navbar';
 import Error from './components/Error';
 import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
@@ -56,6 +57,10 @@ function Routing() {
                     render={(props) => <Login {...props} authenticated={simulatedAuth.isAuthenticated}/>}
                 />
 
+                <Route
+                    path='/register'
+                    render={(props) => <Register {...props} authenticated={simulatedAuth.isAuthenticated}/>}
+                />
                 <Route exact path="/error" component={Error}/>
 
             </div>
