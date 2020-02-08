@@ -12,7 +12,7 @@ import Navbar from './components/Navbar';
 import Error from './components/Error';
 import { Route, Redirect, BrowserRouter as Router } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-
+import {userContext} from './userContext';
 
 const simulatedAuth = {
     isAuthenticated: false,
