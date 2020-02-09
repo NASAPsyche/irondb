@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import simulatedAuth from '../../index.js'; 
+import Auth from '../Auth'; 
+import {userContext} from '../../userContext.js';
 
 const Login = props => {
 
@@ -12,7 +13,7 @@ const Login = props => {
     }
     const handleLogin = event => {
 
-        simulatedAuth.login(() => {
+        Auth.login(() => {
             loginSuccess=true
             alert("Logged in for "+username)
 
@@ -21,7 +22,6 @@ const Login = props => {
         loginSuccess = true;
         event.preventDefault()
       }
-
 
 
 
@@ -38,6 +38,7 @@ const Login = props => {
 
     } else {
         return (
+
             <div className="container mt-5">
                 <div className="row mt-5">
                 <div className="mt-5 col-sm-8 offset-sm-2 text-center">
