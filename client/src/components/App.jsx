@@ -17,6 +17,13 @@ class App extends React.Component {
     this.state = {
         user: {}
     };
+
+    this.logout = this.logout.bind(this);
+
+  }
+
+  logout() {
+    this.setState({user: {}});
   }
 
   componentDidMount() {
@@ -25,6 +32,12 @@ class App extends React.Component {
 
   
   render() {
+
+    const value = {
+      user: this.state.user,
+      logoutUser: this.logout
+    }
+
     return (
       <userContext.Provider>
         <div className="App"></div>
