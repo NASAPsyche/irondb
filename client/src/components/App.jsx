@@ -27,7 +27,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // get and set currently logged in user to state
+
   }
 
   

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Auth from '../Auth'; 
 import {userContext} from '../../userContext.js';
 
@@ -8,6 +8,9 @@ const Login = props => {
     const [username, setUsername] = useState()
 
 
+    const user = useContext(userContext)
+    console.log(JSON.stringify(user.user))
+
     const handleChangeUsername = e => {
       setUsername(e.target.value)
     }
@@ -16,6 +19,8 @@ const Login = props => {
         Auth.login(() => {
             loginSuccess=true
             alert("Logged in for "+username)
+            user.user = username
+
 
         })
 
@@ -24,13 +29,12 @@ const Login = props => {
       }
 
 
-
-    if (props.authenticated === true) {
+    if (Object.keys(user.user).length != 0) {
         return(
             <div className="container mt-5">
                 <div className="row mt-5">
                     <div className="col-sm-8 offset-sm-2 text-center mt-5">
-                        <h1>You are already signed in.</h1>
+        <h1>{user.user}, You are already signed in.</h1>
                     </div>
                 </div>
           </div>
