@@ -1,7 +1,30 @@
 import React from 'react';
 
-const userContext = React.createContext({user: {}}); // Create a context object
+const UserContext = React.createContext();
 
-export {
-  userContext // Export it so it can be used by other Components
-};
+class UserContextProvider extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {}
+    };
+  }
+
+  setUser = key => {
+    this.setState({ user: key });
+  };
+  render() {
+    return (
+      <UserContext.Provider
+        value={{
+          user: this.state.user,
+          setUser: this.setUser
+        }}
+      >
+        <div>{this.props.children}</div>
+      </UserContext.Provider>
+    );
+  }
+}
+
+export { UserContextProvider, UserContext };

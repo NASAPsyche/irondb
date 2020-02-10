@@ -17,7 +17,7 @@ import Profile from '../Profile';
 import Navbar from '../Navbar';
 import Error from '../Error';
 import Login from './Login'
-import {userContext} from '../../userContext.js';
+import {UserContext, UserContextProvider} from '../../userContext.js';
 import Auth from '../Auth'
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
@@ -43,8 +43,14 @@ function Main(props) {
             <ProtectedRoute path="/panel" component={Panel}/>
             <ProtectedRoute path="/data-entry" component={DataEntry}/>
             <ProtectedRoute path="/profile" component={Profile}/>
+       
+            <UserContextProvider>
+                <Login/>
+                </UserContextProvider>
+
+           
+           
             
-            <Login/>
   
 
             <Route exact path="/error" component={Error}/>

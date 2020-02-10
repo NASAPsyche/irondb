@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import Auth from '../Auth'; 
-import {userContext} from '../../userContext.js';
+import {UserContext} from '../../userContext.js';
 
 const Login = props => {
 
@@ -8,18 +8,25 @@ const Login = props => {
     const [username, setUsername] = useState()
 
 
-    const user = useContext(userContext)
-    console.log(JSON.stringify(user.user))
+    const {user, setUser} = useContext(UserContext)
+
+    
+
+    console.log(JSON.stringify(user))
 
     const handleChangeUsername = e => {
       setUsername(e.target.value)
     }
     const handleLogin = event => {
 
+        
         Auth.login(() => {
             loginSuccess=true
-            alert("Logged in for "+username)
-            user.user = username
+            console.log("Logged in for "+username)
+
+            setUser({ user:username })
+
+            console.log("Value stored in context is "+user['user'])
 
 
         })
@@ -29,12 +36,13 @@ const Login = props => {
       }
 
 
-    if (Object.keys(user.user).length != 0) {
+
+    if (Object.keys(user).length != 0) {
         return(
             <div className="container mt-5">
                 <div className="row mt-5">
                     <div className="col-sm-8 offset-sm-2 text-center mt-5">
-        <h1>{user.user}, You are already signed in.</h1>
+        <h1>{user["user"]}, You are signed in.</h1>
                     </div>
                 </div>
           </div>
