@@ -34,7 +34,10 @@ function Main(props) {
     <Router>
         <div>
 
-            <Navbar />
+            <UserContextProvider>
+              <Navbar />
+              <Login/>
+            </UserContextProvider>
 
             <ProtectedRoute path="/database" component={Database}/>
             <Route path="/help" 
@@ -44,9 +47,7 @@ function Main(props) {
             <ProtectedRoute path="/data-entry" component={DataEntry}/>
             <ProtectedRoute path="/profile" component={Profile}/>
        
-            <UserContextProvider>
-                <Login/>
-                </UserContextProvider>
+
 
            
            

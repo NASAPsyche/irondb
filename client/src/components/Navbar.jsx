@@ -1,14 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import {UserContext} from '../userContext.js';
 
 
 
 
 function Navbar(props) {
 
+    const {user} = useContext(UserContext)
+    console.log(user["user"] + "USER")
 
-    if (props.authenticated === true) {
+    if (user["user"] != null) {
         return (
             <nav class="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
                 <div class="navbar-brand">

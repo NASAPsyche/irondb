@@ -7,7 +7,7 @@ const Login = props => {
     let loginSuccess = false
     const [username, setUsername] = useState()
 
-
+    //Bring in our user contexts so we can access the state
     const {user, setUser} = useContext(UserContext)
 
     
@@ -19,16 +19,12 @@ const Login = props => {
     }
     const handleLogin = event => {
 
-        
+        //Actual login logic should be stored in Auth
         Auth.login(() => {
             loginSuccess=true
+            //Some test code for login
             console.log("Logged in for "+username)
-
             setUser({ user:username })
-
-            console.log("Value stored in context is "+user['user'])
-
-
         })
 
         loginSuccess = true;
@@ -36,7 +32,7 @@ const Login = props => {
       }
 
 
-
+    //Let's see if they're currently logged in!
     if (Object.keys(user).length != 0) {
         return(
             <div className="container mt-5">
