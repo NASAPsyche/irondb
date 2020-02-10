@@ -11,7 +11,7 @@ function Navbar(props) {
     const {user} = useContext(UserContext)
     console.log("NAVBAR: current user: "+user)
 
-    if (user != null) {
+    if (Object.keys(user).length != 0) {
         return (
             <nav class="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
                 <div class="navbar-brand">
@@ -27,7 +27,7 @@ function Navbar(props) {
                     <Link class="nav-item nav-link" to="/help">Help</Link>
                     </div>
                 </div>
-                <Link id="profile" to="/profile" class="btn btn-outline-light">Account</Link>
+                <Link id="profile" to="/profile" class="btn btn-outline-light mr-2">Account</Link>
                 <a href="/logout" class="btn btn-outline-light">Sign out</a>
             </nav>
             );

@@ -128,7 +128,7 @@ const Help = ({ authenticated }) => (
                     <div className="col-sm-1"></div>
                 </div>
 
-                <AuthenticatedHelp authenticated={authenticated} />
+                <AuthenticatedHelp />
 
                 <a id="registration"></a><br /><br />
                 <div className="row">

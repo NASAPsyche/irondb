@@ -36,13 +36,14 @@ function Main(props) {
 
             <UserContextProvider>
               <Navbar />
-              <Login/>
+              <Route path="/login" component={Login} />
+              <Route path="/help" 
+                render={(props) => <Help {...props} />}
+            />
             </UserContextProvider>
 
             <ProtectedRoute path="/database" component={Database}/>
-            <Route path="/help" 
-                render={(props) => <Help {...props} />}
-            />
+
             <ProtectedRoute path="/panel" component={Panel}/>
             <ProtectedRoute path="/data-entry" component={DataEntry}/>
             <ProtectedRoute path="/profile" component={Profile}/>
