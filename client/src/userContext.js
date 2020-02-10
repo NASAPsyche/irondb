@@ -6,7 +6,7 @@ class UserContextProvider extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {}
+      user: String
     };
   }
 

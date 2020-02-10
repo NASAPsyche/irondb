@@ -24,7 +24,7 @@ const Login = props => {
             loginSuccess=true
             //Some test code for login
             console.log("Logged in for "+username)
-            setUser({ user:username })
+            setUser(username)
         })
 
         loginSuccess = true;
@@ -38,7 +38,7 @@ const Login = props => {
             <div className="container mt-5">
                 <div className="row mt-5">
                     <div className="col-sm-8 offset-sm-2 text-center mt-5">
-        <h1>{user["user"]}, You are signed in.</h1>
+        <h1>{user}, You are signed in.</h1>
                     </div>
                 </div>
           </div>

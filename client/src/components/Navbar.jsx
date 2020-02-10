@@ -9,9 +9,9 @@ import {UserContext} from '../userContext.js';
 function Navbar(props) {
 
     const {user} = useContext(UserContext)
-    console.log(user["user"] + "USER")
+    console.log("NAVBAR: current user: "+user)
 
-    if (user["user"] != null) {
+    if (user != null) {
         return (
             <nav class="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
                 <div class="navbar-brand">
