@@ -2,13 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import {UserContext} from '../userContext.js';
+import * as Cookies from "js-cookie";
 
 
 
 
 function Navbar(props) {
 
-    const {user} = useContext(UserContext)
+    const {user,setUser} = useContext(UserContext)
+
+    const logout = event => {
+        setUser();
+        Cookies.remove("username");
+      }
+
     console.log("NAVBAR: current user: "+user)
 
     if (user != undefined) {
@@ -28,7 +35,7 @@ function Navbar(props) {
                     </div>
                 </div>
                 <Link id="profile" to="/profile" class="btn btn-outline-light mr-2">Account</Link>
-                <a href="/logout" class="btn btn-outline-light">Sign out</a>
+                <a onClick={logout} href="#" class="btn btn-outline-light">Sign out</a>
             </nav>
             );
     }
