@@ -11,7 +11,7 @@ function Navbar(props) {
     const {user} = useContext(UserContext)
     console.log("NAVBAR: current user: "+user)
 
-    if (Object.keys(user).length != 0) {
+    if (user != undefined) {
         return (
             <nav class="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
                 <div class="navbar-brand">

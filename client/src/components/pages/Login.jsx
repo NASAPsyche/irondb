@@ -33,12 +33,12 @@ const Login = props => {
 
 
     //Let's see if they're currently logged in!
-    if (Object.keys(user).length != 0) {
+    if (user!= undefined) {
         return(
             <div className="container mt-5">
                 <div className="row mt-5">
                     <div className="col-sm-8 offset-sm-2 text-center mt-5">
-        <h1>{user}, You are signed in.</h1>
+                        <h3>{user}, You are signed in.</h3>
                     </div>
                 </div>
           </div>
@@ -54,7 +54,7 @@ const Login = props => {
                     <h1 className="h3">Log in</h1>
 
                     <label className="sr-only" for="username">username</label>
-                    <input type="text" name="username" id="username" className="form-control" placeholder="username" required
+                    <input type="text" name="username" id="username" className="form-control mb-2" placeholder="username" required
                         autofocus minlength="4" value={username} onChange={handleChangeUsername} maxlength="25" />
                         
                     <label className="sr-only" for="password">password</label>
