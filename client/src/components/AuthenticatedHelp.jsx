@@ -10,7 +10,7 @@ const  AuthenticatedHelp = (props) => {
 
 
 
-    if (Object.keys(user).length === 0)
+    if (user !== undefined)
         return null;
     else {
         return (
