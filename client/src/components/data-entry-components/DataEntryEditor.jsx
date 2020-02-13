@@ -4,8 +4,15 @@ import DataEntryForm from './DataEntryForm'
 const DataEntryEditor = () => {
     const [meteoriteData, setData] = useState({
         data: null,
-        elements: [],
-        techniques: [],
+        elements: [
+            {symbol: "Fe"},
+            {symbol: "Co"},
+            {symbol: "Ni"}
+        ],
+        techniques: [
+            {abbreviation: "T1"},
+            {abbreviation: "T2"}
+        ],
     })
 
     return (
