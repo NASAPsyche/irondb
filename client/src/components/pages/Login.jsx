@@ -1,21 +1,30 @@
-import React, { useState } from 'react';
-import simulatedAuth from '../../index.js'; 
+import React, { useState, useContext } from 'react';
+import Auth from '../Auth'; 
+import {UserContext} from '../../userContext.js';
 
 const Login = props => {
 
     let loginSuccess = false
     const [username, setUsername] = useState()
 
+    //Bring in our user contexts so we can access the state
+    const {user, setUser} = useContext(UserContext)
+
+    
+
+    console.log(JSON.stringify(user))
 
     const handleChangeUsername = e => {
       setUsername(e.target.value)
     }
     const handleLogin = event => {
 
-        simulatedAuth.login(() => {
+        //Actual login logic should be stored in Auth
+        Auth.login(() => {
             loginSuccess=true
-            alert("Logged in for "+username)
-
+            //Some test code for login
+            console.log("Logged in for "+username)
+            setUser(username)
         })
 
         loginSuccess = true;
@@ -23,14 +32,13 @@ const Login = props => {
       }
 
 
-
-
-    if (props.authenticated === true) {
+    //Let's see if they're currently logged in!
+    if (user!= undefined) {
         return(
             <div className="container mt-5">
                 <div className="row mt-5">
                     <div className="col-sm-8 offset-sm-2 text-center mt-5">
-                        <h1>You are already signed in.</h1>
+                        <h3>{user}, You are signed in.</h3>
                     </div>
                 </div>
           </div>
@@ -38,6 +46,7 @@ const Login = props => {
 
     } else {
         return (
+
             <div className="container mt-5">
                 <div className="row mt-5">
                 <div className="mt-5 col-sm-8 offset-sm-2 text-center">
@@ -45,7 +54,7 @@ const Login = props => {
                     <h1 className="h3">Log in</h1>
 
                     <label className="sr-only" for="username">username</label>
-                    <input type="text" name="username" id="username" className="form-control" placeholder="username" required
+                    <input type="text" name="username" id="username" className="form-control mb-2" placeholder="username" required
                         autofocus minlength="4" value={username} onChange={handleChangeUsername} maxlength="25" />
                         
                     <label className="sr-only" for="password">password</label>
