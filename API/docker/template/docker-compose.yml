@@ -27,9 +27,9 @@ services:
       - ./API/model/db-init:/docker-entrypoint-initdb.d/
       - ./API/pg-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: '%%user%%'
-      POSTGRES_PASSWORD: '%%password%%'
-      POSTGRES_DB: 'postgres'
+      - POSTGRES_USER=%%user%%
+      - POSTGRES_PASSWORD=%%password%%
+      - POSTGRES_DB=postgres
     ports:
       - "127.0.0.1:5433:5432"
     healthcheck:
