@@ -9,3 +9,6 @@ pg-data/
 # misc
 **/DS_Store
 .vscode/
+**/coverage
+
+# docker

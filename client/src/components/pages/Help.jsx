@@ -23,7 +23,7 @@ const Help = ({ authenticated }) => (
                     <div className="col-sm-1"></div>
                     <div className="col-sm-10">
                         <h5 className="pb-5">
-                            Welcome to the Iron Meteorite Database, created as a componenet of <a href="https://psyche.asu.edu/">NASA's Psyche Mission</a> and aiming to benefit the entire scientific community. As the premiere database for curated information on iron meteorites, we strive to provide the most complete and most accurate collection of meteorite data by using a mixture of natural language processing algorithms and human-guided data entry. Learn more <a href="https://psyche.asu.edu/get-involved/capstone-projects/capstone-projects-iron-class/iron-meteorite-database/">here</a>.
+                            Welcome to the Iron Meteorite Database, created as a component of <a href="https://psyche.asu.edu/">NASA's Psyche Mission</a> and aiming to benefit the entire scientific community. As the premiere database for curated information on iron meteorites, we strive to provide the most complete and most accurate collection of meteorite data by using a mixture of natural language processing algorithms and human-guided data entry. Learn more <a href="https://psyche.asu.edu/get-involved/capstone-projects/capstone-projects-iron-class/iron-meteorite-database/">here</a>.
                         </h5>
                     </div>
                     <div className="col-sm-1"></div>
@@ -128,7 +128,7 @@ const Help = ({ authenticated }) => (
                     <div className="col-sm-1"></div>
                 </div>
 
-                <AuthenticatedHelp authenticated={authenticated} />
+                <AuthenticatedHelp />
 
                 <a id="registration"></a><br /><br />
                 <div className="row">
