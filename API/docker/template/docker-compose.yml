@@ -25,7 +25,7 @@ services:
     # image: postgres:11.0-alpine
     volumes:
       - ./API/model/db-init:/docker-entrypoint-initdb.d/
-      - ./API/pg-data:/var/lib/postgresql/data
+      - ./API/pg-data:/var/lib/postgresql/data:z
     environment:
       - POSTGRES_USER=%%user%%
       - POSTGRES_PASSWORD=%%password%%
