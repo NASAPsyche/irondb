@@ -129,7 +129,7 @@ app.use('/help', helpRouter);
 
 // Use Auth Routers
 app.use('/register', registerRouter);
-app.use('/login', loginRouter);
+app.use('/api/login', loginRouter);
 app.use('/logout', logoutRouter);
 
 // Protected Routes
