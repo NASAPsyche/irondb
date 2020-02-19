@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import Auth from '../Auth'; 
 import {UserContext} from '../../userContext.js';
+import {server} from '../apiserver.js';
 
 const Login = props => {
 
@@ -26,7 +27,7 @@ const Login = props => {
             const handleSubmit = async e => {
                     e.preventDefault();
                     const { email, password } = formData
-                    const { success, data } = await server.postAsync('/auth/login', {
+                    const { success, data } = await server.postAsync('/api/login', {
                       email,
                       password
                     })
