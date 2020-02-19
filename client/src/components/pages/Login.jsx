@@ -1,9 +1,14 @@
 import React, { useState, useContext } from 'react';
 import Auth from '../Auth'; 
 import {UserContext} from '../../userContext.js';
-import {server} from '../apiserver.js';
+import {server} from '../utils';
 
 const Login = props => {
+
+    const [formData, setFormData] = React.useState({
+        username: '',
+        password: ''
+      })
 
     let loginSuccess = false
     const [username, setUsername] = useState()
