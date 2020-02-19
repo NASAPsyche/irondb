@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../styles/Home.scss'
+import '../styles/Home.css'
 
 const Home = () => {
     const [name, setName] = useState();
@@ -49,9 +49,14 @@ const Home = () => {
                             </div>
                             <div className="col-md-2">
                                 <label className="sr-only" for="group">group</label>
-                                <select className="form-control" id="group" name="group" onChange={handleChangeGroup}>
-                                    <option>first</option>
-                                    <option>second</option>
+                                <select className="form-control" id="group" name="group" placeholder="group" onChange={handleChangeGroup}>
+                                    <option value="" disabled selected hidden>group</option>
+                                    <option>IAB</option>
+                                    <option>IC</option>
+                                    <option>IIAB</option>
+                                    <option>IIG</option>
+                                    <option>IIIAB</option>
+                                    <option>IIICD</option>
                                 </select>
                             </div>
                             <div className="col-md-2">
