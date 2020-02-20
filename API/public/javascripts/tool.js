@@ -226,8 +226,8 @@ $('#event-div').on('click', 'a.table-control-update', function() {
   options.command = $(this).siblings('select.command').val();
   options.type = $(this).siblings('select.type').val();
   options.rowNumber = $(this).siblings('select.row-number').val();
-  options.colNumber = $(this).siblings('select.col-number').val()
-  
+  options.colNumber = $(this).siblings('select.col-number').val();
+
   const table = $(this).closest('div.collapse').siblings('table');
 
   // Execute specified command
@@ -246,7 +246,7 @@ $('#event-div').on('click', 'a.table-control-update', function() {
         $(this).parent().siblings('div.table-alert-target').html(tableAlert);
       }
     }
-  } else if (options.type === 'column'  && options.colNumber != 'Number') {
+  } else if (options.type === 'column' && options.colNumber != 'Number') {
     const select = $(this).siblings('select.col-number');
     options.number = select.val();
     if ( options.command === 'add' ) {
