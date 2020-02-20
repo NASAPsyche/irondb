@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../styles/Home.css'
+import '../styles/Home.scss'
 
 const Home = () => {
     const [name, setName] = useState();
