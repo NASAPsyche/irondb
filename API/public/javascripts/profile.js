@@ -76,7 +76,7 @@ function validatePassword() {
         }
 
         if (!hasLowerCase) {
-          $('.passwordError').text('Password must contain at least lower case character!');
+          $('.passwordError').text('Password must contain at least 1 lower case character!');
           $('.passwordError').show();
         }
 
