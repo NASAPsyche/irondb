@@ -4,15 +4,16 @@ import {UserContext} from '../../userContext.js';
 import {server} from '../utils';
 
 const Login = props => {
-
+    var password;
     const [formData, setFormData] = React.useState({
         username: '',
-        password: ''
+        password: '',
+        apiResponse: ""
       })
 
     let loginSuccess = false
     const [username, setUsername] = useState()
-
+    //handleLogin = handleLogin.bind(this);
     //Bring in our user contexts so we can access the state
     const {user, setUser} = useContext(UserContext)
 
@@ -23,6 +24,9 @@ const Login = props => {
     const handleChangeUsername = e => {
       setUsername(e.target.value)
     }
+    const handlePassword = e => {
+        password = e.target.value;
+      }
     const handleLogin = event => {
         event.preventDefault()
         //Actual login logic should be stored in Auth
@@ -31,19 +35,40 @@ const Login = props => {
             console.log("auth")
             const handleSubmit = async e => {
                     e.preventDefault();
-                    const { email, password } = formData
+                    /*
+                    const { username, password } = formData
                     const { success, data } = await server.postAsync('http://localhost:3001/login', {
-                      email,
+                      username,
                       password
                     })
                 
+                    /*
                     if (success) {
                       window.location.replace(data)
+                      console.log("Success")
                       return
+                    } else {
+                        console.log("Error")
                     }
+                    */
                   }
 
+                  const data = { username: username, password: password }
+                  fetch("/login", {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers:{ 'Content-Type': 'application/json' }
+                    })
 
+                    .then(res => {
+                        console.log(res.text());
+                      
+                    }).catch(function(error) {
+                        console.log(error);
+                    });;
+                    //.then(res => this.setState({ apiResponse: res }));
+
+            
             loginSuccess=true
             //Some test code for login
             console.log("Logged in for "+username)
@@ -61,6 +86,7 @@ const Login = props => {
             <div className="container mt-5">
                 <div className="row mt-5">
                     <div className="col-sm-8 offset-sm-2 text-center mt-5">
+            
                         <h3>{user}, You are signed in.</h3>
                     </div>
                 </div>
@@ -69,8 +95,9 @@ const Login = props => {
 
     } else {
         return (
-
+            
             <div className="container mt-5">
+                TESTING123
                 <div className="row mt-5">
                 <div className="mt-5 col-sm-8 offset-sm-2 text-center">
                     <form onSubmit={handleLogin}>
@@ -81,7 +108,7 @@ const Login = props => {
                         autofocus minlength="4" value={username} onChange={handleChangeUsername} maxlength="25" />
                         
                     <label className="sr-only" for="password">password</label>
-                    <input type="password" name="password" id="password" className="form-control" placeholder="password" required
+                    <input type="password" name="password" id="password" onChange={handlePassword} className="form-control" placeholder="password" required
                         minlength="6" maxlength="25" />
                     <button class="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
                     <a href="/register">Register Here</a>
