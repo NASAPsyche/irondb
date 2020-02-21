@@ -18,7 +18,8 @@ import Navbar from '../Navbar';
 import Error from '../Error';
 import Login from './Login'
 import {UserContext, UserContextProvider} from '../../userContext.js';
-import Auth from '../Auth'
+import Auth from '../Auth';
+import Account from './Account';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
@@ -29,7 +30,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => (
   )
 
 function Main(props) {
-    
+
   return (
     <Router>
         <div>
@@ -37,23 +38,23 @@ function Main(props) {
             <UserContextProvider>
               <Navbar />
               <Route path="/login" component={Login} />
-              <Route path="/help" 
+              <Route path="/help"
                 render={(props) => <Help {...props} />}
             />
             </UserContextProvider>
 
+            <Route exact path="/account" component={Account}/>
             <ProtectedRoute path="/database" component={Database}/>
-
             <ProtectedRoute path="/panel" component={Panel}/>
             <ProtectedRoute path="/data-entry" component={DataEntry}/>
             <ProtectedRoute path="/profile" component={Profile}/>
-       
 
 
-           
-           
-            
-  
+
+
+
+
+
 
             <Route exact path="/error" component={Error}/>
 
