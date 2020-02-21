@@ -24,15 +24,15 @@ const Login = props => {
       setUsername(e.target.value)
     }
     const handleLogin = event => {
-
+        event.preventDefault()
         //Actual login logic should be stored in Auth
         Auth.login(() => {
 
-
+            console.log("auth")
             const handleSubmit = async e => {
                     e.preventDefault();
                     const { email, password } = formData
-                    const { success, data } = await server.postAsync('/api/login', {
+                    const { success, data } = await server.postAsync('http://localhost:3001/login', {
                       email,
                       password
                     })
@@ -51,7 +51,7 @@ const Login = props => {
         })
 
         loginSuccess = true;
-        event.preventDefault()
+        
       }
 
 
@@ -73,7 +73,7 @@ const Login = props => {
             <div className="container mt-5">
                 <div className="row mt-5">
                 <div className="mt-5 col-sm-8 offset-sm-2 text-center">
-                    <form action="http://localhost:3001/api/login"  >
+                    <form onSubmit={handleLogin}>
                     <h1 className="h3">Log in</h1>
 
                     <label className="sr-only" for="username">username</label>
