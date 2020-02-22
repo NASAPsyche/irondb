@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bcrypt": "^3.0.8",
     "js-cookie": "^2.2.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
@@ -29,5 +30,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "node-sass": "^4.13.1"
   }
 }

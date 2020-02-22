@@ -279,14 +279,14 @@ function rm_db ()
   if [[ $EUID -ne 0 ]];
   then
     echo "running as sudo"
-    sudo rm -rf pg-data 
-    sudo rm -rf node-modules
+    sudo rm -rf API/pg-data 
+    sudo rm -rf API/node-modules
   else
     echo "running as su"
-    rm -rf pg-data 
-    rm -rf node-modules
+    rm -rf API/pg-data 
+    rm -rf API/node-modules
   fi
-  mkdir pg-data
+  mkdir API/pg-data
 }
 
 # Stops the containers that host the server
