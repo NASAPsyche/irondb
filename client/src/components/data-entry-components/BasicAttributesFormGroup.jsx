@@ -44,7 +44,7 @@ const BasicAttributesFormGroup = () => (
         </div>
 
         <div className="form-row author-header">
-            <p className="pt-1 mr-2">Author(s)</p>
+            <h6 className="pt-1 mr-2">Author(s)</h6>
             <i className="fas fa-plus-circle fa-lg add-author mt-2 text-danger"></i>
         </div>
 
