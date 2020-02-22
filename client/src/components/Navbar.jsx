@@ -32,6 +32,8 @@ function Navbar(props) {
                     <Link class="nav-item nav-link" to="/panel">Panel</Link>
                     <Link class="nav-item nav-link" to="/data-entry">Data Entry</Link>
                     <Link class="nav-item nav-link" to="/help">Help</Link>
+                    {/* TODO: REMOVE THESE NAVBAR LINKS ONCE APPROVAL PAGES ARE LINKED UP. */}
+                    <Link class="nav-item nav-link" to="/data-entry-error">Data Entry Error</Link>
                     </div>
                 </div>
                 <Link id="profile" to="/profile" class="btn btn-outline-light mr-2">Account</Link>
