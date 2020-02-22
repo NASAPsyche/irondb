@@ -109,7 +109,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(session({
-  secret: 'dEff05u_QV(14y1odkM%jK%JeNm0FcPn',
+  secret: 'fABkW#S(z05aAhK^4gL35nCkU8HCA@kW',
   resave: false,
   saveUninitialized: false,
   // maxAge set to 60 mins, param in miliseconds
@@ -129,7 +129,7 @@ app.use('/help', helpRouter);
 
 // Use Auth Routers
 app.use('/register', registerRouter);
-app.use('/api/login', loginRouter);
+app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 
 // Protected Routes
@@ -147,7 +147,7 @@ app.use(function(req, res, next) {
   }
   // next(createError(404));
   // eslint-disable-next-line max-len
-  res.render('error', {isSignedIn: isSignedIn, message: 'Page Not Found', errcode: 'Error 404'});
+  //res.render('error', {isSignedIn: isSignedIn, message: 'Page Not Found', errcode: 'Error 404'});
 });
 
 // error handler

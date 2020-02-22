@@ -43,7 +43,7 @@ router.get('/', function(req, res, next) {
     */
   } else {
 
-    res.render('login',{
+    res.send({
       isSignedIn: isSignedIn,
       Alert: '',
       AlertType: '',
@@ -60,8 +60,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', passport.authenticate('local', {
-  //successRedirect: '/panel',
-  //failureRedirect: '/login',
+  successRedirect: '/',
+  failureRedirect: '/',
 }), function(req, res) {});
 
 module.exports = router;
