@@ -1,8 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import {UserContext} from '../userContext.js';
+import * as Cookies from "js-cookie";
+
+
+
 
 function Navbar(props) {
-    if (props.authenticated === true) {
+
+    const {user,setUser} = useContext(UserContext)
+
+    const logout = event => {
+        setUser();
+        Cookies.remove("username");
+      }
+
+    console.log("NAVBAR: current user: "+user)
+
+    if (user != undefined) {
         return (
             <nav class="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
                 <div class="navbar-brand">
@@ -18,8 +34,8 @@ function Navbar(props) {
                     <Link class="nav-item nav-link" to="/help">Help</Link>
                     </div>
                 </div>
-                <Link id="profile" to="/profile" class="btn btn-outline-light">Account</Link>
-                <a href="/logout" class="btn btn-outline-light">Sign out</a>
+                <Link id="profile" to="/profile" class="btn btn-outline-light mr-2">Account</Link>
+                <a onClick={logout} href="#" class="btn btn-outline-light">Sign out</a>
             </nav>
             );
     }
