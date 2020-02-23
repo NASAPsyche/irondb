@@ -20,6 +20,7 @@ import Error from '../Error';
 import Login from './Login'
 import {UserContext, UserContextProvider} from '../../userContext.js';
 import Auth from '../Auth'
+import ApprovalOwnEntryError from "../ApprovalOwnEntryError";
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
@@ -49,6 +50,8 @@ function Main(props) {
             <ProtectedRoute path="/panel" component={Panel}/>
             <ProtectedRoute path="/data-entry" component={DataEntry}/>
             <ProtectedRoute path="/profile" component={Profile}/>
+            {/* TODO: CORRECTLY ROUTE TO DATA APPROVAL ERROR PAGE */}
+            <ProtectedRoute path="/data-entry-error" component={ApprovalOwnEntryError}/>
        
             
 
