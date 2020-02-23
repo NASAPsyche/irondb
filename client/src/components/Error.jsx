@@ -18,7 +18,7 @@ export default function Error({ error }) {
     })
 
     return (
-        <div class="container-fluid  err-msg">
+        <div class="container-fluid  mt-6">
             <h1 class="text-danger">Error: {error.message}</h1>
         </div>
     )
