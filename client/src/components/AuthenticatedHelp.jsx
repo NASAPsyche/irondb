@@ -1,8 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useContext } from 'react';
+import {UserContext} from '../userContext.js';
 
-const  AuthenticatedHelp = ({ authenticated }) => {
-    if (authenticated === false)
+
+
+const  AuthenticatedHelp = (props) => {
+    const {user} = useContext(UserContext)
+
+
+
+    if (user !== undefined)
         return null;
     else {
         return (

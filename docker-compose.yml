@@ -13,10 +13,12 @@ services:
     depends_on:
       - pgdb
     environment:
-      - DATABASE_URL=postgres://root:password@pgdb:5432/postgres
+
+      - DATABASE_URL=postgres://group16:password@pgdb:5432/postgres
+
     restart: on-failure
     container_name: irondb_web
-    command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
+    command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node_modules/.bin/nodemon", "./bin/www"]
 
   pgdb:
     build: './API/docker/postgres'
@@ -25,15 +27,17 @@ services:
     # image: postgres:11.0-alpine
     volumes:
       - ./API/model/db-init:/docker-entrypoint-initdb.d/
-      - ./API/pg-data:/var/lib/postgresql/data
+      - ./API/pg-data:/var/lib/postgresql/data:z
     environment:
-      POSTGRES_USER: 'root'
-      POSTGRES_PASSWORD: 'password'
-      POSTGRES_DB: 'postgres'
+
+      - POSTGRES_USER=group16
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
     ports:
       - "127.0.0.1:5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready  -d postgres -U root"]
+
+      test: ["CMD-SHELL", "pg_isready  -d postgres -U group16"]
       interval: 10s
       timeout: 5s
       retries: 5

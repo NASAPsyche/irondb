@@ -109,7 +109,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(session({
-  secret: '#k6LSV#e06Ee%6aS!ASHA6IR_PT)m7)3',
+
+  secret: '8uAKY7Ch=379xZyea_dD1(gfI)YdNU*P',
+
   resave: false,
   saveUninitialized: false,
   // maxAge set to 60 mins, param in miliseconds
@@ -147,7 +149,7 @@ app.use(function(req, res, next) {
   }
   // next(createError(404));
   // eslint-disable-next-line max-len
-  res.render('error', {isSignedIn: isSignedIn, message: 'Page Not Found', errcode: 'Error 404'});
+  //res.render('error', {isSignedIn: isSignedIn, message: 'Page Not Found', errcode: 'Error 404'});
 });
 
 // error handler
