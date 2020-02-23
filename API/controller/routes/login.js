@@ -8,18 +8,31 @@ router.get('/', function(req, res, next) {
   let isSignedIn = false;
   if ( req.header('Referer') !== undefined &&
   req.header('Referer').slice(-6) === '/login') {
-    res.send( {
-      isSignedIn: isSignedIn,
-      Alert: `Invalid username or password.`,
-      AlertType: 'error',
-    });
-    /*
-    res.render('login', {
-      isSignedIn: isSignedIn,
-      Alert: `Invalid username or password.`,
-      AlertType: 'error',
-    });
-    */
+
+    if (req.isAuthenticated()) {
+      isSignedIn = true;
+      res.send({
+        isSignedIn: isSignedIn,
+        Alert: '',
+        AlertType: '',
+      }); 
+    }
+      else 
+      {
+        res.send( {
+          isSignedIn: isSignedIn,
+          Alert: `Invalid username or password.`,
+          AlertType: 'error',
+        });
+        /*
+        res.render('login', {
+          isSignedIn: isSignedIn,
+          Alert: `Invalid username or password.`,
+          AlertType: 'error',
+        });
+        */
+      }
+
   } else if ( req.header('Referer') !== undefined &&
   req.header('Referer').slice(-9) === '/register') {
     res.send( {
@@ -60,8 +73,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/',
+  successRedirect: '/login',
+  failureRedirect: '/login',
 }), function(req, res) {});
 
 module.exports = router;
