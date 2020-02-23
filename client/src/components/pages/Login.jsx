@@ -22,6 +22,7 @@ const Login = props => {
     const handleLogin = event => {
         event.preventDefault()
 
+
         //Authentication Logic
         Auth.login(() => {
             var loginStatus;
@@ -57,6 +58,7 @@ const Login = props => {
                     });
         })
       }
+
 
  
     //Let's see if they're currently logged in!
