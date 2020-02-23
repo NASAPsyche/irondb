@@ -1,38 +1,7 @@
 import React, { useState } from 'react';
-import simulatedAuth from '../../index.js'; 
 
 const Register = props => {
 
-    let loginSuccess = false
-    const [username, setUsername] = useState()
-
-
-    const handleChangeUsername = e => {
-      setUsername(e.target.value)
-    }
-    const handleLogin = event => {
-
-        simulatedAuth.login(() => {
-            loginSuccess=true
-            alert("Logged in for "+username)
-        })
-
-        loginSuccess = true;
-        event.preventDefault()
-      }
-
-    if (props.authenticated === true) {
-        return(
-            <div className="container mt-5">
-                <div className="row mt-5">
-                    <div className="col-sm-8 offset-sm-2 text-center mt-5">
-                        <h1>You are already signed in.</h1>
-                    </div>
-                </div>
-          </div>
-        );
-
-    } else {
         return (
 
 
@@ -120,22 +89,4 @@ const Register = props => {
 
 
 
-    function ReturnAlert(hasAlert) {
-        if (hasAlert.error) {
-            return <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {hasAlert.alert}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>;
-        } else if (hasAlert.success) {
-            return <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {hasAlert.alert}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>;
-        }
-    }
-}
 export default Register;

@@ -13,6 +13,7 @@ import Database from '../Database';
 import DataEntry from './DataEntry';
 import Help from './Help';
 import Home from './Home';
+import Register from './Register';
 import Panel from '../Panel';
 import Profile from '../Profile';
 import Navbar from '../Navbar';
@@ -44,6 +45,8 @@ function Main(props) {
             />
             </UserContextProvider>
             <Route exact path="/" component={Home}/>
+            <Route path='/register' component={Register}/>
+
             <ProtectedRoute path="/database" component={Database}/>
             
             <ProtectedRoute path="/panel" component={Panel}/>
