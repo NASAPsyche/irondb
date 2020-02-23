@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import ReactDOM from 'react-dom';
 import Database from '../Database';
-import DataEntry from '../DataEntry';
+import DataEntry from './DataEntry';
 import Help from './Help';
 import Home from './Home';
 import Panel from '../Panel';
