@@ -1,0 +1,133 @@
+body {
+	padding: 3.4rem 0 0 0;
+}
+
+hr {
+	border: 0; 
+	height: 1.5px; 
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+a {
+	text-decoration: none;
+}
+
+card {
+	min-width: 100%;
+}
+
+.pdfobject-container { 
+	height: 40rem; border: 1rem solid rgba(0,0,0,.1); 
+}
+
+.alert-danger {
+	background-color: #FEEEEE;
+	border-color: #FBDCD7;
+	color: black;
+	border-width: 3px;
+}
+
+.page-number {
+	max-width: 5rem;
+}
+
+.remove-table {
+	font-size: 1.2rem;
+}
+
+.sticky-top {
+	top: 5em;
+}
+
+#pdf-form {
+	width: 100%;
+	max-width: 400px;
+	border-radius: 0.5em;
+	background-color: #d3d3d3;
+}
+
+#checklist-form {
+	width: 100%;
+	padding: 5px;
+	border-radius: 0.5em;
+	background-color: #d3d3d3;
+}
+
+#table-tab {
+  width: 27em;
+}
+
+#pageNum, #flipDir {
+	max-width: 3rem;
+}
+
+#coordsLeft, #coordsTop, #coordsWidth, #coordsHeight {
+	max-width: 3.5rem;
+}
+
+.load-container {
+	height: 6em;
+}
+
+/* Loader CSS */
+/* CSS generated using tool at: https://projects.lukehaas.me/css-loaders/ */
+/* <div class="loader">Loading...</div> to use */
+.loader,
+.loader:before,
+.loader:after {
+  background: #592651;
+  -webkit-animation: load1 1s infinite ease-in-out;
+  animation: load1 1s infinite ease-in-out;
+  width: 1em;
+  height: 4em;
+}
+.loader {
+  color: #592651;
+  text-indent: -9999em;
+  margin: 88px auto;
+  position: relative;
+  font-size: 11px;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  top: 0;
+  content: '';
+}
+.loader:before {
+  left: -1.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.loader:after {
+  left: 1.5em;
+}
+@-webkit-keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
+@keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
