@@ -30,7 +30,7 @@ function Navbar(props) {
                 </div>
                 <div class="collapse navbar-collapse">
                     <div class="navbar-nav">
-                    <Link class="nav-item nav-link" to="/">Home</Link>
+                    
                     <Link class="nav-item nav-link" to="/database">Database</Link>
                     <Link class="nav-item nav-link" to="/panel">Panel</Link>
                     <Link class="nav-item nav-link" to="/data-entry">Data Entry</Link>

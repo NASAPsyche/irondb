@@ -2,6 +2,52 @@ import React, { useState } from 'react';
 
 const Register = props => {
 
+  state = {
+    message:  null,
+    username: null,
+    password: null,
+    fname: null,
+    lname: null,
+    email: null,
+    cpassword: null
+  };
+
+  const doRegister = e => {
+      
+    var payload={
+            username: this.state.username,
+            password: this.state.password,
+            fname: this.state.fname,
+            lname: this.state.lname,
+            email: this.state.username 
+        }
+
+    console.log("doRegister() => "+payload.id);
+
+    fetch("/register",{
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers:{ 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(res => { 
+            this.setState({ apiResponse: res });
+
+            if (res !== undefined)
+            {
+                console.log("register success");
+                console.log(this.state.apiResponse);
+
+            } else {
+                console.log("reguster failed");
+                console.log(this.state.apiResponse)
+            }
+        });
+  }
+
+
+
+
         return (
 
 
