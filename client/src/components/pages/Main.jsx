@@ -10,15 +10,20 @@ import {
 } from "react-router-dom";
 import ReactDOM from 'react-dom';
 import Database from '../Database';
-import DataEntry from '../DataEntry';
+import DataEntry from './DataEntry';
 import Help from './Help';
+import Home from './Home';
 import Panel from '../Panel';
 import Profile from '../Profile';
 import Navbar from '../Navbar';
 import Error from '../Error';
 import Login from './Login'
 import {UserContext, UserContextProvider} from '../../userContext.js';
+
+import Account from './Account';
 import Auth from '../Auth'
+import ApprovalOwnEntryError from "../ApprovalOwnEntryError";
+
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
@@ -29,33 +34,31 @@ const ProtectedRoute = ({ component: Component, ...rest }) => (
   )
 
 function Main(props) {
-    
+
   return (
     <Router>
         <div>
 
             <UserContextProvider>
               <Navbar />
+              
               <Route path="/login" component={Login} />
-              <Route path="/help" 
+              <Route path="/help"
                 render={(props) => <Help {...props} />}
             />
             </UserContextProvider>
 
+            <Route exact path="/" component={Home}/>
+            <ProtectedRoute path="/account" component={Account}/>
             <ProtectedRoute path="/database" component={Database}/>
-
+            
             <ProtectedRoute path="/panel" component={Panel}/>
             <ProtectedRoute path="/data-entry" component={DataEntry}/>
             <ProtectedRoute path="/profile" component={Profile}/>
-       
-
-
-           
-           
-            
-  
-
+            {/* TODO: CORRECTLY ROUTE TO DATA APPROVAL ERROR PAGE */}
+            <ProtectedRoute path="/data-entry-error" component={ApprovalOwnEntryError}/>
             <Route exact path="/error" component={Error}/>
+            
 
         </div>
     </Router>
