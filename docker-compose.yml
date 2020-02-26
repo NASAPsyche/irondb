@@ -27,21 +27,13 @@ services:
       - ./API/model/db-init:/docker-entrypoint-initdb.d/
       - ./API/pg-data:/var/lib/postgresql/data:z
     environment:
-<<<<<<< HEAD
-      - POSTGRES_USER=root
-=======
       - POSTGRES_USER=group16
->>>>>>> react-migration
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=postgres
     ports:
       - "127.0.0.1:5433:5432"
     healthcheck:
-<<<<<<< HEAD
-      test: ["CMD-SHELL", "pg_isready  -d postgres -U root"]
-=======
       test: ["CMD-SHELL", "pg_isready  -d postgres -U group16"]
->>>>>>> react-migration
       interval: 10s
       timeout: 5s
       retries: 5
