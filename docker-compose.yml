@@ -8,10 +8,10 @@ services:
     volumes:
       - type: bind
         source: ./API
-        target: /usr/app/api
+        target: /usr/app/API
       - type: volume
         source: apiNodeModules
-        target: /usr/app/api/node_modules
+        target: /usr/app/API/node_modules
     ports:
       - "127.0.0.1:3001:3000"
     depends_on:
