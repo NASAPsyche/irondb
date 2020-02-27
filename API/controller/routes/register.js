@@ -27,7 +27,7 @@ router.get('/', async (req, res, next) => {
       Alert = 'Failed to regisester ';
     }
 
-    res.render('register', {
+    res.send('register', {
       isSignedIn: isSignedIn,
       Users: resObj[0].rows,
       UserTotal: resObj[0].rowCount,
