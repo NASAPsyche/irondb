@@ -1,25 +1,17 @@
 import React, { useState, useContext } from 'react';
 import Auth from '../Auth'; 
 import {UserContext} from '../../userContext.js';
-import {server} from '../utils';
 
 const Login = props => {
+    
     var password;
-    const [formData, setFormData] = React.useState({
-        username: '',
-        password: '',
-        apiResponse: ""
-      })
-
-    let loginSuccess = false
     const [username, setUsername] = useState()
-    //handleLogin = handleLogin.bind(this);
+    const [loginFailed,setLoginFailed] = useState()
+
     //Bring in our user contexts so we can access the state
     const {user, setUser} = useContext(UserContext)
 
     
-
-    console.log(JSON.stringify(user))
 
     const handleChangeUsername = e => {
       setUsername(e.target.value)
@@ -29,57 +21,46 @@ const Login = props => {
       }
     const handleLogin = event => {
         event.preventDefault()
-        //Actual login logic should be stored in Auth
+
+
+        //Authentication Logic
         Auth.login(() => {
-
-            console.log("auth")
-            const handleSubmit = async e => {
-                    e.preventDefault();
-                    /*
-                    const { username, password } = formData
-                    const { success, data } = await server.postAsync('http://localhost:3001/login', {
-                      username,
-                      password
-                    })
-                
-                    /*
-                    if (success) {
-                      window.location.replace(data)
-                      console.log("Success")
-                      return
-                    } else {
-                        console.log("Error")
-                    }
-                    */
-                  }
-
+            var loginStatus;
+                    
                   const data = { username: username, password: password }
                   fetch("/login", {
                     method: 'POST',
                     body: JSON.stringify(data),
                     headers:{ 'Content-Type': 'application/json' }
                     })
-
                     .then(res => {
-                        console.log(res.text());
-                      
+                        //Unwrap our promise object
+                        res.text().then(data => {
+                            loginStatus=JSON.parse(data);
+                            console.log(loginStatus);
+                            if (loginStatus.isSignedIn===true)
+                            {
+                                console.log("Logged in for "+username);
+                                setUser(username);
+
+                                //Clear any existing login erros
+                                setLoginFailed(null);
+                            }
+                            else
+                            {
+                                //Do some frontend stuff like a red message
+                                setLoginFailed(loginStatus.Alert);
+                            }
+                        });
+                    
                     }).catch(function(error) {
                         console.log(error);
-                    });;
-                    //.then(res => this.setState({ apiResponse: res }));
-
-            
-            loginSuccess=true
-            //Some test code for login
-            console.log("Logged in for "+username)
-            setUser(username)
+                    });
         })
-
-        loginSuccess = true;
-        
       }
 
 
+ 
     //Let's see if they're currently logged in!
     if (user!= undefined) {
         return(
@@ -97,12 +78,18 @@ const Login = props => {
         return (
             
             <div className="container mt-5">
-                TESTING123
+                
                 <div className="row mt-5">
                 <div className="mt-5 col-sm-8 offset-sm-2 text-center">
                     <form onSubmit={handleLogin}>
                     <h1 className="h3">Log in</h1>
-
+                    { (loginFailed!=null) 
+                    ? <div className="alert alert-danger" role="alert" id="passwordInvalid">
+                            {loginFailed}
+                        </div>
+                    : null
+                    }
+                    
                     <label className="sr-only" for="username">username</label>
                     <input type="text" name="username" id="username" className="form-control mb-2" placeholder="username" required
                         autofocus minlength="4" value={username} onChange={handleChangeUsername} maxlength="25" />

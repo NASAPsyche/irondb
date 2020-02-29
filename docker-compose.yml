@@ -13,10 +13,12 @@ services:
     depends_on:
       - pgdb
     environment:
+
       - DATABASE_URL=postgres://group16:password@pgdb:5432/postgres
+
     restart: on-failure
     container_name: irondb_web
-    command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node", "./bin/www"]
+    command: ["./docker/wait-for-it.sh", "pgdb:5432", "--timeout=90", "--", "node_modules/.bin/nodemon", "./bin/www"]
 
   pgdb:
     build: './API/docker/postgres'
