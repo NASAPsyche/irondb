@@ -10,13 +10,16 @@ import * as Cookies from "js-cookie";
 function Navbar(props) {
 
     const {user,setUser} = useContext(UserContext)
+    
 
     const logout = event => {
         setUser();
         Cookies.remove("username");
+        fetch("/logout", {
+            method: 'GET'
+            })
       }
 
-    console.log("NAVBAR: current user: "+user)
 
     if (user != undefined) {
         return (
