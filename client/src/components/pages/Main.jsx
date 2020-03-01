@@ -53,7 +53,7 @@ function Main(props) {
             <Route path='/register' component={Register}/>
             <ProtectedRoute path="/account" component={Account}/>
 
-            <ProtectedRoute path="/database" component={Database}/>
+            <Route path="/database" component={Database}/>
             
             <ProtectedRoute path="/panel" component={Panel}/>
             <ProtectedRoute path="/data-entry" component={DataEntry}/>
