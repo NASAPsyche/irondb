@@ -1,5 +1,18 @@
 import React from 'react';
 
+const myName = 'Cody';
+var showSave = "true";
+
+function ShowName(name) {
+    return <span>
+        {name}
+    </span>
+}
+
+function ShowEdit() {
+    showSave = "false";
+}
+
 const Account = () => {
 
     return (
@@ -7,7 +20,7 @@ const Account = () => {
             <div class='card mt-5'>
                 <div class="container-fluid">
                     <div class="pt-3 h1">
-                        <label>User:</label>
+                        <label>User: {ShowName(myName)}</label>
                     </div>
 
                     {/* TODO: add action and method */}
@@ -38,12 +51,17 @@ const Account = () => {
                             <label id="passwordLabel">Password</label>
                             <input type="password" class="form-control" id="password" placeholder="************" readonly />
                         </div>
+
+                        <div class="text-right form-group pb-2">
+                            <button class='btn btn-warning' type="button" id='update-btn' onClick={ShowEdit()}>Edit</button>
+                            <button class='btn btn-warning' type='submit' id='save-btn' disabled="false" hidden={showSave}>Save</button>
+                        </div>
+
                     </form>
 
                 </div>
             </div>
         </div>
     );
-
 }
 export default Account;
