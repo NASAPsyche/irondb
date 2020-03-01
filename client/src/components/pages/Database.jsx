@@ -3,9 +3,11 @@ import '../styles/Database.scss'
 
 function Database() {
     return (
-        <div className="Database">
-            <h2>Database View</h2>
-        </div>
+        <body>
+            <div className="Database">
+                <h2>Database View</h2>
+            </div>
+        </body>
     );
 }
 
