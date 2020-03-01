@@ -147,7 +147,7 @@ app.use(function(req, res, next) {
   }
   // next(createError(404));
   // eslint-disable-next-line max-len
-  res.render('error', {isSignedIn: isSignedIn, message: 'Page Not Found', errcode: 'Error 404'});
+  //res.render('error', {isSignedIn: isSignedIn, message: 'Page Not Found', errcode: 'Error 404'});
 });
 
 // error handler
