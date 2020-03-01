@@ -1,12 +1,13 @@
 import React from 'react';
+import DatabaseSearch from '../database-components/DatabaseSearch';
+import DatabaseTable from '../database-components/DatabaseTable';
 import '../styles/Database.scss'
 
-function Database() {
+const Database = () => {
     return (
         <body>
-            <div className="Database">
-                <h2>Database View</h2>
-            </div>
+            <DatabaseSearch/>
+            <DatabaseTable/>       
         </body>
     );
 }
