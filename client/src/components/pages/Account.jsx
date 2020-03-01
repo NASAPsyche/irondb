@@ -1,7 +1,6 @@
 import React from 'react';
 
 const myName = 'Cody';
-var showSave = "true";
 
 function ShowName(name) {
     return <span>
@@ -9,12 +8,13 @@ function ShowName(name) {
     </span>
 }
 
-function ShowEdit() {
-    showSave = "false";
+var hideSubmit = "true";
+
+function ShowSubmit() {
+    hideSubmit = "false";
 }
 
 const Account = () => {
-
     return (
         <div class='container-fluid mt-5 col-8 pb-4'>
             <div class='card mt-5'>
@@ -53,8 +53,8 @@ const Account = () => {
                         </div>
 
                         <div class="text-right form-group pb-2">
-                            <button class='btn btn-warning' type="button" id='update-btn' onClick={ShowEdit()}>Edit</button>
-                            <button class='btn btn-warning' type='submit' id='save-btn' disabled="false" hidden={showSave}>Save</button>
+                            <button class='btn btn-warning' type="button" id='update-btn' onClick={ShowSubmit()}>Edit</button>
+                            <button class='btn btn-warning' type='submit' id='save-btn' disabled="false" hidden={hideSubmit}>Save</button>
                         </div>
 
                     </form>
