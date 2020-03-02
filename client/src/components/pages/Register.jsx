@@ -13,7 +13,7 @@ class Register extends React.Component {
   };
 
   doRegister (event){
-    event.preventDefault();
+
     var payload={
             username: this.state.username,
             password: this.state.password,
@@ -24,7 +24,7 @@ class Register extends React.Component {
 
     console.log("doRegister() => "+payload.username);
 
-    fetch("/new-user",{
+    fetch("/register",{
         method: 'POST',
         body: JSON.stringify(payload),
         headers:{ 'Content-Type': 'application/json' }
@@ -32,7 +32,7 @@ class Register extends React.Component {
         .then(res => res.json())
         .then(res => { 
             this.setState({ apiResponse: res });
-
+            console.log("TEST");
             if (res !== undefined)
             {
                 console.log("register success");
@@ -120,7 +120,7 @@ render() {
               and 1 number.
             </small>
           </div>
-          <button className="btn btn-lg btn-danger btn-block mt-2" onClick={(event) => this.doRegister(event)} type="submit"  id="submit">Sign-up <i className="fas fa-sign-in-alt"></i></button>
+          <button className="btn btn-lg btn-danger btn-block mt-2" onClick={(event) => this.doRegister(event)} type="button"  id="submit">Sign-up <i className="fas fa-sign-in-alt"></i></button>
 
         </form>
 
