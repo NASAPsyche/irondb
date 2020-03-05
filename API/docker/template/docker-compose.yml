@@ -6,8 +6,12 @@ services:
       context: .
       dockerfile: ./API/docker/node/Dockerfile
     volumes:
-      - ./API:/usr/app/api
-      - /usr/app/api/node_modules
+      - type: bind
+        source: ./API
+        target: /usr/app/API
+      - type: volume
+        source: apiNodeModules
+        target: /usr/app/API/node_modules
     ports:
       - "127.0.0.1:3001:3000"
     depends_on:
@@ -45,5 +49,13 @@ services:
     depends_on:
       - api
     volumes:
-      - ./client:/usr/app/client
-      - /usr/app/client/node_modules
+      - type: bind
+        source: ./client
+        target: /usr/app/client
+      - type: volume
+        source: clientNodeModules
+        target: /usr/app/client/node_modules
+  
+volumes:
+  clientNodeModules:
+  apiNodeModules:
