@@ -27,7 +27,7 @@ router.get('/', async (req, res, next) => {
       Alert = 'Failed to regisester ';
     }
 
-    res.render('register', {
+    res.send('register', {
       isSignedIn: isSignedIn,
       Users: resObj[0].rows,
       UserTotal: resObj[0].rowCount,
@@ -126,7 +126,7 @@ router.post('/new-user', async (req, res, next) => {
   } finally {
     client.release();
   }
-  res.json({ok: true});
+  res.send({ok: true});
 });
 
 router.get('/:id', async (req, res, next) => {
@@ -151,10 +151,8 @@ router.get('/:id', async (req, res, next) => {
 
 router.use(function(req, res, next) {
   // After database insert transaction complete, athenticate and redirect.
-  console.log(JSON.stringify(req));
-  console.log(JSON.stringify(res));
   passport.authenticate('local')(req, res, function() {
-    res.redirect('/panel');
+    res.redirect('/');
   });
 });
 
