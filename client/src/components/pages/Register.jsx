@@ -35,11 +35,11 @@ class Register extends React.Component {
             console.log("TEST");
             if (res !== undefined)
             {
-                console.log("register success");
+                console.log("register request success");
                 console.log(this.state.apiResponse);
 
             } else {
-                console.log("reguster failed");
+                console.log("reguster request failed");
                 console.log(this.state.apiResponse)
             }
         });

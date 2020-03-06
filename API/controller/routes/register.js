@@ -72,7 +72,18 @@ router.post('/', function(req, res, next) {
                 client.query('COMMIT', (err) => {
                   if (err) {
                     console.error('Error committing transaction', err.stack);
+
+                    res.send({
+                      isRegistered: false,
+                      message: 'Error committing transaction'
+                    });
                   }
+
+                  res.send({
+                    isRegistered: true,
+                    message: 'User Registration Successful!'
+                  });
+
                   done();
                   next();
                 });
@@ -148,6 +159,7 @@ router.get('/:id', async (req, res, next) => {
     res.json({result: result});
   }
 });
+
 
 router.use(function(req, res, next) {
   // After database insert transaction complete, athenticate and redirect.
