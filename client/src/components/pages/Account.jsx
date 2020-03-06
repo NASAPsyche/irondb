@@ -11,7 +11,9 @@ function ShowName(name) {
 var hideSubmit = "true";
 
 function ShowSubmit() {
-    hideSubmit = "false";
+    return <span>
+        <button class='btn btn-warning' type='submit' id='save-btn' disabled="false">Save</button>
+    </span>
 }
 
 const Account = () => {
@@ -54,7 +56,6 @@ const Account = () => {
 
                         <div class="text-right form-group pb-2">
                             <button class='btn btn-warning' type="button" id='update-btn' onClick={ShowSubmit()}>Edit</button>
-                            <button class='btn btn-warning' type='submit' id='save-btn' disabled="false" hidden={hideSubmit}>Save</button>
                         </div>
 
                     </form>

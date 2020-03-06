@@ -10,7 +10,6 @@ import * as Cookies from "js-cookie";
 function Navbar(props) {
 
     const {user,setUser} = useContext(UserContext)
-    
 
     const logout = event => {
         setUser();
@@ -58,6 +57,8 @@ function Navbar(props) {
                         <Link class="nav-item nav-link" to="/help">Help</Link>
                     </div>
                 </div>
+                <Link id="account" to="/account" class="btn btn-outline-light mr-2">Account</Link>
+
                 <Link to="/login" class="btn btn-outline-light">Sign in</Link>
             </nav>
         );
