@@ -20,10 +20,14 @@ import Navbar from '../Navbar';
 import Error from '../Error';
 import Login from './Login'
 import {UserContext, UserContextProvider} from '../../userContext.js';
-
 import Account from './Account';
 import Auth from '../Auth'
 import ApprovalOwnEntryError from "../ApprovalOwnEntryError";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faPlusSquare, faMinusSquare, faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fab, faPlusSquare, faMinusSquare, faPlusCircle, faMinusCircle)
 
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
