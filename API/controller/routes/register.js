@@ -40,6 +40,7 @@ router.get('/', async (req, res, next) => {
 router.post('/', function(req, res, next) {
   console.log(JSON.stringify(req.body));
   // Register user, storing hash instead of password.
+  let success = false;
   const saltRounds = 10;
   bcrypt.genSalt(saltRounds, function(err, salt) {
     bcrypt.hash(req.body.password, salt, function(err, hash) {
@@ -49,10 +50,10 @@ router.post('/', function(req, res, next) {
         insertQuery += ' VALUES($1,$2,$3) RETURNING user_id';
         const shouldAbort = (err) => {
           if (err) {
-            console.error('Error in transaction', err.stack);
+            //console.error('Error in transaction', err.stack);
             client.query('ROLLBACK', (err) => {
               if (err) {
-                console.error('Error rolling back client', err.stack);
+                //console.error('Error rolling back client', err.stack);
               }
               // release the client back to the pool
               done();
@@ -71,18 +72,8 @@ router.post('/', function(req, res, next) {
 
                 client.query('COMMIT', (err) => {
                   if (err) {
-                    console.error('Error committing transaction', err.stack);
-
-                    res.send({
-                      isRegistered: false,
-                      message: 'Error committing transaction'
-                    });
+                   // console.error('Error committing transaction', err.stack);
                   }
-
-                  res.send({
-                    isRegistered: true,
-                    message: 'User Registration Successful!'
-                  });
 
                   done();
                   next();
@@ -92,6 +83,20 @@ router.post('/', function(req, res, next) {
       });
     });
   });
+
+  if (success) {
+    res.send({
+      isRegistered: true,
+      message: 'User Registration Successful!'
+    });
+
+  } else {
+    res.send({
+      isRegistered: false,
+      message: 'Error committing transaction'
+    });
+  }
+
 });
 
 router.post('/new-user', async (req, res, next) => {
@@ -146,7 +151,7 @@ router.post('/new-user', async (req, res, next) => {
 router.use(function(req, res, next) {
   // After database insert transaction complete, athenticate and redirect.
   passport.authenticate('local')(req, res, function() {
-    res.redirect('/');
+    //res.redirect('/');
   });
 });
 

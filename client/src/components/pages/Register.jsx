@@ -38,6 +38,9 @@ class Register extends React.Component {
             {
                 console.log("register request success");
                 console.log(this.state.apiResponse);
+                if (!res.isRegistered) {
+                  this.setState({ regFail: res.message });
+                }
 
             } else {
                 console.log("reguster request failed");
