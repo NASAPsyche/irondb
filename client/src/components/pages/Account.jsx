@@ -6,10 +6,11 @@ class Account extends React.Component {
 
     state = {
         message:  null,
-        username: null,
-        fname: null,
-        lname: null,
-        email: null
+        username: "Username",
+        fname: "First",
+        lname: "Last",
+        email: "email@email.com",
+        role: "N/A"
       };
     
 
@@ -32,10 +33,16 @@ class Account extends React.Component {
                 {
                     console.log("account request success");
                     console.log(this.state.apiResponse);
+                    //Let's set the user data now
+                    this.setState({ username: res.username });
+                    this.setState({ fname: res.first_name });
+                    this.setState({ lname: res.last_name });
+                    this.setState({ email: res.email_address });
+                    this.setState({ role: res.role_of });
+
     
                 } else {
                     console.log("account request failed");
-                    this.setState({ regFail: res.message });
                     console.log(this.state.apiResponse)
                 }
             });
@@ -71,25 +78,25 @@ render () {
                     <form id="user-update-form">
                         <div class="form-group">
                             <label>Username</label>
-                            <input type="text" class="form-control" id="username" value="User" readonly />
+                            <input type="text" class="form-control" id="username" value={this.state.username} readonly />
                         </div>
                         <div class="form-row form-group">
                             <div class="col">
                                 <label>First Name</label>
-                                <input type="text" class="form-control" id="firstname" value="First" readonly required />
+                                <input type="text" class="form-control" id="firstname" value={this.state.fname}  readonly required />
                             </div>
                             <div class="col">
                                 <label>Last Name</label>
-                                <input type="text" class="form-control" id="lastname" value="Last" readonly required />
+                                <input type="text" class="form-control" id="lastname" value={this.state.lname}  readonly required />
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Email address</label>
-                            <input type="email" class="form-control" id="email" value="email@email.com" readonly />
+                            <input type="email" class="form-control" id="email" value={this.state.email}  readonly />
                         </div>
                         <div class="form-group">
                             <label>Role</label>
-                            <input type="text" class="form-control" id="role" value="Admin" readonly />
+                            <input type="text" class="form-control" id="role" value={this.state.role}  readonly />
                         </div>
                         <div class="form-group">
                             <label id="passwordLabel">Password</label>
