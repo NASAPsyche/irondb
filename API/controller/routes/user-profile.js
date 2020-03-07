@@ -10,17 +10,29 @@ const bcrypt = require('bcrypt');
 /* GET /profile  */
 router.post('/', isLoggedIn, async (req, res, next) => {
   const userID = req.user.id;
+  console.log("Request ID: " + userID);
   let resObj = [];
-  
-  try {
-    // eslint-disable-next-line max-len
-    const user = db.aQuery(`SELECT * FROM users_with_info WHERE user_id = ${userID}`, []);
-    resObj = await Promise.all([user]);
-  } catch (err) {
-    next(createError(500));
-  } finally {
+
+  const completeRequest = async () => {
+    resObj = await getUser (userID);
     res.send({User: resObj[0].rows});
   }
+
+  async function getUser (userID) {
+    try {
+      // eslint-disable-next-line max-len
+      const user = db.aQuery(`SELECT * FROM users_with_info WHERE user_id = ${userID}`, []);
+      return await Promise.all([user]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+
+      
+    }
+  }
+
+  completeRequest();
+
 });
 
 /* POST /profile/update */

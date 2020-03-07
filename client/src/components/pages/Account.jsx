@@ -19,7 +19,7 @@ class Account extends React.Component {
                 username: this.state.username,
             }
 
-        fetch("/user-profile",{
+        fetch("/profile",{
             method: 'POST',
             body: JSON.stringify(payload),
             headers:{ 'Content-Type': 'application/json' }
