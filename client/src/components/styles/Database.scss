@@ -1,3 +1,28 @@
-body {
-    padding: 29px 0 0;
+#search-panel {
+	margin-top: 3.375rem;
+    -webkit-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    -moz-box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    box-shadow: 0px 4px 12px 0px rgba(0,0,0,0.78);
+    background-color:#592651;
+}
+
+#reset-btn {
+	color: rgb(255, 255, 255);
+}
+
+#reset-btn:hover {
+	color: rgb(0, 0, 0);
+}
+
+select.element {
+	max-height: 3rem;
+}
+
+#additional {
+	margin-left:85%;
+}
+
+.expandSearch {
+	display: flex;
+	align-items:center;
 }

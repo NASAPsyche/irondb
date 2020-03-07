@@ -5,10 +5,10 @@ import '../styles/Database.scss'
 
 const Database = () => {
     return (
-        <body>
+        <div>
             <DatabaseSearch/>
             <DatabaseTable/>       
-        </body>
+        </div>
     );
 }
 

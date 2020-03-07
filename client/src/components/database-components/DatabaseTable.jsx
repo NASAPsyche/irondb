@@ -3,9 +3,9 @@ import '../styles/Database.scss'
 
 const DatabaseTable = () => {
     return (
-        <body>
+        <div>
             <h1>DatabaseTable</h1>
-        </body>
+        </div>
     );
 }
 
