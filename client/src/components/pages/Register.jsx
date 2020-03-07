@@ -10,7 +10,7 @@ class Register extends React.Component {
     lname: null,
     email: null,
     cpassword: null,
-    regFail: "null"
+    regFail: null
   };
 
   doRegister (event){
