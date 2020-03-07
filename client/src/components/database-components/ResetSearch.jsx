@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const ResetSearch = () => {
+const ResetSearch = props => {
     function handleReset() {
         var inputArray = document.getElementsByTagName("input");
         var selectArray = document.getElementsByTagName("select");
@@ -14,6 +14,17 @@ const ResetSearch = () => {
             selectArray[i + 1].value = "none"
             selectArray[i + 2].value = "range"
         }
+        props.setState({
+            name: "",
+            title: "",
+            author: "",
+            group: "",
+            journalName: "",
+            volume: "",
+            pg: "",
+            sign: "",
+            year: ""
+        })
     }
 
     function handleSearch() {

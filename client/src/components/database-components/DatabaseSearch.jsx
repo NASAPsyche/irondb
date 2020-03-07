@@ -18,7 +18,16 @@ const DatabaseSearch = () => {
         volume: "",
         pg: "",
         sign: "",
-        year: ""
+        year: "",
+        mod1: "",
+        element1: "",
+        range1: "",
+        mod2: "",
+        element2: "",
+        range2: "",
+        mod3: "",
+        element3: "",
+        range3: ""
     });
 
     function handleChange(event) {
@@ -35,7 +44,16 @@ const DatabaseSearch = () => {
                     volume: prevValue.volume,
                     pg: prevValue.pg,
                     sign: prevValue.sign,
-                    year: prevValue.year
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
                 };
             } else if (name === "title") {
                 return {
@@ -47,7 +65,16 @@ const DatabaseSearch = () => {
                     volume: prevValue.volume,
                     pg: prevValue.pg,
                     sign: prevValue.sign,
-                    year: prevValue.year
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
                 };
             } else if (name === "author") {
                 return {
@@ -59,7 +86,16 @@ const DatabaseSearch = () => {
                     volume: prevValue.volume,
                     pg: prevValue.pg,
                     sign: prevValue.sign,
-                    year: prevValue.year
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
                 };
             } else if (name === "group") {
                 return {
@@ -71,7 +107,16 @@ const DatabaseSearch = () => {
                     volume: prevValue.volume,
                     pg: prevValue.pg,
                     sign: prevValue.sign,
-                    year: prevValue.year
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
                 };
             } else if (name === "journal_name") {
                 return {
@@ -83,10 +128,18 @@ const DatabaseSearch = () => {
                     volume: prevValue.volume,
                     pg: prevValue.pg,
                     sign: prevValue.sign,
-                    year: prevValue.year
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
                 };
-            }
-            else if (name === "volume") {
+            } else if (name === "volume") {
                 return {
                     name: prevValue.name,
                     title: prevValue.title,
@@ -96,10 +149,18 @@ const DatabaseSearch = () => {
                     volume: value,
                     pg: prevValue.pg,
                     sign: prevValue.sign,
-                    year: prevValue.year
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
                 };
-            }
-            else if (name === "page_number") {
+            } else if (name === "page_number") {
                 return {
                     name: prevValue.name,
                     title: prevValue.title,
@@ -109,10 +170,18 @@ const DatabaseSearch = () => {
                     volume: prevValue.volume,
                     pg: value,
                     sign: prevValue.sign,
-                    year: prevValue.year
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
                 };
-            }
-            else if (name === "pub_yr_sign") {
+            } else if (name === "pub_yr_sign") {
                 return {
                     name: prevValue.name,
                     title: prevValue.title,
@@ -122,10 +191,18 @@ const DatabaseSearch = () => {
                     volume: prevValue.volume,
                     pg: prevValue.pg,
                     sign: value,
-                    year: prevValue.year
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
                 };
-            }
-            else if (name === "pub_year") {
+            } else if (name === "pub_year") {
                 return {
                     name: prevValue.name,
                     title: prevValue.title,
@@ -135,7 +212,205 @@ const DatabaseSearch = () => {
                     volume: prevValue.volume,
                     pg: prevValue.pg,
                     sign: prevValue.sign,
-                    year: value
+                    year: value,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
+                };
+            } else if (name === "element0_mod") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: value,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
+                };
+            } else if (name === "element0") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: value,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
+                };
+            } else if (name === "range0") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: value,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
+                };
+            } else if (name === "element1_mod") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: value,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
+                };
+            } else if (name === "element1") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: value,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
+                };
+            } else if (name === "range1") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: value,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
+                };
+            } else if (name === "element2_mod") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: value,
+                    element2: prevValue.element2,
+                    range2: prevValue.range2
+                };
+            } else if (name === "element2") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: value,
+                    range2: prevValue.range2
+                };
+            } else if (name === "range2") {
+                return {
+                    name: prevValue.name,
+                    title: prevValue.title,
+                    author: prevValue.author,
+                    group: prevValue.group,
+                    journalName: prevValue.journalName,
+                    volume: prevValue.volume,
+                    pg: prevValue.pg,
+                    sign: prevValue.sign,
+                    year: prevValue.year,
+                    element0_mod: prevValue.element0_mod,
+                    element0: prevValue.element0,
+                    range0: prevValue.range0,
+                    element1_mod: prevValue.element1_mod,
+                    element1: prevValue.element1,
+                    range1: prevValue.range1,
+                    element2_mod: prevValue.element2_mod,
+                    element2: prevValue.element2,
+                    range2: value
                 };
             }
         })
@@ -149,20 +424,20 @@ const DatabaseSearch = () => {
                 <div className="col-sm-10">
                     <div id="search-form">
                         <FirstRow action={handleChange} state={formOptions} />
-                        <SecondRow action={handleChange} state={formOptions}/>
+                        <SecondRow action={handleChange} state={formOptions} />
                         <div className="form-row mt-3">
                             <AddComposition />
-                            <Composition className="composition0"/>           
+                            <Composition className="composition0" rowNum="0" action={handleChange} />           
                         </div>
                         <div className="form-row mt-2">
                             <div className="offset-md-3"></div>
-                            <Composition className="composition1"/>
+                            <Composition className="composition1" rowNum="1" action={handleChange} />
                         </div>
                         <div className="form-row mt-2">
                             <div className="offset-md-3"></div>
-                            <Composition className="composition2"/>
+                            <Composition className="composition2" rowNum="2" action={handleChange} />
                         </div>
-                        <ResetSearch />
+                        <ResetSearch setState={setFormOptions} />
                     </div>
                 </div>
             </div>
