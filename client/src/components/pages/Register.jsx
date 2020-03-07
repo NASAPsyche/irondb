@@ -10,7 +10,7 @@ class Register extends React.Component {
     lname: null,
     email: null,
     cpassword: null,
-    regFail:null
+    regFail: "null"
   };
 
   doRegister (event){
@@ -57,9 +57,9 @@ render() {
      <div className="row mt-5"></div>
       <div className="mt-5 mb-2"><h1 className="h3">Register <i className="fas fa-user-plus"></i></h1></div>
 
-      { (regFail!=null) 
+      { (this.state.regFail!=null) 
                     ? <div className="alert alert-danger" role="alert" id="registrationFail">
-                            {regFail}
+                            {this.state.regFail}
                         </div>
                     : null
                     }
