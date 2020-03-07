@@ -2,33 +2,30 @@ import React, { useState } from "react";
 
 const ResetSearch = props => {
     function handleReset() {
-        var inputArray = document.getElementsByTagName("input");
-        var selectArray = document.getElementsByTagName("select");
-        for (let i = 0; i < inputArray.length; i++) {
-            inputArray[i].value = "";
-        }
-        selectArray[0].value = "group";
-        selectArray[1].value = "equal";
-        for (let i = 2; i < selectArray.length; i += 3) {
-            selectArray[i].value = "IN";
-            selectArray[i + 1].value = "none"
-            selectArray[i + 2].value = "range"
-        }
         props.setState({
             name: "",
             title: "",
             author: "",
-            group: "",
+            group: "group",
             journalName: "",
             volume: "",
             pg: "",
             sign: "",
-            year: ""
+            year: "",
+            mod0: "",
+            element0: "element",
+            range0: "range",
+            mod1: "",
+            element1: "element",
+            range1: "range",
+            mod2: "",
+            element2: "element",
+            range2: "range"
         })
     }
 
     function handleSearch() {
-        console.log(document.getElementById("group").value);
+        console.log(props.state);
     }
 
     return (

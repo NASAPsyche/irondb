@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ResetSearch from "./ResetSearch"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const FirstRow = props => {

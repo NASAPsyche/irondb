@@ -13,21 +13,21 @@ const DatabaseSearch = () => {
         name: "",
         title: "",
         author: "",
-        group: "",
+        group: "group",
         journalName: "",
         volume: "",
         pg: "",
         sign: "",
         year: "",
+        mod0: "",
+        element0: "element",
+        range0: "range",
         mod1: "",
-        element1: "",
-        range1: "",
+        element1: "element",
+        range1: "range",
         mod2: "",
-        element2: "",
-        range2: "",
-        mod3: "",
-        element3: "",
-        range3: ""
+        element2: "element",
+        range2: "range"
     });
 
     function handleChange(event) {
@@ -45,13 +45,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -66,13 +66,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -87,13 +87,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -108,13 +108,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -129,13 +129,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -150,13 +150,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -171,13 +171,13 @@ const DatabaseSearch = () => {
                     pg: value,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -192,13 +192,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: value,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -213,13 +213,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: value,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -234,13 +234,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: value,
+                    mod0: value,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -255,13 +255,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: value,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -276,13 +276,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: value,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -297,13 +297,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: value,
+                    mod1: value,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -318,13 +318,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: value,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -339,13 +339,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: value,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -360,13 +360,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: value,
+                    mod2: value,
                     element2: prevValue.element2,
                     range2: prevValue.range2
                 };
@@ -381,13 +381,13 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: value,
                     range2: prevValue.range2
                 };
@@ -402,19 +402,18 @@ const DatabaseSearch = () => {
                     pg: prevValue.pg,
                     sign: prevValue.sign,
                     year: prevValue.year,
-                    element0_mod: prevValue.element0_mod,
+                    mod0: prevValue.mod0,
                     element0: prevValue.element0,
                     range0: prevValue.range0,
-                    element1_mod: prevValue.element1_mod,
+                    mod1: prevValue.mod1,
                     element1: prevValue.element1,
                     range1: prevValue.range1,
-                    element2_mod: prevValue.element2_mod,
+                    mod2: prevValue.mod2,
                     element2: prevValue.element2,
                     range2: value
                 };
             }
         })
-        console.log(formOptions);
     }
 
     return (
@@ -427,17 +426,17 @@ const DatabaseSearch = () => {
                         <SecondRow action={handleChange} state={formOptions} />
                         <div className="form-row mt-3">
                             <AddComposition />
-                            <Composition className="composition0" rowNum="0" action={handleChange} />           
+                            <Composition className="composition0" rowNum="0" action={handleChange} mod={formOptions.mod0} element={formOptions.element0} range={formOptions.range0} />           
                         </div>
                         <div className="form-row mt-2">
                             <div className="offset-md-3"></div>
-                            <Composition className="composition1" rowNum="1" action={handleChange} />
+                            <Composition className="composition1" rowNum="1" action={handleChange} mod={formOptions.mod1} element={formOptions.element1} range={formOptions.range1} />
                         </div>
                         <div className="form-row mt-2">
                             <div className="offset-md-3"></div>
-                            <Composition className="composition2" rowNum="2" action={handleChange} />
+                            <Composition className="composition2" rowNum="2" action={handleChange} mod={formOptions.mod2} element={formOptions.element2} range={formOptions.range2} />
                         </div>
-                        <ResetSearch setState={setFormOptions} />
+                        <ResetSearch setState={setFormOptions} state={formOptions}/>
                     </div>
                 </div>
             </div>
