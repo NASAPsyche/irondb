@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect } from "react-router-dom";
 
 class Register extends React.Component {
 
@@ -10,7 +11,8 @@ class Register extends React.Component {
     lname: null,
     email: null,
     cpassword: null,
-    regFail: null
+    regFail: null,
+    signUpComplete: false
   };
 
   doRegister (event){
@@ -40,6 +42,8 @@ class Register extends React.Component {
                 console.log(this.state.apiResponse);
                 if (!res.isRegistered) {
                   this.setState({ regFail: res.message });
+                } else {
+                  this.setState({ signUpComplete: true });
                 }
 
             } else {
@@ -53,6 +57,17 @@ class Register extends React.Component {
 
 
 render() {
+
+    if (this.state.signUpComplete === true) {
+      return <Redirect to={{
+        pathname: '/login',
+        state: { signedUp: true }
+      }}
+        
+        />
+    }
+
+
         return (
 
 

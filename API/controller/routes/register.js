@@ -41,6 +41,7 @@ router.post('/', function(req, res, next) {
   console.log(JSON.stringify(req.body));
   // Register user, storing hash instead of password.
   let success = false;
+  let error = null;
   const saltRounds = 10;
   bcrypt.genSalt(saltRounds, function(err, salt) {
     bcrypt.hash(req.body.password, salt, function(err, hash) {
@@ -50,52 +51,63 @@ router.post('/', function(req, res, next) {
         insertQuery += ' VALUES($1,$2,$3) RETURNING user_id';
         const shouldAbort = (err) => {
           if (err) {
-            //console.error('Error in transaction', err.stack);
+
+            console.error('Error in transaction', err.stack);
+            if (err.stack.search("duplicate") > 0)
+            {
+              success = false
+              res.send({
+                isRegistered: false,
+                message: "Username is already in use!"
+              });
+            } else {
+              success = true;
+            }
+            
             client.query('ROLLBACK', (err) => {
               if (err) {
-                //console.error('Error rolling back client', err.stack);
+               console.error('Error rolling back client', err.stack);
               }
               // release the client back to the pool
               done();
               next();
             });
+          } else {
+            if (success) {
+              console.log("Success worked");
+              res.send({
+                isRegistered: true,
+                message: 'User Registration Successful!'
+              });
+            }
           }
           return !!err;
         };
 
         client.query('BEGIN', (err) => {
           if (shouldAbort(err)) return;
+              success = true;
+
+          
           client.query(
               insertQuery,
               [req.body.username, hash, 'data-entry'], (err, res) => {
                 if (shouldAbort(err)) return;
-
                 client.query('COMMIT', (err) => {
                   if (err) {
-                   // console.error('Error committing transaction', err.stack);
-                  }
-
+                    console.error('Error committing transaction', err.stack);
+                 
+                  } 
                   done();
                   next();
                 });
+                
               });
+
         });
       });
     });
   });
-
-  if (success) {
-    res.send({
-      isRegistered: true,
-      message: 'User Registration Successful!'
-    });
-
-  } else {
-    res.send({
-      isRegistered: false,
-      message: 'Error committing transaction'
-    });
-  }
 
 });
 
