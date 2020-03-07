@@ -83,7 +83,7 @@ const Login = props => {
                 <div className="mt-5 col-sm-8 offset-sm-2 text-center">
                     <form onSubmit={handleLogin}>
                     <h1 className="h3">Log in</h1>
-                    { (props.location.state.signedUp!=null) 
+                    { (props.location.state!=null) && (props.location.state.signedUp!=null) 
                     ? <div className="alert alert-success" role="alert" id="signupSuccess">
                             Sign-up Complete! Please log-in!
                         </div>
