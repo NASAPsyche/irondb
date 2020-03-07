@@ -9,7 +9,8 @@ class Register extends React.Component {
     fname: null,
     lname: null,
     email: null,
-    cpassword: null
+    cpassword: null,
+    regFail:null
   };
 
   doRegister (event){
@@ -40,6 +41,7 @@ class Register extends React.Component {
 
             } else {
                 console.log("reguster request failed");
+                this.setState({ regFail: res.message });
                 console.log(this.state.apiResponse)
             }
         });
@@ -54,6 +56,13 @@ render() {
 <div class="container mt-5 col-lg-8 col-xl-7 text-center">
      <div className="row mt-5"></div>
       <div className="mt-5 mb-2"><h1 className="h3">Register <i className="fas fa-user-plus"></i></h1></div>
+
+      { (regFail!=null) 
+                    ? <div className="alert alert-danger" role="alert" id="registrationFail">
+                            {regFail}
+                        </div>
+                    : null
+                    }
 
       <div>
         <form action="/register" method="POST" id="register-form">
