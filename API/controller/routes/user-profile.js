@@ -8,9 +8,10 @@ const bcrypt = require('bcrypt');
 
 
 /* GET /profile  */
-router.get('/', isLoggedIn, async (req, res, next) => {
+router.post('/', isLoggedIn, async (req, res, next) => {
   const userID = req.user.id;
   let resObj = [];
+  
   try {
     // eslint-disable-next-line max-len
     const user = db.aQuery(`SELECT * FROM users_with_info WHERE user_id = ${userID}`, []);
@@ -18,7 +19,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   } catch (err) {
     next(createError(500));
   } finally {
-    res.render('profile', {User: resObj[0].rows});
+    res.send({User: resObj[0].rows});
   }
 });
 

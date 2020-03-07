@@ -2,27 +2,69 @@ import React from 'react';
 
 const myName = 'Cody';
 
-function ShowName(name) {
-    return <span>
-        {name}
-    </span>
-}
+class Account extends React.Component {
 
-var hideSubmit = "true";
+    state = {
+        message:  null,
+        username: null,
+        fname: null,
+        lname: null,
+        email: null
+      };
+    
 
-function ShowSubmit() {
+    grabUserInfo (event){
+
+        var payload={
+                username: this.state.username,
+            }
+
+        fetch("/user-profile",{
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers:{ 'Content-Type': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(res => { 
+                this.setState({ apiResponse: res });
+                console.log("TEST");
+                if (res !== undefined)
+                {
+                    console.log("account request success");
+                    console.log(this.state.apiResponse);
+    
+                } else {
+                    console.log("account request failed");
+                    this.setState({ regFail: res.message });
+                    console.log(this.state.apiResponse)
+                }
+            });
+      }
+    
+
+hideSubmit = "true";
+
+ShowSubmit() {
     return <span>
         <button class='btn btn-warning' type='submit' id='save-btn' disabled="false">Save</button>
     </span>
 }
 
-const Account = () => {
+
+
+componentDidMount() {
+    this.grabUserInfo();
+    console.log("Executed")
+}
+
+
+render () {
     return (
         <div class='container-fluid mt-5 col-8 pb-4'>
             <div class='card mt-5'>
                 <div class="container-fluid">
                     <div class="pt-3 h1">
-                        <label>User: {ShowName(myName)}</label>
+                        <label>User: {this.state.username}</label>
                     </div>
 
                     {/* TODO: add action and method */}
@@ -55,7 +97,7 @@ const Account = () => {
                         </div>
 
                         <div class="text-right form-group pb-2">
-                            <button class='btn btn-warning' type="button" id='update-btn' onClick={ShowSubmit()}>Edit</button>
+                            <button class='btn btn-warning' type="button" id='update-btn' onClick={() => this.ShowSubmit()}>Edit</button>
                         </div>
 
                     </form>
@@ -64,5 +106,8 @@ const Account = () => {
             </div>
         </div>
     );
+
 }
+}
+
 export default Account;
