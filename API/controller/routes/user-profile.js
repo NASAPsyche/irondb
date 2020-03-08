@@ -15,7 +15,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 
   const completeRequest = async () => {
     resObj = await getUser (userID);
-    res.send({User: resObj[0].rows});
+    res.send({User: resObj[0].rows[0]});
   }
 
   async function getUser (userID) {
