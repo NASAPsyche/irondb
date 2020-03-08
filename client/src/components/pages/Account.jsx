@@ -12,7 +12,8 @@ class Account extends React.Component {
         password: null,
         email: "email@email.com",
         role: "N/A",
-        edit: false
+        edit: false,
+        user_id: null
       };
     
     save() {
@@ -22,7 +23,8 @@ class Account extends React.Component {
             first_name: this.state.fname,
             last_name: this.state.lname,
             password: this.state.password,
-            email: this.state.email
+            email: this.state.email,
+            user_id: this.state.user_id
         }
 
     fetch("/profile/update",{
@@ -75,6 +77,7 @@ class Account extends React.Component {
                     this.setState({ lname: res.User.last_name });
                     this.setState({ email: res.User.email_address });
                     this.setState({ role: res.User.role_of });
+                    this.setState({ user_id: res.User.user_id });
 
     
                 } else {

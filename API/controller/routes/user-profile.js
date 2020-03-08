@@ -43,9 +43,11 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   // eslint-disable-next-line max-len
   const updateFirstName = `UPDATE user_info SET first_name = $1 WHERE  user_id = $2`;
   const insertFirstName = [req.body.first_name, req.body.user_id];
+  console.log("FN: "+req.body.first_name)
   // eslint-disable-next-line max-len
   const updateLastName = `UPDATE user_info SET last_name = $1 WHERE  user_id = $2`;
   const insertLastName = [req.body.last_name, req.body.user_id];
+  console.log("LN: "+req.body.last_name)
   // eslint-disable-next-line max-len
 
   let hasPassword = false;
@@ -90,6 +92,7 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   } catch (e) {
     await client.query('ROLLBACK');
     next(createError(500));
+    console.log("ERROR");
   } finally {
     client.release();
   }
