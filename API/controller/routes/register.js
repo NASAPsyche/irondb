@@ -49,6 +49,9 @@ router.post('/', function(req, res, next) {
         // Transaction functionality modified from example at: https://node-postgres.com/features/transactions
         let insertQuery = 'INSERT INTO Users(username, password_hash, role_of)';
         insertQuery += ' VALUES($1,$2,$3) RETURNING user_id';
+
+
+
         const shouldAbort = (err) => {
           if (err) {
 
@@ -87,8 +90,6 @@ router.post('/', function(req, res, next) {
         client.query('BEGIN', (err) => {
           if (shouldAbort(err)) return;
               success = true;
-
-          
           client.query(
               insertQuery,
               [req.body.username, hash, 'data-entry'], (err, res) => {
@@ -104,10 +105,31 @@ router.post('/', function(req, res, next) {
                 
               });
 
+              addUserInfo();
+
         });
+
+
+
       });
     });
   });
+async function addUserInfo() {
+
+    try {
+
+      let insertUserInfo = 'INSERT INTO user_info(user_id,first_name, last_name,email_address)';
+      insertUserInfo += 'VALUES($1,$2,$3,$4)';
+      
+      const user = db.aQuery(`SELECT * FROM Users WHERE username = $1`, [req.body.username]);
+      resObj = await Promise.all([user]);
+      console.log("ID IS "+JSON.stringify(resObj[0].rows[0].user_id));
+      const insertUserInfoValues = [resObj[0].rows[0].user_id, req.body.fname, req.body.lname, req.body.email];
+      const client = await db.pool.connect();
+      client.query(insertUserInfo, insertUserInfoValues);
+    }
+    finally {}
+} 
 
 });
 
