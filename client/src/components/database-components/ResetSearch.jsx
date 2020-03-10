@@ -12,13 +12,13 @@ const ResetSearch = props => {
             pg: "",
             sign: "",
             year: "",
-            mod0: "",
+            mod0: "IN",
             element0: "element",
             range0: "range",
-            mod1: "",
+            mod1: "IN",
             element1: "element",
             range1: "range",
-            mod2: "",
+            mod2: "IN",
             element2: "element",
             range2: "range"
         })

@@ -11,8 +11,8 @@ const Composition = props => {
     return(
         <React.Fragment>
             <div className={`form-group col-md-1 hide-target ${props.className}`} hidden={true}>
-                <label className="sr-only" htmlFor={`element${props.rowNum}_mod`}>Element modifier</label>
-                <select className="form-control" name={`element${props.rowNum}_mod`} title="Select whether to search for an element that appears in the data or not" onChange={props.action} value={props.mod}>
+                <label className="sr-only" htmlFor={`mod${props.rowNum}`}>Element modifier</label>
+                <select className="form-control" name={`mod${props.rowNum}`} title="Select whether to search for an element that appears in the data or not" onChange={props.action} value={props.mod}>
                     <option value="IN" default>IN</option>
                     <option value="NOT">NOT</option>
                 </select>
