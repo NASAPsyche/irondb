@@ -10,10 +10,14 @@ const AddComposition = () => {
             elementArray[i].hidden = addRemove;
         }
     }
-
+    // 1: 17.2
+    // 2: 54
+    // 3: 54
     function handleAddComp() {
+        const table = document.getElementById("table");
         if (count === 0) {
             change(false);
+            
             count++;
         } else if (count === 1) {
             change(false);

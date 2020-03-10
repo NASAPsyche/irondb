@@ -8,38 +8,7 @@ import ResetSearch from "./ResetSearch";
 import '../styles/Database.scss'
 
 
-const DatabaseSearch = () => {
-    const [formOptions, setFormOptions] = useState({
-        name: "",
-        title: "",
-        author: "",
-        group: "group",
-        journalName: "",
-        volume: "",
-        pg: "",
-        sign: "",
-        year: "",
-        mod0: "IN",
-        element0: "element",
-        range0: "range",
-        mod1: "IN",
-        element1: "element",
-        range1: "range",
-        mod2: "IN",
-        element2: "element",
-        range2: "range"
-    });
-
-    function handleChange(event) {
-        const {value, name} = event.target;
-
-        setFormOptions(prevValue => {
-            return {
-                ...prevValue,
-                [name]: value
-            };
-        });
-    }
+const DatabaseSearch = props => {
 
     return (
         <div className="container-fluid fixed-top p-2 border-bottom border-dark" id="search-panel">
@@ -47,21 +16,21 @@ const DatabaseSearch = () => {
                 <ExportDataButton />
                 <div className="col-sm-10">
                     <div id="search-form">
-                        <FirstRow action={handleChange} state={formOptions} />
-                        <SecondRow action={handleChange} state={formOptions} />
+                        <FirstRow action={props.change} state={props.data} margin={props.margin} setMargin={props.setMargin} />
+                        <SecondRow action={props.change} state={props.data} />
                         <div className="form-row mt-3">
                             <AddComposition />
-                            <Composition className="composition0" rowNum="0" action={handleChange} mod={formOptions.mod0} element={formOptions.element0} range={formOptions.range0} />           
+                            <Composition className="composition0" rowNum="0" action={props.change} mod={props.data.mod0} element={props.data.element0} range={props.data.range0} />           
                         </div>
                         <div className="form-row mt-2">
                             <div className="offset-md-3"></div>
-                            <Composition className="composition1" rowNum="1" action={handleChange} mod={formOptions.mod1} element={formOptions.element1} range={formOptions.range1} />
+                            <Composition className="composition1" rowNum="1" action={props.change} mod={props.data.mod1} element={props.data.element1} range={props.data.range1} />
                         </div>
                         <div className="form-row mt-2">
                             <div className="offset-md-3"></div>
-                            <Composition className="composition2" rowNum="2" action={handleChange} mod={formOptions.mod2} element={formOptions.element2} range={formOptions.range2} />
+                            <Composition className="composition2" rowNum="2" action={props.change} mod={props.data.mod2} element={props.data.element2} range={props.data.range2} />
                         </div>
-                        <ResetSearch setState={setFormOptions} state={formOptions}/>
+                        <ResetSearch setState={props.setData} state={props.data}/>
                     </div>
                 </div>
             </div>
