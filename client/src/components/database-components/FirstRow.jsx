@@ -3,22 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const FirstRow = props => {
     const [icon, setIcon] = useState("plus-square");
-    var margin = 300;
 
     function handleRowClick(event) {
-        const table = document.getElementById("table");
 
         if (icon === "plus-square") {
             setIcon("minus-square");
             document.getElementById("journal").hidden = false;
-            margin += 62;
-            console.log(margin);
+            props.changeMargin("secondRow", true);
         } else if (icon === "minus-square") {
             setIcon("plus-square");
             document.getElementById("journal").hidden = true;
-            console.log(margin);
+            props.changeMargin("secondRow", false);
         }  
-        table.style.marginTop = `${margin}px`;  
     }
 
     return (

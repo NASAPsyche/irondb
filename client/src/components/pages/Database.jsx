@@ -28,27 +28,23 @@ const Database = () => {
     const [expanded, setExpanded] = useState([
         {
             name: "secondRow",
-            expanded: false,
             value: 62
         },
         {
             name: "firstComp",
-            expanded: false,
             value: 17.2
         },
         {
             name: "secondComp",
-            expanded: false,
             value: 54
         },
         {
             name: "thirdComp",
-            expanded: false,
             value: 54
         }
     ]);
 
-    const [margin, setMargin] = useState("300");
+    const [margin, setMargin] = useState("250");
 
     function handleChange(event) {
         const {value, name} = event.target;
@@ -61,10 +57,41 @@ const Database = () => {
         });
     }
 
+    function handleMargin(name, expand) {
+        if (name === "secondRow") {
+            if (expand === true) {
+                setMargin(`${parseInt(margin) + parseInt(expanded[0].value)}`);
+            } else {
+                setMargin(`${parseInt(margin) - parseInt(expanded[0].value)}`);
+            }  
+        } else if (name === "firstComp}") {
+            if (expand === true) {
+                setMargin(`${parseInt(margin) + parseInt(expanded[1].value)}`);
+            } else {
+                setMargin(`${parseInt(margin) - parseInt(expanded[1].value)}`);
+            } 
+        } else if (name === "secondComp}") {
+            if (expand === true) {
+                setMargin(`${parseInt(margin) + parseInt(expanded[2].value)}`);
+            } else {
+                setMargin(`${parseInt(margin) - parseInt(expanded[2].value)}`);
+            } 
+        } else if (name === "thirdComp}") {
+            if (expand === true) {
+                setMargin(`${parseInt(margin) + parseInt(expanded[3].value)}`);
+            } else {
+                setMargin(`${parseInt(margin) - parseInt(expanded[3].value)}`);
+            } 
+        }
+    }
+
     return (
         <div>
-            <DatabaseSearch data={formOptions} setData={setFormOptions} change={handleChange} />
-            <DatabaseTable margin={margin} setMargin={setMargin} />       
+            <DatabaseSearch data={formOptions} setData={setFormOptions} margin={margin} change={handleChange} changeMargin={handleMargin} />
+            <DatabaseTable margin={margin} setMargin={setMargin} />
+            <h1>{`${parseInt(margin) + parseInt(expanded[0].value)}`}</h1> 
+            <h1>{margin}</h1>
+            <h1>{expanded[0].value}</h1>
         </div>
     );
 }

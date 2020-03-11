@@ -16,7 +16,7 @@ const DatabaseSearch = props => {
                 <ExportDataButton />
                 <div className="col-sm-10">
                     <div id="search-form">
-                        <FirstRow action={props.change} state={props.data} margin={props.margin} setMargin={props.setMargin} />
+                        <FirstRow action={props.change} state={props.data} changeMargin={props.changeMargin} />
                         <SecondRow action={props.change} state={props.data} />
                         <div className="form-row mt-3">
                             <AddComposition />
