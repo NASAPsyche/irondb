@@ -19,7 +19,7 @@ const DatabaseSearch = props => {
                         <FirstRow action={props.change} state={props.data} changeMargin={props.changeMargin} />
                         <SecondRow action={props.change} state={props.data} />
                         <div className="form-row mt-3">
-                            <AddComposition />
+                            <AddComposition changeMargin={props.changeMargin} />
                             <Composition className="composition0" rowNum="0" action={props.change} mod={props.data.mod0} element={props.data.element0} range={props.data.range0} />           
                         </div>
                         <div className="form-row mt-2">

@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const AddComposition = () => {
-    var count = 0;
+const AddComposition = props => {
+    const [count, setCount] = useState(0);
 
-    function change(addRemove) {
-        var elementArray = document.getElementsByClassName("composition" + count);
+    function change(index, addRemove) {
+        console.log(index);
+        var elementArray = document.getElementsByClassName("composition" + index);
         for (let i = 0; i < elementArray.length; i++) {
             elementArray[i].hidden = addRemove;
         }
@@ -14,30 +15,36 @@ const AddComposition = () => {
     // 2: 54
     // 3: 54
     function handleAddComp() {
-        const table = document.getElementById("table");
         if (count === 0) {
-            change(false);
+            change(0, false);
+            setCount(count + 1);
+            props.changeMargin("firstComp", true);
             
-            count++;
         } else if (count === 1) {
-            change(false);
-            count++;
+            props.changeMargin("secondComp", true);
+            change(1, false);
+            setCount(count + 1);
+            
         } else if (count === 2) {
-            change(false);
-            count++;
+            props.changeMargin("thirdComp", true);
+            change(2, false); 
+            setCount(count + 1);           
         }
     }
 
     function handleRemoveComp() {
-        if (count == 1) {
-            count--;
-            change(true);
-        } else if (count == 2) {
-            count--;
-            change(true);
-        } else if (count == 3) {
-            count--; 
-            change(true);
+        if (count === 1) { 
+            change(0, true);
+            setCount(count - 1);
+            props.changeMargin("firstComp", false);
+        } else if (count === 2) {
+            change(1, true);
+            setCount(count - 1);
+            props.changeMargin("secondComp", false);
+        } else if (count === 3) {
+            change(2, true);
+            setCount(count - 1);
+            props.changeMargin("thirdComp", false);
         }
     }
 

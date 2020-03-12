@@ -44,7 +44,7 @@ const Database = () => {
         }
     ]);
 
-    const [margin, setMargin] = useState("250");
+    const [margin, setMargin] = useState(250);
 
     function handleChange(event) {
         const {value, name} = event.target;
@@ -64,19 +64,19 @@ const Database = () => {
             } else {
                 setMargin(`${parseInt(margin) - parseInt(expanded[0].value)}`);
             }  
-        } else if (name === "firstComp}") {
+        } else if (name === "firstComp") {
             if (expand === true) {
                 setMargin(`${parseInt(margin) + parseInt(expanded[1].value)}`);
             } else {
                 setMargin(`${parseInt(margin) - parseInt(expanded[1].value)}`);
             } 
-        } else if (name === "secondComp}") {
+        } else if (name === "secondComp") {
             if (expand === true) {
                 setMargin(`${parseInt(margin) + parseInt(expanded[2].value)}`);
             } else {
                 setMargin(`${parseInt(margin) - parseInt(expanded[2].value)}`);
             } 
-        } else if (name === "thirdComp}") {
+        } else if (name === "thirdComp") {
             if (expand === true) {
                 setMargin(`${parseInt(margin) + parseInt(expanded[3].value)}`);
             } else {
@@ -87,11 +87,8 @@ const Database = () => {
 
     return (
         <div>
-            <DatabaseSearch data={formOptions} setData={setFormOptions} margin={margin} change={handleChange} changeMargin={handleMargin} />
+            <DatabaseSearch data={formOptions} setData={setFormOptions} change={handleChange} changeMargin={handleMargin} />
             <DatabaseTable margin={margin} setMargin={setMargin} />
-            <h1>{`${parseInt(margin) + parseInt(expanded[0].value)}`}</h1> 
-            <h1>{margin}</h1>
-            <h1>{expanded[0].value}</h1>
         </div>
     );
 }
