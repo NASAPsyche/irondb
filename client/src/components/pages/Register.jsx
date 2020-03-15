@@ -2,6 +2,29 @@ import React, { useState } from 'react';
 
 const Register = props => {
 
+  function validatePassword() {
+    $(':password').on('keyup', function() {
+      const pwd = $('#pwd').val();
+      const cnfm = $('#confirm').val();
+  
+      // eslint-disable-next-line max-len
+      // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
+      if (pwd == cnfm) {
+        if (pwd.length >= 8) {
+          const hasUpperCase = /[A-Z]/.test(pwd);
+          const hasLowerCase = /[a-z]/.test(pwd);
+          const hasNumbers = /\d/.test(pwd);
+  
+          if (hasUpperCase && hasLowerCase && hasNumbers) {
+            console.log('GOOD PASSWORDS');
+            return true;
+          }
+        }
+      }
+    });
+    return false;
+  }
+
         return (
 
 
