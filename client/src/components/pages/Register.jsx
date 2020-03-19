@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Redirect } from "react-router-dom";
 
 class Register extends React.Component {
 
@@ -9,7 +10,9 @@ class Register extends React.Component {
     fname: null,
     lname: null,
     email: null,
-    cpassword: null
+    cpassword: null,
+    regFail: null,
+    signUpComplete: false
   };
 
   doRegister (event){
@@ -35,11 +38,17 @@ class Register extends React.Component {
             console.log("TEST");
             if (res !== undefined)
             {
-                console.log("register success");
+                console.log("register request success");
                 console.log(this.state.apiResponse);
+                if (!res.isRegistered) {
+                  this.setState({ regFail: res.message });
+                } else {
+                  this.setState({ signUpComplete: true });
+                }
 
             } else {
-                console.log("reguster failed");
+                console.log("reguster request failed");
+                this.setState({ regFail: res.message });
                 console.log(this.state.apiResponse)
             }
         });
@@ -48,12 +57,30 @@ class Register extends React.Component {
 
 
 render() {
+
+    if (this.state.signUpComplete === true) {
+      return <Redirect to={{
+        pathname: '/login',
+        state: { signedUp: true }
+      }}
+        
+        />
+    }
+
+
         return (
 
 
 <div class="container mt-5 col-lg-8 col-xl-7 text-center">
      <div className="row mt-5"></div>
       <div className="mt-5 mb-2"><h1 className="h3">Register <i className="fas fa-user-plus"></i></h1></div>
+
+      { (this.state.regFail!=null) 
+                    ? <div className="alert alert-danger" role="alert" id="registrationFail">
+                            {this.state.regFail}
+                        </div>
+                    : null
+                    }
 
       <div>
         <form action="/register" method="POST" id="register-form">
