@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 const Register = props => {
 
+  validatePassword();
+  
   function validatePassword() {
     $(':password').on('keyup', function() {
       const pwd = $('#pwd').val();

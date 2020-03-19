@@ -27,35 +27,55 @@ const Login = props => {
         Auth.login(() => {
             var loginStatus;
                     
-                  const data = { username: username, password: password }
-                  fetch("/login", {
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    headers:{ 'Content-Type': 'application/json' }
-                    })
-                    .then(res => {
-                        //Unwrap our promise object
-                        res.text().then(data => {
-                            loginStatus=JSON.parse(data);
-                            console.log(loginStatus);
-                            if (loginStatus.isSignedIn===true)
-                            {
-                                console.log("Logged in for "+username);
-                                setUser(username);
-
-                                //Clear any existing login erros
-                                setLoginFailed(null);
-                            }
-                            else
-                            {
-                                //Do some frontend stuff like a red message
-                                setLoginFailed(loginStatus.Alert);
-                            }
-                        });
+                const pwd = password;
+        
+                // eslint-disable-next-line max-len
+                // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
+                if (pwd.length >= 8) {
+                    const hasUpperCase = /[A-Z]/.test(pwd);
+                    const hasLowerCase = /[a-z]/.test(pwd);
+                    const hasNumbers = /\d/.test(pwd);
+            
+                    if (hasUpperCase && hasLowerCase && hasNumbers) {
+                    console.log('GOOD PASSWORDS');
                     
-                    }).catch(function(error) {
-                        console.log(error);
-                    });
+                    const data = { username: username, password: password }
+                    fetch("/login", {
+                      method: 'POST',
+                      body: JSON.stringify(data),
+                      headers:{ 'Content-Type': 'application/json' }
+                      })
+                      .then(res => {
+                          //Unwrap our promise object
+                          res.text().then(data => {
+                              loginStatus=JSON.parse(data);
+                              console.log(loginStatus);
+                              if (loginStatus.isSignedIn===true)
+                              {
+                                  console.log("Logged in for "+username);
+                                  setUser(username);
+  
+                                  //Clear any existing login erros
+                                  setLoginFailed(null);
+                              }
+                              else
+                              {
+                                  //Do some frontend stuff like a red message
+                                  setLoginFailed(loginStatus.Alert);
+                              }
+                          });
+                      
+                      }).catch(function(error) {
+                          console.log(error);
+                      });
+
+
+                    } else {
+                        
+                    }
+                }
+                
+
         })
       }
 
