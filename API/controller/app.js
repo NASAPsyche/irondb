@@ -109,9 +109,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(session({
-
-  secret: '8uAKY7Ch=379xZyea_dD1(gfI)YdNU*P',
-
+  secret: 'JqJx3bO$%3JyZQwA9d*g!0530)9KnDoj',
   resave: false,
   saveUninitialized: false,
   // maxAge set to 60 mins, param in miliseconds

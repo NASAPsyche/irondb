@@ -1,7 +1,53 @@
 import React, { useState } from 'react';
 
-const Register = props => {
+class Register extends React.Component {
 
+  state = {
+    message:  null,
+    username: null,
+    password: null,
+    fname: null,
+    lname: null,
+    email: null,
+    cpassword: null
+  };
+
+  doRegister (event){
+
+    var payload={
+            username: this.state.username,
+            password: this.state.password,
+            fname: this.state.fname,
+            lname: this.state.lname,
+            email: this.state.username 
+        }
+
+    console.log("doRegister() => "+payload.username);
+
+    fetch("/register",{
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers:{ 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(res => { 
+            this.setState({ apiResponse: res });
+            console.log("TEST");
+            if (res !== undefined)
+            {
+                console.log("register success");
+                console.log(this.state.apiResponse);
+
+            } else {
+                console.log("reguster failed");
+                console.log(this.state.apiResponse)
+            }
+        });
+  }
+
+
+
+render() {
         return (
 
 
@@ -35,7 +81,7 @@ const Register = props => {
 
           <div className="form-group">
             <label className="sr-only" for="username">Username</label>
-            <input type="text" name="username" id="username" className="form-control" placeholder="Username" required
+            <input type="text" name="username" id="username" onChange = {(event) => this.setState({username:event.target.value})}  className="form-control" placeholder="Username" required
               minlength="5"  />
             <small id="usernameHelpBlock" className="form-text text-muted text-left">
               Must be at least 5 characters long.
@@ -44,11 +90,11 @@ const Register = props => {
           <div className="form-row form-group">
             <div className="col">
               <label className="sr-only" for="fname">First Name</label>
-              <input type="text" name="fname" id="fname" className="form-control" placeholder="First Name" required />
+              <input type="text" name="fname" id="fname" onChange = {(event) => this.setState({fname:event.target.value})}  className="form-control" placeholder="First Name" required />
             </div>
             <div className="col">
               <label className="sr-only" for="lname">Last Name</label>
-              <input type="text" name="lname" id="lname" className="form-control" placeholder="Last Name" required />
+              <input type="text" name="lname" id="lname" onChange = {(event) => this.setState({lname:event.target.value})}  className="form-control" placeholder="Last Name" required />
             </div>
           </div>
 
@@ -58,15 +104,15 @@ const Register = props => {
 
           <div className="form-group">
             <label className="sr-only" for="email">Email</label>
-            <input type="email" name="email" id="email-address" className="form-control" placeholder="Email" required />
+            <input type="email" name="email" onChange = {(event) => this.setState({email:event.target.value})}  id="email-address" className="form-control" placeholder="Email" required />
           </div>
           <div className="form-group">
             <label className="sr-only" for="password">Password</label>
-            <input type="password" name="password" id="pwd" className="form-control" placeholder="Password" required />
+            <input type="password" name="password" id="pwd" onChange = {(event) => this.setState({password:event.target.value})}  className="form-control" placeholder="Password" required />
           </div>
           <div>
             <label className="sr-only" for="confirm">Confirm Password</label>
-            <input type="password" name="confirm" id="confirm" className="form-control" placeholder="Confirm Password"
+            <input type="password" name="confirm" id="confirm" onChange = {(event) => this.setState({cpassword:event.target.value})}  className="form-control" placeholder="Confirm Password"
               required />
             <small id="usernameHelpBlock" className="form-text text-muted text-left">
               Your password must be between 8 and 25 characters long and must contain at least 1 uppercase, 1
@@ -74,7 +120,7 @@ const Register = props => {
               and 1 number.
             </small>
           </div>
-          <button className="btn btn-lg btn-danger btn-block mt-2" type="submit" id="submit">Sign-up <i className="fas fa-sign-in-alt"></i></button>
+          <button className="btn btn-lg btn-danger btn-block mt-2" onClick={(event) => this.doRegister(event)} type="button"  id="submit">Sign-up <i className="fas fa-sign-in-alt"></i></button>
 
         </form>
 
@@ -86,7 +132,7 @@ const Register = props => {
         
     );
     }
-
+  }
 
 
 export default Register;
