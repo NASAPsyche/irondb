@@ -1,6 +1,5 @@
 {
   "name": "client",
-  "proxy": "http://localhost:3001",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -36,5 +35,6 @@
   },
   "devDependencies": {
     "node-sass": "^4.13.1"
-  }
+  },
+  "proxy": "http://api:3000"
 }
