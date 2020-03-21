@@ -15,7 +15,7 @@ class Account extends React.Component {
         edit: false,
         user_id: null
       };
-    
+
     save() {
 
         var payload={
@@ -33,7 +33,7 @@ class Account extends React.Component {
         headers:{ 'Content-Type': 'application/json' }
         })
         .then(res => res.json())
-        .then(res => { 
+        .then(res => {
             this.setState({ apiResponse: res });
             console.log("TEST");
             if (res !== undefined)
@@ -64,7 +64,7 @@ class Account extends React.Component {
             headers:{ 'Content-Type': 'application/json' }
             })
             .then(res => res.json())
-            .then(res => { 
+            .then(res => {
                 this.setState({ apiResponse: res });
                 console.log("TEST");
                 if (res !== undefined)
@@ -79,14 +79,14 @@ class Account extends React.Component {
                     this.setState({ role: res.User.role_of });
                     this.setState({ user_id: res.User.user_id });
 
-    
+
                 } else {
                     console.log("account request failed");
                     console.log(this.state.apiResponse)
                 }
             });
       }
-    
+
 
 
 componentDidMount() {
@@ -129,7 +129,7 @@ render () {
                         </div>
                         <div class="form-group">
                             <label id="passwordLabel">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="************" onChange = {(event) => this.setState({email:event.target.value})} readOnly={!this.state.edit} />
+                            <input type="password" class="form-control" id="password" placeholder="************" onChange = {(event) => this.setState({password:event.target.value})} readOnly={!this.state.edit} />
                         </div>
                     {(!this.state.edit)?
                         <div class="text-right form-group pb-2">
