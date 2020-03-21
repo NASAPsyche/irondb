@@ -109,11 +109,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(session({
-  secret: 'P90r*_7QZZt+VR7qJidMGaw)eOxza+IM',
+  secret: '=dh=1QODsu67^LT2X!g0+nu=0^jc+fk0',
   resave: false,
   saveUninitialized: false,
   // maxAge set to 60 mins, param in miliseconds
   cookie: {maxAge: 60 * 60 * 1000},
+  expires: new Date(Date.now() + 60 * 60 * 1000)
 }));
 
 app.use(passport.initialize());
