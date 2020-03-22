@@ -109,7 +109,7 @@ render() {
           <div className="form-group">
             <label className="sr-only" htmlFor="username">Username</label>
             <input type="text" name="username" id="username" onChange = {(event) => this.setState({username:event.target.value})}  className="form-control" placeholder="Username" required
-              minlength="5"  />
+              minLength="5"  />
             <small id="usernameHelpBlock" className="form-text text-muted text-left">
               Must be at least 5 characters long.
             </small>
@@ -120,7 +120,7 @@ render() {
               <input type="text" name="fname" id="fname" onChange = {(event) => this.setState({fname:event.target.value})}  className="form-control" placeholder="First Name" required />
             </div>
             <div className="col">
-              <label className="sr-only" for="lname">Last Name</label>
+              <label className="sr-only" htmlFor="lname">Last Name</label>
               <input type="text" name="lname" id="lname" onChange = {(event) => this.setState({lname:event.target.value})}  className="form-control" placeholder="Last Name" required />
             </div>
           </div>
