@@ -41,11 +41,11 @@ const Home = () => {
                 </div>
 
                 <div className="d-flex flex-row align-items-center justify-content-center mb-4">
-                    <form id="home-search" action="/database" class="border border-dark p-3" onSubmit={handleSubmit}>
+                    <form id="home-search" action="/database" className="border border-dark p-3" onSubmit={handleSubmit}>
                         <div className="d-flex flex-row align-items-center justify-content-center ">
                             <div className="col-md-3">
                                 <label className="sr-only" htmlFor ="name">Meteorite Name</label>
-                                <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name" onChange={handleChangeName}/>
+                                <input type="text" name="name" id="name" className="form-control" placeholder="meteorite name" onChange={handleChangeName}/>
                             </div>
                             <div className="col-md-2">
                                 <label className="sr-only" htmlFor ="group">group</label>
@@ -61,11 +61,11 @@ const Home = () => {
                             </div>
                             <div className="col-md-2">
                                 <label className="sr-only" htmlFor ="title">Paper Title</label>
-                                <input type="text" name="title" id="title" class="form-control" placeholder="paper title" onChange={handleChangeTitle}/>
+                                <input type="text" name="title" id="title" className="form-control" placeholder="paper title" onChange={handleChangeTitle}/>
                             </div>
                             <div className="col-md-2">
                                 <label className="sr-only" htmlFor ="author">Author</label>
-                                <input type="text" name="author" id="author" class="form-control" placeholder="author" onChange={handleChangeAuthor}/>
+                                <input type="text" name="author" id="author" className="form-control" placeholder="author" onChange={handleChangeAuthor}/>
                             </div>
                             <div className="col-md-2 col-sm-3">
                                 <button className="btn btn-warning btn-block">Search</button>
@@ -79,12 +79,12 @@ const Home = () => {
                 </div>
 
                 <div className="d-flex flex-row align-items-center justify-content-center">
-                    <a href="/database" class="btn btn-warning">Enter the Database</a>
+                    <a href="/database" className="btn btn-warning">Enter the Database</a>
                 </div>
             </div>
 
-            <div class="container-fluid fixed-bottom">
-                <div class="d-flex flex-row align-items-center justify-content-center mb-0">
+            <div className="container-fluid fixed-bottom">
+                <div className="d-flex flex-row align-items-center justify-content-center mb-0">
                     <p><small>This website and work were created in partial fulfillment of Arizona State University Capstone Course “SER 401-402.”
                         The work is a result of the Psyche Student Collaborations component of NASA’s Psyche Mission (<a href="https://psyche.asu.edu">https://psyche.asu.edu</a>).
                         “Psyche: A Journey to a Metal World” [Contract number NNM16AA09C] is part of the NASA Discovery Program mission to solar system targets.

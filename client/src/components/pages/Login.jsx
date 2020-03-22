@@ -97,14 +97,14 @@ const Login = props => {
                     : null
                     }
 
-                    <label className="sr-only" for="username">username</label>
+                    <label className="sr-only" htmlFor="username">username</label>
                     <input type="text" name="username" id="username" className="form-control mb-2" placeholder="username" required
                         autoFocus minLength="4" value={username} onChange={handleChangeUsername} maxLength="25" />
 
-                    <label className="sr-only" for="password">password</label>
+                      <label className="sr-only" htmlFor="password">password</label>
                     <input type="password" name="password" id="password" onChange={handlePassword} className="form-control" placeholder="password" required
                         minLength="6" maxLength="25" />
-                    <button class="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
+                      <button className="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
                     <a href="/register">Register Here</a>
                     </form>
                 </div>
@@ -119,16 +119,16 @@ const Login = props => {
 
     function ReturnAlert(hasAlert) {
         if (hasAlert.error) {
-            return <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            return <div className="alert alert-danger alert-dismissible fade show" role="alert">
             {hasAlert.alert}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>;
         } else if (hasAlert.success) {
-            return <div class="alert alert-success alert-dismissible fade show" role="alert">
+            return <div className="alert alert-success alert-dismissible fade show" role="alert">
                 {hasAlert.alert}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>;
