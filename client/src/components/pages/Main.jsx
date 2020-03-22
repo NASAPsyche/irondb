@@ -13,7 +13,7 @@ import Database from '../Database';
 import DataEntry from './DataEntry';
 import Help from './Help';
 import Home from './Home';
-import Register from './Register';
+import Register from './Register.jsx';
 import Panel from '../Panel';
 import Profile from '../Profile';
 import Navbar from '../Navbar';

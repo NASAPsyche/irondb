@@ -71,9 +71,12 @@ render() {
   validatePassword();
   
   function validatePassword() {
-    $(':password').on('keyup', function() {
-      const pwd = $('#pwd').val();
-      const cnfm = $('#confirm').val();
+    var password = document.getElementsByName("fname")
+
+    [password].on('keyup', function() {
+      var x = document.getElementsByName("fname");
+      const pwd = password;
+      const cnfm =document.getElementsByName("confirm").val();
   
       // eslint-disable-next-line max-len
       // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
