@@ -90,19 +90,19 @@ render() {
             <strong><i className="fas fa-user"></i></strong> Username already exists.
           </div>
 
-          <div className="alert alert-warning alert-dismissible fade show" hidden="true" id="reqs" role="alert">
+          <div className="alert alert-warning alert-dismissible fade show" hidden={true} id="reqs" role="alert">
             <strong>Error:</strong> Password does not contain all necessary characters.
           </div>
 
-          <div className="alert alert-warning alert-dismissible fade show" hidden="true" id="mismatch" role="alert">
+          <div className="alert alert-warning alert-dismissible fade show" hidden={true} id="mismatch" role="alert">
             <strong>Error:</strong> Passwords do not match.
           </div>
 
-          <div className="alert alert-warning alert-dismissible fade show" hidden="true" id="length" role="alert">
+          <div className="alert alert-warning alert-dismissible fade show" hidden={true} id="length" role="alert">
             <strong>Error:</strong> Password does not meet length requirements.
           </div>
 
-          <div className="alert alert-warning alert-dismissible fade show" hidden="true" id="name" role="alert">
+          <div className="alert alert-warning alert-dismissible fade show" hidden={true} id="name" role="alert">
             <strong>Error:</strong> Try a different username.
           </div>
 
