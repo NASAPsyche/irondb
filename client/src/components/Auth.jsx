@@ -19,13 +19,11 @@ const Auth = {
     isAuthenticated: hasSessionCookie(),
 
     login(callback) {
-        console.log('Login called, isAuthenticated is set to true')
         this.isAuthenticated = true;
         setTimeout(callback, 100); //simulate asynchronous code
     },
 
     logout(callback) {
-        console.log('Logout called, isAuthenticated is set to false')
         this.isAuthenticated = false;
         setTimeout(callback, 100); //simulate asynchronous code
     }
