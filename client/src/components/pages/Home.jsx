@@ -48,8 +48,8 @@ const Home = () => {
                           </div>
                           <div className="col-md-2">
                               <label className="sr-only" htmlFor ="group">group</label>
-                              <select className="form-control" id="group" name="group" placeholder="group" onChange={handleChangeGroup}>
-                                  <option value="" disabled selected hidden>group</option>
+                              <select className="form-control" id="group" name="group" placeholder="group" defaultValue={'DEFAULT'} onChange={handleChangeGroup}>
+                                  <option value="DEFAULT" disabled hidden>group</option>
                                   <option>IAB</option>
                                   <option>IC</option>
                                   <option>IIAB</option>
