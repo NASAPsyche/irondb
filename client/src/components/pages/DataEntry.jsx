@@ -20,23 +20,23 @@ const DataEntry = () => {
     return (
         <div className="data-entry">
             <DataEntryAlert alert={alert} alertType={alertType} />
-            <div class="container-fluid pt-3" id="content"></div>
-            <div class="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
+            <div className="container-fluid pt-3" id="content"></div>
+            <div className="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
                 <h3>Select a data entry approach below:</h3>
             </div>
 
-            <div class="d-flex flex-row align-items-center justify-content-center pt-3">
+            <div className="d-flex flex-row align-items-center justify-content-center pt-3">
                 <Link
                     to={`${url}/pdf`}
-                    class="btn btn-danger btn-lg text-light"
+                    className="btn btn-danger btn-lg text-light"
                     id="tool"
                 >
                     With PDF
                 </Link>
-                <h3 class="mx-4 mb-2"> - or - </h3>
-                <Link 
+                <h3 className="mx-4 mb-2"> - or - </h3>
+                <Link
                     to={`${url}/editor`}
-                    class="btn btn-danger btn-lg"
+                    className="btn btn-danger btn-lg"
                 >
                     Without PDF
                 </Link>

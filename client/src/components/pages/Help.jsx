@@ -56,7 +56,7 @@ const Help = ({ authenticated }) => (
                             <p>
                                 For advanced searches, navigate to the <Link to="/database">database page</Link> (or click <Link to="/database">"Enter the Database"</Link>.)
                             </p>
-                            <h5 class="pt-4">
+                            <h5 className="pt-4">
                                 <u>Search by <strong>source</strong> of meteorite study:</u>
                             </h5>
                             <p>
@@ -86,7 +86,7 @@ const Help = ({ authenticated }) => (
                                     <img src={require("../../images/help/Search/composition_expand.png")} alt="expand composition" />
                                 </center>
                             </p>
-                            <p class="pt-3">
+                            <p className="pt-3">
                                 You can then click "Search" to submit your query, or click "Reset" to clear all fields.
                             </p>
                             <p>
@@ -96,7 +96,7 @@ const Help = ({ authenticated }) => (
                             </p>
                         </p>
                     </div>
-                    <div class="col-sm-1"></div>
+                    <div className="col-sm-1"></div>
                 </div>
 
                 <a id="exportData"></a><br /><br />
