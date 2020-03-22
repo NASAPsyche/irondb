@@ -33,7 +33,6 @@ services:
       - ./API/model/db-init:/docker-entrypoint-initdb.d/
       - ./API/pg-data:/var/lib/postgresql/data:z
     environment:
-
       - POSTGRES_USER=testUser
       - POSTGRES_PASSWORD=testPassword
       - POSTGRES_DB=postgres
