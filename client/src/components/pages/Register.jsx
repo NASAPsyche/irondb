@@ -67,14 +67,10 @@ render() {
         />
     }
 
-
-  validatePassword();
   
-  function validatePassword() {
-    var password = document.getElementsByName("fname")
+  function validatePassword(password) {
+    var password = password;
 
-    [password].on('keyup', function() {
-      var x = document.getElementsByName("fname");
       const pwd = password;
       const cnfm =document.getElementsByName("confirm").val();
   
@@ -88,11 +84,12 @@ render() {
   
           if (hasUpperCase && hasLowerCase && hasNumbers) {
             console.log('GOOD PASSWORDS');
+            this.setState({password:password})
             return true;
           }
         }
       }
-    });
+
     return false;
   }
 
@@ -163,7 +160,7 @@ render() {
           </div>
           <div className="form-group">
             <label className="sr-only" for="password">Password</label>
-            <input type="password" name="password" id="pwd" onChange = {(event) => this.setState({password:event.target.value})}  className="form-control" placeholder="Password" required />
+            <input type="password" name="password" id="pwd" onChange = {(event) => this.validatePassword(event.target.value)}  className="form-control" placeholder="Password" required />
           </div>
           <div>
             <label className="sr-only" for="confirm">Confirm Password</label>
