@@ -27,18 +27,7 @@ const Login = props => {
         Auth.login(() => {
             var loginStatus;
                     
-                const pwd = password;
-        
-                // eslint-disable-next-line max-len
-                // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
-                if (pwd.length >= 8) {
-                    const hasUpperCase = /[A-Z]/.test(pwd);
-                    const hasLowerCase = /[a-z]/.test(pwd);
-                    const hasNumbers = /\d/.test(pwd);
-            
-                    if (hasUpperCase && hasLowerCase && hasNumbers) {
-                    console.log('GOOD PASSWORDS');
-                    
+               
                     const data = { username: username, password: password }
                     fetch("/login", {
                       method: 'POST',
@@ -68,14 +57,7 @@ const Login = props => {
                       }).catch(function(error) {
                           console.log(error);
                       });
-
-
-                    } else {
-                        
-                    }
-                }
                 
-
         })
       }
 
@@ -124,7 +106,7 @@ const Login = props => {
                     <label className="sr-only" for="password">password</label>
                     <input type="password" name="password" id="password" onChange={handlePassword} className="form-control" placeholder="password" required
                         minlength="6" maxlength="25" />
-                    <button class="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
+                    <button className="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
                     <a href="/register">Register Here</a>
                     </form>
                 </div>
@@ -139,16 +121,16 @@ const Login = props => {
 
     function ReturnAlert(hasAlert) {
         if (hasAlert.error) {
-            return <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            return <div className="alert alert-danger alert-dismissible fade show" role="alert">
             {hasAlert.alert}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>;
         } else if (hasAlert.success) {
-            return <div class="alert alert-success alert-dismissible fade show" role="alert">
+            return <div className="alert alert-success alert-dismissible fade show" role="alert">
                 {hasAlert.alert}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>;
