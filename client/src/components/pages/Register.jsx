@@ -7,6 +7,8 @@ class Register extends React.Component {
     message:  null,
     username: null,
     password: null,
+    passCheck: null,
+    passCheck2: null,
     fname: null,
     lname: null,
     email: null,
@@ -14,6 +16,34 @@ class Register extends React.Component {
     regFail: null,
     signUpComplete: false
   };
+
+  validatePassword(password) {
+    var password = password;
+
+      const pwd = password;
+
+      // eslint-disable-next-line max-len
+      // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
+
+        if (pwd.length >= 8) {
+          const hasUpperCase = /[A-Z]/.test(pwd);
+          const hasLowerCase = /[a-z]/.test(pwd);
+          const hasNumbers = /\d/.test(pwd);
+  
+          if (hasUpperCase && hasLowerCase && hasNumbers) {
+            console.log('GOOD PASSWORDS');
+            this.setState({password:password})
+            this.setState({passCheck:true})
+            return true;
+          } else {
+            this.setState({passCheck:false})
+            return false;
+          }
+        }
+      
+
+    return false;
+  }
 
   doRegister (event){
 
@@ -67,31 +97,6 @@ render() {
         />
     }
 
-  
-  function validatePassword(password) {
-    var password = password;
-
-      const pwd = password;
-      const cnfm =document.getElementsByName("confirm").val();
-  
-      // eslint-disable-next-line max-len
-      // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
-      if (pwd == cnfm) {
-        if (pwd.length >= 8) {
-          const hasUpperCase = /[A-Z]/.test(pwd);
-          const hasLowerCase = /[a-z]/.test(pwd);
-          const hasNumbers = /\d/.test(pwd);
-  
-          if (hasUpperCase && hasLowerCase && hasNumbers) {
-            console.log('GOOD PASSWORDS');
-            this.setState({password:password})
-            return true;
-          }
-        }
-      }
-
-    return false;
-  }
 
         return (
 
@@ -114,10 +119,14 @@ render() {
           <div className="alert alert-danger alert-dismissible fade show" style={{display: "none"}} id="exists" role="alert">
             <strong><i className="fas fa-user"></i></strong> Username already exists.
           </div>
+          {
+              (this.state.passCheck == false) ? 
+                    <div className="alert alert-warning alert-dismissible show"  id="reqs" role="alert">
+                      <strong>Error:</strong> Password does not contain all necessary characters or length requirements!
+                   </div>
+              : ""
+            }
 
-          <div className="alert alert-warning alert-dismissible fade show" hidden="true" id="reqs" role="alert">
-            <strong>Error:</strong> Password does not contain all necessary characters.
-          </div>
 
           <div className="alert alert-warning alert-dismissible fade show" hidden="true" id="mismatch" role="alert">
             <strong>Error:</strong> Passwords do not match.
@@ -160,7 +169,12 @@ render() {
           </div>
           <div className="form-group">
             <label className="sr-only" for="password">Password</label>
-            <input type="password" name="password" id="pwd" onChange = {(event) => this.validatePassword(event.target.value)}  className="form-control" placeholder="Password" required />
+            <input type="password" name="password" id="pwd" onBlur = {(event) => this.validatePassword(event.target.value)}  className={
+              (this.state.passCheck == null) ? "form-control" 
+              :(this.state.passCheck == true) ? "form-control border border-success"
+              :(this.state.passCheck == false) ? "form-control border border-danger"
+              : "form-control"
+            } placeholder="Password" required />
           </div>
           <div>
             <label className="sr-only" for="confirm">Confirm Password</label>
