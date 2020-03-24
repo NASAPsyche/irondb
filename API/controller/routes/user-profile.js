@@ -8,18 +8,31 @@ const bcrypt = require('bcrypt');
 
 
 /* GET /profile  */
-router.get('/', isLoggedIn, async (req, res, next) => {
+router.post('/', isLoggedIn, async (req, res, next) => {
   const userID = req.user.id;
+  console.log("Request ID: " + userID);
   let resObj = [];
-  try {
-    // eslint-disable-next-line max-len
-    const user = db.aQuery(`SELECT * FROM users_with_info WHERE user_id = ${userID}`, []);
-    resObj = await Promise.all([user]);
-  } catch (err) {
-    next(createError(500));
-  } finally {
-    res.render('profile', {User: resObj[0].rows});
+
+  const completeRequest = async () => {
+    resObj = await getUser (userID);
+    res.send({User: resObj[0].rows[0]});
   }
+
+  async function getUser (userID) {
+    try {
+      // eslint-disable-next-line max-len
+      const user = db.aQuery(`SELECT * FROM users_with_info WHERE user_id = ${userID}`, []);
+      return await Promise.all([user]);
+    } catch (err) {
+      next(createError(500));
+    } finally {
+
+      
+    }
+  }
+
+  completeRequest();
+
 });
 
 /* POST /profile/update */
@@ -30,9 +43,11 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   // eslint-disable-next-line max-len
   const updateFirstName = `UPDATE user_info SET first_name = $1 WHERE  user_id = $2`;
   const insertFirstName = [req.body.first_name, req.body.user_id];
+  console.log("FN: "+req.body.first_name)
   // eslint-disable-next-line max-len
   const updateLastName = `UPDATE user_info SET last_name = $1 WHERE  user_id = $2`;
   const insertLastName = [req.body.last_name, req.body.user_id];
+  console.log("LN: "+req.body.last_name)
   // eslint-disable-next-line max-len
 
   let hasPassword = false;
@@ -77,6 +92,7 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   } catch (e) {
     await client.query('ROLLBACK');
     next(createError(500));
+    console.log("ERROR");
   } finally {
     client.release();
   }

@@ -1,8 +1,8 @@
 FROM node:12.13.0
 
-WORKDIR /user/app/client
+WORKDIR /usr/app/client
 
-ENV PATH /user/app/client/node_modules/.bin:$PATH
+ENV PATH /usr/app/client/node_modules/.bin:$PATH
 
 COPY . .
 
