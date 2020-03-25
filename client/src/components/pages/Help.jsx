@@ -33,7 +33,7 @@ const Help = ({ authenticated }) => (
                     <div className="col-sm-1"></div>
                     <div className="col-sm-10">
                         <center>
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/p0ywMqjEHpQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/p0ywMqjEHpQ" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                         </center>
                     </div>
                     <div className="col-sm-1"></div>

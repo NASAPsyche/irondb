@@ -173,7 +173,7 @@ const  AuthenticatedHelp = (props) => {
                                         </center>
                                     </p>
                                     <p>
-                                        <strong><u>Elements</u></strong> - Must be a <emp>symbol</emp> from the periodic table, not full element names.
+                                        <strong><u>Elements</u></strong> - Must be a <em>symbol</em> from the periodic table, not full element names.
                                     </p>
                                     <p>
                                         <strong><u>Measurements</u></strong> - Measurements can be any number, but decimals in the form of .08 must be written as 0.08. The less than &lt; symbol can be included before a measurement.
