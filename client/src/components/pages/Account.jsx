@@ -1,6 +1,5 @@
 import React from "react";
 
-const myName = "Cody";
 
 class Account extends React.Component {
   state = {
@@ -83,6 +82,18 @@ class Account extends React.Component {
   }
 
   render() {
+
+    if (this.state.username === "Username") {
+        return (
+          <Redirect
+            to={{
+              pathname: "/login"
+            }}
+          />
+        );
+      }
+
+
     return (
       <div class="container-fluid mt-5 col-8 pb-4">
         <div class="card mt-5">
