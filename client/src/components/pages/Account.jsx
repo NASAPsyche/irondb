@@ -12,10 +12,34 @@ class Account extends React.Component {
     lname: "Last",
     password: null,
     email: "email@email.com",
+    emailCheck: null,
     role: "N/A",
     edit: false,
+    apiResponse: null,
+    error: null,
     user_id: null
   };
+
+  async validateEmail(email) {
+
+    let emailValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+
+    if (emailValid)
+    {
+      console.log("Email Valid")
+      await this.setState({email: email})
+      await this.setState({emailCheck: true})
+      await this.setState({error: ""})
+      
+    }
+    else
+    {
+      console.log("Email invalid")
+      await this.setState({emailCheck: false})
+      await this.setState({error: "Error: Invalid Email!"})
+    }
+  }
+
 
   save() {
     var payload = {
@@ -61,10 +85,12 @@ class Account extends React.Component {
     })
       .then(res => res.json())
       .then(res => {
+        console.log(res);
         this.setState({ apiResponse: res });
         console.log("TEST");
         if (res !== undefined) {
           console.log("account request success");
+          console.log(res);
           console.log(this.state.apiResponse);
           //Let's set the user data now
           this.setState({ username: res.User.username });
@@ -86,7 +112,7 @@ class Account extends React.Component {
 
   render() {
 
-    if (this.state.username === "Username") {
+    if (this.state.username === "") {
         return (
           <Redirect
             to={{
@@ -105,6 +131,13 @@ class Account extends React.Component {
               <label>User: {this.state.username}</label>
             </div>
 
+            { (this.state.error!=null && this.state.error!="") 
+                    ? <div className="alert alert-danger" role="alert" id="updateFail">
+                            {this.state.error}
+                        </div>
+                    : null
+                    }
+
             {/* TODO: add action and method */}
             <form id="user-update-form">
               <div class="form-group">
@@ -114,7 +147,7 @@ class Account extends React.Component {
                   class="form-control"
                   id="username"
                   value={this.state.username}
-                  readonly
+                  readOnly
                 />
               </div>
               <div class="form-row form-group">
@@ -151,12 +184,15 @@ class Account extends React.Component {
                 <label>Email address</label>
                 <input
                   type="email"
-                  class="form-control"
+                  className={
+                    (this.state.emailCheck == null) ? "form-control" 
+                    :(this.state.emailCheck == true) ? "form-control border border-success"
+                    :(this.state.emailCheck == false) ? "form-control border border-danger"
+                    : "form-control"
+                  }
                   id="email"
                   placeholder={this.state.email}
-                  onChange={event =>
-                    this.setState({ email: event.target.value })
-                  }
+                  onBlur = {(event) => this.validateEmail(event.target.value)} 
                   readOnly={!this.state.edit}
                 />
               </div>
@@ -167,7 +203,7 @@ class Account extends React.Component {
                   class="form-control"
                   id="role"
                   value={this.state.role}
-                  readonly
+                  readOnly
                 />
               </div>
               <div class="form-group">
@@ -200,6 +236,11 @@ class Account extends React.Component {
                     class="btn btn-warning"
                     type="button"
                     id="update-btn"
+
+                    disabled= { (this.state.error!=null && this.state.error!="") 
+                    ? true: false
+                    }
+
                     onClick={() => this.save()}
                   >
                     Save
