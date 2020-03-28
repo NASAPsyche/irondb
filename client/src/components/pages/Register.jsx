@@ -7,6 +7,8 @@ class Register extends React.Component {
     message:  null,
     username: null,
     password: null,
+    passCheck: null,
+    passCheck2: null,
     fname: null,
     lname: null,
     email: null,
@@ -14,6 +16,74 @@ class Register extends React.Component {
     regFail: null,
     signUpComplete: false
   };
+
+  async validatePassword(password) {
+
+    await this.setState({password:password})
+    
+    //If password is blank, wipe passcheck
+    if (!password)
+    {
+      await this.setState({passCheck:null})
+      console.log("passCheck:"+this.state.passCheck)
+      console.log("passCheck2:"+this.state.passCheck2)
+      return false;
+    }
+
+      const pwd = password;
+
+      //If there is a value in confirm box already...
+      if (this.state.cpassword) 
+      {
+        await this.confirmPassword(this.state.cpassword)
+      }
+
+
+      // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
+        if (pwd.length >= 8) {
+          const hasUpperCase = /[A-Z]/.test(pwd);
+          const hasLowerCase = /[a-z]/.test(pwd);
+          const hasNumbers = /\d/.test(pwd);
+  
+          if (hasUpperCase && hasLowerCase && hasNumbers) {
+       
+            await this.setState({passCheck:true})   
+
+            console.log("passCheck:"+this.state.passCheck)
+            console.log("passCheck2:"+this.state.passCheck2)
+
+            return true;
+          } else {
+            await this.setState({passCheck:false})
+
+            console.log("passCheck:"+this.state.passCheck)
+            console.log("passCheck2:"+this.state.passCheck2)
+
+            return false;
+          }
+        }
+    return false;
+  }
+
+  async confirmPassword(password) {
+
+    if (!password)
+    {
+      await this.setState({passCheck2:null})
+      return false;
+    }
+
+    await this.setState({cpassword:password})
+
+    if (this.state.cpassword === this.state.password && this.state.passCheck === true)
+      await this.setState({passCheck2:true})
+    else
+      await this.setState({passCheck2:false})
+
+      console.log("passCheck:"+this.state.passCheck)
+      console.log("passCheck2:"+this.state.passCheck2)
+    
+  }
 
   doRegister (event){
 
@@ -35,7 +105,6 @@ class Register extends React.Component {
         .then(res => res.json())
         .then(res => { 
             this.setState({ apiResponse: res });
-            console.log("TEST");
             if (res !== undefined)
             {
                 console.log("register request success");
@@ -67,11 +136,10 @@ render() {
         />
     }
 
-
         return (
 
 
-<div class="container mt-5 col-lg-8 col-xl-7 text-center">
+<div className="container mt-5 col-lg-8 col-xl-7 text-center">
      <div className="row mt-5"></div>
       <div className="mt-5 mb-2"><h1 className="h3">Register <i className="fas fa-user-plus"></i></h1></div>
 
@@ -89,10 +157,18 @@ render() {
           <div className="alert alert-danger alert-dismissible fade show" style={{display: "none"}} id="exists" role="alert">
             <strong><i className="fas fa-user"></i></strong> Username already exists.
           </div>
+          {
+              (this.state.passCheck == false) ? 
+                  <div className="alert alert-danger alert-dismissible show"  id="reqs" role="alert">
+                    <strong>Error:</strong> Password does not contain all necessary characters or length requirements!
+                  </div>
+              : (this.state.passCheck2 == false) ? 
+                  <div className="alert alert-danger alert-dismissible show"  id="reqs" role="alert">
+                      <strong>Error:</strong> Your passwords do not match!
+                  </div>
+             :""
+            }
 
-          <div className="alert alert-warning alert-dismissible fade show" hidden="true" id="reqs" role="alert">
-            <strong>Error:</strong> Password does not contain all necessary characters.
-          </div>
 
           <div className="alert alert-warning alert-dismissible fade show" hidden="true" id="mismatch" role="alert">
             <strong>Error:</strong> Passwords do not match.
@@ -135,11 +211,21 @@ render() {
           </div>
           <div className="form-group">
             <label className="sr-only" for="password">Password</label>
-            <input type="password" name="password" id="pwd" onChange = {(event) => this.setState({password:event.target.value})}  className="form-control" placeholder="Password" required />
+            <input type="password" name="password" id="pwd" onBlur = {(event) => this.validatePassword(event.target.value)}  className={
+              (this.state.passCheck == null) ? "form-control" 
+              :(this.state.passCheck == true) ? "form-control border border-success"
+              :(this.state.passCheck == false) ? "form-control border border-danger"
+              : "form-control"
+            } placeholder="Password" required />
           </div>
           <div>
             <label className="sr-only" for="confirm">Confirm Password</label>
-            <input type="password" name="confirm" id="confirm" onChange = {(event) => this.setState({cpassword:event.target.value})}  className="form-control" placeholder="Confirm Password"
+            <input type="password" name="confirm" id="confirm" onBlur = {(event) => this.confirmPassword(event.target.value)}  className={
+              (this.state.passCheck2 == null) ? "form-control" 
+              :(this.state.passCheck2 == true) ? "form-control border border-success"
+              :(this.state.passCheck2 == false) ? "form-control border border-danger"
+              : "form-control"
+            } placeholder="Confirm Password"
               required />
             <small id="usernameHelpBlock" className="form-text text-muted text-left">
               Your password must be between 8 and 25 characters long and must contain at least 1 uppercase, 1

@@ -27,35 +27,37 @@ const Login = props => {
         Auth.login(() => {
             var loginStatus;
                     
-                  const data = { username: username, password: password }
-                  fetch("/login", {
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    headers:{ 'Content-Type': 'application/json' }
-                    })
-                    .then(res => {
-                        //Unwrap our promise object
-                        res.text().then(data => {
-                            loginStatus=JSON.parse(data);
-                            console.log(loginStatus);
-                            if (loginStatus.isSignedIn===true)
-                            {
-                                console.log("Logged in for "+username);
-                                setUser(username);
-
-                                //Clear any existing login erros
-                                setLoginFailed(null);
-                            }
-                            else
-                            {
-                                //Do some frontend stuff like a red message
-                                setLoginFailed(loginStatus.Alert);
-                            }
-                        });
-                    
-                    }).catch(function(error) {
-                        console.log(error);
-                    });
+               
+                    const data = { username: username, password: password }
+                    fetch("/login", {
+                      method: 'POST',
+                      body: JSON.stringify(data),
+                      headers:{ 'Content-Type': 'application/json' }
+                      })
+                      .then(res => {
+                          //Unwrap our promise object
+                          res.text().then(data => {
+                              loginStatus=JSON.parse(data);
+                              console.log(loginStatus);
+                              if (loginStatus.isSignedIn===true)
+                              {
+                                  console.log("Logged in for "+username);
+                                  setUser(username);
+  
+                                  //Clear any existing login erros
+                                  setLoginFailed(null);
+                              }
+                              else
+                              {
+                                  //Do some frontend stuff like a red message
+                                  setLoginFailed(loginStatus.Alert);
+                              }
+                          });
+                      
+                      }).catch(function(error) {
+                          console.log(error);
+                      });
+                
         })
       }
 
@@ -104,7 +106,7 @@ const Login = props => {
                     <label className="sr-only" for="password">password</label>
                     <input type="password" name="password" id="password" onChange={handlePassword} className="form-control" placeholder="password" required
                         minlength="6" maxlength="25" />
-                    <button class="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
+                    <button className="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
                     <a href="/register">Register Here</a>
                     </form>
                 </div>
@@ -119,16 +121,16 @@ const Login = props => {
 
     function ReturnAlert(hasAlert) {
         if (hasAlert.error) {
-            return <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            return <div className="alert alert-danger alert-dismissible fade show" role="alert">
             {hasAlert.alert}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>;
         } else if (hasAlert.success) {
-            return <div class="alert alert-success alert-dismissible fade show" role="alert">
+            return <div className="alert alert-success alert-dismissible fade show" role="alert">
                 {hasAlert.alert}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>;
