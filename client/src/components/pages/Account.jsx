@@ -252,16 +252,16 @@ async changeName (value, field) {
     }
 
     //Check Lname
-    if (this.state.email !== null)
+    if (this.state.nameChangedLast !== null)
     {
-      if (this.state.nameChangedLast && !this.changeName(this.state.nameChangedLast,"lname"))
+      if (this.state.nameChangedLast && !this.changeName(this.state.fname,"lname"))
         return false
     }
 
     //Check Fname
-    if (this.state.email !== null)
+    if (this.state.nameChangedFirst !== null)
     {
-      if (this.state.nameChangedFirst && !this.changeName(this.state.nameChangedFirst,"fname"))
+      if (this.state.nameChangedFirst && !this.changeName(this.state.lname,"fname"))
         return false
     }
 
