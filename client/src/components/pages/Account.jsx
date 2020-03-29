@@ -32,8 +32,6 @@ class Account extends React.Component {
   };
 
 
-
-
 async changeName (value, field) {
 
   if (field === "updated-fname")
@@ -57,6 +55,7 @@ async changeName (value, field) {
       if (field === "fname")
       {
         await this.setState({fnameCheck: true})
+        this.setState({ fname: value });
         await this.setState({error: ""})
         return true
       
@@ -64,6 +63,7 @@ async changeName (value, field) {
       } else if (field === "lname")
       {
         await this.setState({lnameCheck: true})
+        this.setState({ lname: value });
         await this.setState({error: ""})
         return true
       }
@@ -88,7 +88,7 @@ async changeName (value, field) {
   }
 }
   async cancel () {
-    await this.grabUserInfo();
+    //await this.grabUserInfo();
     await this.setState({edit: false})
     await this.setState({editingPassword:false}) 
     await this.setState({changedPassword:false}) 
