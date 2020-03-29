@@ -1,24 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useState, useEffect, useContext } from 'react';
-import {UserContext} from '../userContext.js';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../userContext.js";
 import * as Cookies from "js-cookie";
 
-
-
-
 function Navbar(props) {
+  const { user, setUser } = useContext(UserContext);
 
-    const {user,setUser} = useContext(UserContext)
-
-    const logout = event => {
-        setUser();
-        Cookies.remove("username");
-        fetch("/logout", {
-            method: 'GET'
-            })
-      }
-
+  const logout = event => {
+    setUser();
+    Cookies.remove("username");
+    fetch("/api/logout", {
+      method: "GET"
+    });
+  };
 
     if (user != undefined) {
         return (

@@ -26,36 +26,37 @@ const Login = props => {
         //Authentication Logic
         Auth.login(() => {
             var loginStatus;
-
-                  const data = { username: username, password: password }
-                  fetch("/login", {
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    headers:{ 'Content-Type': 'application/json' }
-                    })
-                    .then(res => {
-                        //Unwrap our promise object
-                        res.text().then(data => {
-                            loginStatus=JSON.parse(data);
-                            console.log(loginStatus);
-                            if (loginStatus.isSignedIn===true)
-                            {
-                                console.log("Logged in for "+username);
-                                setUser(username);
-
-                                //Clear any existing login erros
-                                setLoginFailed(null);
-                            }
-                            else
-                            {
-                                //Do some frontend stuff like a red message
-                                setLoginFailed(loginStatus.Alert);
-                            }
-                        });
-
-                    }).catch(function(error) {
-                        console.log(error);
-                    });
+                            
+                    const data = { username: username, password: password }
+                    fetch("/login", {
+                      method: 'POST',
+                      body: JSON.stringify(data),
+                      headers:{ 'Content-Type': 'application/json' }
+                      })
+                      .then(res => {
+                          //Unwrap our promise object
+                          res.text().then(data => {
+                              loginStatus=JSON.parse(data);
+                              console.log(loginStatus);
+                              if (loginStatus.isSignedIn===true)
+                              {
+                                  console.log("Logged in for "+username);
+                                  setUser(username);
+  
+                                  //Clear any existing login erros
+                                  setLoginFailed(null);
+                              }
+                              else
+                              {
+                                  //Do some frontend stuff like a red message
+                                  setLoginFailed(loginStatus.Alert);
+                              }
+                          });
+                      
+                      }).catch(function(error) {
+                          console.log(error);
+                      });
+                
         })
       }
 
