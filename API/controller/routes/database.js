@@ -17,23 +17,18 @@ router.get('/', async (req, res, next) => {
   let resObj = [];
   try {
     const Entries = db.aQuery('SELECT * FROM complete_table', []);
-    const Groups = db.aQuery(
-        'SELECT DISTINCT classification_group FROM complete_table',
-        []
-    );
-    const Elements = db.aQuery('SELECT symbol FROM element_symbols', []);
-    resObj = await Promise.all([Entries, Groups, Elements]);
+    resObj = await Promise.all([Entries]);
   } catch (err) {
     next(createError(500));
   } finally {
-    res.render('database', {
-      isSignedIn: req.isAuthenticated(),
+    console.log(resObj[0].rows);
+    res.send({
       Entries: resObj[0].rows,
-      Groups: resObj[1].rows,
-      Elements: resObj[2].rows,
-      _: ejsUnitConversion,
     });
   }
+
+  // const resObj = [{hello: 1}, {hello: 2}];
+  // res.send(resObj);
 });
 
 

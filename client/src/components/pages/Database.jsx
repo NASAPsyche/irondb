@@ -45,6 +45,24 @@ const Database = () => {
     ]);
 
     const [margin, setMargin] = useState(250);
+    const [data, setData] = useState([]);
+
+    function fetchData() {
+        fetch("/api/database", {
+            method: 'GET',
+            headers:{'Content-Type': 'application/json'}
+        })
+            .then(res => {
+                res.text().then(info => {
+                    setData(JSON.parse(info));
+                    console.log(data);
+                })
+            })
+            .catch(function(error) {
+                console.log(error);
+            })
+    }
+    
 
     function handleChange(event) {
         const {value, name} = event.target;
@@ -87,8 +105,13 @@ const Database = () => {
 
     return (
         <div>
+            
             <DatabaseSearch data={formOptions} setData={setFormOptions} change={handleChange} changeMargin={handleMargin} />
-            <DatabaseTable margin={margin} setMargin={setMargin} />
+            <DatabaseTable margin={margin} setMargin={setMargin} fetchData={fetchData} />
+            <h1>FETCH DATA</h1>
+            
+                <button className="btn btn-outline-warning btn-block mt-2" onClick={fetchData}>FETCH</button>
+                
         </div>
     );
 }

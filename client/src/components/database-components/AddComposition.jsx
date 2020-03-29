@@ -5,15 +5,12 @@ const AddComposition = props => {
     const [count, setCount] = useState(0);
 
     function change(index, addRemove) {
-        console.log(index);
         var elementArray = document.getElementsByClassName("composition" + index);
         for (let i = 0; i < elementArray.length; i++) {
             elementArray[i].hidden = addRemove;
         }
     }
-    // 1: 17.2
-    // 2: 54
-    // 3: 54
+
     function handleAddComp() {
         if (count === 0) {
             change(0, false);
