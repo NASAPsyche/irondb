@@ -4,6 +4,7 @@ import {
 } from "react-router-dom";
 
 
+
 class Account extends React.Component {
   state = {
     message: null,
@@ -19,6 +20,10 @@ class Account extends React.Component {
     edit: false,
     apiResponse: null,
     error: null,
+    nameChangedFirst: false,
+    nameChangedLast: false,
+    fnameCheck: null,
+    lnameCheck: null,
     passCheck: null,
     passCheck2: null,
     success: null,
@@ -26,15 +31,81 @@ class Account extends React.Component {
     user_id: null
   };
 
-  cancel () {
-    this.grabUserInfo();
-    this.setState({edit: false})
-    this.setState({editingPassword:false}) 
-    this.setState({changedPassword:false}) 
-    this.setState({password: null})
-    this.setState({cpassword: null})
-    this.setState({passCheck: null})
-    this.setState({passCheck2: null})
+
+
+
+async changeName (value, field) {
+
+  console.log("Val "+value)
+  if (field === "updated-fname")
+  {
+      await this.setState({nameChangedFirst: true})
+  }
+  else if (field === "updated-lname")
+  {
+      await this.setState({nameChangedLast: true})
+  }
+
+  if (value!=null && value != "") 
+  {
+    let letters = /^[a-zA-Z]+$/;
+    let nameValid = value.match(letters);
+
+    //Name Field is valid
+    if (nameValid)
+    {
+      console.log("Name Valid")
+      //Handle valid fname
+      if (field === "fname")
+      {
+        await this.setState({fnameCheck: true})
+        await this.setState({error: ""})
+        return true
+      
+      //Handle valid lname
+      } else if (field === "lname")
+      {
+        await this.setState({lnameCheck: true})
+        await this.setState({error: ""})
+        return true
+      }
+    }
+    else
+    {
+      //Handle invalid name
+      console.log("Name invalid")
+
+      if (field === "fname")
+      {
+        await this.setState({fnameCheck: false})
+        await this.setState({error: "Error: Only alphabetical characters allowed in names!"})
+        return false
+      
+      //Handle invalid lname
+      } else if (field === "lname")
+      {
+        await this.setState({lnameCheck: false})
+        await this.setState({error: "Error: Only alphabetical characters allowed in names!"})
+        return false
+      }
+    }
+  }
+}
+  async cancel () {
+    await this.grabUserInfo();
+    await this.setState({edit: false})
+    await this.setState({editingPassword:false}) 
+    await this.setState({changedPassword:false}) 
+    await this.setState({password: null})
+    await this.setState({cpassword: null})
+    await this.setState({passCheck: null})
+    await this.setState({passCheck2: null})
+    await this.setState({fnameCheck: null})
+    await this.setState({lnameCheck: null})
+    await this.setState({success: null})
+    await this.setState({error: null})
+    document.getElementById("user-update-form").reset();
+
   }
   async validatePassword(password,confirm) {
 
@@ -42,8 +113,6 @@ class Account extends React.Component {
     if (!password)
     {
       await this.setState({passCheck:null})
-      console.log("passCheck:"+this.state.passCheck)
-      console.log("passCheck2:"+this.state.passCheck2)
       return false;
     }
 
@@ -100,8 +169,6 @@ class Account extends React.Component {
       await this.setState({passCheck2:null})
       return false;
     }
-    console.log ("Password is "+this.state.password)
-    console.log ("cPassword is "+this.state.cpassword)
 
     await this.setState({cpassword:password})
 
@@ -160,8 +227,8 @@ class Account extends React.Component {
   async save() {
 
     let changedPassword = false;
+
     //Check Password
-    console.log("SAVE PASS"+this.state.password)
     if (this.state.password != null)
     {
       let confirm = await this.confirmPassword(this.state.cpassword)
@@ -185,6 +252,20 @@ class Account extends React.Component {
     if (this.state.email != null)
     {
       if (this.state.changedEmail && !this.validateEmail(this.state.email,true))
+        return false
+    }
+
+    //Check Lname
+    if (this.state.email != null)
+    {
+      if (this.state.nameChangedLast && !this.changeName(this.state.nameChangedLast,"lname"))
+        return false
+    }
+
+    //Check Fname
+    if (this.state.email != null)
+    {
+      if (this.state.nameChangedFirst && !this.changeName(this.state.nameChangedFirst,"fname"))
         return false
     }
 
@@ -338,9 +419,14 @@ class Account extends React.Component {
                     class="form-control"
                     id="firstname"
                     placeholder={this.state.fname}
-                    onChange={event =>
-                      this.setState({ fname: event.target.value })
+                    className={
+                      (this.state.fnameCheck == null) ? "form-control" 
+                      :(this.state.fnameCheck == true) ? "form-control border border-success"
+                      :(this.state.fnameCheck == false) ? "form-control border border-danger"
+                      : "form-control"
                     }
+                    onChange = {(event) => this.changeName(event.target.value, "updated-fname")}
+                    onBlur = {(event) => this.changeName(event.target.value, "fname")} 
                     readOnly={!this.state.edit}
                     required
                   />
@@ -351,10 +437,15 @@ class Account extends React.Component {
                     type="text"
                     class="form-control"
                     id="lastname"
-                    placeholder={this.state.lname}
-                    onChange={event =>
-                      this.setState({ lname: event.target.value })
+                    className={
+                      (this.state.lnameCheck == null) ? "form-control" 
+                      :(this.state.lnameCheck == true) ? "form-control border border-success"
+                      :(this.state.lnameCheck == false) ? "form-control border border-danger"
+                      : "form-control"
                     }
+                    placeholder={this.state.lname}
+                    onChange = {(event) => this.changeName(event.target.value, "updated-lname")}
+                    onBlur = {(event) => this.changeName(event.target.value, "lname")} 
                     readOnly={!this.state.edit}
                     required
                   />
@@ -440,7 +531,7 @@ class Account extends React.Component {
                 <div className="text-right form-group pb-2">
                   <button
                     className="btn btn-danger mr-1"
-                    type="button"
+                    type="reset"
                     id="cancel-btn"
 
                     onClick={() => this.cancel()}
