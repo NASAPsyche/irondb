@@ -17,6 +17,8 @@ class Account extends React.Component {
     edit: false,
     apiResponse: null,
     error: null,
+    success: null,
+    editingPassword: false,
     user_id: null
   };
 
@@ -40,6 +42,11 @@ class Account extends React.Component {
     }
   }
 
+  async edit() {
+    await this.setState({success: null})
+    await this.setState({error: null})
+    await this.setState({edit: true})
+  }
 
   save() {
     var payload = {
@@ -47,7 +54,7 @@ class Account extends React.Component {
       first_name: this.state.fname,
       last_name: this.state.lname,
       password: this.state.password,
-      email: this.state.email,
+      email_address: this.state.email,
       user_id: this.state.user_id
     };
 
@@ -60,14 +67,18 @@ class Account extends React.Component {
       .then(res => {
         this.setState({ apiResponse: res });
         console.log("TEST");
-        if (res !== undefined) {
+        if (res !== undefined && res.ok == true) {
           console.log("account update success");
           console.log(this.state.apiResponse);
+
+          this.setState({success: true})
+
           //Reset this page!
           this.grabUserInfo();
-          this.state.edit = false;
+          this.setState({edit: false})
         } else {
           console.log("account update failed");
+          this.setState({success: false})
           console.log(this.state.apiResponse);
         }
       });
@@ -135,6 +146,17 @@ class Account extends React.Component {
                     ? <div className="alert alert-danger" role="alert" id="updateFail">
                             {this.state.error}
                         </div>
+                    : null
+                    }
+
+            { (this.state.success === true) 
+                    ? <div className="alert alert-success" role="alert" id="updateSuccess">
+                            Changes successfully saved!
+                        </div>
+                    :  (this.state.success === false) ?
+                       <div className="alert alert-danger" role="alert" id="updateFail">
+                        An error occured!
+                    </div>
                     : null
                     }
 
@@ -225,7 +247,7 @@ class Account extends React.Component {
                     class="btn btn-warning"
                     type="button"
                     id="update-btn"
-                    onClick={event => this.setState({ edit: true })}
+                    onClick={() => this.edit()}
                   >
                     Edit
                   </button>
