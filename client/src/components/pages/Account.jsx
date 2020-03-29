@@ -88,7 +88,7 @@ async changeName (value, field) {
   }
 }
   async cancel () {
-    //await this.grabUserInfo();
+    await this.grabUserInfo();
     await this.setState({edit: false})
     await this.setState({editingPassword:false}) 
     await this.setState({changedPassword:false}) 
