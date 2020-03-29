@@ -26,6 +26,16 @@ class Account extends React.Component {
     user_id: null
   };
 
+  cancel () {
+    this.grabUserInfo();
+    this.setState({edit: false})
+    this.setState({editingPassword:false}) 
+    this.setState({changedPassword:false}) 
+    this.setState({password: null})
+    this.setState({cpassword: null})
+    this.setState({passCheck: null})
+    this.setState({passCheck2: null})
+  }
   async validatePassword(password,confirm) {
 
     //If password is blank, wipe passcheck
@@ -97,7 +107,6 @@ class Account extends React.Component {
 
     if (this.state.cpassword === this.state.password && this.state.passCheck === true)
     {
-      
       await this.setState({passCheck2:true})
       return true;
     }
@@ -428,7 +437,17 @@ class Account extends React.Component {
                   </button>
                 </div>
               ) : (
-                <div class="text-right form-group pb-2">
+                <div className="text-right form-group pb-2">
+                  <button
+                    className="btn btn-danger mr-1"
+                    type="button"
+                    id="cancel-btn"
+
+                    onClick={() => this.cancel()}
+                  >
+                    Cancel
+                  </button>
+
                   <button
                     class="btn btn-warning"
                     type="button"
