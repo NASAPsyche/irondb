@@ -36,7 +36,6 @@ class Account extends React.Component {
 
 async changeName (value, field) {
 
-  console.log("Val "+value)
   if (field === "updated-fname")
   {
       await this.setState({nameChangedFirst: true})
@@ -46,7 +45,7 @@ async changeName (value, field) {
       await this.setState({nameChangedLast: true})
   }
 
-  if (value!=null && value != "") 
+  if (value !==null && value !== "") 
   {
     let letters = /^[a-zA-Z]+$/;
     let nameValid = value.match(letters);
@@ -54,7 +53,6 @@ async changeName (value, field) {
     //Name Field is valid
     if (nameValid)
     {
-      console.log("Name Valid")
       //Handle valid fname
       if (field === "fname")
       {
@@ -73,8 +71,6 @@ async changeName (value, field) {
     else
     {
       //Handle invalid name
-      console.log("Name invalid")
-
       if (field === "fname")
       {
         await this.setState({fnameCheck: false})
@@ -116,7 +112,7 @@ async changeName (value, field) {
       return false;
     }
 
-    if (password != "")
+    if (password !== "")
     {
       await this.setState({password:password})
       
@@ -195,7 +191,7 @@ async changeName (value, field) {
       await this.setState({changedEmail: false})
     }
 
-    if (email!="" && confirm)
+    if (email!=="" && confirm)
     {
       await this.setState({email: email})
       let emailValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
@@ -229,7 +225,7 @@ async changeName (value, field) {
     let changedPassword = false;
 
     //Check Password
-    if (this.state.password != null)
+    if (this.state.password !== null)
     {
       let confirm = await this.confirmPassword(this.state.cpassword)
 
@@ -249,21 +245,21 @@ async changeName (value, field) {
     }
 
     //Check Email
-    if (this.state.email != null)
+    if (this.state.email !== null)
     {
       if (this.state.changedEmail && !this.validateEmail(this.state.email,true))
         return false
     }
 
     //Check Lname
-    if (this.state.email != null)
+    if (this.state.email !== null)
     {
       if (this.state.nameChangedLast && !this.changeName(this.state.nameChangedLast,"lname"))
         return false
     }
 
     //Check Fname
-    if (this.state.email != null)
+    if (this.state.email !== null)
     {
       if (this.state.nameChangedFirst && !this.changeName(this.state.nameChangedFirst,"fname"))
         return false
@@ -287,7 +283,7 @@ async changeName (value, field) {
       .then(res => {
         this.setState({ apiResponse: res });
         console.log("TEST");
-        if (res !== undefined && res.ok == true) {
+        if (res !== undefined && res.ok === true) {
           console.log("account update success");
           console.log(this.state.apiResponse);
 
@@ -370,18 +366,18 @@ async changeName (value, field) {
             </div>
 
             {
-              (this.state.passCheck == false) ? 
+              (this.state.passCheck === false) ? 
                   <div className="alert alert-danger alert-dismissible show"  id="reqs" role="alert">
                     <strong>Error:</strong> Password does not contain all necessary characters or length requirements!
                   </div>
-              : (this.state.passCheck2 == false) ? 
+              : (this.state.passCheck2 === false) ? 
                   <div className="alert alert-danger alert-dismissible show"  id="reqs" role="alert">
                       <strong>Error:</strong> Your passwords do not match!
                   </div>
              :""
             }
 
-            { (this.state.error!=null && this.state.error!="") 
+            { (this.state.error !== null && this.state.error !== "") 
                     ? <div className="alert alert-danger" role="alert" id="updateFail">
                             {this.state.error}
                         </div>
@@ -420,9 +416,9 @@ async changeName (value, field) {
                     id="firstname"
                     placeholder={this.state.fname}
                     className={
-                      (this.state.fnameCheck == null) ? "form-control" 
-                      :(this.state.fnameCheck == true) ? "form-control border border-success"
-                      :(this.state.fnameCheck == false) ? "form-control border border-danger"
+                      (this.state.fnameCheck === null) ? "form-control" 
+                      :(this.state.fnameCheck === true) ? "form-control border border-success"
+                      :(this.state.fnameCheck === false) ? "form-control border border-danger"
                       : "form-control"
                     }
                     onChange = {(event) => this.changeName(event.target.value, "updated-fname")}
@@ -438,9 +434,9 @@ async changeName (value, field) {
                     class="form-control"
                     id="lastname"
                     className={
-                      (this.state.lnameCheck == null) ? "form-control" 
-                      :(this.state.lnameCheck == true) ? "form-control border border-success"
-                      :(this.state.lnameCheck == false) ? "form-control border border-danger"
+                      (this.state.lnameCheck === null) ? "form-control" 
+                      :(this.state.lnameCheck === true) ? "form-control border border-success"
+                      :(this.state.lnameCheck === false) ? "form-control border border-danger"
                       : "form-control"
                     }
                     placeholder={this.state.lname}
@@ -456,9 +452,9 @@ async changeName (value, field) {
                 <input
                   type="email"
                   className={
-                    (this.state.emailCheck == null) ? "form-control" 
-                    :(this.state.emailCheck == true) ? "form-control border border-success"
-                    :(this.state.emailCheck == false) ? "form-control border border-danger"
+                    (this.state.emailCheck === null) ? "form-control" 
+                    :(this.state.emailCheck === true) ? "form-control border border-success"
+                    :(this.state.emailCheck === false) ? "form-control border border-danger"
                     : "form-control"
                   }
                   id="email"
@@ -484,9 +480,9 @@ async changeName (value, field) {
                 <input
                   type="password"
                   className={
-                    (this.state.passCheck == null) ? "form-control" 
-                    :(this.state.passCheck == true) ? "form-control border border-success"
-                    :(this.state.passCheck == false) ? "form-control border border-danger"
+                    (this.state.passCheck === null) ? "form-control" 
+                    :(this.state.passCheck === true) ? "form-control border border-success"
+                    :(this.state.passCheck === false) ? "form-control border border-danger"
                     : "form-control"
                   }
                   id="password"
@@ -502,9 +498,9 @@ async changeName (value, field) {
                 <input
                   type="password"
                   className={
-                    (this.state.passCheck2 == null) ? "form-control" 
-                    :(this.state.passCheck2 == true) ? "form-control border border-success"
-                    :(this.state.passCheck2 == false) ? "form-control border border-danger"
+                    (this.state.passCheck2 === null) ? "form-control" 
+                    :(this.state.passCheck2 === true) ? "form-control border border-success"
+                    :(this.state.passCheck2 === false) ? "form-control border border-danger"
                     : "form-control"
                   }
                   id="passwordConfirm"
@@ -544,7 +540,7 @@ async changeName (value, field) {
                     type="button"
                     id="update-btn"
 
-                    disabled= { (this.state.error!=null && this.state.error!="") 
+                    disabled= { (this.state.error !== null && this.state.error !== "") 
                     ? true: false
                     }
 
