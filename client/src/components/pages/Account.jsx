@@ -11,35 +11,135 @@ class Account extends React.Component {
     fname: "First",
     lname: "Last",
     password: null,
+    changedEmail: false,
+    cpassword: null,
     email: "email@email.com",
     emailCheck: null,
     role: "N/A",
     edit: false,
     apiResponse: null,
     error: null,
+    passCheck: null,
+    passCheck2: null,
     success: null,
     editingPassword: false,
     user_id: null
   };
 
-  async validateEmail(email) {
+  async validatePassword(password,confirm) {
 
-    let emailValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-
-    if (emailValid)
+    //If password is blank, wipe passcheck
+    if (!password)
     {
-      console.log("Email Valid")
-      await this.setState({email: email})
-      await this.setState({emailCheck: true})
-      await this.setState({error: ""})
+      await this.setState({passCheck:null})
+      console.log("passCheck:"+this.state.passCheck)
+      console.log("passCheck2:"+this.state.passCheck2)
+      return false;
+    }
+
+    if (password != "")
+    {
+      await this.setState({password:password})
       
+        const pwd = password;
+
+        //If there is a value in confirm box already...
+        if (this.state.cpassword) 
+        {
+          await this.confirmPassword(this.state.cpassword)
+        }
+
+        // validate passwords match and have at least 1 lowercase, 1 uppercase and 1 number
+          if (pwd.length >= 8) {
+            const hasUpperCase = /[A-Z]/.test(pwd);
+            const hasLowerCase = /[a-z]/.test(pwd);
+            const hasNumbers = /\d/.test(pwd);
+    
+            if (hasUpperCase && hasLowerCase && hasNumbers) {
+        
+              if (confirm)
+                await this.setState({passCheck:true})   
+
+              await this.setState({editingPassword:true})  
+
+              return true;
+            } else {
+
+              if (confirm)
+                await this.setState({passCheck:false})
+
+              await this.setState({editingPassword:false}) 
+
+              return false;
+            }
+          }  else {
+            if (confirm)
+              await this.setState({passCheck:false})
+            await this.setState({editingPassword:false}) 
+
+            return false;
+          }
+
+      }  
+  }
+
+  async confirmPassword(password) {
+
+    if (!password)
+    {
+      await this.setState({passCheck2:null})
+      return false;
+    }
+    console.log ("Password is "+this.state.password)
+    console.log ("cPassword is "+this.state.cpassword)
+
+    await this.setState({cpassword:password})
+
+    if (this.state.cpassword === this.state.password && this.state.passCheck === true)
+    {
+      
+      await this.setState({passCheck2:true})
+      return true;
     }
     else
     {
-      console.log("Email invalid")
-      await this.setState({emailCheck: false})
-      await this.setState({error: "Error: Invalid Email!"})
+      await this.setState({passCheck2:false})
+      return false;
     }
+    
+  }
+
+  async validateEmail(email,confirm) {
+    if (email == null)
+    {
+      await this.setState({changedEmail: true})
+    }
+    else
+    {
+      await this.setState({changedEmail: false})
+    }
+
+    if (email!="" && confirm)
+    {
+      await this.setState({email: email})
+      let emailValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+
+      if (emailValid)
+      {
+        console.log("Email Valid")
+        await this.setState({emailCheck: true})
+        await this.setState({error: ""})
+        return true
+        
+      }
+      else
+      {
+        console.log("Email invalid")
+        await this.setState({emailCheck: false})
+        await this.setState({error: "Error: Invalid Email!"})
+        return false
+      }
+  }
   }
 
   async edit() {
@@ -48,7 +148,37 @@ class Account extends React.Component {
     await this.setState({edit: true})
   }
 
-  save() {
+  async save() {
+
+    let changedPassword = false;
+    //Check Password
+    console.log("SAVE PASS"+this.state.password)
+    if (this.state.password != null)
+    {
+      let confirm = await this.confirmPassword(this.state.cpassword)
+
+      //Show error message for not confirmed password
+      if (!confirm)
+        await this.setState({passCheck2: false})
+
+      let validate = await this.validatePassword(this.state.password,true)
+      if (!confirm || !validate)
+      {
+        return false
+      } else 
+      {
+        changedPassword = true;
+      }
+        
+    }
+
+    //Check Email
+    if (this.state.email != null)
+    {
+      if (this.state.changedEmail && !this.validateEmail(this.state.email,true))
+        return false
+    }
+
     var payload = {
       username: this.state.username,
       first_name: this.state.fname,
@@ -76,6 +206,13 @@ class Account extends React.Component {
           //Reset this page!
           this.grabUserInfo();
           this.setState({edit: false})
+          this.setState({editingPassword:false}) 
+          //Reset password field
+          this.setState({password: null})
+          this.setState({cpassword: null})
+          this.setState({passCheck: null})
+          this.setState({passCheck2: null})
+
         } else {
           console.log("account update failed");
           this.setState({success: false})
@@ -141,6 +278,18 @@ class Account extends React.Component {
             <div class="pt-3 h1">
               <label>User: {this.state.username}</label>
             </div>
+
+            {
+              (this.state.passCheck == false) ? 
+                  <div className="alert alert-danger alert-dismissible show"  id="reqs" role="alert">
+                    <strong>Error:</strong> Password does not contain all necessary characters or length requirements!
+                  </div>
+              : (this.state.passCheck2 == false) ? 
+                  <div className="alert alert-danger alert-dismissible show"  id="reqs" role="alert">
+                      <strong>Error:</strong> Your passwords do not match!
+                  </div>
+             :""
+            }
 
             { (this.state.error!=null && this.state.error!="") 
                     ? <div className="alert alert-danger" role="alert" id="updateFail">
@@ -214,7 +363,8 @@ class Account extends React.Component {
                   }
                   id="email"
                   placeholder={this.state.email}
-                  onBlur = {(event) => this.validateEmail(event.target.value)} 
+                  onChange = {(event) => this.validateEmail(event.target.value, false)} 
+                  onBlur = {(event) => this.validateEmail(event.target.value, true)} 
                   readOnly={!this.state.edit}
                 />
               </div>
@@ -228,19 +378,44 @@ class Account extends React.Component {
                   readOnly
                 />
               </div>
+
               <div class="form-group">
                 <label id="passwordLabel">Password</label>
                 <input
                   type="password"
-                  class="form-control"
+                  className={
+                    (this.state.passCheck == null) ? "form-control" 
+                    :(this.state.passCheck == true) ? "form-control border border-success"
+                    :(this.state.passCheck == false) ? "form-control border border-danger"
+                    : "form-control"
+                  }
                   id="password"
                   placeholder="************"
-                  onChange={event =>
-                    this.setState({ email: event.target.value })
-                  }
+                  onChange={(event) => this.validatePassword(event.target.value,false)}
+                  onBlur={(event) => this.validatePassword(event.target.value,true)}
                   readOnly={!this.state.edit}
                 />
               </div>
+              {this.state.editingPassword ? (
+                <div class="form-group">
+                <label id="passwordLabel">Confirm Password</label>
+                <input
+                  type="password"
+                  className={
+                    (this.state.passCheck2 == null) ? "form-control" 
+                    :(this.state.passCheck2 == true) ? "form-control border border-success"
+                    :(this.state.passCheck2 == false) ? "form-control border border-danger"
+                    : "form-control"
+                  }
+                  id="passwordConfirm"
+                  onBlur={(event) => this.confirmPassword(event.target.value)}
+                  
+                />
+              </div>                
+
+              )
+              :null}
+
               {!this.state.edit ? (
                 <div class="text-right form-group pb-2">
                   <button
