@@ -1,22 +1,24 @@
 import React from "react";
 
 const TableEntry = props => {
-    const {name, group, technique, trace, title, author, pg, journal, volume, year} = props.object;
+    console.log(props.object);
+    const {meteorite_name, classification_group, technique, title, authors, 
+        trace_elements, page_number, journal_name, volume, published_year} = props.object;
 
     return (
         <tr id="entry">
-            <th>{name}</th>
-            <th>{group}</th>
+            <th>{meteorite_name}</th>
+            <th>{classification_group}</th>
             <th>{technique}</th>
-            <th>Major Elements (wt%)</th>
-            <th>Minor Elements (ppm)</th>
-            <th>Trace Elements (ppb)</th>
+            <th></th>
+            <th></th>
+            <th></th>
             <th>{title}</th>
-            <th>{author}</th>
-            <th>{pg}</th> 
-            <th>{journal}</th> 
+            <th>{authors}</th>
+            <th>{page_number}</th> 
+            <th>{journal_name}</th> 
             <th>{volume}</th>
-            <th>{year}</th> 
+            <th>{published_year}</th> 
         </tr>
     );
 }

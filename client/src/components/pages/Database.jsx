@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import DatabaseSearch from '../database-components/DatabaseSearch';
 import DatabaseTable from '../database-components/DatabaseTable';
 import '../styles/Database.scss'
 
 const Database = () => {
-    const [formOptions, setFormOptions] = useState({
+    // Values used to hold data found in DatabaseSearch component
+    const [formData, setFormData] = useState({
         name: "",
         title: "",
         author: "",
@@ -24,7 +25,7 @@ const Database = () => {
         element2: "element",
         range2: "range"
     });
-
+    // Value used to control how many pixels the margin changes
     const [expanded, setExpanded] = useState([
         {
             name: "secondRow",
@@ -43,10 +44,20 @@ const Database = () => {
             value: 54
         }
     ]);
-
+    // Holds current margin value
     const [margin, setMargin] = useState(250);
-    const [data, setData] = useState([]);
+    // Holds data fetched from API
+    const [data, setData] = useState({Entries: []});
+    // Count used to control how many times page renders. Used for effect hook
+    const [count, setCount] = useState(0);
 
+    // Effect hook used to fetch data, [count] parameter included to control how often
+    // this effect is executed
+    useEffect(() => {
+        fetchData();
+    }, [count])
+
+    // Fetches all meteorite table data from API
     function fetchData() {
         fetch("/api/database", {
             method: 'GET',
@@ -54,20 +65,26 @@ const Database = () => {
         })
             .then(res => {
                 res.text().then(info => {
+                    // Parses JSON from API and sets data
                     setData(JSON.parse(info));
-                    console.log(data);
+                    //console.log(data);
+                    // Changes count to 0 to stop effect hook from executing more than twice
+                    if (count == 0) {
+                        setCount(1);
+                    }
                 })
             })
             .catch(function(error) {
                 console.log(error);
             })
+            
     }
     
-
+    // Changes state when and input field is changed
     function handleChange(event) {
         const {value, name} = event.target;
 
-        setFormOptions(prevValue => {
+        setFormData(prevValue => {
             return {
                 ...prevValue,
                 [name]: value
@@ -75,6 +92,7 @@ const Database = () => {
         });
     }
 
+    // Changes margin value based on what search options are expanded
     function handleMargin(name, expand) {
         if (name === "secondRow") {
             if (expand === true) {
@@ -105,13 +123,8 @@ const Database = () => {
 
     return (
         <div>
-            
-            <DatabaseSearch data={formOptions} setData={setFormOptions} change={handleChange} changeMargin={handleMargin} />
-            <DatabaseTable margin={margin} setMargin={setMargin} fetchData={fetchData} />
-            <h1>FETCH DATA</h1>
-            
-                <button className="btn btn-outline-warning btn-block mt-2" onClick={fetchData}>FETCH</button>
-                
+            <DatabaseSearch data={formData} setData={setFormData} change={handleChange} changeMargin={handleMargin} />
+            <DatabaseTable margin={margin} setMargin={setMargin} values={data} />
         </div>
     );
 }

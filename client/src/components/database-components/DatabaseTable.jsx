@@ -3,36 +3,32 @@ import TableEntry from "./TableEntry";
 import '../styles/Database.scss';
 
 const DatabaseTable = props => {
-      const obj = [{
-          name: "Guanaco",
-          group: "IIG",
-          technique: "RNAA",
-          trace: "Ge: 71000",
-          title: "Meteorites in Space",
-          author: "abe",
-          pg: 4880,
-          journal: "Geochimica et Cosmochimica Acta",
-          volume: 73,
-          year: 2009
-        }, {
-          name: "Tombigbee R.",
-          group: "IIG",
-          technique: "",
-          trace: "",
-          title: "The IIG iron meteorites: Probable formation in the IIAB core",
-          author: "beaver",
-          pg: 4880,
-          journal: "Geochimica et Cosmochimica Acta",
-          volume: 73,
-          year: 2009
-      }]
-
-            
-            
-        
+        const obj = [{
+            name: "Guanaco",
+            group: "IIG",
+            technique: "RNAA",
+            trace: "Ge: 71000",
+            title: "Meteorites in Space",
+            author: "abe",
+            pg: 4880,
+            journal: "Geochimica et Cosmochimica Acta",
+            volume: 73,
+            year: 2009
+            }, {
+            name: "Tombigbee R.",
+            group: "IIG",
+            technique: "",
+            trace: "",
+            title: "The IIG iron meteorites: Probable formation in the IIAB core",
+            author: "beaver",
+            pg: 4880,
+            journal: "Geochimica et Cosmochimica Acta",
+            volume: 73,
+            year: 2009
+        }]
+  
         return (
             <div class="container-fluid p-0 pb-5" id="table" style={{marginTop: `${props.margin}px`}}>
-                
                 <table class="table table-striped table-bordered table-hover ">
                     <thead class="thead-dark">
                         <tr>
@@ -51,7 +47,7 @@ const DatabaseTable = props => {
                         </tr>
                     </thead>
                     <tbody>
-                        {obj.map(entry => {
+                        {props.values.Entries.map(entry => {
                             return <TableEntry object={entry} />
                         })}
                     </tbody>
