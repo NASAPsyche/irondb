@@ -97,7 +97,7 @@ class Register extends React.Component {
 
     console.log("doRegister() => "+payload.username);
 
-    fetch("/register",{
+    fetch("/api/register",{
         method: 'POST',
         body: JSON.stringify(payload),
         headers:{ 'Content-Type': 'application/json' }

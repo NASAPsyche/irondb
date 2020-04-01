@@ -29,7 +29,7 @@ const Login = props => {
                     
                
                     const data = { username: username, password: password }
-                    fetch("/login", {
+                    fetch("/api/login", {
                       method: 'POST',
                       body: JSON.stringify(data),
                       headers:{ 'Content-Type': 'application/json' }
