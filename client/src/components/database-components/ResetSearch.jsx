@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const ResetSearch = props => {
     function handleReset() {
-        props.setState({
+        props.setData({
             name: "",
             title: "",
             author: "",
@@ -25,7 +25,7 @@ const ResetSearch = props => {
     }
 
     function handleSearch() {
-        console.log(props.state);
+        console.log(props.data);
     }
 
     return (

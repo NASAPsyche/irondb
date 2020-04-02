@@ -5,7 +5,7 @@ const SecondRow = props => {
         <div id="journal" className="form-row" hidden={true}>
             <div className="form-group col-md-3 offset-md-1">
                 <label className="sr-only" htmlFor="journalName"></label>
-                <input type="text" name="journalName" id="journalName" className="form-control" placeholder="journal name" onChange={props.action} value={props.state.jornalName} />
+                <input type="text" name="journalName" id="journalName" className="form-control" placeholder="journal name" onChange={props.action} value={props.state.journalName} />
             </div>
             <div className="form-group col-md-2">
                 <label className="sr-only" htmlFor="volume"></label>

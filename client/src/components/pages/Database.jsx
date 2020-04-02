@@ -67,7 +67,7 @@ const Database = () => {
                 res.text().then(info => {
                     // Parses JSON from API and sets data
                     setData(JSON.parse(info));
-                    //console.log(data);
+
                     // Changes count to 0 to stop effect hook from executing more than twice
                     if (count == 0) {
                         setCount(1);
@@ -76,8 +76,7 @@ const Database = () => {
             })
             .catch(function(error) {
                 console.log(error);
-            })
-            
+            })  
     }
     
     // Changes state when and input field is changed
@@ -123,7 +122,7 @@ const Database = () => {
 
     return (
         <div>
-            <DatabaseSearch data={formData} setData={setFormData} change={handleChange} changeMargin={handleMargin} />
+            <DatabaseSearch data={formData} setData={setFormData} change={handleChange} changeMargin={handleMargin} values={data} setValues={setData} />
             <DatabaseTable margin={margin} setMargin={setMargin} values={data} />
         </div>
     );

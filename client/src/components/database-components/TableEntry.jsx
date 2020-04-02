@@ -4,33 +4,6 @@ const TableEntry = props => {
     const {meteorite_name, classification_group, technique, title, authors, 
         trace_elements, major_elements, minor_elements, page_number, journal_name, 
         volume, published_year} = props.object;
-        console.log(trace_elements);
-
-    var major = "null";
-    var minor = "null";
-    var trace = "null";
-
-    if (major_elements !== null) {
-        major = "";
-    }
-
-    if (minor_elements !== null) {
-        minor = "";
-    }
-
-    if (trace_elements !== null) {
-        trace = "";
-        for (let i = 0; i < trace_elements.length; i++) {
-            
-            let symbol = ": ";
-            let value = trace_elements[i].split(",");
-            if (value[3] === "true") {
-                symbol += "< ";
-            }
-            trace += value[0].toUpperCase() + symbol + value[1] + " ";
-        }
-    } 
-
 
     return (
         <tr id="entry">

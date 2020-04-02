@@ -30,7 +30,7 @@ const DatabaseSearch = props => {
                             <div className="offset-md-3"></div>
                             <Composition className="composition2" rowNum="2" action={props.change} mod={props.data.mod2} element={props.data.element2} range={props.data.range2} />
                         </div>
-                        <ResetSearch setState={props.setData} state={props.data}/>
+                        <ResetSearch setData={props.setData} data={props.data}/>
                     </div>
                 </div>
             </div>
