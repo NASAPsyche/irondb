@@ -15,105 +15,49 @@ function Navbar(props) {
     });
   };
 
-  if (user != undefined) {
-    return (
-      <nav
-        class="navbar fixed-top navbar-expand navbar-dark"
-        style={{ backgroundColor: "#000000" }}
-      >
-        <div class="navbar-brand">
-          <img
-            class="mr-2"
-            src={require("../images/nasa-logo-web-rgb.png")}
-            id="nasa-logo"
-            width="30"
-            height="30"
-            class="pl-0 ml-0"
-            alt="NASA Logo"
-          />
-          <img
-            src={require("../images/Psyche_BadgeSolid_Color-PNG.png")}
-            id="psyche-logo"
-            width="30"
-            height="30"
-            alt="Psyche Mission Logo"
-          />
-        </div>
-        <div class="collapse navbar-collapse">
-          <div class="navbar-nav">
-            <Link class="nav-item nav-link" to="/database">
-              Database
-            </Link>
-            <Link class="nav-item nav-link" to="/panel">
-              Panel
-            </Link>
-            <Link class="nav-item nav-link" to="/data-entry">
-              Data Entry
-            </Link>
-            <Link class="nav-item nav-link" to="/help">
-              Help
-            </Link>
-            {/* TODO: REMOVE THESE NAVBAR LINKS ONCE APPROVAL PAGES ARE LINKED UP. */}
-            <Link class="nav-item nav-link" to="/data-entry-error">
-              Data Entry Error
-            </Link>
-          </div>
-        </div>
-        <Link id="account" to="/account" class="btn btn-outline-light mr-2">
-          Account
-        </Link>
-        <a onClick={logout} href="#" class="btn btn-outline-light">
-          Sign out
-        </a>
-      </nav>
-    );
-  } else {
-    return (
-      <nav
-        class="navbar fixed-top navbar-expand navbar-dark"
-        style={{ backgroundColor: "#000000" }}
-      >
-        <div class="navbar-brand">
-          <img
-            class="mr-2"
-            src={require("../images/nasa-logo-web-rgb.png")}
-            id="nasa-logo"
-            width="40"
-            height="40"
-            class="pl-0 ml-0"
-            alt="NASA Logo"
-          />
-          <img
-            src={require("../images/Psyche_BadgeSolid_Color-PNG.png")}
-            id="psyche-logo"
-            width="30"
-            height="30"
-            alt="Psyche Mission Logo"
-          />
-        </div>
-        <div class="collapse navbar-collapse">
-          <div class="navbar-nav">
-            <Link to="/" class="nav-item nav-link">
-              Home
-            </Link>
-            <Link class="nav-item nav-link" to="/database">
-              Database
-            </Link>
-            <Link class="nav-item nav-link" to="/help">
-              Help
-            </Link>
-          </div>
-        </div>
-        <Link id="account" to="/account" class="btn btn-outline-light mr-2">
-          Account
-        </Link>
+    if (user != undefined) {
+        return (
+            <nav className="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
+                <div className="navbar-brand">
+                    <img className="mr-2" src={require("../images/nasa-logo-web-rgb.png")} id="nasa-logo" width="30" height="30"  className="pl-0 ml-0" alt="NASA Logo" />
+                    <img src={require("../images/Psyche_BadgeSolid_Color-PNG.png")} id="psyche-logo" width="30" height="30" alt="Psyche Mission Logo" />
+                </div>
+                <div className="collapse navbar-collapse">
+                    <div className="navbar-nav">
 
-        <Link to="/login" class="btn btn-outline-light">
-          Sign in
-        </Link>
-      </nav>
-    );
-  }
+                    <Link className="nav-item nav-link" to="/database">Database</Link>
+                    <Link className="nav-item nav-link" to="/panel">Panel</Link>
+                    <Link className="nav-item nav-link" to="/data-entry">Data Entry</Link>
+                    <Link className="nav-item nav-link" to="/help">Help</Link>
+                    {/* TODO: REMOVE THESE NAVBAR LINKS ONCE APPROVAL PAGES ARE LINKED UP. */}
+                    <Link className="nav-item nav-link" to="/data-entry-error">Data Entry Error</Link>
+                    </div>
+                </div>
+                <Link id="account" to="/account" className="btn btn-outline-light mr-2">Account</Link>
+                <a onClick={logout} href="#" className="btn btn-outline-light">Sign out</a>
+            </nav>
+            );
+    }
+    else {
+        return (
+            <nav className="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
+                <div className="navbar-brand">
+                    <img className="mr-2" src={require("../images/nasa-logo-web-rgb.png")} id="nasa-logo" width="40" height="40"  className="pl-0 ml-0" alt="NASA Logo" />
+                    <img src={require("../images/Psyche_BadgeSolid_Color-PNG.png")} id="psyche-logo" width="30" height="30" alt="Psyche Mission Logo" />
+                </div>
+                <div className="collapse navbar-collapse">
+                    <div className="navbar-nav">
+                        <Link to="/" className="nav-item nav-link">Home</Link>
+                        <Link className="nav-item nav-link" to="/database">Database</Link>
+                        <Link className="nav-item nav-link" to="/help">Help</Link>
+                    </div>
+                </div>
+                <Link id="account" to="/account" className="btn btn-outline-light mr-2">Account</Link>
+
+                <Link to="/login" className="btn btn-outline-light">Sign in</Link>
+            </nav>
+        );
+    }
 }
 
 export default Navbar;
