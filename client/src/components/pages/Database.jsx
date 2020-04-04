@@ -5,7 +5,7 @@ import '../styles/Database.scss'
 
 const Database = () => {
     // Values used to hold data found in DatabaseSearch component
-    const [formData, setFormData] = useState({
+    const [values, setValues] = useState({
         name: "",
         title: "",
         author: "",
@@ -25,8 +25,16 @@ const Database = () => {
         element2: "element",
         range2: "range"
     });
+    // Holds current margin value
+    const [margin, setMargin] = useState(250);
+    // Holds data fetched from API
+    const [data, setData] = useState({Entries: []});
+    // Holds filtered data for table
+    const [filtered, setFiltered] = useState(null);
+    // Count used to control how many times page renders. Used for effect hook
+    const [count, setCount] = useState(0);
     // Value used to control how many pixels the margin changes
-    const [expanded, setExpanded] = useState([
+    const expanded = [
         {
             name: "secondRow",
             value: 62
@@ -42,14 +50,7 @@ const Database = () => {
         {
             name: "thirdComp",
             value: 54
-        }
-    ]);
-    // Holds current margin value
-    const [margin, setMargin] = useState(250);
-    // Holds data fetched from API
-    const [data, setData] = useState({Entries: []});
-    // Count used to control how many times page renders. Used for effect hook
-    const [count, setCount] = useState(0);
+        }];
 
     // Effect hook used to fetch data, [count] parameter included to control how often
     // this effect is executed
@@ -59,6 +60,7 @@ const Database = () => {
 
     // Fetches all meteorite table data from API
     function fetchData() {
+        console.log("fetching");
         fetch("/api/database", {
             method: 'GET',
             headers:{'Content-Type': 'application/json'}
@@ -83,7 +85,7 @@ const Database = () => {
     function handleChange(event) {
         const {value, name} = event.target;
 
-        setFormData(prevValue => {
+        setValues(prevValue => {
             return {
                 ...prevValue,
                 [name]: value
@@ -122,8 +124,8 @@ const Database = () => {
 
     return (
         <div>
-            <DatabaseSearch data={formData} setData={setFormData} change={handleChange} changeMargin={handleMargin} values={data} setValues={setData} />
-            <DatabaseTable margin={margin} setMargin={setMargin} values={data} />
+            <DatabaseSearch values={values} setValues={setValues} change={handleChange} changeMargin={handleMargin} data={data} setFiltered={setFiltered} />
+            <DatabaseTable margin={margin} setMargin={setMargin} data={data} filtered={filtered} />
         </div>
     );
 }
