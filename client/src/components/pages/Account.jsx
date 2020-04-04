@@ -3,6 +3,7 @@ import React from "react";
 const myName = "Cody";
 
 class Account extends React.Component {
+  
   state = {
     message: null,
     username: "Username",
@@ -91,28 +92,42 @@ class Account extends React.Component {
               <label>User: {this.state.username}</label>
             </div>
 
-            {/* TODO: add action and method */}
-            <form id="user-update-form">
-              <div class="form-group">
-                <label>Username</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="username"
-                  value={this.state.username}
-                  readonly
-                />
-              </div>
-              <div class="form-row form-group">
-                <div class="col">
-                  <label>First Name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="firstname"
-                    placeholder={this.state.fname}
-                    onChange={event =>
-                      this.setState({ fname: event.target.value })
+                    {/* TODO: add action and method */}
+                    <form id="user-update-form">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" class="form-control" id="username" value={this.state.username} readonly />
+                        </div>
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label>First Name</label>
+                                <input type="text" class="form-control" id="firstname" placeholder={this.state.fname} onChange = {(event) => this.setState({fname:event.target.value})}  readOnly={!this.state.edit} required />
+                            </div>
+                            <div class="col">
+                                <label>Last Name</label>
+                                <input type="text" class="form-control" id="lastname" placeholder={this.state.lname} onChange = {(event) => this.setState({lname:event.target.value})} readOnly={!this.state.edit} required />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Email address</label>
+                            <input type="email" class="form-control" id="email" placeholder={this.state.email} onChange = {(event) => this.setState({email:event.target.value})}  readOnly={!this.state.edit} />
+                        </div>
+                        <div class="form-group">
+                            <label>Role</label>
+                            <input type="text" class="form-control" id="role" value={this.state.role}  readonly />
+                        </div>
+                        <div class="form-group">
+                            <label id="passwordLabel">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="************" onChange = {(event) => this.setState({password:event.target.value})} readOnly={!this.state.edit} />
+                        </div>
+                    {(!this.state.edit)?
+                        <div class="text-right form-group pb-2">
+                            <button class='btn btn-warning' type="button" id='update-btn' onClick={(event) => this.setState({edit:true})}>Edit</button>
+                        </div>
+                    :
+                        <div class="text-right form-group pb-2">
+                            <button class='btn btn-warning' type="button" id='update-btn' onClick={() => this.save()}>Save</button>
+                        </div>
                     }
                     readOnly={!this.state.edit}
                     required
