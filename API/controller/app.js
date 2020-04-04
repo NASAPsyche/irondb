@@ -46,7 +46,7 @@ passport.use(
         // If query returns result, verify password by unhashing.
         if (result.rows.length > 0) {
           const user = result.rows[0];
-          bcrypt.compare(password, user.password_hash, function(err, res) {
+          bcrypt.compare(password, user.password_hash, function (err, res) {
             if (res) {
               // Return user if password is valid.
               return done(null, {
@@ -68,11 +68,11 @@ passport.use(
 
 // Configure Passport authenticated session persistence.
 // Defining function to serialize and deserialize user from session.
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   return done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser(function (id, done) {
   db.query(
     // eslint-disable-next-line max-len
     "SELECT user_id, username, password_hash, role_of FROM users WHERE user_id=$1",
@@ -145,7 +145,7 @@ app.use("/api/profile", profileRouter);
 app.use("/api/users", usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   let isSignedIn = false;
   if (req.isAuthenticated()) {
     isSignedIn = true;
@@ -156,7 +156,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
