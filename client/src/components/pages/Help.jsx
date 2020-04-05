@@ -33,7 +33,7 @@ const Help = ({ authenticated }) => (
                     <div className="col-sm-1"></div>
                     <div className="col-sm-10">
                         <center>
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/p0ywMqjEHpQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/p0ywMqjEHpQ" frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
                         </center>
                     </div>
                     <div className="col-sm-1"></div>
@@ -47,56 +47,44 @@ const Help = ({ authenticated }) => (
                         <p className="pt-3">
                             If you know the <strong>meteorite name</strong> you are searching for, or the name of the <strong>paper</strong> or <strong>author</strong>, you can search for this on the <Link to="/">landing page</Link>.
                         </p>
+                        <center>
+                            <img src={require("../../images/help/Search/simple_search.png")} alt="simple search" />
+                        </center>
                         <p>
-                            <center>
-                                <img src={require("../../images/help/Search/simple_search.png")} alt="simple search" />
-                            </center>
+                            For advanced searches, navigate to the <Link to="/database">database page</Link> (or click <Link to="/database">"Enter the Database"</Link>.)
                         </p>
+                        <h5 className="pt-4">
+                            <u>Search by <strong>source</strong> of meteorite study:</u>
+                        </h5>
                         <p>
-                            <p>
-                                For advanced searches, navigate to the <Link to="/database">database page</Link> (or click <Link to="/database">"Enter the Database"</Link>.)
-                            </p>
-                            <h5 class="pt-4">
-                                <u>Search by <strong>source</strong> of meteorite study:</u>
-                            </h5>
-                            <p>
-                                Click on the plus + or minus - square button on the left to expand or minimize search fields for <strong>journal name, volume, or page number</strong> of the research paper in which the meteorite appears:
-                            </p>
-                            <p>
-                                <center>
-                                    <img src={require("../../images/help/Search/source_expand.png")} alt="expand source" />
-                                </center>
-                            </p>
-                            <p>
-                                Click on the plus + or minus - square button on the right to expand or minimize search fields for <strong>date of publication</strong> of the research paper in which the meteorite appears:
-                            </p>
-                            <p>
-                                <center>
-                                    <img src={require("../../images/help/Search/date_expand.png")} alt="expand date" />
-                                </center>
-                            </p>
-                            <h5>
-                                <u>Search by meteorite <strong>composition</strong>:</u>
-                            </h5>
-                            <p>
-                                Click the plus + or minus - signs next to "Composition" to expand or minimize search fields for the <strong>chemical composition</strong> of the meteorite:
-                            </p>
-                            <p>
-                                <center>
-                                    <img src={require("../../images/help/Search/composition_expand.png")} alt="expand composition" />
-                                </center>
-                            </p>
-                            <p class="pt-3">
-                                You can then click "Search" to submit your query, or click "Reset" to clear all fields.
-                            </p>
-                            <p>
-                                <center>
-                                    <img src={require("../../images/help/Search/reset_search.png")} alt="expand composition" />
-                                </center>
-                            </p>
+                            Click on the plus + or minus - square button on the left to expand or minimize search fields for <strong>journal name, volume, or page number</strong> of the research paper in which the meteorite appears:
                         </p>
+                        <center>
+                            <img src={require("../../images/help/Search/source_expand.png")} alt="expand source" />
+                        </center>
+                        <p>
+                            Click on the plus + or minus - square button on the right to expand or minimize search fields for <strong>date of publication</strong> of the research paper in which the meteorite appears:
+                        </p>
+                        <center>
+                            <img src={require("../../images/help/Search/date_expand.png")} alt="expand date" />
+                        </center>
+                        <h5>
+                            <u>Search by meteorite <strong>composition</strong>:</u>
+                        </h5>
+                        <p>
+                            Click the plus + or minus - signs next to "Composition" to expand or minimize search fields for the <strong>chemical composition</strong> of the meteorite:
+                        </p>
+                        <center>
+                            <img src={require("../../images/help/Search/composition_expand.png")} alt="expand composition" />
+                        </center>
+                        <p className="pt-3">
+                            You can then click "Search" to submit your query, or click "Reset" to clear all fields.
+                        </p>
+                        <center>
+                            <img src={require("../../images/help/Search/reset_search.png")} alt="expand composition" />
+                        </center>
                     </div>
-                    <div class="col-sm-1"></div>
+                    <div className="col-sm-1"></div>
                 </div>
 
                 <a id="exportData"></a><br /><br />
@@ -107,20 +95,16 @@ const Help = ({ authenticated }) => (
                         <p className="pt-3">
                             If you would like to export a CSV of your search results, submit a query in the <Link to="/database">database page</Link>, then click the "Export" button.
                         </p>
-                        <p>
-                            <center>
-                                <img src={require("../../images/help/Export/export_page.png")} alt="export page" />
-                            </center>
-                        </p>
+                        <center>
+                            <img src={require("../../images/help/Export/export_page.png")} alt="export page" />
+                        </center>
                         <p>
                             You will be redirected to the "Export Data" page. Verify that the listed data is what you wish to export and delete any unwanted entries. You can choose to export this data separated by the analysis techniques used for each meteorite (this can result in multiple rows for a single meteorite that has multiple analysis techniques), or you can choose to discard the analysis techniques and export each meteorite in a single row of the CSV.
                         </p>
-                        <p>
-                            <center>
-                                <img src={require("../../images/help/Export/data.png")} alt="data to export" />
-                                <img src={require("../../images/help/Export/analysis_vs_row.png")} alt="export by analysis technique vs single row" />
-                            </center>
-                        </p>
+                        <center>
+                            <img src={require("../../images/help/Export/data.png")} alt="data to export" />
+                            <img src={require("../../images/help/Export/analysis_vs_row.png")} alt="export by analysis technique vs single row" />
+                        </center>
                         <p className="pt-5">
                             Once you are done customizing your export, you can click "Export Data" to download the CSV file on your local machine.
                         </p>
@@ -139,22 +123,18 @@ const Help = ({ authenticated }) => (
                             To register as a user, navigate to the <Link to="/register">registration page</Link>
                             and fill out all fields.
                         </p>
-                        <p>
-                            <center>
-                                <img src={require("../../images/help/register.png")} alt="register user" />
-                            </center>
-                        </p>
-                        <p>
-                            <ul>
-                                <li>
-                                    Your username must be unique and at least 5 characters long.
-                                </li>
-                                <li> A valid email that is currently not registered with the Iron Meteorite Database is required.</li>
-                                <li>
-                                    Your password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number. The minimum length is 8 and the maximum is 25.
-                                </li>
-                            </ul>
-                        </p>
+                        <center>
+                            <img src={require("../../images/help/register.png")} alt="register user" />
+                        </center>
+                        <ul>
+                            <li>
+                                Your username must be unique and at least 5 characters long.
+                            </li>
+                            <li> A valid email that is currently not registered with the Iron Meteorite Database is required.</li>
+                            <li>
+                                Your password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number. The minimum length is 8 and the maximum is 25.
+                            </li>
+                        </ul>
                     </div>
                     <div className="col-sm-1"></div>
                 </div>
