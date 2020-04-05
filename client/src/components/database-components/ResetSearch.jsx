@@ -133,8 +133,6 @@ const ResetSearch = props => {
 
     // Filters table information based on user input
     function handleSearch() {
-        console.log(props.values);
-        //console.log(props.data.Entries);
         // Initialize array to hold filtered data
         let filteredData = props.data.Entries;
 
@@ -216,7 +214,6 @@ const ResetSearch = props => {
         }
 
         props.setFiltered(filteredData);
-        console.log(filteredData);
     }
 
     return (
