@@ -50,13 +50,14 @@ const Home = () => {
                             <div className="col-md-2">
                                 <label className="sr-only" for="group">group</label>
                                 <select className="form-control" id="group" name="group" placeholder="group" onChange={handleChangeGroup}>
-                                    <option value="" disabled selected hidden>group</option>
-                                    <option>IAB</option>
-                                    <option>IC</option>
-                                    <option>IIAB</option>
-                                    <option>IIG</option>
-                                    <option>IIIAB</option>
-                                    <option>IIICD</option>
+                                    <option value="group" disabled selected>group</option>
+                                    <option value="IAB">IAB</option>
+                                    <option value="IC">IC</option>
+                                    <option value="IIAB">IIAB</option>
+                                    <option value="IIG">IIG</option>
+                                    <option value="IIIAB">IIIAB</option>
+                                    <option value="IIICD">IIICD</option>
+                                    <option value="noGroup">No Group</option>
                                 </select>
                             </div>
                             <div className="col-md-2">
