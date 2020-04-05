@@ -13,7 +13,7 @@ const Database = () => {
         journalName: "",
         volume: "",
         pg: "",
-        sign: "",
+        sign: "equal",
         year: "",
         mod0: "IN",
         element0: "element",
