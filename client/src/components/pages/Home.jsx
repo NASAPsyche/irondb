@@ -29,16 +29,15 @@ const Home = () => {
 
     return (
     <div className="Search">
-        <body>
-            <div className="container-fluid pt-3 pb-5" id="top-container">
-                <div className="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
-                    <h1>Iron Meteorite Database</h1>
-                </div>
-            </div>
-            <div className="container-fluid pt-3" id="bottom-container">
-                <div className="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
-                    <h3>Start with a simple search:</h3>
-                </div>
+          <div className="container-fluid pt-3 pb-5" id="top-container">
+              <div className="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
+                  <h1>Iron Meteorite Database</h1>
+              </div>
+          </div>
+          <div className="container-fluid pt-3" id="bottom-container">
+              <div className="d-flex flex-row align-items-center justify-content-center mt-5 mb-2">
+                  <h3>Start with a simple search:</h3>
+              </div>
 
                 <div className="d-flex flex-row align-items-center justify-content-center mb-4">
                     <form id="home-search" action="/database" class="border border-dark p-3" onSubmit={handleSubmit}>
@@ -50,13 +49,14 @@ const Home = () => {
                             <div className="col-md-2">
                                 <label className="sr-only" for="group">group</label>
                                 <select className="form-control" id="group" name="group" placeholder="group" onChange={handleChangeGroup}>
-                                    <option value="" disabled selected hidden>group</option>
-                                    <option>IAB</option>
-                                    <option>IC</option>
-                                    <option>IIAB</option>
-                                    <option>IIG</option>
-                                    <option>IIIAB</option>
-                                    <option>IIICD</option>
+                                    <option value="group" disabled selected>group</option>
+                                    <option value="IAB">IAB</option>
+                                    <option value="IC">IC</option>
+                                    <option value="IIAB">IIAB</option>
+                                    <option value="IIG">IIG</option>
+                                    <option value="IIIAB">IIIAB</option>
+                                    <option value="IIICD">IIICD</option>
+                                    <option value="noGroup">No Group</option>
                                 </select>
                             </div>
                             <div className="col-md-2">
@@ -74,28 +74,27 @@ const Home = () => {
                     </form>
                 </div>
 
-                <div className="d-flex flex-row align-items-center justify-content-center mb-4">
-                    <h3> - or - </h3>
-                </div>
+              <div className="d-flex flex-row align-items-center justify-content-center mb-4">
+                  <h3> - or - </h3>
+              </div>
 
-                <div className="d-flex flex-row align-items-center justify-content-center">
-                    <a href="/database" class="btn btn-warning">Enter the Database</a>
-                </div>
-            </div>
+              <div className="d-flex flex-row align-items-center justify-content-center">
+                  <a href="/database" className="btn btn-warning">Enter the Database</a>
+              </div>
+          </div>
 
-            <div class="container-fluid fixed-bottom">
-                <div class="d-flex flex-row align-items-center justify-content-center mb-0">
-                    <p><small>This website and work were created in partial fulfillment of Arizona State University Capstone Course “SER 401-402.”
-                        The work is a result of the Psyche Student Collaborations component of NASA’s Psyche Mission (<a href="https://psyche.asu.edu">https://psyche.asu.edu</a>).
-                        “Psyche: A Journey to a Metal World” [Contract number NNM16AA09C] is part of the NASA Discovery Program mission to solar system targets.
-                        Trade names and trademarks of ASU and NASA are used in this website for identification only.
-                        Their usage does not constitute an official endorsement, either expressed or implied, by Arizona State University or National Aeronautics and Space Administration.
-                        The content is solely the responsibility of the authors and does not necessarily represent the official views of ASU or NASA.
-                    </small></p>
-                </div>
-            </div>
-        </body>
-    </div> 
+          <div className="container-fluid fixed-bottom">
+              <div className="d-flex flex-row align-items-center justify-content-center mb-0">
+                  <p><small>This website and work were created in partial fulfillment of Arizona State University Capstone Course “SER 401-402.”
+                      The work is a result of the Psyche Student Collaborations component of NASA’s Psyche Mission (<a href="https://psyche.asu.edu">https://psyche.asu.edu</a>).
+                      “Psyche: A Journey to a Metal World” [Contract number NNM16AA09C] is part of the NASA Discovery Program mission to solar system targets.
+                      Trade names and trademarks of ASU and NASA are used in this website htmlFor identification only.
+                      Their usage does not constitute an official endorsement, either expressed or implied, by Arizona State University or National Aeronautics and Space Administration.
+                      The content is solely the responsibility of the authors and does not necessarily represent the official views of ASU or NASA.
+                  </small></p>
+              </div>
+          </div>
+    </div>
     );
 }
 

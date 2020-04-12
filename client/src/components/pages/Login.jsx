@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
-import Auth from '../Auth'; 
+import Auth from '../Auth';
 import {UserContext} from '../../userContext.js';
 
 const Login = props => {
-    
+
     var password;
     const [username, setUsername] = useState()
     const [loginFailed,setLoginFailed] = useState()
@@ -11,7 +11,7 @@ const Login = props => {
     //Bring in our user contexts so we can access the state
     const {user, setUser} = useContext(UserContext)
 
-    
+
 
     const handleChangeUsername = e => {
       setUsername(e.target.value)
@@ -26,10 +26,9 @@ const Login = props => {
         //Authentication Logic
         Auth.login(() => {
             var loginStatus;
-                    
-               
+                            
                     const data = { username: username, password: password }
-                    fetch("/login", {
+                    fetch("/api/login", {
                       method: 'POST',
                       body: JSON.stringify(data),
                       headers:{ 'Content-Type': 'application/json' }
@@ -62,14 +61,14 @@ const Login = props => {
       }
 
 
- 
+
     //Let's see if they're currently logged in!
     if (user!= undefined) {
         return(
             <div className="container mt-5">
                 <div className="row mt-5">
                     <div className="col-sm-8 offset-sm-2 text-center mt-5">
-            
+
                         <h3>{user}, You are signed in.</h3>
                     </div>
                 </div>
@@ -78,42 +77,42 @@ const Login = props => {
 
     } else {
         return (
-            
+
             <div className="container mt-5">
-                
+
                 <div className="row mt-5">
                 <div className="mt-5 col-sm-8 offset-sm-2 text-center">
                     <form onSubmit={handleLogin}>
                     <h1 className="h3">Log in</h1>
-                    { (props.location.state!=null) && (props.location.state.signedUp!=null) 
+                    { (props.location.state!=null) && (props.location.state.signedUp!=null)
                     ? <div className="alert alert-success" role="alert" id="signupSuccess">
                             Sign-up Complete! Please log-in!
                         </div>
                     : null
                     }
 
-                    { (loginFailed!=null) 
+                    { (loginFailed!=null)
                     ? <div className="alert alert-danger" role="alert" id="passwordInvalid">
                             {loginFailed}
                         </div>
                     : null
                     }
-                    
-                    <label className="sr-only" for="username">username</label>
+
+                    <label className="sr-only" htmlFor="username">username</label>
                     <input type="text" name="username" id="username" className="form-control mb-2" placeholder="username" required
-                        autofocus minlength="4" value={username} onChange={handleChangeUsername} maxlength="25" />
-                        
-                    <label className="sr-only" for="password">password</label>
+                        autoFocus minLength="4" value={username} onChange={handleChangeUsername} maxLength="25" />
+
+                      <label className="sr-only" htmlFor="password">password</label>
                     <input type="password" name="password" id="password" onChange={handlePassword} className="form-control" placeholder="password" required
-                        minlength="6" maxlength="25" />
-                    <button className="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
+                        minLength="6" maxLength="25" />
+                      <button className="btn btn-lg btn-danger btn-block mt-2" type="submit">Submit</button>
                     <a href="/register">Register Here</a>
                     </form>
                 </div>
                 </div>
             </div>
-            
-        
+
+
     );
     }
 
