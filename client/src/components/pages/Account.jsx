@@ -95,7 +95,7 @@ class Account extends React.Component {
                     </div>
 
                     {/* TODO: add action and method */}
-                    <form id="user-update-form">
+                    <form id="user-update-form" readOnly={!this.state.edit} required>
                         <div className="form-group">
                             <label>Username</label>
                             <input type="text" className="form-control" id="username" value={this.state.username} readonly />
@@ -122,19 +122,18 @@ class Account extends React.Component {
                             <label id="passwordLabel">Password</label>
                             <input type="password" className="form-control" id="password" placeholder="************" onChange = {(event) => this.setState({email:event.target.value})} readOnly={!this.state.edit} />
                         </div>
-                    {(!this.state.edit)?
-                        <div className="text-right form-group pb-2">
-                            <button className='btn btn-warning' type="button" id='update-btn' onClick={(event) => this.setState({edit:true})}>Edit</button>
-                        </div>
-                    :
-                        <div className="text-right form-group pb-2">
-                            <button className='btn btn-warning' type="button" id='update-btn' onClick={() => this.save()}>Save</button>
-                        </div>
-                    }
-                    readOnly={!this.state.edit}
-                    required
-                  /></form>
+                        {(!this.state.edit)?
+                            <div className="text-right form-group pb-2">
+                                <button className='btn btn-warning' type="button" id='update-btn' onClick={(event) => this.setState({edit:true})}>Edit</button>
+                            </div>
+                        :
+                            <div className="text-right form-group pb-2">
+                                <button className='btn btn-warning' type="button" id='update-btn' onClick={() => this.save()}>Save</button>
+                            </div>
+                        } 
+                    </form>
                 </div>
+
                 <div class="col">
                   <label>Last Name</label>
                   <input
@@ -149,70 +148,68 @@ class Account extends React.Component {
                     required
                   />
                 </div>
+            </div>
+
+            <div class="form-group">
+              <label>Email address</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder={this.state.email}
+                onChange={event =>
+                  this.setState({ email: event.target.value })
+                }
+                readOnly={!this.state.edit}
+              />
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <input
+                type="text"
+                class="form-control"
+                id="role"
+                value={this.state.role}
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label id="passwordLabel">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="************"
+                onChange={event =>
+                  this.setState({ email: event.target.value })
+                }
+                readOnly={!this.state.edit}
+              />
+            </div>
+            {!this.state.edit ? (
+              <div class="text-right form-group pb-2">
+                <button
+                  class="btn btn-warning"
+                  type="button"
+                  id="update-btn"
+                  onClick={event => this.setState({ edit: true })}
+                >
+                  Edit
+                </button>
               </div>
-              <div class="form-group">
-                <label>Email address</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  placeholder={this.state.email}
-                  onChange={event =>
-                    this.setState({ email: event.target.value })
-                  }
-                  readOnly={!this.state.edit}
-                />
+            ) : (
+              <div class="text-right form-group pb-2">
+                <button
+                  class="btn btn-warning"
+                  type="button"
+                  id="update-btn"
+                  onClick={() => this.save()}
+                >
+                  Save
+                </button>
               </div>
-              <div class="form-group">
-                <label>Role</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="role"
-                  value={this.state.role}
-                  readonly
-                />
-              </div>
-              <div class="form-group">
-                <label id="passwordLabel">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  placeholder="************"
-                  onChange={event =>
-                    this.setState({ email: event.target.value })
-                  }
-                  readOnly={!this.state.edit}
-                />
-              </div>
-              {!this.state.edit ? (
-                <div class="text-right form-group pb-2">
-                  <button
-                    class="btn btn-warning"
-                    type="button"
-                    id="update-btn"
-                    onClick={event => this.setState({ edit: true })}
-                  >
-                    Edit
-                  </button>
-                </div>
-              ) : (
-                <div class="text-right form-group pb-2">
-                  <button
-                    class="btn btn-warning"
-                    type="button"
-                    id="update-btn"
-                    onClick={() => this.save()}
-                  >
-                    Save
-                  </button>
-                </div>
-              )}
-            </form>
-          </div>
+            )}
         </div>
-      </div>
     );
   }
 }

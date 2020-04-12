@@ -19,7 +19,7 @@ function Navbar(props) {
         return (
             <nav className="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
                 <div className="navbar-brand">
-                    <img className="mr-2" src={require("../images/nasa-logo-web-rgb.png")} id="nasa-logo" width="30" height="30"  className="pl-0 ml-0" alt="NASA Logo" />
+                    <img className="mr-2" src={require("../images/nasa-logo-web-rgb.png")} id="nasa-logo" width="40" height="40"  className="pl-0 ml-0" alt="NASA Logo" />
                     <img src={require("../images/Psyche_BadgeSolid_Color-PNG.png")} id="psyche-logo" width="30" height="30" alt="Psyche Mission Logo" />
                 </div>
                 <div className="collapse navbar-collapse">

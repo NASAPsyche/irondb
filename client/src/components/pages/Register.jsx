@@ -182,9 +182,7 @@ render() {
           </div>
 
           <div className="form-group">
-            <label className="sr-only" html
-              
-              "username">Username</label>
+            <label className="sr-only" htmlFor="username">Username</label>
             <input type="text" name="username" id="username" onChange = {(event) => this.setState({username:event.target.value})}  className="form-control" placeholder="Username" required
               minLength="5"  />
             <small id="usernameHelpBlock" className="form-text text-muted text-left">
