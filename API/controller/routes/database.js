@@ -14,7 +14,6 @@ router.use('/meteorite', singleBodyRouter);
 
 /* GET database page. */
 router.get('/', async (req, res, next) => {
-  //console.log(req);
   let resObj = [];
   try {
     const Entries = db.aQuery('SELECT * FROM complete_table', []);
@@ -22,14 +21,10 @@ router.get('/', async (req, res, next) => {
   } catch (err) {
     next(createError(500));
   } finally {
-    // console.log(resObj[0].rows);
     res.send({
       Entries: resObj[0].rows,
     });
   }
-
-  // const resObj = [{hello: 1}, {hello: 2}];
-  // res.send(resObj);
 });
 
 /* POST /database/export */
