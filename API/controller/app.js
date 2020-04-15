@@ -113,7 +113,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 app.use(
   session({
-    secret: "ot$vj%wzO9C^LhGfw^%%SECRET%%UlCO+aGWklcuV",
+    secret: "9xMy_q8fRXHg!nl1m)6pWlQK17Skn9Uh",
     resave: false,
     saveUninitialized: false,
     // maxAge set to 60 mins, param in miliseconds

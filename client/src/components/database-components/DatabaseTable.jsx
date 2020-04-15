@@ -2,12 +2,6 @@ import React, { useState } from 'react';
 import TableEntry from "./TableEntry";
 import '../styles/Database.scss';
 
-function populateTable(array) {
-    array.map(entry => {
-        return <TableEntry object={entry} />
-    })
-}
-
 const DatabaseTable = props => {
         return (
             <div class="container-fluid p-0 pb-5" id="table" style={{marginTop: `${props.margin}px`}}>

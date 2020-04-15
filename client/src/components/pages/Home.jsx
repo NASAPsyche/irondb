@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import '../styles/Home.scss'
+import { Link } from 'react-router-dom';
 
 const Home = () => {
     const [name, setName] = useState();
-    const [group, setGroup] = useState("first");
+    const [group, setGroup] = useState("group");
     const [title, setTitle] = useState();
     const [author, setAuthor] = useState();
 
@@ -40,7 +41,7 @@ const Home = () => {
               </div>
 
                 <div className="d-flex flex-row align-items-center justify-content-center mb-4">
-                    <form id="home-search" action="/database" class="border border-dark p-3" onSubmit={handleSubmit}>
+                    <div id="home-search">
                         <div className="d-flex flex-row align-items-center justify-content-center ">
                             <div className="col-md-3">
                                 <label className="sr-only" for="name">Meteorite Name</label>
@@ -68,10 +69,11 @@ const Home = () => {
                                 <input type="text" name="author" id="author" class="form-control" placeholder="author" onChange={handleChangeAuthor}/>
                             </div>
                             <div className="col-md-2 col-sm-3">
-                                <button className="btn btn-warning btn-block">Search</button>
+                                {/* <button className="btn btn-warning btn-block">Search</button> */}
+                                <Link className="btn btn-warning btn-block" to={`/database?name=${name}&title=${title}&group=${group}&author=${author}`}>Search</Link>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
 
               <div className="d-flex flex-row align-items-center justify-content-center mb-4">
