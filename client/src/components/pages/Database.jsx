@@ -339,7 +339,7 @@ const Database = ({match, location}) => {
 
     return (
         <div>
-            <DatabaseSearch values={values} setValues={setValues} change={handleChange} changeMargin={handleMargin} data={data} setFiltered={setFiltered} handleSearch={handleSearch} />
+            <DatabaseSearch values={values} setValues={setValues} change={handleChange} changeMargin={handleMargin} setFiltered={setFiltered} handleSearch={handleSearch} />
             <DatabaseTable margin={margin} setMargin={setMargin} data={data} filtered={filtered} />
         </div>
     );

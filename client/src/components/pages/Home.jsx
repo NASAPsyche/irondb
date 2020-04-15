@@ -24,10 +24,6 @@ const Home = () => {
         setAuthor(e.target.value);
     }
 
-    const handleSubmit = event => {
-        console.log("name: " + name + "\ngroup: " + group + "\ntitle: " + title + "\nauthor: " + author);
-    }
-
     return (
     <div className="Search">
           <div className="container-fluid pt-3 pb-5" id="top-container">

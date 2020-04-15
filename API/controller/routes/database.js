@@ -27,8 +27,8 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-/* POST /database/export */
-router.post('/export', async (req, res, next) => {
+/* GET /database/export */
+router.get('/export', async (req, res, next) => {
   if (req.body.hasOwnProperty('export')) {
     // get arrays from request
     const tableData = JSON.parse(req.body.tableData);
@@ -63,132 +63,133 @@ router.post('/export', async (req, res, next) => {
     } catch (err) {
       next(createError(500));
     }
-  } else {
-    if (!req.body.hasOwnProperty('entries')) {
-      // If request does not have ids for search, bad request
-      next(createError(400));
-    }
-
-    // Build constraints
-    let constraints = ' WHERE ';
-    const argsArray = [];
-    let currentQueryIndex = 1;
-
-    if (typeof req.body.entries == 'string') {
-      // single body
-      argsArray.push(parseInt(req.body.entries));
-      constraints += ('body_id=$' + currentQueryIndex);
-    } else {
-      // multiple bodies
-      req.body.entries.forEach(function(element) {
-        argsArray.push(element);
-        if (currentQueryIndex === 1) {
-          // No OR for first body
-          constraints += ('body_id=$' + currentQueryIndex + ' ');
-        } else {
-          constraints += ('OR body_id=$' + currentQueryIndex + ' ');
-        }
-        currentQueryIndex++;
-      });
-    }
-
-    // Build query strings
-    const entriesQuery = 'SELECT * FROM export_table' + constraints;
-    const bodyQuery = 'SELECT DISTINCT body_id FROM export_table' + constraints;
-    const majorQuery =
-        'SELECT DISTINCT ON (element_symbol) element_symbol '
-        + 'FROM export_major_element_symbols' + constraints;
-    const minorQuery =
-        'SELECT DISTINCT ON (element_symbol) element_symbol '
-        + 'FROM export_minor_element_symbols' + constraints;
-    const traceQuery =
-        'SELECT DISTINCT ON (element_symbol) element_symbol '
-        +'FROM export_trace_element_symbols' + constraints;
-
-
-    let resObj = [];
-    try {
-      const Entries = db.aQuery(entriesQuery, argsArray);
-      const BodyIDs = db.aQuery(bodyQuery, argsArray);
-      const Major = db.aQuery(majorQuery, argsArray);
-      const Minor = db.aQuery(minorQuery, argsArray);
-      const Trace = db.aQuery(traceQuery, argsArray);
-      resObj = await Promise.all([Entries, BodyIDs, Major, Minor, Trace]);
-    } catch (err) {
-      next(createError(500));
-    } finally {
-      const major = resObj[2].rows;
-      const minor = resObj[3].rows;
-      const trace = resObj[4].rows;
-
-      const Entries = resObj[0].rows;
-      const Entries2 = resObj[0].rows;
-
-      // separate entries into rows by meteorite and analysis technique
-      const Rows = [];
-      let temp = [];
-      let currentTechnique = '';
-      let currentID = -1;
-      for (let i = 0; i < Entries.length; i++) {
-        if (i === 0) {
-          currentTechnique = Entries[i].technique;
-          currentID = Entries[i].body_id;
-        }
-
-        if (Entries[i].body_id === currentID
-          && Entries[i].technique === currentTechnique) {
-          temp.push(Entries[i]);
-        } else {
-          Rows.push(temp);
-          temp = [];
-          currentTechnique = Entries[i].technique;
-          currentID = Entries[i].body_id;
-          temp.push(Entries[i]);
-        }
-
-        if (i === Entries.length - 1) {
-          Rows.push(temp);
-        }
-      }
-
-      // separate entries into rows by meteorite and analysis technique
-      const Rows2 = [];
-      temp = [];
-      currentTechnique = '';
-      currentID = -1;
-      for (let i = 0; i < Entries2.length; i++) {
-        if (i === 0) {
-          currentID = Entries2[i].body_id;
-        }
-
-        if (Entries2[i].body_id === currentID) {
-          temp.push(Entries2[i]);
-        } else {
-          Rows2.push(temp);
-          temp = [];
-          currentID = Entries2[i].body_id;
-          temp.push(Entries2[i]);
-        }
-
-        if (i === Entries2.length - 1) {
-          Rows2.push(temp);
-        }
-      }
-
-
-      res.render('db-export', {
-        Rows: Rows,
-        Rows2: Rows2,
-        Body_IDs: resObj[1].rows,
-        major: major.map((row) => row.element_symbol),
-        minor: minor.map((row) => row.element_symbol),
-        trace: trace.map((row) => row.element_symbol),
-        numColumns: major.length + minor.length + trace.length,
-        isSignedIn: req.isAuthenticated(),
-        _: ejsUnitConversion,
-      });
-    }
   }
+  // } else {
+  //   if (!req.body.hasOwnProperty('entries')) {
+  //     // If request does not have ids for search, bad request
+  //     next(createError(400));
+  //   }
+
+  //   // Build constraints
+  //   let constraints = ' WHERE ';
+  //   const argsArray = [];
+  //   let currentQueryIndex = 1;
+
+  //   if (typeof req.body.entries == 'string') {
+  //     // single body
+  //     argsArray.push(parseInt(req.body.entries));
+  //     constraints += ('body_id=$' + currentQueryIndex);
+  //   } else {
+  //     // multiple bodies
+  //     req.body.entries.forEach(function(element) {
+  //       argsArray.push(element);
+  //       if (currentQueryIndex === 1) {
+  //         // No OR for first body
+  //         constraints += ('body_id=$' + currentQueryIndex + ' ');
+  //       } else {
+  //         constraints += ('OR body_id=$' + currentQueryIndex + ' ');
+  //       }
+  //       currentQueryIndex++;
+  //     });
+  //   }
+
+  //   // Build query strings
+  //   const entriesQuery = 'SELECT * FROM export_table' + constraints;
+  //   const bodyQuery = 'SELECT DISTINCT body_id FROM export_table' + constraints;
+  //   const majorQuery =
+  //       'SELECT DISTINCT ON (element_symbol) element_symbol '
+  //       + 'FROM export_major_element_symbols' + constraints;
+  //   const minorQuery =
+  //       'SELECT DISTINCT ON (element_symbol) element_symbol '
+  //       + 'FROM export_minor_element_symbols' + constraints;
+  //   const traceQuery =
+  //       'SELECT DISTINCT ON (element_symbol) element_symbol '
+  //       +'FROM export_trace_element_symbols' + constraints;
+
+
+  //   let resObj = [];
+  //   try {
+  //     const Entries = db.aQuery(entriesQuery, argsArray);
+  //     const BodyIDs = db.aQuery(bodyQuery, argsArray);
+  //     const Major = db.aQuery(majorQuery, argsArray);
+  //     const Minor = db.aQuery(minorQuery, argsArray);
+  //     const Trace = db.aQuery(traceQuery, argsArray);
+  //     resObj = await Promise.all([Entries, BodyIDs, Major, Minor, Trace]);
+  //   } catch (err) {
+  //     next(createError(500));
+  //   } finally {
+  //     const major = resObj[2].rows;
+  //     const minor = resObj[3].rows;
+  //     const trace = resObj[4].rows;
+
+  //     const Entries = resObj[0].rows;
+  //     const Entries2 = resObj[0].rows;
+
+  //     // separate entries into rows by meteorite and analysis technique
+  //     const Rows = [];
+  //     let temp = [];
+  //     let currentTechnique = '';
+  //     let currentID = -1;
+  //     for (let i = 0; i < Entries.length; i++) {
+  //       if (i === 0) {
+  //         currentTechnique = Entries[i].technique;
+  //         currentID = Entries[i].body_id;
+  //       }
+
+  //       if (Entries[i].body_id === currentID
+  //         && Entries[i].technique === currentTechnique) {
+  //         temp.push(Entries[i]);
+  //       } else {
+  //         Rows.push(temp);
+  //         temp = [];
+  //         currentTechnique = Entries[i].technique;
+  //         currentID = Entries[i].body_id;
+  //         temp.push(Entries[i]);
+  //       }
+
+  //       if (i === Entries.length - 1) {
+  //         Rows.push(temp);
+  //       }
+  //     }
+
+  //     // separate entries into rows by meteorite and analysis technique
+  //     const Rows2 = [];
+  //     temp = [];
+  //     currentTechnique = '';
+  //     currentID = -1;
+  //     for (let i = 0; i < Entries2.length; i++) {
+  //       if (i === 0) {
+  //         currentID = Entries2[i].body_id;
+  //       }
+
+  //       if (Entries2[i].body_id === currentID) {
+  //         temp.push(Entries2[i]);
+  //       } else {
+  //         Rows2.push(temp);
+  //         temp = [];
+  //         currentID = Entries2[i].body_id;
+  //         temp.push(Entries2[i]);
+  //       }
+
+  //       if (i === Entries2.length - 1) {
+  //         Rows2.push(temp);
+  //       }
+  //     }
+
+
+  //     res.render('db-export', {
+  //       Rows: Rows,
+  //       Rows2: Rows2,
+  //       Body_IDs: resObj[1].rows,
+  //       major: major.map((row) => row.element_symbol),
+  //       minor: minor.map((row) => row.element_symbol),
+  //       trace: trace.map((row) => row.element_symbol),
+  //       numColumns: major.length + minor.length + trace.length,
+  //       isSignedIn: req.isAuthenticated(),
+  //       _: ejsUnitConversion,
+  //     });
+  //   }
+  // }
 });
 
 
