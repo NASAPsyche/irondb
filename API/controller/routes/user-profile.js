@@ -10,12 +10,12 @@ const bcrypt = require('bcrypt');
 /* GET /profile  */
 router.post('/', isLoggedIn, async (req, res, next) => {
   const userID = req.user.id;
-  console.log("Request ID: " + userID);
   let resObj = [];
 
   const completeRequest = async () => {
     resObj = await getUser (userID);
     res.send({User: resObj[0].rows[0]});
+
   }
 
   async function getUser (userID) {
@@ -54,6 +54,8 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
   console.log(JSON.stringify(req.body));
   let hashed = '';
 
+
+
   // check if the request has a password
   if (req.body.password) {
     // salt and hash password
@@ -82,6 +84,20 @@ router.post('/update', isLoggedIn, async (req, res, next) => {
     await client.query('BEGIN');
     await client.query(updateLastName, insertLastName);
     await client.query('COMMIT');
+
+    if (req.body.email_address) {
+
+
+    // eslint-disable-next-line max-len
+    const updateEmail = `UPDATE user_info SET email_address = $1 WHERE  user_id = $2`;
+    const insertEmail = [req.body.email_address, req.body.user_id];
+ 
+      // email transaction
+      await client.query('BEGIN');
+      await client.query(updateEmail, insertEmail);
+      await client.query('COMMIT');
+    }
+
 
     // password transaction if password is changed
     if (hasPassword) {
