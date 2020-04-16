@@ -341,6 +341,7 @@ async changeName (value, field) {
       });
   }
 
+
   componentDidMount() {
     this.grabUserInfo();
   }
