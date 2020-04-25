@@ -9,7 +9,7 @@ import {
   useParams
 } from "react-router-dom";
 import ReactDOM from 'react-dom';
-import Database from '../Database';
+import Database from './Database';
 import DataEntry from './DataEntry';
 import Help from './Help';
 import Home from './Home';
@@ -20,10 +20,14 @@ import Navbar from '../Navbar';
 import Error from '../Error';
 import Login from './Login'
 import {UserContext, UserContextProvider} from '../../userContext.js';
-
 import Account from './Account';
 import Auth from '../Auth'
 import ApprovalOwnEntryError from "../ApprovalOwnEntryError";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faPlusSquare, faMinusSquare, faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fab, faPlusSquare, faMinusSquare, faPlusCircle, faMinusCircle)
 
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
@@ -53,7 +57,8 @@ function Main(props) {
             <Route path='/register' component={Register}/>
             <ProtectedRoute path="/account" component={Account}/>
 
-            <ProtectedRoute path="/database" component={Database}/>
+            <Route path="/database" component={Database}/>
+            
             
             <ProtectedRoute path="/panel" component={Panel}/>
             <ProtectedRoute path="/data-entry" component={DataEntry}/>

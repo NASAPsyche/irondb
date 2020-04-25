@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import '../styles/Home.scss'
+import { Link } from 'react-router-dom';
 
 const Home = () => {
     const [name, setName] = useState();
-    const [group, setGroup] = useState("first");
+    const [group, setGroup] = useState("group");
     const [title, setTitle] = useState();
     const [author, setAuthor] = useState();
 
@@ -23,10 +24,6 @@ const Home = () => {
         setAuthor(e.target.value);
     }
 
-    const handleSubmit = event => {
-        console.log("name: " + name + "\ngroup: " + group + "\ntitle: " + title + "\nauthor: " + author);
-    }
-
     return (
     <div className="Search">
           <div className="container-fluid pt-3 pb-5" id="top-container">
@@ -39,39 +36,41 @@ const Home = () => {
                   <h3>Start with a simple search:</h3>
               </div>
 
-              <div className="d-flex flex-row align-items-center justify-content-center mb-4">
-                  <form id="home-search" action="/database" className="border border-dark p-3" onSubmit={handleSubmit}>
-                      <div className="d-flex flex-row align-items-center justify-content-center ">
-                          <div className="col-md-3">
-                              <label className="sr-only" htmlFor ="name">Meteorite Name</label>
-                              <input type="text" name="name" id="name" className="form-control" placeholder="meteorite name" onChange={handleChangeName}/>
-                          </div>
-                          <div className="col-md-2">
-                              <label className="sr-only" htmlFor ="group">group</label>
-                              <select className="form-control" id="group" name="group" placeholder="group" defaultValue={'DEFAULT'} onChange={handleChangeGroup}>
-                                  <option value="DEFAULT" disabled hidden>group</option>
-                                  <option>IAB</option>
-                                  <option>IC</option>
-                                  <option>IIAB</option>
-                                  <option>IIG</option>
-                                  <option>IIIAB</option>
-                                  <option>IIICD</option>
-                              </select>
-                          </div>
-                          <div className="col-md-2">
-                              <label className="sr-only" htmlFor ="title">Paper Title</label>
-                              <input type="text" name="title" id="title" className="form-control" placeholder="paper title" onChange={handleChangeTitle}/>
-                          </div>
-                          <div className="col-md-2">
-                              <label className="sr-only" htmlFor ="author">Author</label>
-                              <input type="text" name="author" id="author" className="form-control" placeholder="author" onChange={handleChangeAuthor}/>
-                          </div>
-                          <div className="col-md-2 col-sm-3">
-                              <button className="btn btn-warning btn-block">Search</button>
-                          </div>
-                      </div>
-                  </form>
-              </div>
+                <div className="d-flex flex-row align-items-center justify-content-center mb-4">
+                    <div id="home-search">
+                        <div className="d-flex flex-row align-items-center justify-content-center ">
+                            <div className="col-md-3">
+                                <label className="sr-only" for="name">Meteorite Name</label>
+                                <input type="text" name="name" id="name" class="form-control" placeholder="meteorite name" onChange={handleChangeName}/>
+                            </div>
+                            <div className="col-md-2">
+                                <label className="sr-only" for="group">group</label>
+                                <select className="form-control" id="group" name="group" placeholder="group" onChange={handleChangeGroup}>
+                                    <option value="group" disabled selected>group</option>
+                                    <option value="IAB">IAB</option>
+                                    <option value="IC">IC</option>
+                                    <option value="IIAB">IIAB</option>
+                                    <option value="IIG">IIG</option>
+                                    <option value="IIIAB">IIIAB</option>
+                                    <option value="IIICD">IIICD</option>
+                                    <option value="noGroup">No Group</option>
+                                </select>
+                            </div>
+                            <div className="col-md-2">
+                                <label className="sr-only" for="title">Paper Title</label>
+                                <input type="text" name="title" id="title" class="form-control" placeholder="paper title" onChange={handleChangeTitle}/>
+                            </div>
+                            <div className="col-md-2">
+                                <label className="sr-only" for="author">Author</label>
+                                <input type="text" name="author" id="author" class="form-control" placeholder="author" onChange={handleChangeAuthor}/>
+                            </div>
+                            <div className="col-md-2 col-sm-3">
+                                {/* <button className="btn btn-warning btn-block">Search</button> */}
+                                <Link className="btn btn-warning btn-block" to={`/database?name=${name}&title=${title}&group=${group}&author=${author}`}>Search</Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
               <div className="d-flex flex-row align-items-center justify-content-center mb-4">
                   <h3> - or - </h3>
