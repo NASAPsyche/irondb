@@ -1,21 +1,30 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../userContext.js";
 import * as Cookies from "js-cookie";
 
 function Navbar(props) {
   const { user, setUser } = useContext(UserContext);
+  const [redirect, setRedirect] = useState(false);
 
   const logout = event => {
     setUser();
+    setRedirect(true);
     Cookies.remove("username");
     fetch("/api/logout", {
       method: "GET"
     });
   };
 
-    if (user != undefined) {
+  function redirectHome() {
+      setRedirect(false);
+      window.location.replace("http://localhost:8001/");
+  }
+
+  if (redirect) {
+      return <> { redirectHome() } </>
+  } else if (user != undefined) {
         return (
             <nav className="navbar fixed-top navbar-expand navbar-dark" style={{backgroundColor: "#000000"}}>
                 <div className="navbar-brand">
